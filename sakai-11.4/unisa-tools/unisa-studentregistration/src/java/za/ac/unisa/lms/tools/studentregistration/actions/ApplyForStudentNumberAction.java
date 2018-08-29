@@ -700,7 +700,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 							//log.debug("IN applyLoginAdmin (New Student - SLP) - getLoginSelectMain - NO/UD: "+stuRegForm.getLoginSelectMain());
 							stuRegForm.setWebLoginMsg("Administrator - First-time applicant - Short Learning Programme");
-							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 7 digits");
+							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 							setDropdownListsLogin(request,stuRegForm);
 							return mapping.findForward("applyLogin");
 						}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -722,7 +722,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 							//log.debug("IN applyLoginAdmin (Returning Student - SLP) - getLoginSelectMain - NO/UD: "+stuRegForm.getLoginSelectMain());
 							stuRegForm.setWebLoginMsg("Administrator - Returning student - Short Learning Programme");
-							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 7 digits");
+							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 							setDropdownListsLogin(request,stuRegForm);
 							return mapping.findForward("applyLogin");
 						}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -2277,6 +2277,18 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 								if (stuRegForm.getStudent().isDateWAPRU()){
 									//log.debug("ApplyForStudentNumberAction - applyLoginReturn (18a) - Returning Student - Undergrad - Goto APS Select");
 									return mapping.findForward("applyAPSSelect");
+								}else{
+									stuRegForm.setAllowLogin(false);
+									messages.add(ActionMessages.GLOBAL_MESSAGE,
+										new ActionMessage("message.generalmessage", "Applications for returning/existing students are closed for this semester. You will have to re-apply during the next application period."));
+									addErrors(request, messages);
+									setDropdownListsLogin(request,stuRegForm);
+									return mapping.findForward("applyLogin");
+								}
+							//Johanet 20180827 - add SLP returning student	
+							}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+								if (stuRegForm.getStudent().isDateWAPS ()){
+									return mapping.findForward("applyQualification");
 								}else{
 									stuRegForm.setAllowLogin(false);
 									messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -7810,13 +7822,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				setUpUniversityList(request);
 				return "applyNewInfo3";
 			}
-			if (stuRegForm.getStudentApplication().getPrevinstStudnr() == null || "".equals(stuRegForm.getStudentApplication().getPrevinstStudnr().trim())){
-				messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage", "Enter Your student number at the previous tertiary institution."));
-				addErrors(request, messages);
-				setUpUniversityList(request);
-				return "applyNewInfo3";
-			}
+			//Johanet 20180828 SLP comment out mandatory check student number previous tertiary institiution
+//			if (stuRegForm.getStudentApplication().getPrevinstStudnr() == null || "".equals(stuRegForm.getStudentApplication().getPrevinstStudnr().trim())){
+//				messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "Enter Your student number at the previous tertiary institution."));
+//				addErrors(request, messages);
+//				setUpUniversityList(request);
+//				return "applyNewInfo3";
+//			}
 			
 			//log.debug("ApplyForStudentNumberAction - applyStep3 - N " + stuRegForm.getStudent().getNumber() + " PrevInstCode " + stuRegForm.getStudent().getPrevInstitution().getCode());
 		}else{
@@ -9268,6 +9281,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		String type = "L"; /* L = local F=Foreign */
 		String wflType = "APP";
+		//Johanet 20180827 - Write SLP returning student to SLP folder
+		if (stuRegForm.getStudent().isStuSLP()){
+			wflType = "SLP";
+		}
 
 		/* set local or foreign */
 		if (!"1015".equals(stuRegForm.getStudent().getCountry().getCode())){
