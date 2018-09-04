@@ -700,7 +700,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 							//log.debug("IN applyLoginAdmin (New Student - SLP) - getLoginSelectMain - NO/UD: "+stuRegForm.getLoginSelectMain());
 							stuRegForm.setWebLoginMsg("Administrator - First-time applicant - Short Learning Programme");
-							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 7 digits");
+							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 							setDropdownListsLogin(request,stuRegForm);
 							return mapping.findForward("applyLogin");
 						}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -722,7 +722,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 							//log.debug("IN applyLoginAdmin (Returning Student - SLP) - getLoginSelectMain - NO/UD: "+stuRegForm.getLoginSelectMain());
 							stuRegForm.setWebLoginMsg("Administrator - Returning student - Short Learning Programme");
-							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 7 digits");
+							stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 							setDropdownListsLogin(request,stuRegForm);
 							return mapping.findForward("applyLogin");
 						}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -1348,7 +1348,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			
 			if ("STATUS".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || "APPEAL".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || "OFFER".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				stuRegForm.setWebLoginMsg("Student not found.");
-				stuRegForm.setWebLoginMsg2("Please apply for a student number before using this fuction!newline Click OK retry or click Cancel if you wish to quit the application process.");
+				stuRegForm.setWebLoginMsg2("Please apply for a student number before using this function!newline Click OK retry or click Cancel if you wish to quit the application process.");
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "No Student exists - Please apply for a student number before you can view your application status or appeal a decision."));
 				addErrors(request, messages);
@@ -2277,6 +2277,18 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 								if (stuRegForm.getStudent().isDateWAPRU()){
 									//log.debug("ApplyForStudentNumberAction - applyLoginReturn (18a) - Returning Student - Undergrad - Goto APS Select");
 									return mapping.findForward("applyAPSSelect");
+								}else{
+									stuRegForm.setAllowLogin(false);
+									messages.add(ActionMessages.GLOBAL_MESSAGE,
+										new ActionMessage("message.generalmessage", "Applications for returning/existing students are closed for this semester. You will have to re-apply during the next application period."));
+									addErrors(request, messages);
+									setDropdownListsLogin(request,stuRegForm);
+									return mapping.findForward("applyLogin");
+								}
+							//Johanet 20180827 - add SLP returning student	
+							}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+								if (stuRegForm.getStudent().isDateWAPS ()){
+									return mapping.findForward("applyQualification");
 								}else{
 									stuRegForm.setAllowLogin(false);
 									messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -3967,20 +3979,58 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			String qualDesc = prevQuals.getQualDescs().get(i).toString().trim();
 			String specCode = prevQuals.getSpecCodes().get(i).toString().trim();
 			String specDesc = prevQuals.getSpecDescs().get(i).toString().trim();
-			if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual1())){
+			//Johanet 2018July BRD 5.2
+			if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual1()) && specCode.equalsIgnoreCase(stuRegForm.getStudent().getSpec1())){
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 Qual="+qualCode+" = Prev Qual1="+stuRegForm.getStudent().getQual1());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage", "You have previously registered for your selected primary qualification "+qualCode+". You, therefore, do not have to re-apply for this qualification."));
+					new ActionMessage("message.generalmessage", "You have previously registered for your selected primary qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification and specialisation."));
 				addErrors(request, messages);
 				return "applyQualification";
-			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
+
+			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2()) && specCode.equalsIgnoreCase(stuRegForm.getStudent().getSpec2())){
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 2 Qual="+qualCode+" = Prev Qual2="+stuRegForm.getStudent().getQual2());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage", "You have previously registered for your selected alternative qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification or specialisation."));
+					new ActionMessage("message.generalmessage", "You have previously registered for your selected alternative qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification and specialisation."));
 				addErrors(request, messages);
 				return "applyQualification";
 			}
+			//END Johanet 2018July BRD 5.2
+		
+//			if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual1())){
+//				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 Qual="+qualCode+" = Prev Qual1="+stuRegForm.getStudent().getQual1());
+//				messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "You have previously registered for your selected primary qualification "+qualCode+". You, therefore, do not have to re-apply for this qualification."));
+//				addErrors(request, messages);
+//				return "applyQualification";
+//			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
+//				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 2 Qual="+qualCode+" = Prev Qual2="+stuRegForm.getStudent().getQual2());
+//				messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "You have previously registered for your selected alternative qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification or specialisation."));
+//				addErrors(request, messages);
+//				return "applyQualification";
+//			}
 		}
+		
+		//Johanet 2018July BRD 5.2
+		Qualifications completedQuals = dao.getCompletedQualifications(stuRegForm.getStudent().getNumber());
+		for (int i = 0; i < completedQuals.getQualCodes().size(); i++){
+			String qualCode = completedQuals.getQualCodes().get(i).toString().trim();
+			String qualDesc = completedQuals.getQualDescs().get(i).toString().trim();		
+			if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual1())){				
+				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 Qual="+qualCode+" = Completed Qual1="+stuRegForm.getStudent().getQual1());
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "You have already completed your selected primary qualification ("+qualCode+" - "+qualDesc+"). You, therefore, cannot re-apply for this qualification."));
+				addErrors(request, messages);
+				return "applyQualification";
+			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
+				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 2 Qual="+qualCode+" = Completed Qual2="+stuRegForm.getStudent().getQual2());
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "You have already completed your selected alternative qualification ("+qualCode+" - "+qualDesc+"). You, therefore, cannot re-apply for this qualification"));
+				addErrors(request, messages);
+				return "applyQualification";
+			}
+		}	
+		//END Johanet 2018July BRD 5.2
 		
 		if (stuRegForm.getStudent().getQual1().equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
 			//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 & 2 - Qual1="+stuRegForm.getStudent().getQual1()+" = Qual2="+stuRegForm.getStudent().getQual2());
@@ -6110,6 +6160,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			if (!"Y".equalsIgnoreCase(radioNDP)){
 				radioNDP = "N";
 			}
+			
+			//Johanet 2018July BRD - RPL for returning undergrad students
+			if (stuRegForm.getSelectHEMain()!=null && stuRegForm.getSelectHEMain().equalsIgnoreCase("RPL")) {
+				radioRPL = "Y";
+			}
+			
 			int saveResult1 = dao.saveSTUAPQ(
 										newQual1, 
 										newSpec1, 
@@ -6212,7 +6268,55 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				new ActionMessage("message.generalmessage", "An error occurred while saving Secondary Qualification. Please try again."));
 			addErrors(request, messages);
 			return mapping.findForward("applyQualification");
+		}			
+		
+		/**2018 Johanet Start of Send Letter**/
+		/**2018 July - Johanet Add code for returning student - email application received letter - BRD SR198094 5.1**/
+		/**/
+		try{
+			Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
+			operListener opl = new operListener();
+			op.addExceptionListener(opl);
+			op.clear();
+
+			op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
+			op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
+			op.setInCsfClientServerCommunicationsAction("PR");
+			op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
+			op.setInWsUserNumber(99998);
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
+			op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+			op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
+			op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
+			op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Qual1=" + stuRegForm.getStudent().getQual1());
+			op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual1());
+			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Choice Nr= 1");
+			//op.setInWebStuApplicationQualChoiceNr((short) 1);
+			//Get Current Status
+			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Get Basic Status");
+			//String status = applyDAO.getBasicStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1");
+			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
+			//op.setInWebStuApplicationQualStatusCode(status);
+			
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
+
+			op.execute();
+
+			if (opl.getException() != null) throw opl.getException();
+			if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+
+			log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
+			String opResult = "No Result";
+			opResult = op.getOutCsfStringsString500();
+			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
+		}catch(Exception e){
+			log.debug("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+			log.warn("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
 		}
+		/**End of Send Letter**/
 		
 		//log.debug("ApplyForStudentNumberAction - applyRetDeclare -  Save Qualification to STUAPQ - End");
 		//Save Qualification to STUAPQ - End
@@ -7718,13 +7822,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				setUpUniversityList(request);
 				return "applyNewInfo3";
 			}
-			if (stuRegForm.getStudentApplication().getPrevinstStudnr() == null || "".equals(stuRegForm.getStudentApplication().getPrevinstStudnr().trim())){
-				messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage", "Enter Your student number at the previous tertiary institution."));
-				addErrors(request, messages);
-				setUpUniversityList(request);
-				return "applyNewInfo3";
-			}
+			//Johanet 20180828 SLP comment out mandatory check student number previous tertiary institiution
+//			if (stuRegForm.getStudentApplication().getPrevinstStudnr() == null || "".equals(stuRegForm.getStudentApplication().getPrevinstStudnr().trim())){
+//				messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "Enter Your student number at the previous tertiary institution."));
+//				addErrors(request, messages);
+//				setUpUniversityList(request);
+//				return "applyNewInfo3";
+//			}
 			
 			//log.debug("ApplyForStudentNumberAction - applyStep3 - N " + stuRegForm.getStudent().getNumber() + " PrevInstCode " + stuRegForm.getStudent().getPrevInstitution().getCode());
 		}else{
@@ -9176,6 +9281,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		String type = "L"; /* L = local F=Foreign */
 		String wflType = "APP";
+		//Johanet 20180827 - Write SLP returning student to SLP folder
+		if (stuRegForm.getStudent().isStuSLP()){
+			wflType = "SLP";
+		}
 
 		/* set local or foreign */
 		if (!"1015".equals(stuRegForm.getStudent().getCountry().getCode())){
@@ -9326,7 +9435,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//file.add("Message                           = " + stuRegForm.getString500back()+"\r\n");
 		file.add(" ==========================================================================\r\n");
-		file.close(stuRegForm.getStudent().getNumber());
+		//Start Johanet - write returning student directly to application folder
+		//file.close(stuRegForm.getStudent().getNumber());
+		file.closeRet(stuRegForm.getStudent().getNumber());
+		//End Johanet - write returning student directly to application folder
 
 		//log.debug("ApplyForQualChange: Workflow for studnr="+stuRegForm.getStudent().getNumber() + " Completed");
 		
@@ -10287,6 +10399,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			//log.debug("ApplyForStudentNumberAction - createStudentNr - after get Action tempQual2: " + tempQual2);
 			//log.debug("ApplyForStudentNumberAction - createStudentNr - after get Action tempSpec2: " + tempSpec2);
 			
+		  //Johanet July2018 BRD - apply via RPL - 1.2 - value in stuRegForm.selectHEMain
+		  //use InSblQualificationCsfStringsString1 for RPL value if stuRegForm.selectHEMain=RPL set to Y
+		  op2.setInWsStudentApplicationCaoPaidFlag("N");	
+		  if (stuRegForm.getSelectHEMain()!=null && stuRegForm.getSelectHEMain().equalsIgnoreCase("RPL")) {
+			op2.setInWsStudentApplicationCaoPaidFlag("Y");			
+		  }
+			
+		  //End July 2019 BRD RPL 1.2
 		  op2.setInWsQualificationCode(tempQual1);
 		  op2.setInStudentAnnualRecordSpecialityCode(tempSpec1);
 		  //log.debug("ApplyForStudentNumberAction - createStudentNr -get Action Qual1-Spec1: " + tempQual1 +"-"+ tempSpec1);
@@ -12249,7 +12369,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		if (stuID == null && "".equals(stuID)){
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
-			new ActionMessage("message.generalmessage", "Enter your RSA identity number."));
+			new ActionMessage("message.generalmessage", "Please enter your RSA identity number."));
 			addErrors(request, messages);
 			return mapping.findForward("applyIDNumber");
 		}else if (!gen.isNumeric(stuID)){

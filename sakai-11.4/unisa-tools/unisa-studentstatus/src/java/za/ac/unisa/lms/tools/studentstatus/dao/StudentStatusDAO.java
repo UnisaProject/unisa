@@ -27,6 +27,7 @@ import za.ac.unisa.lms.tools.studentstatus.bo.Specializations;
 import za.ac.unisa.lms.tools.studentstatus.bo.StudySelected;
 import za.ac.unisa.lms.tools.studentstatus.dao.KeyValue;
 import za.ac.unisa.lms.tools.studentstatus.forms.Qualification;
+import za.ac.unisa.lms.tools.studentstatus.forms.ScreeningVenue;
 import za.ac.unisa.lms.tools.studentstatus.forms.Student;
 
 @SuppressWarnings({ "unchecked", "rawtypes", "unused" })
@@ -588,7 +589,7 @@ public class StudentStatusDAO extends StudentSystemDAO {
 	 	    return result;
 	   }
 	  
-	  public String getDeclineReason(String StudentNr, String qualCode, String acaYear, String acaPeriod) throws Exception{
+	  public String getDeclineReason(String StudentNr, String acaYear, String acaPeriod, String qualCode) throws Exception{
 	    	
 	    	//log.debug("StudentStatusDAO - getDeclineReason - StudentNr: "+StudentNr+", qualCode: "+qualCode);
 
@@ -737,5 +738,105 @@ public class StudentStatusDAO extends StudentSystemDAO {
 	    	
 	 	    return status;
 	   }
+		  
+		  public ScreeningVenue getScreeningVenue(String StudentNr) throws Exception{
+			  
+			  ScreeningVenue venue = new ScreeningVenue();
+
+			  try{ 
+				  String query = "select LOK.CODE, LOK.ENG_NAME," + 
+				  		" COALESCE(ADR.ADDRESS_LINE_1,' ') as ADDRESS1, COALESCE(ADR.ADDRESS_LINE_2,' ') as ADDRESS2," +
+						" COALESCE(ADR.ADDRESS_LINE_3,' ') as ADDRESS3 ,COALESCE(ADR.ADDRESS_LINE_4,' ') as ADDRESS4," + 
+				  		" COALESCE(ADR.ADDRESS_LINE_5,' ') as ADDRESS5 ,COALESCE(ADR.ADDRESS_LINE_6,' ') as ADDRESS6, LPAD(ADR.POSTAL_CODE,4,'0') as POSTCODE" + 
+				  		" from stuxct,xamloc,lok,adr" + 
+				  		" where STUXCT.MK_STUDENT_NR=?" + 
+				  		" and STUXCT.MK_EXAM_PERIOD_COD=10" + 
+				  		" and STUXCT.MK_EXAM_PERIOD_COD=XAMLOC.MK_XAMPRDCODE" + 
+				  		" and XAMLOC.MK_EKVTYPECODE=1" + 
+				  		" and XAMLOC.MK_EKSCODE=STUXCT.MK_EXAM_CENTRE_COD " + 
+				  		" and LOK.CODE=XAMLOC.MK_LOKCODE " + 
+				  		" and ADR.REFERENCE_NO=LOK.MK_ADDRESS_REF_NO " + 
+				  		" and fk_adrcatypfk_adrc=2" + 
+				  		" and fk_adrcatypfk_adrt=3";
+				  
+			 		//log.debug("ApplyForStudentNumberQueryDAO - getStatusFee - Query=" + query+", Current Year=" + cYear+", acaYear=" + aYear+", FROM="+from_Month+"/"+from_year+", TO="+to_Month+"/"+to_year);
+					JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+					List queryList = jdt.queryForList(query, new Object []{StudentNr});
+					Iterator i = queryList.iterator();
+					if (i.hasNext()) {
+						ListOrderedMap data = (ListOrderedMap) i.next();
+						venue.setVenueCode(data.get("CODE").toString().trim());
+						venue.setVenueName(data.get("ENG_NAME").toString().trim());
+						ArrayList<String> address = new ArrayList<String>();
+						if (!data.get("ADDRESS1").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS1").toString().trim());
+						}
+						if (!data.get("ADDRESS2").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS2").toString().trim());
+						}
+						if (!data.get("ADDRESS3").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS3").toString().trim());
+						}
+						if (!data.get("ADDRESS4").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS4").toString().trim());
+						}
+						if (!data.get("ADDRESS5").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS5").toString().trim());
+						}
+						if (!data.get("ADDRESS6").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("ADDRESS6").toString().trim());
+						}	
+						if (!data.get("POSTCODE").toString().trim().equalsIgnoreCase("")) {
+							address.add(data.get("POSTCODE").toString().trim());
+						}							
+						
+						venue.setAddressList(address);
+						
+					}
+	 	    } catch (Exception ex) {
+	 	    	throw new Exception("StudentStatusDAO - getScreeningVenue : Error Exam Venue - Social work screening venue / " + ex);
+	        }
+			
+			//Debug
+	    	//log.debug("StudentStatusDAO - getStatusFee - PayDate="+status.getPayDate());
+	    	//log.debug("StudentStatusDAO - getStatusFee - PayFee ="+status.getPayFee());
+	    	//log.debug("StudentStatusDAO - getStatusFee - PayFull="+status.isPayFull());
+	    	//log.debug("StudentStatusDAO - getStatusFee - PayCom ="+status.getPayComment());
+	    	
+	 	    return venue;
+	   }	
+		  
+	  /**
+	 * Check if social work screening sitting must be included in status
+	 */
+	public boolean includeSWScreeningSitting(String studentNr, String acaYear, String acaPeriod, String qualCode) throws Exception {
+				
+				boolean includeSitting = false;
+				//Check if student record exists by using Surname, First Names, Date of Birth
+				
+				String query  = "select * from stuapq" + 
+						" where STUAPQ.ACADEMIC_YEAR=?" + 
+						" and STUAPQ.APPLICATION_PERIOD=?" + 
+						" and STUAPQ.MK_STUDENT_NR=?" + 
+						" and STUAPQ.NEW_QUAL=?" + 
+						" and ((STUAPQ.STATUS_CODE in ('CG','RO')) or (STUAPQ.STATUS_CODE='AP' and STUAPQ.ADMISSION_AUTO_CHK ='WA'))" + 
+						" and exists (select * from stuapl where STUAPL.ACADEMIC_YEAR=STUAPQ.ACADEMIC_YEAR and STUAPL.APPLICATION_PERIOD=STUAPQ.APPLICATION_PERIOD" + 
+						" and STUAPL.MK_STUDENT_NUMBER=STUAPQ.MK_STUDENT_NR and STUAPL.QUAL_CODE=STUAPQ.NEW_QUAL and STUAPL.ACTION_CODE_GC272='LETSOC')";			
+				
+				try {
+					JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+					List queryList = jdt.queryForList(query, new Object []{acaYear, acaPeriod, studentNr, qualCode});
+					
+					Iterator i = queryList.iterator();
+					if (i.hasNext()) {
+						ListOrderedMap data = (ListOrderedMap) i.next();
+						includeSitting=true;
+					}
+				} catch (Exception ex) {
+					throw new Exception(
+							"StudentStatusDAO : Error check to include Social Work screening sitting / " + ex);
+				}			
+				return includeSitting;
+			}	  
 
 }

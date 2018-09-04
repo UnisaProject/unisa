@@ -26,8 +26,11 @@ import org.apache.struts.action.ActionMessages;
 import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.util.LabelValueBean;
 
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.tools.studentstatus.bo.Status;
 import za.ac.unisa.lms.tools.studentstatus.dao.StudentStatusDAO;
+import za.ac.unisa.lms.tools.studentstatus.forms.ScreeningVenue;
 import za.ac.unisa.lms.tools.studentstatus.forms.Student;
 import za.ac.unisa.lms.tools.studentstatus.forms.StudentStatusForm;
 
@@ -1210,14 +1213,14 @@ public class StudentStatusAction extends LookupDispatchAction {
 				
 				//Offer Reason
 				if ("AX".equalsIgnoreCase(stuStatForm.getQualStatusCode1())){
-					String reason1 = dao.getDeclineReason(stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getStudent().getNumber(), stuStatForm.getSelQualCode1());
+					String reason1 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode1());
 					stuStatForm.setQualStatus1Reason(reason1);
 					//log.debug("StudentStatusAction - applyStatus - Reason1="+reason1);
 				}	
 				
 				if (stuStatForm.getSelQualCode2() != null && !"Not Found".equalsIgnoreCase(stuStatForm.getSelQualCode2())){
 					if ("AX".equalsIgnoreCase(stuStatForm.getQualStatusCode2())){
-						String reason2 = dao.getDeclineReason(stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getStudent().getNumber(), stuStatForm.getSelQualCode1());
+						String reason2 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode2());
 						stuStatForm.setQualStatus2Reason(reason2);
 						//log.debug("StudentStatusAction - applyStatus - Reason2="+reason2);
 					}
@@ -1245,10 +1248,44 @@ public class StudentStatusAction extends LookupDispatchAction {
 			    	//log.debug("StudentStatusAction - applyStatus - form PayCom ="+stuStatForm.getStatus().getPayComment());
 			    	
 				}
+				
+				//Johanet change 20180813 2018 July BRD - Social work screening
+				stuStatForm.setScreeningSitting(false);
+				Gencod gencod = new Gencod();
+				String qual1=stuStatForm.getSelQualCode1().substring(0,5);
+				String qual2=stuStatForm.getSelQualCode2().substring(0,5);
+				StudentSystemGeneralDAO genDao = new StudentSystemGeneralDAO();
+				
+				if ("90088".equalsIgnoreCase(qual1) || "90011".equalsIgnoreCase(qual1)) {
+					if (dao.includeSWScreeningSitting(stuStatForm.getStudent().getNumber(), stuStatForm.getStudent().getAcademicYear(),  stuStatForm.getStudent().getAcademicPeriod(), qual1)) {
+						stuStatForm.setScreeningSitting(true);
+						gencod = new Gencod();						
+						gencod = genDao.getGenCode("311", qual1);
+						if (gencod.getEngDescription() != null)
+						stuStatForm.setScreeningSittingQual1(gencod.getEngDescription());
+					}
+				}
+				
+				if ("90088".equalsIgnoreCase(qual2) || "90011".equalsIgnoreCase(qual2)) {
+					if (dao.includeSWScreeningSitting(stuStatForm.getStudent().getNumber(), stuStatForm.getStudent().getAcademicYear(),  stuStatForm.getStudent().getAcademicPeriod(), qual2)) {
+						stuStatForm.setScreeningSitting(true);
+						gencod = new Gencod();						
+						gencod = genDao.getGenCode("311", qual2);
+						if (gencod.getEngDescription() != null)
+						stuStatForm.setScreeningSittingQual2(gencod.getEngDescription());
+					}
+				}				
+				
+				if (stuStatForm.isScreeningSitting()) {
+					ScreeningVenue venue = new ScreeningVenue();
+					venue = dao.getScreeningVenue(stuStatForm.getStudent().getNumber());
+					stuStatForm.setScreeningVenue(venue);
+				}
 			}
 			
 		}catch(Exception e){
-			log.warn("StudentStatusAction - applyStatus - crashed / " + e);
+			throw new Exception("ApplyStatus error :  / " + e);
+			//log.warn("StudentStatusAction - applyStatus - crashed / " + e);
 		}
 	}
 	
