@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <fmt:setBundle basename="za.ac.unisa.lms.tools.studyquotation.ApplicationResources"/>
-<sakai:html>
+<sakai:html>	
 	<sakai:heading><fmt:message key="studyquote.heading"/></sakai:heading>
 	<sakai:instruction>
 		<fmt:message key="studyquote.userinstruction4" />
@@ -172,8 +172,13 @@
 			<td colspan="3" width="100%"><br/><fmt:message key="studyquote.userinstruction1"/></td>
 		</tr><tr>
 			<td colspan="3" width="100%"><br/><fmt:message key="studyquote.userinstruction2"/></td>
-		</tr>
+		</tr>		
 	</sakai:flat_list>
+	<logic:equal name="studyquotationform" property="showDisclaimer" value="true">
+		<sakai:instruction>
+			<bean:write name="studyquotationform" property="disclaimerMessage"/>
+		</sakai:instruction>
+	</logic:equal>
 	<html:form action="studyquotation">
 		<sakai:actions>
 			<html:submit property="action">
