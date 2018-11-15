@@ -73,7 +73,7 @@ public class StudyQuotationAction extends LookupDispatchAction {
 				studyQuotationForm.setShowDisclaimer(true);
 				int currentYear= Calendar.getInstance().get(Calendar.YEAR);
 				int  nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-				String disclaimerMessage = "NB: This fee information is for the " + currentYear + " academic year only.  Unisa's student fee information for " + nextYear + " will only be available in 1 January " + nextYear + ".";
+				String disclaimerMessage = "NB: This fee information is for the " + currentYear + " academic year only.  Unisa's student fee information for " + nextYear + " will only be available on 1 January " + nextYear + ".";
 				studyQuotationForm.setDisclaimerMessage(disclaimerMessage);
 			}
 			
