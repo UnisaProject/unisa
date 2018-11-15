@@ -120,12 +120,12 @@
 				<module>yaft</module> <!-- contrib tool -->
 				<module>struts</module>
 				<module>blogwow</module>
-				<!-- >module>sms</module--> 
-				<!-- module>qna</module-->
+				<module>sms</module> 
+				<module>qna</module>
 				<module>clog</module> 
-    			<!-- >module>etudes-util</module> 
-				module>ltiContact</module> 
-				<module>melete</module-->
+    			<module>etudes-util</module> 
+				<module>ltiContact</module> 
+				<module>melete</module>
 				<module>bbb-tool</module> 
 				<module>permission</module>
 				<module>unisa-db</module>
