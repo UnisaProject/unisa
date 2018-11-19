@@ -71,6 +71,10 @@
 	<module>unisa-studentregistration</module>
 	<module>unisa-studyquotation</module>
     <module>unisa-studymaterial</module>
+    <module>unisa-studentstatus</module>
+    <module>unisa-studentoffer</module>
+    <module>unisa-studentappeal</module>
+    <module>unisa-studentupload</module>
     <module>unisa-uploadmanager</module>
     <module>unisa-brochures</module>
 	<module>unisa-telecentre</module>
