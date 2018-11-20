@@ -35,12 +35,6 @@
         timeToLiveSeconds="300"
         overflowToDisk="false"
         />
-      <defaultCache
-        maxElementsInMemory="10000"
-        eternal="false"
-        timeToIdleSeconds="300"
-        timeToLiveSeconds="300"
-        overflowToDisk="false">
            <!--      Sonette add terracotta 
                       >maxElementsOnDisk="10000" 
                       eternal="false" 
@@ -54,7 +48,7 @@
         			<timeoutBehavior type="noop" /> 
         		</nonstop> 
         	</terracotta--> 
-    </defaultCache>
+
 
     <!-- >terracottaConfig url="lflo-ter01dv.int.unisa.ac.za:9510, lflo-ter02dv.int.unisa.ac.za:9510" />  -->
 
