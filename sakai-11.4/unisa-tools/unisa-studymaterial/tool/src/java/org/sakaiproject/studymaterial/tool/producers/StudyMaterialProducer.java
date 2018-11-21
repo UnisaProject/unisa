@@ -108,7 +108,7 @@ import java.util.*;
                           		this.setId(toolManager.getCurrentPlacement().getContext());
 
                           		List resourceList = new ArrayList();
-
+                                             
                           		Calendar now = Calendar.getInstance();
                           		int year = now.get(Calendar.YEAR);
                           		int month = now.get(Calendar.MONTH) + 1;
@@ -136,7 +136,7 @@ import java.util.*;
                           		
                           		try {
                           			coursecode = dao.getMainCourse(this.getId().substring(0,7));
-                          			//courseList = dao.getCourseList(this.getId().substring(0,7));
+                          			courseList = dao.getCourseList(this.getId().substring(0,7));
                           			} catch (Exception e1) {
                           			// TODO Auto-generated catch block
                           			log.error("Official study material: Failed to get courseList from quey(getMainCourse or getCourseList) for "+siteId);
