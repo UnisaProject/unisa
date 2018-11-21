@@ -136,6 +136,7 @@ import java.util.*;
                           		
                           		try {
                           			coursecode = dao.getMainCourse(this.getId().substring(0,7));
+                          			courseList = dao.getCourseList(this.getId().substring(0,7));
                           			} catch (Exception e1) {
                           			// TODO Auto-generated catch block
                           			log.error("Official study material: Failed to get courseList from quey(getMainCourse or getCourseList) for "+siteId);
