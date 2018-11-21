@@ -108,7 +108,7 @@ import java.util.*;
                           		this.setId(toolManager.getCurrentPlacement().getContext());
 
                           		List resourceList = new ArrayList();
-
+                                             
                           		Calendar now = Calendar.getInstance();
                           		int year = now.get(Calendar.YEAR);
                           		int month = now.get(Calendar.MONTH) + 1;
