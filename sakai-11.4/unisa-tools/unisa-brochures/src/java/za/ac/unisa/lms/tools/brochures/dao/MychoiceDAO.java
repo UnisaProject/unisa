@@ -987,7 +987,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				boolean repeaterAllow = false;
 
 				ListOrderedMap data = (ListOrderedMap) i.next();
-				System.out.println("print data ++++++++++++++++++++++++"+data);
+				System.out.println("print data +++++++++++++++++++++++++"+data);
 
 				String qual_repeat = data.get("qual_repeat").toString();
 				String spec_repeat = data.get("spec_repeat").toString();
