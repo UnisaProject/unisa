@@ -936,6 +936,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				catCode, qualificationCode, special, year, repeatYear, repeat,
 				heqfComp, reglevel);
 
+		System.out.println("Generate myRegistration XML +++++++++++++\n");		
 		System.out.println("My Registration sql+++++++++++++--"+query);
 
 		try {
@@ -986,6 +987,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				boolean repeaterAllow = false;
 
 				ListOrderedMap data = (ListOrderedMap) i.next();
+				System.out.println("print data +++++++++++++++++++++++++"+data);
 
 				String qual_repeat = data.get("qual_repeat").toString();
 				String spec_repeat = data.get("spec_repeat").toString();
@@ -1324,6 +1326,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 								.createElement("qualificationlevel");
 						qualification.appendChild(qualLevel);
 						qualificationLevel = data.get("LVL").toString();
+						System.out.println("qualification level ++++++++++"+qualificationLevel);
 
 						Element level = document.createElement("name");
 						level.appendChild(document.createTextNode(data.get(
@@ -1342,6 +1345,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 									.createElement("qualificationlevel");
 							qualification.appendChild(qualLevel);
 							qualificationLevel = data.get("LVL").toString();
+							System.out.println("qualification level ++++++++++"+qualificationLevel);
 
 							Element level = document.createElement("name");
 							level.appendChild(document.createTextNode(data.get(
