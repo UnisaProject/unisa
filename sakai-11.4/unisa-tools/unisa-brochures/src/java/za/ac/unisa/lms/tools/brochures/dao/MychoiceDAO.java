@@ -2403,7 +2403,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 						StringTokenizer tokens = new StringTokenizer(data.get(
 								"LANG").toString(), ",");	
 
-						String languageCode;
+						String languageCode = null;
 						int endOfCode;
 						
 						while (tokens.hasMoreTokens()) {
@@ -2446,6 +2446,8 @@ public class MychoiceDAO extends StudentSystemDAO {
 							if(endOfCode != -1){
 								languageCode = lang.substring(0, endOfCode);
 								System.out.println("language code -----"+languageCode);
+							}else{
+								languageCode = lang;
 							}
 							
 							
