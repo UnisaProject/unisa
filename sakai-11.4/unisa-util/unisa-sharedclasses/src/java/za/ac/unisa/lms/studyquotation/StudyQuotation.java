@@ -9,6 +9,13 @@ import java.util.Vector;
 public class StudyQuotation {
 
 	private static final long serialVersionUID = 1L;
+	
+	//Johanet 20181129 - Request Shelley
+	//**Food and Accommodation fee
+	private double foodAccommodationFee;
+	
+	//**Nursing Council Registration
+	private double nursingCouncilRegfee;
 
 	/** registrationFee property */
 	private String registrationFee;
@@ -72,6 +79,7 @@ public class StudyQuotation {
 	private String studyCode16;
 	private String studyCode17;
 	private String studyCode18;
+
 	
 	public void reset() {
 		//int academicYear = new Integer(new SimpleDateFormat("yyyy").format(new Date())).intValue();
@@ -88,6 +96,27 @@ public class StudyQuotation {
 		this.setMatricExemption("N");
 	}
 	
+	
+//Johanet 20181129 
+	public double getFoodAccommodationFee() {
+		return foodAccommodationFee;
+	}
+
+
+	public void setFoodAccommodationFee(double foodAccommodationFee) {
+		this.foodAccommodationFee = foodAccommodationFee;
+	}
+
+
+	public double getNursingCouncilRegfee() {
+		return nursingCouncilRegfee;
+	}
+
+
+	public void setNursingCouncilRegfee(double nursingCouncilRegfee) {
+		this.nursingCouncilRegfee = nursingCouncilRegfee;
+	}
+
 	/** 
 	 * Returns the registrationFee.
 	 * @return String
@@ -95,6 +124,7 @@ public class StudyQuotation {
 	public String getRegistrationFee() {
 		return registrationFee;
 	}
+
 
 	/** 
 	 * Set the registrationFee.
