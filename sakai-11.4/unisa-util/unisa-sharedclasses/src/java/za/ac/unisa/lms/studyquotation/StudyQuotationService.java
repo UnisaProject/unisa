@@ -44,12 +44,27 @@ public class StudyQuotationService {
 		init();
 		srrqn01sQuoteStudyFees.setInStudentAnnualRecordMkAcademicYear(studyQuotation.getAcademicYear());
 		
-		//if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (studyQuotation.getQualificationCode().equalsIgnoreCase("00000"))) {
-			if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (studyQuotation.getQualificationCode().equalsIgnoreCase(""))) {
+//		//if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (studyQuotation.getQualificationCode().equalsIgnoreCase("00000"))) {
+//			if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (studyQuotation.getQualificationCode().equalsIgnoreCase(""))) {
+//			studyQuotation.reset();
+//			return QUAL_CODE_MISSING;
+//		//} else if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (!studyQuotation.getQualificationCode().equalsIgnoreCase("00000"))) {
+//		} else if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (!studyQuotation.getQualificationCode().equalsIgnoreCase(""))) {
+//			srrqn01sQuoteStudyFees.setInStudentAcademicRecordMkQualificationCode(
+//				studyQuotation.getQualificationCode()
+//			);
+//			studyQuotation.setQualification(studyQuotation.getQualificationCode());
+//		} else {
+//			srrqn01sQuoteStudyFees.setInStudentAcademicRecordMkQualificationCode(
+//				studyQuotation.getQualification()
+//			);
+//		}
+
+		if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (studyQuotation.getQualificationCode().equalsIgnoreCase(""))) {
 			studyQuotation.reset();
-			return QUAL_CODE_MISSING;
-		//} else if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (!studyQuotation.getQualificationCode().equalsIgnoreCase("00000"))) {
-		} else if ((studyQuotation.getQualification().equalsIgnoreCase("99999")) && (!studyQuotation.getQualificationCode().equalsIgnoreCase(""))) {
+			return QUAL_CODE_MISSING;	
+		} 
+		if (!studyQuotation.getQualificationCode().equalsIgnoreCase("")) {
 			srrqn01sQuoteStudyFees.setInStudentAcademicRecordMkQualificationCode(
 				studyQuotation.getQualificationCode()
 			);
@@ -58,7 +73,7 @@ public class StudyQuotationService {
 			srrqn01sQuoteStudyFees.setInStudentAcademicRecordMkQualificationCode(
 				studyQuotation.getQualification()
 			);
-		}
+		}	
 		
 		srrqn01sQuoteStudyFees.setInWsCountryCode(studyQuotation.getCountryCode());
 		srrqn01sQuoteStudyFees.setInSmartcardIefSuppliedFlag(studyQuotation.getLibraryCard().toString());
@@ -117,6 +132,9 @@ public class StudyQuotationService {
 	    studyQuotation.setTotalFee(srrqn01sQuoteStudyFees.getOutTotalIefSuppliedTotalCurrency());
 	    studyQuotation.setPaymentDue(srrqn01sQuoteStudyFees.getOutRegPaymentIefSuppliedTotalCurrency());
 	    studyQuotation.setPrescribedBooks(srrqn01sQuoteStudyFees.getOutWsPrescribedBooksAmount());
+	    //Johanet 20181129
+	    studyQuotation.setFoodAccommodationFee(srrqn01sQuoteStudyFees.getOutMatricExemFeeIefSuppliedAverageCurrency());
+	    studyQuotation.setNursingCouncilRegfee(srrqn01sQuoteStudyFees.getOutSrcLevyIefSuppliedTotalCurrency());
 		
 		return NO_ERRORS;
 	}
