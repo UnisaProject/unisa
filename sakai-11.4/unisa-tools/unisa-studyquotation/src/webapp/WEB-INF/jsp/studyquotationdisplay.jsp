@@ -73,10 +73,37 @@
 			</td>
 		</tr>
 		</logic:iterate>
-
 		<tr>
 			<td width="25%"><br></td><td width="60%"><br></td><td align="right" width="15%">-----------</td>
 		</tr>
+		<!-- Johanet Change 20181129 - Start -->
+		<logic:greaterThan name="studyquotationform" property="studyQuotation.foodAccommodationFee" value="0">
+			<tr>
+				<td width="25%">
+					<br>
+				</td>
+				<td width="60%">
+					<b><fmt:message key="studyquote.label.foodAccommodation"/></b>
+				</td>
+				<td align="right" width="15%">
+					<bean:write name="studyquotationform" property="studyQuotation.foodAccommodationFee" format="0.00"/>
+				</td>
+			</tr>	
+		</logic:greaterThan>
+		<logic:greaterThan name="studyquotationform" property="studyQuotation.nursingCouncilRegfee" value="0">
+			<tr>
+				<td width="25%">
+					<br>
+				</td>
+				<td width="60%">
+					<b><fmt:message key="studyquote.label.nursingCouncilReg"/></b>
+				</td>
+				<td align="right" width="15%">
+					<bean:write name="studyquotationform" property="studyQuotation.nursingCouncilRegfee" format="0.00"/>
+				</td>
+			</tr>	
+		</logic:greaterThan>
+		<!-- Johanet Change 20181129 - End -->
 		<tr>
 			<td width="25%">
 				<br>
