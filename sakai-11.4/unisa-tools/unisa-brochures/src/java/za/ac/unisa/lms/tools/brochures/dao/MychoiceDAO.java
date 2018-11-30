@@ -2457,7 +2457,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 							if (languageCode.equalsIgnoreCase("A")) {
 								afrikaans.appendChild(document
 										.createTextNode("Y"));
-							}
+							} 
 
 							if (languageCode.equalsIgnoreCase("NS")) {
 								n_sotho.appendChild(document
