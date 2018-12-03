@@ -2468,7 +2468,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 
 							if (languageCode.equalsIgnoreCase("OT")) {
 								Element offered = document
-										.createElement("offered");
+										.createElement("offered"); 
 										
 								offered.appendChild(document
 										.createTextNode("Y");
