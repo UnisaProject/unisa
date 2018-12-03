@@ -2467,13 +2467,20 @@ public class MychoiceDAO extends StudentSystemDAO {
 							}
 
 							if (languageCode.equalsIgnoreCase("OT")) {
+								Element offered = document
+										.createElement("offered"); 
+										
+								offered.appendChild(document
+										.createTextNode("Y");
+								
 								Element lang_desc = document
 										.createElement("language_description");
 								
 								System.out.println("language description -----"+lang.substring(endOfCode + 1));								
 								lang_desc.appendChild(document
 										.createTextNode(lang.substring(endOfCode + 1)));
-										
+								
+								o_languages.appendChild(offered);
 								o_languages.appendChild(lang_desc);
 								
 							}
