@@ -2471,7 +2471,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 										.createElement("offered"); 
 										
 								offered.appendChild(document
-										.createTextNode("Y")); 
+										.createTextNode("Y"));
 								
 								Element lang_desc = document
 										.createElement("language_description");
