@@ -59,6 +59,8 @@ import org.sakaiproject.util.ResourceLoader;
 
 import org.sakaiproject.event.cover.EventTrackingService;
 
+import java.nio.file.Files; 
+import java.nio.file.Paths;
 
 public class EditSectionPage extends SectionPage implements Serializable
 {
@@ -98,6 +100,7 @@ public class EditSectionPage extends SectionPage implements Serializable
 	private String activeCheckUrl = "";
 	
 	private String resourceSectionFile = "";
+
 	
 	/**
 	 * Default constructor
@@ -293,8 +296,29 @@ public class EditSectionPage extends SectionPage implements Serializable
 
 				if (cr.getContentType().equals(MeleteCHService.MIME_TYPE_EDITOR))
 				{
-					this.contentEditor = HtmlHelper.clean(new String(cr.getContent()), false);
-					this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+					try
+					{
+						this.contentEditor = HtmlHelper.clean(new String(cr.getContent()), false);
+						this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+					}
+					catch (Exception ex)
+					{
+						String failResourceSectionFile = sectionService.getSectionContentFile(resourceId);
+						/*
+						This is for local host
+						failResourceSectionFile = "C:\\data\\sakai\\content" + failResourceSectionFile;
+						failResourceSectionFile = failResourceSectionFile.replace("/", "\\");
+						*/
+						
+						//This is for the server
+						failResourceSectionFile = "/data/sakai/content" + failResourceSectionFile;
+						
+						String contents = new String(Files.readAllBytes(Paths.get(failResourceSectionFile)));
+						String contentsCleaup = contents.substring(contents.indexOf("<body>") + 6, contents.indexOf("</body>"));
+						this.contentEditor = HtmlHelper.clean(contentsCleaup, false);
+						this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+					}
+					
 				}
 				else if (rTypeLink)
 				{
@@ -1550,4 +1574,5 @@ public class EditSectionPage extends SectionPage implements Serializable
 		}
 		return modifiedByAuthor;
 	}
+	
 }
