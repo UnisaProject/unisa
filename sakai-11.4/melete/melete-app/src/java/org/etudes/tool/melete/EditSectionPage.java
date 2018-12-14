@@ -300,6 +300,13 @@ public class EditSectionPage extends SectionPage implements Serializable
 					{
 						this.contentEditor = HtmlHelper.clean(new String(cr.getContent()), false);
 						this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+						//mphahsm added this line to fix the failing of html rendering
+						if (contentEditor.indexOf("<body>") >= 0)
+                        {
+							this.contentEditor = contentEditor.substring(contentEditor.indexOf("<body>") + 6, contentEditor.indexOf("</body>"));
+                            System.out.println("setContentResourceData: With BODY elements but after removing them");
+                        }
+						System.out.println("setContentResourceData: Without BODY elements");
 					}
 					catch (Exception ex)
 					{
@@ -314,9 +321,13 @@ public class EditSectionPage extends SectionPage implements Serializable
 						failResourceSectionFile = "/data/sakai/content" + failResourceSectionFile;
 						
 						String contents = new String(Files.readAllBytes(Paths.get(failResourceSectionFile)));
-						String contentsCleaup = contents.substring(contents.indexOf("<body>") + 6, contents.indexOf("</body>"));
-						this.contentEditor = HtmlHelper.clean(contentsCleaup, false);
-						this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+						if (contents.indexOf("<body>") >= 0)
+						{
+							String contentsCleaup = contents.substring(contents.indexOf("<body>") + 6, contents.indexOf("</body>"));
+							this.contentEditor = HtmlHelper.clean(contentsCleaup, false);
+							this.contentEditor = getSectionService().fixXrefs(contentEditor, getCurrentCourseId());
+							System.out.println("setContentResourceData: EditSectionPage: After content exception: Completed successfully");
+						}
 					}
 					
 				}
