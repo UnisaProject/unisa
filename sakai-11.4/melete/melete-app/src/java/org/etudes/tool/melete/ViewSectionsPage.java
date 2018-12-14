@@ -158,6 +158,10 @@ public class ViewSectionsPage implements Serializable
 
 					str = HtmlHelper.clean(str, false);
 					str = getSectionService().fixXrefs(str, getCourseId());
+					if (str.indexOf("<body>") >= 0)
+					{
+						str = str.substring(str.indexOf("<body>") + 6, str.indexOf("</body>"));
+					}
 				}
 				catch (Exception ex)
 				{
@@ -174,8 +178,15 @@ public class ViewSectionsPage implements Serializable
 					failResourceSectionFile = "/data/sakai/content" + failResourceSectionFile;
 					
 					String contents = new String(Files.readAllBytes(Paths.get(failResourceSectionFile)));
-					str = contents.substring(contents.indexOf("<body>") + 6, contents.indexOf("</body>"));
-	                
+					if (contents.indexOf("<body>") >= 0)
+                    {
+						str = contents.substring(contents.indexOf("<body>") + 6, contents.indexOf("</body>"));
+                    }
+                    else
+                    {
+						str = contents;
+                    }
+
 	                if (Util.FindNestedHTMLTags(str))
 	                {
 	                    contentWithHtml = true;
