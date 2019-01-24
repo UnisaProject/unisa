@@ -1,15 +1,20 @@
 package za.ac.unisa.lms.tools.mdactivity.dao;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.util.LabelValueBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import za.ac.unisa.lms.dao.Gencod;
@@ -18,10 +23,12 @@ import za.ac.unisa.lms.dao.general.PersonnelDAO;
 import za.ac.unisa.lms.db.StudentSystemDAO;
 import za.ac.unisa.lms.tools.mdactivity.forms.ActivityRecord;
 import za.ac.unisa.lms.tools.mdactivity.forms.Promotor;
+import za.ac.unisa.lms.tools.mdactivity.forms.Qualification;
 import za.ac.unisa.lms.domain.general.Person;
 import za.ac.unisa.lms.dao.general.PersonnelDAO;
 import za.ac.unisa.lms.dao.Gencod;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class MdActivityQueryDAO extends StudentSystemDAO {
 
@@ -127,7 +134,229 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 					"MdActivityQueryDao : Error reading md activities / " + ex, ex);
 		}
 		return list;
+	}	
+	
+	
+	/** Populate student look up list
+	 * 
+	 * @return LabelValueBean
+	 * 			code and description for each student on the list
+	 * @throws Exception
+	 */
+
+	public ArrayList<LabelValueBean> getStudentLookupList(String personnelNumber) throws Exception
+		{
+		ArrayList<LabelValueBean> studentList = new ArrayList<LabelValueBean>();
+		
+		String code = null;
+		String desc = null;
+		
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		Connection connection = jdt.getDataSource().getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+			 try {	
+				 String sql = "select stu.nr as valueCode,STUSUN.MK_QUALIFICATION_C || ' ' || stu.nr || ' - ' || stu.MK_TITLE || ' ' || STU.FIRST_NAMES || ' ' || STU.SURNAME as valueDesc" +
+				 		" from stusun,dispro,stu,grd" + 
+				 		" where STUSUN.FK_STUDENT_NR=DISPRO.FK_STUDENT_NR" + 
+				 		" and STUSUN.MK_STUDY_UNIT_CODE=DISPRO.FK_STUDY_UNIT_CODE" + 
+				 		" and STUSUN.STATUS_CODE in ('RG','FC')" + 
+				 		" and STUSUN.FK_ACADEMIC_YEAR=?" + 
+				 		" and DISPRO.MK_PROMOTOR_NR=?" + 
+				 		" and STUSUN.MK_QUALIFICATION_C=grd.code" + 
+				 		" and STU.NR = STUSUN.FK_STUDENT_NR" + 
+				 		" order by STUSUN.MK_QUALIFICATION_C,STU.SURNAME,STU.FIRST_NAMES";			
+				 
+					ps = connection.prepareStatement(sql);
+					ps.setInt(1, getCurrentYear());
+					ps.setInt(2, Integer.parseInt(personnelNumber));
+					
+					rs = ps.executeQuery();	
+					
+					while (rs.next()) {		
+						code = String.valueOf(rs.getInt("valueCode")) ;
+						desc = rs.getString("valueDesc");	
+						studentList.add(new org.apache.struts.util.LabelValueBean(desc, code));
+						
+					}	
+					ps.close();
+					rs.close();
+					
+					Collections.sort(studentList);
+					return studentList;
+				}
+		catch (Exception ex) {
+			if (connection!=null){connection.close();}
+			if (rs!=null){rs.close();}
+			if (ps!=null){ps.close();}
+			throw new Exception("MdActivityQueryDAO : Error getting studentLookupList/ " + ex);
+		}
 	}
+	
+	public String getQualDesc(String qualCode) throws Exception {
+		String query = "select upper(long_eng_descripti) as ENG_DESCRIPTION from grd where code= ? ";
+		String desc = "";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{qualCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+					desc = data.get("ENG_DESCRIPTION").toString().toUpperCase();
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error retrieving Qual description. / " + ex);
+		}
+		return desc;
+	}
+
+	public String getSpecDesc(String qualCode, String specCode) throws Exception {
+		
+		String desc = "";
+		
+		if (specCode == null || "0".equals(specCode) || "".equals(specCode) || "NVT".equalsIgnoreCase(specCode) || "undefined".equalsIgnoreCase(specCode)){ specCode = " ";}
+
+		String query = "select ENGLISH_DESCRIPTIO from quaspc "
+					+ " where mk_qualification_c = ? "
+					+ " and speciality_code = ? ";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{qualCode, specCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+					desc = data.get("ENGLISH_DESCRIPTIO").toString().toUpperCase();
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error retrieving Spec description / " + ex);
+		}
+		return desc;
+	}
+	
+	public void updateStudentMayRegister(Integer stuNr, String changeValue, String changeReason, String user) throws Exception {
+		
+		
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		Connection connection = jdt.getDataSource().getConnection();
+		connection.setAutoCommit(false);	
+		PreparedStatement ps = null;	
+		String sql = "";
+			 
+		try {	
+				sql = "update stu"							
+						+ " set post_graduate_stud = ?"					
+						+ " where stu.nr = ?";					
+						
+					ps = connection.prepareStatement(sql);
+				
+					ps.setString(1,changeValue.trim());
+					ps.setInt(2,stuNr);	
+					
+					ps.executeUpdate(); 
+					ps.close();	
+					
+					//get the latest sequence number for student and log type MDMAYREG
+					int sequenceNumber = 0;
+					sql = "select max(sequence_number)"
+							+ " from stugenlog"
+							+ " where stugenlog.mk_student_nr=?"
+							+ " and stugenlog.log_type_gc322=?";					
+												
+					ps = connection.prepareStatement(sql);
+							
+					ps.setInt(1,stuNr);
+					ps.setString(2,"MDMAYREG");						
+					
+					ResultSet rs = ps.executeQuery();
+					rs = ps.executeQuery(sql) ;
+					rs.next();
+					sequenceNumber = rs.getInt(1); 
+					
+					sequenceNumber = sequenceNumber + 1;
+					
+					ps.close();	
+							
+					//write Student general log entry - STUGENLOG						
+							
+					sql = "insert into stugenlog (mk_student_nr,log_type_gc322,sequence_number,action,update_on," 
+							+  " update_by,program,changed_value,log_comment)" 							
+							+  " values (?,?,?,?,systimestamp,?,?,?,?)";
+							
+							ps = connection.prepareStatement(sql);
+							
+							ps.setInt(1,stuNr);  											//mk_student_nr
+							ps.setString(2,"MDMAYREG");                                     //log_type_gc322
+							ps.setInt(3,sequenceNumber);                    				//sequence_number		
+							ps.setString(4,"UPDATE");  									    //action
+							ps.setString(5,user);         									//update_by
+							ps.setString(6,"unisa-mdactivity");                    			//program		
+							ps.setString(7,changeValue); 					                //changed_value
+							ps.setString(8,changeReason); 		                      		//log_comment
+						
+							ps.executeUpdate();
+							ps.close();
+						
+							connection.commit();
+		}
+		catch (Exception e) {
+			if (connection!=null){connection.rollback();}		
+			throw new Exception("MdActivityQueryDAO: Error Updating permission that student may register(UPDATE STU, INSERT STUGENLOG) / " + e, e);
+		} finally {		
+			try { 
+				if (connection!=null){
+					connection.setAutoCommit(true);
+					connection.close();					
+				}
+				if (ps!=null){ps.close();}
+			} catch (Exception ex) {	
+					ex.printStackTrace();
+				}
+			} 
+	}
+	
+	public Qualification getSTUANNQual (String studentNr, String acadyear) throws Exception{
+		
+		Qualification qual = new Qualification();
+		String sql = "select mk_student_nr, mk_highest_qualifi, speciality_code from stuann " +
+				"where mk_student_nr = " + studentNr + " and mk_academic_year = " + acadyear;
+		try {
+			//log.debug("MdApplicationsQuery - getMDAPPLRecord - studentNr: " + studentNr + ", sql: " + sql);
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+			Iterator i = queryList.iterator();
+			while (i.hasNext()){
+				ListOrderedMap data = (ListOrderedMap) i.next();				
+				qual.setQualCode(data.get("mk_highest_qualifi").toString());
+				qual.setSpecCode(data.get("speciality_code").toString());
+				qual.setQualDesc("");
+				qual.setSpecDesc("");
+			}
+		} catch (Exception ex) {
+			throw new Exception("MdActivityQueryDAO : getSTUANNQual: Error occurred / "+ ex,ex);
+		}
+		try {
+		qual.setQualDesc(getQualDesc(qual.getQualCode()));
+		if (null!=qual.getSpecCode() && qual.getSpecCode().trim().equalsIgnoreCase("")) {
+			qual.setSpecCode("n.a.");
+			qual.setSpecDesc("Not applicable");
+		} else {
+			qual.setSpecDesc(getSpecDesc(qual.getQualCode(), qual.getSpecCode()));
+		}
+		
+		} catch (Exception ex){
+			//Do nothing
+		}
+
+		return qual;
+	}
+
+	
 
 	/**
 	 * This method executes a query and returns a String value as result.
@@ -155,5 +384,23 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 		}
 
 		return result;
+	}
+	
+
+	public int getCurrentYear() {
+
+		int currentYear = 0;
+		log.debug("get current year - M and D activity.");
+			/* jan = 0, Feb=1 , Nov=10, Dec=11 etc */
+		if (Calendar.getInstance().get(Calendar.MONTH) < 9) {
+			currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		} else {
+			/*Removed for test purposes +1*/
+			currentYear = (Calendar.getInstance().get(Calendar.YEAR) + 1 );
+		}
+		log.debug("Returning "+currentYear+" as the current year for m and d");
+
+		return currentYear;
+
 	}
 }
