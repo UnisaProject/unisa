@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.util.LabelValueBean;
 
 import za.ac.unisa.lms.constants.EventTrackingTypes;
+import za.ac.unisa.lms.dao.general.UserDAO;
+import za.ac.unisa.lms.domain.general.Person;
 
 import org.sakaiproject.event.api.UsageSession;
 import org.sakaiproject.event.api.EventTrackingService;
@@ -41,6 +44,7 @@ import za.ac.unisa.lms.tools.mdactivity.dao.MdActivityQueryDAO;
 import za.ac.unisa.lms.tools.mdactivity.forms.ActivityRecord;
 import za.ac.unisa.lms.tools.mdactivity.forms.MdActivityForm;
 import za.ac.unisa.lms.tools.mdactivity.forms.Promotor;
+import za.ac.unisa.lms.tools.mdactivity.forms.Qualification;
 import za.ac.unisa.lms.tools.mdactivity.forms.Student;
 import za.ac.unisa.lms.tools.mdactivity.forms.StudyUnit;
 import za.ac.unisa.lms.tools.mdactivity.forms.GeneralItem;
@@ -81,6 +85,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 	    map.put("button.edit", "editActivity");
 //	    map.put("button.save", "save");
 	    map.put("save", "save");
+	    map.put("button.changeMayReg", "changeMayReg");
 		map.put("inputstep2", "inputstep2");
 		map.put("button.display", "display");
 		map.put("display", "display");
@@ -88,11 +93,23 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		map.put("inputstep1", "inputstep1");
 		return map;
 	}
+	
+	public ActionForward changeMayReg(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		
+		MdActivityForm activityForm = (MdActivityForm) form;
+		
+		return mapping.findForward("displayStudentMayReg");		
+	}
 
 
-	public ActionForward inputstep1(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws UserNotDefinedException{
+	public ActionForward inputstep1(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception{
 
 		MdActivityForm activityForm = (MdActivityForm) form;
+		
+		try {
+		
 		sessionManager = (SessionManager) ComponentManager.get(SessionManager.class);
 		userDirectoryService = (UserDirectoryService) ComponentManager.get(UserDirectoryService.class);
 
@@ -110,11 +127,30 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		if (!"Instructor".equalsIgnoreCase(user.getType())){
 			return mapping.findForward("invaliduser");
 		}
+		
+		Person person = new Person();
+		UserDAO userdao = new UserDAO();
+		person = userdao.getPerson(user.getEid());	
+		
+		if (person.getPersonnelNumber()==null){
+			return mapping.findForward("invaliduser");
+		}
 
+		activityForm.setUser(person);
+		
 		Student student = new Student();
 		activityForm.setStudent(student);
-
+		
+		//Populate students linked to lecturer	
+		ArrayList<LabelValueBean> studentLookupList = 
+			loadStudentLookup(activityForm);
+		request.setAttribute("studentLookupList", studentLookupList);
+	
 		return mapping.findForward("step1forward");
+		
+		}catch (Exception e){
+			throw new Exception("MdActivityDisplayAction(inputstep1): / "+e.getMessage());
+		}
 	}
 
 	public ActionForward inputstep2(ActionMapping mapping, ActionForm form,HttpServletRequest request, HttpServletResponse response) throws Exception{
@@ -122,19 +158,37 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		MdActivityForm activityForm = (MdActivityForm) form;
 		ActionMessages messages = new ActionMessages();
 
-		try{
-
+		try{			
 		// validate input
 			messages = (ActionMessages) activityForm.validate(mapping, request);
 			if (!messages.isEmpty()) {
 				addErrors(request, messages);
+				//Populate students linked to lecturer	
+				ArrayList<LabelValueBean> studentLookupList = 
+					loadStudentLookup(activityForm);
+				request.setAttribute("studentLookupList", studentLookupList);
 				return mapping.findForward("step1forward");
 			}
+		
+			
+			
+		if (activityForm.getStudent().getNumber() == null || "".equals(activityForm.getStudent().getNumber())){
+			if (activityForm.getSelectedStudent() != null && 
+					!"".equalsIgnoreCase(activityForm.getSelectedStudent()) &&
+							!"-1".equalsIgnoreCase(activityForm.getSelectedStudent())){
+				activityForm.getStudent().setNumber(activityForm.getSelectedStudent());
+			}			
+		}
+		
 		if (activityForm.getStudent().getNumber() == null || "".equals(activityForm.getStudent().getNumber())){
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage",
-						"Please enter a student number."));
+						"Please enter a student number or select a student from the list"));
 			addErrors(request, messages);
+			//Populate students linked to lecturer	
+			ArrayList<LabelValueBean> studentLookupList = 
+				loadStudentLookup(activityForm);
+			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("step1forward");
 		}
 
@@ -168,6 +222,10 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
         			new ActionMessage("error.coolgenerror", Errormsg));
         	//}
         	addErrors(request, messages);
+        	//Populate students linked to lecturer	
+    		ArrayList<LabelValueBean> studentLookupList = 
+    			loadStudentLookup(activityForm);
+    		request.setAttribute("studentLookupList", studentLookupList);
         	return mapping.findForward("step1forward");
         } else {
         	// setup study unit list
@@ -214,6 +272,10 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 	   if(activityForm.getStudent().getNumber() == null || "".equals(activityForm.getStudent().getNumber().trim())){
 		   // student number cant be empty
 		    reset((MdActivityForm)form);
+		  //Populate students linked to lecturer	
+			ArrayList<LabelValueBean> studentLookupList = 
+				loadStudentLookup(activityForm);
+			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("cancelforward");
 	   }
 
@@ -305,10 +367,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 //				activity.setEntryTimestamp(op.getOutGrMdActivityEntryTimestamp(i));
 //				list.add(activity);
 //			}
-//			activityForm.setActivityRecords(list);
-			// set qualification
-			activityForm.setQualificationCode(op.getOutWsStudentAnnualRecordMkHighestQualCode());
-			activityForm.setQualificationDescr(op.getOutWsQualificationShortDescription());
+//			activityForm.setActivityRecords(list);			
 			// set dissertation info
 			activityForm.setDisType(op.getOutTypeDescriptionCsfStringsString30());
 			activityForm.setDisTitle(op.getOutStudentDissertationTitle());
@@ -348,7 +407,11 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 
 			//Read activities with a direct sql in java instead of coolgen server - Johanet 20120827
 			ArrayList<ActivityRecord> list = new ArrayList<ActivityRecord>();
-			MdActivityQueryDAO dao = new MdActivityQueryDAO();
+			// set qualification
+        	MdActivityQueryDAO dao = new MdActivityQueryDAO();
+        	Qualification qual = new Qualification();
+        	qual = dao.getSTUANNQual(activityForm.getStudent().getNumber(), studyUnit.getLastAcademicYear());
+			activityForm.setQualification(qual);
 			list = dao.getMDActivities(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getStudyUnitCode());
 			activityForm.setActivityRecords(list);
 			
@@ -436,7 +499,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		}
 	}
 	
-	public ActionForward save(ActionMapping mapping, ActionForm form,
+	public ActionForward xsave(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
@@ -498,6 +561,39 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		}
 	}
 
+	
+	public ActionForward save(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		
+		sessionManager = (SessionManager) ComponentManager.get(SessionManager.class);
+		usageSessionService = (UsageSessionService) ComponentManager.get(UsageSessionService.class);
+		toolManager = (ToolManager) ComponentManager.get(ToolManager.class);
+		eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
+
+		MdActivityForm activityForm = (MdActivityForm) form;
+		ActionMessages messages = new ActionMessages();
+		
+		if (activityForm.getRegPermission()!=null && activityForm.getRegPermission().equalsIgnoreCase("N")) {
+			if (activityForm.getRegReason()==null || activityForm.getRegReason().trim().equalsIgnoreCase("") ) {
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage",
+							"Please provide a reason why the student may not re-register."));
+				addErrors(request, messages);
+				return mapping.findForward("displayStudentMayReg");
+			}			
+		}
+			
+			MdActivityQueryDAO dao = new MdActivityQueryDAO();
+			if (activityForm.getRegPermission().equalsIgnoreCase("Y")) {
+				activityForm.setRegReason("");
+			}
+			dao.updateStudentMayRegister(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getRegPermission(), activityForm.getRegReason(), activityForm.getUser().getPersonnelNumber());
+		        
+			return mapping.findForward("displayforward");
+	
+	}
+	
 	public ActionForward updateActivity(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -926,6 +1022,10 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			return mapping.findForward("displayforward");
 		}else{
 			reset((MdActivityForm)form);
+			//Populate students linked to lecturer	
+			ArrayList<LabelValueBean> studentLookupList = 
+				loadStudentLookup(activityForm);
+			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("cancelforward");
 		}
 	}
@@ -1024,6 +1124,20 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 
 		return result;
 	}
+	
+	private ArrayList<LabelValueBean> loadStudentLookup(
+			MdActivityForm mdForm) throws Exception{
+			
+			try {
+				MdActivityQueryDAO dao = new MdActivityQueryDAO();
+				ArrayList<LabelValueBean> list = 
+				dao.getStudentLookupList(mdForm.getUser().getPersonnelNumber());
+				list.add(0,new LabelValueBean("Select a student","-1"));
+				return list;
+			}catch (Exception e){
+				throw new Exception("loadStudentLookup: / "+e.getMessage());
+			}	
+	}      
 
 	private boolean isNumeric(String testString){
 
@@ -1045,6 +1159,8 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		form.setDisTitle("");
 		form.setSelectedStudyUnit("");
 		form.setSelectedActivityRecord("");
+		form.setSelectedStudent("");
+		form.setRegReason("");
 
 	}
 
