@@ -25,7 +25,10 @@ public class MdActivityForm extends ValidatorForm {
 	private Student student;
 	private String studyUnitCode;
 	private Qualification qualification;
-//	private String qualificationCode;
+	private String firstRegistrationDate;
+	private int yearsRegistered;
+	private int yearsRegisteredForResearchProposal;
+	//	private String qualificationCode;
 //	private String qualificationDescr;
 	private String disType;
 	private String disTitle;
@@ -56,7 +59,30 @@ public class MdActivityForm extends ValidatorForm {
 	// --------------------------------------------------------- Methods	
 	
 	
+	public String getFirstRegistrationDate() {
+		return firstRegistrationDate;
+	}
+
+	public void setFirstRegistrationDate(String firstRegistrationDate) {
+		this.firstRegistrationDate = firstRegistrationDate;
+	}
 	
+	public int getYearsRegistered() {
+		return yearsRegistered;
+	}
+
+	public void setYearsRegistered(int yearsRegistered) {
+		this.yearsRegistered = yearsRegistered;
+	}
+
+	public int getYearsRegisteredForResearchProposal() {
+		return yearsRegisteredForResearchProposal;
+	}
+
+	public void setYearsRegisteredForResearchProposal(int yearsRegisteredForResearchProposal) {
+		this.yearsRegisteredForResearchProposal = yearsRegisteredForResearchProposal;
+	}
+
 	public Person getUser() {
 		return user;
 	}

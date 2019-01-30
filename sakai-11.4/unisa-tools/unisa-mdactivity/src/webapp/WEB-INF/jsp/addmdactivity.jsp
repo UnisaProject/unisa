@@ -35,7 +35,7 @@
 				<td colspan="3"><sakai:instruction><fmt:message key="page.instruction6"/></sakai:instruction></td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.comments"/></strong></td>
-				<td colspan="2"><html:textarea name="mdActivityForm" property="newActivity.comments" rows="2" cols="40" /></td>
+				<td colspan="2"><html:textarea name="mdActivityForm" property="newActivity.comments" rows="6" cols="100" /></td>
 			</tr>	
 		</sakai:group_table>
 <br/>
