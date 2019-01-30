@@ -183,6 +183,7 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 					rs.close();
 					
 					Collections.sort(studentList);
+					connection.close();
 					return studentList;
 				}
 		catch (Exception ex) {
@@ -239,6 +240,7 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 		return desc;
 	}
 	
+	//Johanet 20190124 - CR2579 update student may register + write audit trail record
 	public void updateStudentMayRegister(Integer stuNr, String changeValue, String changeReason, String user) throws Exception {
 		
 		
@@ -303,6 +305,7 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 							ps.close();
 						
 							connection.commit();
+							connection.close();
 		}
 		catch (Exception e) {
 			if (connection!=null){connection.rollback();}		
@@ -320,6 +323,35 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 			} 
 	}
 	
+	//Johanet 20190130 - CR2579 get student may not register latest log comment
+	public String getPostGraduateStudiesDeniedReason(Integer studentNr) throws Exception{
+		
+		String reason = "";
+		
+		String query = "select log_comment"				
+				+ " from stugenlog where stugenlog.mk_student_nr=?"
+				+ " and log_type_gc322='MDMAYREG' " 
+				+ " and sequence_number=(select max(b.sequence_number) from stugenlog b where b.mk_student_nr= stugenlog.mk_student_nr"
+				+ " and b.log_type_gc322='MDMAYREG' and b.changed_value='N') ";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+					reason = data.get("log_comment").toString();
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error reading post graduate studies denied reason / " + ex);
+		}
+		
+		return reason;
+	}
+	
+	//Johanet 20190130 - CR2579 get Qual description, speciality and speciality description
 	public Qualification getSTUANNQual (String studentNr, String acadyear) throws Exception{
 		
 		Qualification qual = new Qualification();
@@ -354,6 +386,101 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 		}
 
 		return qual;
+	}
+	
+	//Johanet 20190129 - CR2579 get first registered date
+	public String getFirstRegistrationDate(Integer studentNr, String qualCode) throws Exception{
+		
+		String firstRegDate="";
+		
+		String query = "select to_char(first_registration,'YYYYMMDD') as firstReg"
+				+ " from stuaca"
+				+ " where stuaca.mk_student_nr=?"
+				+ " and STUACA.mk_qualification_c=?";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr, qualCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				firstRegDate = data.get("firstReg").toString();
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error reading first registration date for qualification / " + ex);
+		}
+		
+		return firstRegDate;
+	}
+	
+	//Johanet 20190129 - CR2579 get number of years registered
+	public int getYearsRegistered(Integer studentNr, String qualCode) throws Exception{
+		int years=0;
+		
+		String query = "select count(*) as yearsReg"
+				+ " from stuann"
+				+ " where stuann.mk_student_nr=?"
+				+ " and stuann.mk_highest_qualifi=?"
+				+ " and status_code='RG'";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr, qualCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				years = Integer.parseInt(data.get("yearsReg").toString());
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error reading stuann to get years registered for qual / " + ex);
+		}
+		
+		return years;		
+	}
+	
+	//Johanet 20190130 - CR2579 get number of years registered for research proposal
+	public int getYearsRegisteredForResearchProposal(Integer studentNr, String qualCode) throws Exception{
+		int years=0;
+		
+		String query = "select count(distinct temp.acadYear) as yearsReg"
+				+ " from "
+				+ " (select distinct acasun.mk_academic_year as acadYear"
+				+ " from studis,acasun"  
+				+ " where STUDIS.MK_STUDENT_NR=?" 
+				+ " and STUDIS.TYPE ='P'" 
+				+ " and ACASUN.FK_STUDENT_NR=STUDIS.MK_STUDENT_NR" 
+				+ " and ACASUN.MK_STUDY_UNIT_CODE=STUDIS.MK_STUDY_UNIT_CODE" 
+				+ " and acasun.fk_qual_code=?" 
+				+ " and ACASUN.CANCELLATION_CODE = 'NC'"
+				+ " union"  
+				+ " select distinct STUSUN.FK_ACADEMIC_YEAR as acadYear" 
+				+ " from studis,stusun"
+				+ " where STUDIS.MK_STUDENT_NR=?"
+				+ " and STUDIS.TYPE ='P'"
+				+ " and STUSUN.FK_STUDENT_NR =STUDIS.MK_STUDENT_NR"
+				+ " and STUSUN.MK_STUDY_UNIT_CODE =STUDIS.MK_STUDY_UNIT_CODE"
+				+ " and STUSUN.MK_QUALIFICATION_C =?"
+				+ " and STUSUN.STATUS_CODE in ('RG','FC')) temp";
+
+		try {
+    	  	
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr, qualCode,studentNr, qualCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				years = Integer.parseInt(data.get("yearsReg").toString());
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdActivityQueryDAO : Error reading studis,acasun and stusun get number of years registered for research proposal / " + ex);
+		}
+		
+		return years;		
 	}
 
 	

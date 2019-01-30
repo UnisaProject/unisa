@@ -247,6 +247,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			activityForm.setStudyUnitRecords(list);
 			// set student name
 			activityForm.getStudent().setName(op.getOutStudentNameCsfStringsString100());
+			//
 		}
 
 		return mapping.findForward("step2forward");
@@ -414,6 +415,25 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			activityForm.setQualification(qual);
 			list = dao.getMDActivities(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getStudyUnitCode());
 			activityForm.setActivityRecords(list);
+			//Johanet 20190125 CR2579 If Post Graduate Studies Approved flag ='N' - get the latest reason if any
+			String reason = "";
+			if (activityForm.getRegPermission()!=null && activityForm.getRegPermission().equalsIgnoreCase("N")) {
+				reason = dao.getPostGraduateStudiesDeniedReason(Integer.parseInt(activityForm.getStudent().getNumber()));
+			}			
+			activityForm.setRegReason(reason);
+			//Johanet 20190125 CR2579 Get the first registration date for the qualification
+			String firstRegDate= "";
+			firstRegDate = dao.getFirstRegistrationDate(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getQualification().getQualCode());
+			activityForm.setFirstRegistrationDate(firstRegDate);
+			//Johanet 20190125 CR2579 Get the number of years registered for the Research Proposal
+			//Johanet 20190125 CR2579 Get the number of years registered for the qualification
+			int yearsReg = 0;
+			yearsReg = dao.getYearsRegistered(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getQualification().getQualCode());
+			activityForm.setYearsRegistered(yearsReg);
+			//Johanet 20190130 CR2579 Get the number of years registered for research proposal
+			yearsReg = 0;
+			yearsReg = dao.getYearsRegisteredForResearchProposal(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getQualification().getQualCode());
+			activityForm.setYearsRegisteredForResearchProposal(yearsReg);
 			
 //			String pageDown = op.getOutCsfClientServerCommunicationsRgvScrollDownFlag();
 //			while ("Y".equalsIgnoreCase(pageDown)){
@@ -650,10 +670,10 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 //			 check comment length max=150 chars plus two front slashes should be added every time
 			if ( !"".equals(activityForm.getNewActivity().getComments().trim())){
 				int commentLen = activityForm.getNewActivity().getComments().trim().length();
-				if(commentLen > 150){
+				if(commentLen + 10 > 600){
 					messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage",
-						"Comments can not exceed 150 characters. It is currently "+(commentLen)+" characters."));
+						"Comments can not exceed 600 characters. It is currently "+(commentLen + 10)+" characters."));
 					addErrors(request, messages);
 					// Setup activity pick list
 					setUpActivityPickList(request);
@@ -701,10 +721,10 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			// check comment length max=150 chars plus two front slashes shoud be added every time
 			if (activityForm.getUpdateActivity().getExtraComments()!=null && !"".equals(activityForm.getUpdateActivity().getExtraComments())){
 				int commentLen = activityForm.getUpdateActivity().getComments().trim().length() + activityForm.getUpdateActivity().getExtraComments().trim().length();
-				if(commentLen + 2 > 150){
+				if(commentLen + 10 > 600){
 					messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage",
-						"Previous comments and new comments can not exceed 150 characters. It is currently "+(commentLen + 2 )+" characters."));
+						"Previous comments and new comments can not exceed 600 characters. It is currently "+(commentLen + 10 )+" characters."));
 					addErrors(request, messages);
 					// Setup activity pick list
 					setUpActivityPickList(request);
@@ -927,6 +947,12 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		}
 		// Setup activity pick list
 		setUpActivityPickList(request);
+		
+		//Johanet 20190128 Change CR2579 - Default activity date to current date
+		String dateFormat = "yyyyMMdd";
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+		activityForm.getNewActivity().setActivityDate(sdf.format(cal.getTime()));
 
 		return mapping.findForward("addforward");
 
