@@ -963,11 +963,11 @@ public class Srmas01sMDStudentActivity  implements ActionListener, java.io.Seria
       if (s != null) {
           s = s.toUpperCase();
       }
-      if (s.length() > 150) {
-         throw new PropertyVetoException("InMaintainMdActivityComments must be <= 150 characters.",
+      if (s.length() > 600) {
+         throw new PropertyVetoException("InMaintainMdActivityComments must be <= 600 characters.",
                new PropertyChangeEvent (this, "InMaintainMdActivityComments", null, null));
       }
-      importView.InMaintainMdActivityComments = StringAttr.valueOf(s, (short)150);
+      importView.InMaintainMdActivityComments = StringAttr.valueOf(s, (short)600);
    }
  
    public final int InGroupMax = 70;
@@ -1267,11 +1267,11 @@ public class Srmas01sMDStudentActivity  implements ActionListener, java.io.Seria
       if (69 < index || index < 0) {
          throw new ArrayIndexOutOfBoundsException("index range must be from 0 to 69, not: " + index);
       }
-      if (s.length() > 150) {
-         throw new PropertyVetoException("InGrMdActivityComments must be <= 150 characters.",
+      if (s.length() > 600) {
+         throw new PropertyVetoException("InGrMdActivityComments must be <= 600 characters.",
                new PropertyChangeEvent (this, "InGrMdActivityComments", null, null));
       }
-      importView.InGrMdActivityComments[index] = StringAttr.valueOf(s, (short)150);
+      importView.InGrMdActivityComments[index] = StringAttr.valueOf(s, (short)600);
    }
  
    public String getInGrDescriptionsCsfStringsString40(int index) throws ArrayIndexOutOfBoundsException {
@@ -2043,6 +2043,21 @@ public class Srmas01sMDStudentActivity  implements ActionListener, java.io.Seria
       importView.InMaintainCsfStringsString50 = FixedStringAttr.valueOf(s, (short)50);
    }
  
+   public String getInQualificationSpecialityTypeSpecialityCode() {
+      return FixedStringAttr.valueOf(importView.InQualificationSpecialityTypeSpecialityCode, 3);
+   }
+   public void setInQualificationSpecialityTypeSpecialityCode(String s)
+      throws PropertyVetoException {
+      if (s != null) {
+          s = s.toUpperCase();
+      }
+      if (s.length() > 3) {
+         throw new PropertyVetoException("InQualificationSpecialityTypeSpecialityCode must be <= 3 characters.",
+               new PropertyChangeEvent (this, "InQualificationSpecialityTypeSpecialityCode", null, null));
+      }
+      importView.InQualificationSpecialityTypeSpecialityCode = FixedStringAttr.valueOf(s, (short)3);
+   }
+ 
    public final int OutPromotorGroupMax = 5;
    public short getOutPromotorGroupCount() {
       return (short)(exportView.OutPromotorGroup_MA);
@@ -2525,6 +2540,10 @@ public class Srmas01sMDStudentActivity  implements ActionListener, java.io.Seria
  
    public String getOutMaintainCsfStringsString50() {
       return FixedStringAttr.valueOf(exportView.OutMaintainCsfStringsString50, 50);
+   }
+ 
+   public String getOutQualificationSpecialityTypeSpecialityCode() {
+      return FixedStringAttr.valueOf(exportView.OutQualificationSpecialityTypeSpecialityCode, 3);
    }
  
 };
