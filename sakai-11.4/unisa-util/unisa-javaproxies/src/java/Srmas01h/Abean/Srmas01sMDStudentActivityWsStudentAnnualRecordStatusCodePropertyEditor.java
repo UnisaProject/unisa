@@ -6,10 +6,10 @@ public class Srmas01sMDStudentActivityWsStudentAnnualRecordStatusCodePropertyEdi
  
    public String[] getTags() {
       String values[] = {
+         "CA",
          "TP",
          "TN",
          "RG",
-         "CA",
          "  ",
       };
       return values;
