@@ -33,31 +33,26 @@
 		<sakai:group_table>
 			<tr>
 				<td><strong><fmt:message key="page.heading.studentnr"/></strong></td>
-				<td ><bean:write name="mdActivityForm" property="student.number"/></td>
-				<td colspan="5"><bean:write name="mdActivityForm" property="student.name"/></td>
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="student.number"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="student.name"/>)</td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.qualification"/></strong></td>
-				<td colspan="6"><bean:write name="mdActivityForm" property="qualification.qualCode"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="qualification.qualDesc"/>)</td>				
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="qualification.qualCode"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="qualification.qualDesc"/>)</td>				
 			</tr><tr>				
 				<td><strong><fmt:message key="page.heading.speciality"/></strong></td>
-				<td colspan="6"><bean:write name="mdActivityForm" property="qualification.specCode"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="qualification.specDesc"/>)</td>					
-			</tr><tr>
-				<td>&nbsp;</td>				
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="qualification.specCode"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="qualification.specDesc"/>)</td>					
+			</tr><tr>				
 				<td><strong><fmt:message key="page.heading.firstRegDate"/></strong></td>
-				<td><bean:write name="mdActivityForm" property="firstRegistrationDate"/></td>
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="firstRegistrationDate"/></td>				
+			</tr><tr>			
 				<td><strong><fmt:message key="page.heading.numberYearReg"/></strong></td>
-				<td><bean:write name="mdActivityForm" property="yearsRegistered"/><td>
-				<td><strong><fmt:message key="page.heading.numberYearRegProposal"/></strong></td>
-				<td><bean:write name="mdActivityForm" property="yearsRegisteredForResearchProposal"/><td>
+				<td colspan="2" align="left"><strong><fmt:message key="page.heading.numberYearRegQual"/></strong>&nbsp;&nbsp;&nbsp;<bean:write name="mdActivityForm" property="yearsRegistered"/><td>
+				<td colspan="2" align="left"><strong><fmt:message key="page.heading.numberYearRegProposal"/></strong>&nbsp;&nbsp;&nbsp;<bean:write name="mdActivityForm" property="yearsRegisteredForResearchProposal"/></td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.studyunit"/></strong></td>
-				<td><bean:write name="mdActivityForm" property="studyUnitCode"/></td>
-				<td><strong><fmt:message key="page.heading.disType"/></strong></td>
-				<td><bean:write name="mdActivityForm" property="disType"/></td>
-				<td colspan="2">&nbsp;</td>	
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="studyUnitCode"/>&nbsp;&nbsp;&nbsp;(<bean:write name="mdActivityForm" property="disType"/>)</td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.distitle"/></strong></td>
-				<td colspan="6"><bean:write name="mdActivityForm" property="disTitle"/></td>
+				<td colspan="4" align="left"><bean:write name="mdActivityForm" property="disTitle"/></td>
 			</tr>
 			</sakai:group_table>
 			<hr/>
