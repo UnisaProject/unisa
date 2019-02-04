@@ -22,27 +22,28 @@
 			</tr>
 		</sakai:group_table>
 		
-		<logic:notEmpty name="studentLookupList">
+		<logic:notEmpty name="mdActivityForm" property="studentLookupList">
 		<sakai:group_table>
 			<tr>
 				<td><strong>OR</strong></td>
 			</tr>
 		</sakai:group_table>
 		</logic:notEmpty>
-		
-		<logic:notEmpty name="studentLookupList">
+		                                                
+		<logic:notEmpty name="mdActivityForm" property="studentLookupList">
 			<sakai:group_table>
 				<tr>
 					<td><sakai:instruction>
 						<fmt:message key="page.instruction1b" />
 					</sakai:instruction></td>
 				</tr>
+				
 				<tr>
 					<td><strong><fmt:message key="page.heading.studentnr" /></strong>&nbsp;
 					<html:select property="selectedStudent" styleId="selectedStudent"
 						onclick="disableLookupList()" style="font-family:courier">
-						<html:options collection="studentLookupList" property="value"
-							labelProperty="label" />
+						<html:optionsCollection name="mdActivityForm" property="studentLookupList" value="value"
+							label="label"/>
 					</html:select> <br />
 					<br />
 					</td>

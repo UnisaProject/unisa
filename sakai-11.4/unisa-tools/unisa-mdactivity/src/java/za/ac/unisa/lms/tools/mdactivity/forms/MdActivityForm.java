@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.validator.ValidatorForm;
 import za.ac.unisa.lms.domain.general.Person;
 
@@ -55,14 +56,26 @@ public class MdActivityForm extends ValidatorForm {
 	// use to determine wether the feedback date of a record can be updated
 	private boolean updateFeedbackDate;
 	private ArrayList<Promotor> promotorList = new ArrayList<Promotor>();
+	private ArrayList<LabelValueBean> studentLookupList = new ArrayList<LabelValueBean>();
 
 	// --------------------------------------------------------- Methods	
 	
+	public ArrayList<LabelValueBean> getStudentLookupList() {
+		return studentLookupList;
+	}
+
+
+	public void setStudentLookupList(ArrayList<LabelValueBean> studentLookupList) {
+		this.studentLookupList = studentLookupList;
+	}
+
 	
 	public String getFirstRegistrationDate() {
 		return firstRegistrationDate;
 	}
+	
 
+	
 	public void setFirstRegistrationDate(String firstRegistrationDate) {
 		this.firstRegistrationDate = firstRegistrationDate;
 	}
