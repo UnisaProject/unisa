@@ -144,7 +144,8 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		//Populate students linked to lecturer	
 		ArrayList<LabelValueBean> studentLookupList = 
 			loadStudentLookup(activityForm);
-		request.setAttribute("studentLookupList", studentLookupList);
+		activityForm.setStudentLookupList(studentLookupList);
+		//request.setAttribute("studentLookupList", studentLookupList);
 	
 		return mapping.findForward("step1forward");
 		
@@ -164,19 +165,25 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			if (!messages.isEmpty()) {
 				addErrors(request, messages);
 				//Populate students linked to lecturer	
-				ArrayList<LabelValueBean> studentLookupList = 
-					loadStudentLookup(activityForm);
-				request.setAttribute("studentLookupList", studentLookupList);
+//				ArrayList<LabelValueBean> studentLookupList	= 
+//						loadStudentLookup(activityForm);
+//				request.setAttribute("studentLookupList", studentLookupList);
 				return mapping.findForward("step1forward");
 			}
 		
 			
-			
+		String selectedQual="";	
 		if (activityForm.getStudent().getNumber() == null || "".equals(activityForm.getStudent().getNumber())){
 			if (activityForm.getSelectedStudent() != null && 
 					!"".equalsIgnoreCase(activityForm.getSelectedStudent()) &&
 							!"-1".equalsIgnoreCase(activityForm.getSelectedStudent())){
 				activityForm.getStudent().setNumber(activityForm.getSelectedStudent());
+				for (int i=0;  i< activityForm.getStudentLookupList().size() ; i++) {
+					LabelValueBean lvBean = (LabelValueBean) activityForm.getStudentLookupList().get(i);
+					if (activityForm.getStudent().getNumber().equalsIgnoreCase(lvBean.getValue())) {
+						selectedQual = lvBean.getLabel().substring(0, 5);
+					}
+				}
 			}			
 		}
 		
@@ -186,9 +193,9 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 						"Please enter a student number or select a student from the list"));
 			addErrors(request, messages);
 			//Populate students linked to lecturer	
-			ArrayList<LabelValueBean> studentLookupList = 
-				loadStudentLookup(activityForm);
-			request.setAttribute("studentLookupList", studentLookupList);
+//			ArrayList<LabelValueBean> studentLookupList = 
+//				loadStudentLookup(activityForm);
+//			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("step1forward");
 		}
 
@@ -223,12 +230,12 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
         	//}
         	addErrors(request, messages);
         	//Populate students linked to lecturer	
-    		ArrayList<LabelValueBean> studentLookupList = 
-    			loadStudentLookup(activityForm);
-    		request.setAttribute("studentLookupList", studentLookupList);
+//    		ArrayList<LabelValueBean> studentLookupList = 
+//    			loadStudentLookup(activityForm);
+//    		request.setAttribute("studentLookupList", studentLookupList);
         	return mapping.findForward("step1forward");
         } else {
-        	// setup study unit list
+        	// setup study unit list        	
         	int count = op.getOutStudyUnitGroupCount();
         	ArrayList list = new ArrayList();
         	for (int i=0; i<count; i++) {
@@ -242,7 +249,11 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 				studyUnit.setEditable(op.getOutGEditableCsfStringsString1(i));
 				studyUnit.setErrorMessage(op.getOutGEditableCsfStringsString500(i));
 				studyUnit.setLastAcademicYear(Short.toString(op.getOutGWsStudentAnnualRecordMkAcademicYear(i)));
-				list.add(studyUnit);
+				if (null==selectedQual || selectedQual.trim().equalsIgnoreCase("")) {
+					list.add(studyUnit);				
+				} else if (selectedQual.equalsIgnoreCase(studyUnit.getQualCode())) {
+					list.add(studyUnit);
+				}				
 			}
 			activityForm.setStudyUnitRecords(list);
 			// set student name
@@ -274,9 +285,9 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		   // student number cant be empty
 		    reset((MdActivityForm)form);
 		  //Populate students linked to lecturer	
-			ArrayList<LabelValueBean> studentLookupList = 
-				loadStudentLookup(activityForm);
-			request.setAttribute("studentLookupList", studentLookupList);
+//			ArrayList<LabelValueBean> studentLookupList = 
+//				loadStudentLookup(activityForm);
+//			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("cancelforward");
 	   }
 
@@ -370,8 +381,8 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 //			}
 //			activityForm.setActivityRecords(list);			
 			// set dissertation info
-			activityForm.setDisType(op.getOutTypeDescriptionCsfStringsString30());
-			activityForm.setDisTitle(op.getOutStudentDissertationTitle());
+			activityForm.setDisType(op.getOutTypeDescriptionCsfStringsString30().trim());
+			activityForm.setDisTitle(op.getOutStudentDissertationTitle().trim());
 			// set staff number
 			activityForm.setStaffNumber(op.getOutWsStaffPersno());
 			// set promoters
@@ -380,7 +391,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
         	for (int i=0; i<count; i++) {
         		Promotor promotor = new Promotor();
         		promotor.setStaffNr(op.getOutGStudentDissertationPromoterMkPromotorNr(i));
-        		promotor.setName(op.getOutGCsfStringsString100(i));
+        		promotor.setName(op.getOutGCsfStringsString100(i).trim());
         		promotor.setSupervisor(op.getOutGStudentDissertationPromoterSupervisorFlag(i));
         		promotor.setDepartmentDesc(op.getOutGCsfStringsString28(i));
         		promList.add(promotor);
@@ -1049,9 +1060,9 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		}else{
 			reset((MdActivityForm)form);
 			//Populate students linked to lecturer	
-			ArrayList<LabelValueBean> studentLookupList = 
-				loadStudentLookup(activityForm);
-			request.setAttribute("studentLookupList", studentLookupList);
+//			ArrayList<LabelValueBean> studentLookupList = 
+//				loadStudentLookup(activityForm);
+//			request.setAttribute("studentLookupList", studentLookupList);
 			return mapping.findForward("cancelforward");
 		}
 	}
@@ -1186,7 +1197,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		form.setSelectedStudyUnit("");
 		form.setSelectedActivityRecord("");
 		form.setSelectedStudent("");
-		form.setRegReason("");
+		form.setRegReason("");		
 
 	}
 
