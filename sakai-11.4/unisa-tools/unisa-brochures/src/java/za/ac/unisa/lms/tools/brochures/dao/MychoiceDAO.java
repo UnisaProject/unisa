@@ -1099,7 +1099,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 						if(data.get("mod_from_year") >= currentYear){
 							spesDesc.appendChild(document.createTextNode(data.get(
 								"SPESDESC").toString()+
-								" (Offered from "+data.get("mod_from_year").toString()+" TestXML)"));
+								" (Offered from "+data.get("mod_from_year").toString()+" TestXML) "));
 						}else{
 							spesDesc.appendChild(document.createTextNode(data.get(
 								"SPESDESC").toString()));
