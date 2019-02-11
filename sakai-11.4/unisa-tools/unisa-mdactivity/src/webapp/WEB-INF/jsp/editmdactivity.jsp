@@ -43,7 +43,7 @@
 				<td colspan="2"><bean:write name="mdActivityForm" property="updateActivity.comments"/></td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.comment"/></strong></td>
-				<td colspan="2"><html:textarea name="mdActivityForm" property="updateActivity.extraComments" rows="2" cols="40"/></td>
+				<td colspan="2"><html:textarea name="mdActivityForm" property="updateActivity.extraComments" rows="6" cols="100"/></td>
 		</sakai:group_table>
 
 <br/>

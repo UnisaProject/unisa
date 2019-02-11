@@ -371,11 +371,12 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 	/**
 	 * Check if student has a student/reference number
 	 */
-	public boolean validateSTUAPQ(String surname, String firstNames, String  bDay, String acaYear) throws Exception {
+	public boolean validateSTUAPQ(String surname, String firstNames, String  bDay, String acaYear, String studentType) throws Exception {
 		
 		boolean stuapqCheck = false;
 		String dbParam = "";
 		String result = "";
+		int studentNr = 0;
 		//Check if student record exists by using Surname, First Names, Date of Birth
 		//Note we do not check the Period as student is only allowed one application per year (except SLP)
 		String query  = "select DISTINCT stuapq.mk_student_nr "
@@ -395,10 +396,22 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 			List queryList = jdt.queryForList(query, new Object []{surname.toUpperCase(), firstNames.toUpperCase(), bDay, acaYear});
 			
 			Iterator i = queryList.iterator();
-			if (i.hasNext()) {
+			while (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
 				//log.debug("ApplyForStudentNumberQueryDAO - validateSTUAPQ - isNumber= " +  data.get("mk_student_nr").toString());
-				stuapqCheck=true;
+				studentNr = Integer.parseInt(data.get("mk_student_nr").toString());
+				//SLP application
+				if (studentType!=null && studentType.equalsIgnoreCase("SLP")) {
+					if (studentNr >= 70000000  && studentNr < 80000000) {
+						stuapqCheck=true;
+					}
+				}					
+				//Unisa application
+				if (studentType!=null && !studentType.equalsIgnoreCase("SLP")) {
+					if (studentNr < 70000000  || studentNr >= 80000000) {				
+						stuapqCheck=true;
+					}		
+				}	
 			}
 		} catch (Exception ex) {
 			throw new Exception(
@@ -427,7 +440,9 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 				+ " and to_char(stu.birth_date, 'DD/MM/YYYY') = ? "
 				+ " and stuann.mk_academic_year= ? "
 				+ " and stuapq.academic_year= ? "
-				+ " and stuapq.application_period = ? ";
+				+ " and stuapq.application_period = ? " 
+				+ " and stuapq.mk_student_nr >= 70000000 "
+				+ " and stuapq.mk_student_nr < 80000000";
 
 		try {
 			dbParam = surname.toUpperCase()+","+firstNames.toUpperCase()+","+bDay+","+acaYear+","+acaYear+","+acaPeriod;
