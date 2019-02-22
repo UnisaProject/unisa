@@ -276,7 +276,7 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 					ps.setString(2,"MDMAYREG");						
 					
 					ResultSet rs = ps.executeQuery();
-					rs = ps.executeQuery(sql) ;
+					rs = ps.executeQuery() ;
 					rs.next();
 					sequenceNumber = rs.getInt(1); 
 					

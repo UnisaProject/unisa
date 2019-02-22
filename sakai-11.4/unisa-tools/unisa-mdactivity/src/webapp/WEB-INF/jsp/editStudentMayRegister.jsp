@@ -46,8 +46,8 @@
 			<hr/>
 			<sakai:group_table><tr>
 				<td><strong><fmt:message key="page.heading.edit.permission"/></strong></td>	
-				<td colspan="3"><html:radio property="regPermission" value="N"/>No
-				    <html:radio property="regPermission" value="Y"/>Yes
+				<td colspan="3"><html:radio property="inputPermission" value="N"/>No
+				    <html:radio property="inputPermission" value="Y"/>Yes
 				</td>
 			</tr><tr>	    
 				 <td><strong><fmt:message key="page.heading.edit.permission.reason"/></strong></td>   
