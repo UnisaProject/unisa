@@ -100,6 +100,8 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		
 		MdActivityForm activityForm = (MdActivityForm) form;
 		
+		activityForm.setInputPermission(activityForm.getRegPermission());
+		
 		return mapping.findForward("displayStudentMayReg");		
 	}
 
@@ -212,6 +214,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 	    op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
 	    op.setInWsStudentNr(Integer.parseInt(activityForm.getStudent().getNumber()));
 	    op.setInCsfClientServerCommunicationsAction("L");
+	    op.setInSecurityWsUserNumber(99998);
 
 		op.execute();
 
@@ -337,6 +340,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 	    op.setInWsStudentNr(Integer.parseInt(activityForm.getStudent().getNumber()));
 	    op.setInStudentDissertationMkStudyUnitCode(activityForm.getStudyUnitCode());
 	    op.setInCsfClientServerCommunicationsAction("D");
+	    op.setInSecurityWsUserNumber(99998);
 
 		op.execute();
 
@@ -603,9 +607,9 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
 
 		MdActivityForm activityForm = (MdActivityForm) form;
-		ActionMessages messages = new ActionMessages();
+		ActionMessages messages = new ActionMessages();		
 		
-		if (activityForm.getRegPermission()!=null && activityForm.getRegPermission().equalsIgnoreCase("N")) {
+		if (activityForm.getInputPermission()!=null && activityForm.getInputPermission().equalsIgnoreCase("N")) {
 			if (activityForm.getRegReason()==null || activityForm.getRegReason().trim().equalsIgnoreCase("") ) {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage",
@@ -616,11 +620,12 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		}
 			
 			MdActivityQueryDAO dao = new MdActivityQueryDAO();
-			if (activityForm.getRegPermission().equalsIgnoreCase("Y")) {
+			if (activityForm.getInputPermission().equalsIgnoreCase("Y")) {
 				activityForm.setRegReason("");
 			}
-			dao.updateStudentMayRegister(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getRegPermission(), activityForm.getRegReason(), activityForm.getUser().getPersonnelNumber());
-		        
+			dao.updateStudentMayRegister(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getInputPermission(), activityForm.getRegReason(), activityForm.getUser().getPersonnelNumber());
+			activityForm.setRegPermission(activityForm.getInputPermission());
+			
 			return mapping.findForward("displayforward");
 	
 	}
@@ -785,6 +790,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 	 	op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
 	    op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
 	    op.setInSecurityWsUserNovellUserCode(activityForm.getUserCode());
+	    op.setInSecurityWsUserNumber(99998);
 
 	    op.setInWsStudentNr(Integer.parseInt(activityForm.getStudent().getNumber()));
 	    op.setInStudentDissertationMkStudyUnitCode(activityForm.getStudyUnitCode());
@@ -901,6 +907,13 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 			MdActivityQueryDAO dao = new MdActivityQueryDAO();
 			list = dao.getMDActivities(Integer.parseInt(activityForm.getStudent().getNumber()), activityForm.getStudyUnitCode());
 			activityForm.setActivityRecords(list);
+			//Johanet 20190125 CR2579 If Post Graduate Studies Approved flag ='N' - get the latest reason if any
+			activityForm.setRegPermission(op.getOutWsStudentPostGraduateStudiesApproved());			
+			String reason = "";
+			if (activityForm.getRegPermission()!=null && activityForm.getRegPermission().equalsIgnoreCase("N")) {
+				reason = dao.getPostGraduateStudiesDeniedReason(Integer.parseInt(activityForm.getStudent().getNumber()));
+			}			
+			activityForm.setRegReason(reason);
 		}
 
         if ("edit".equalsIgnoreCase(request.getParameter("frompage"))){
@@ -1056,6 +1069,13 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 		if ("display".equalsIgnoreCase(request.getParameter("goto"))){
 			activityForm.setSelectedStudyUnit("");
 			activityForm.setSelectedActivityRecord("");
+			MdActivityQueryDAO dao = new MdActivityQueryDAO();
+			//Johanet 20190125 CR2579 If Post Graduate Studies Approved flag ='N' - get the latest reason if any
+			String reason = "";
+			if (activityForm.getRegPermission()!=null && activityForm.getRegPermission().equalsIgnoreCase("N")) {
+				reason = dao.getPostGraduateStudiesDeniedReason(Integer.parseInt(activityForm.getStudent().getNumber()));
+			}			
+			activityForm.setRegReason(reason);
 			return mapping.findForward("displayforward");
 		}else{
 			reset((MdActivityForm)form);

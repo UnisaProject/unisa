@@ -36,6 +36,7 @@ public class MdActivityForm extends ValidatorForm {
 	private String promoter;
 	private String supervisor;
 	private String regPermission;
+	private String inputPermission;
 	private String regReason;
 	private boolean readOnly;
 	private String errorMessage;
@@ -59,6 +60,16 @@ public class MdActivityForm extends ValidatorForm {
 	private ArrayList<LabelValueBean> studentLookupList = new ArrayList<LabelValueBean>();
 
 	// --------------------------------------------------------- Methods	
+	
+
+
+	public String getInputPermission() {
+		return inputPermission;
+	}
+
+	public void setInputPermission(String inputPermission) {
+		this.inputPermission = inputPermission;
+	}
 	
 	public ArrayList<LabelValueBean> getStudentLookupList() {
 		return studentLookupList;
