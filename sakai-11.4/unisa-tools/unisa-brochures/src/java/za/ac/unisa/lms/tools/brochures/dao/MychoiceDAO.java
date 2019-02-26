@@ -1097,15 +1097,19 @@ public class MychoiceDAO extends StudentSystemDAO {
 						//remove offered from current year
 						int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 						int fromYear = Integer.parseInt(data.get("mod_from_year").toString());
+						System.out.println("currentYear "+currentYear);
+						System.out.println("fromYear "+fromYear);
 						
-						if(fromYear >= currentYear){
+						if(fromYear > currentYear){
 							spesDesc.appendChild(document.createTextNode(data.get(
 								"SPESDESC").toString()+
 								" (Offered from "+data.get("mod_from_year").toString()+")"));
+							System.out.println("display offered from "+fromYear);
 								
 						}else{
 							spesDesc.appendChild(document.createTextNode(data.get(
 								"SPESDESC").toString()));
+							System.out.println("do not display offered from "+fromYear);
 								
 						}
 						spesCode = data.get("SPES").toString();
