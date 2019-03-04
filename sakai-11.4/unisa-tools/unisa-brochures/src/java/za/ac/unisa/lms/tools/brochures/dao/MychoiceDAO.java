@@ -1402,7 +1402,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 
 					Element modName = document.createElement("name");
 							
-					//remove offered from current year
+					//remove offered from current year    
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 					int modFromYear = Integer.parseInt(data.get("mod_from_year").toString());
 										
