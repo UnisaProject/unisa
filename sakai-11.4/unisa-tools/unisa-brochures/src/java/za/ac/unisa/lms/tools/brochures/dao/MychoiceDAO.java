@@ -1093,25 +1093,8 @@ public class MychoiceDAO extends StudentSystemDAO {
 
 						Element spesDesc = document.createElement("spesdesc");
 						
+						spesDesc.appendChild(document.createTextNode(data.get("SPESDESC").toString()));
 						
-						//remove offered from current year
-						int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-						int fromYear = Integer.parseInt(data.get("mod_from_year").toString());
-						System.out.println("currentYear "+currentYear);
-						System.out.println("fromYear "+fromYear);
-						
-						if(fromYear > currentYear){
-							spesDesc.appendChild(document.createTextNode(data.get(
-								"SPESDESC").toString()+
-								" (Offered from "+data.get("mod_from_year").toString()+")"));
-							System.out.println("display offered from "+fromYear);
-								
-						}else{
-							spesDesc.appendChild(document.createTextNode(data.get(
-								"SPESDESC").toString()));
-							System.out.println("do not display offered from "+fromYear);
-								
-						}
 						spesCode = data.get("SPES").toString();
 
 						Element nqfl = document.createElement("NQFel");
@@ -1361,7 +1344,6 @@ public class MychoiceDAO extends StudentSystemDAO {
 									.createElement("qualificationlevel");
 							qualification.appendChild(qualLevel);
 							qualificationLevel = data.get("LVL").toString();
-							System.out.println("qualification level ++++++++++"+qualificationLevel);
 
 							Element level = document.createElement("name");
 							level.appendChild(document.createTextNode(data.get(
@@ -1421,6 +1403,21 @@ public class MychoiceDAO extends StudentSystemDAO {
 					Element modName = document.createElement("name");
 					modName.appendChild(document.createTextNode(data.get(
 							"MODULE1").toString()));
+							
+					//remove offered from current year
+					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+					int fromYear = Integer.parseInt(data.get("mod_from_year").toString());
+					
+					if(fromYear > currentYear){
+						modName.appendChild(document.createTextNode(data.get(
+							"MODULE1").toString()+
+							" (Offered from "+data.get("mod_from_year").toString()+")"));
+							
+					}else{
+						modName.appendChild(document.createTextNode(data.get(
+							"MODULE1").toString()));
+													
+					}
 
 					Element modCode = document.createElement("code");
 					modCode.appendChild(document.createTextNode(data.get(
