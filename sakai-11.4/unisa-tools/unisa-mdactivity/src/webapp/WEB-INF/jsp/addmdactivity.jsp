@@ -24,9 +24,10 @@
 		<sakai:group_table>
 			<tr>
 				<td><strong><fmt:message key="page.heading.activity"/></strong></td>
-				<td colspan="2"><html:select property="selectedActivity">
+				<td><html:select property="selectedActivity">
 				<html:options collection="list" property="value" labelProperty="label"/>
-			</html:select></td>
+				</html:select></td>
+				<td><fmt:message key="page.note.activity"/></td>
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.activitydate"/></strong></td>
 				<td><html:text name="mdActivityForm" property="newActivity.activityDate" size="10" maxlength="8"/></td>
