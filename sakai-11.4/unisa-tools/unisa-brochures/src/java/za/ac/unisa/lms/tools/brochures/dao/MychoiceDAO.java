@@ -1401,13 +1401,11 @@ public class MychoiceDAO extends StudentSystemDAO {
 					qualificationchoice.appendChild(module);
 
 					Element modName = document.createElement("name");
-					modName.appendChild(document.createTextNode(data.get(
-							"MODULE1").toString()));
 							
 					//remove offered from current year
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 					int modFromYear = Integer.parseInt(data.get("mod_from_year").toString());
-					
+										
 					if(modFromYear > currentYear){
 						modName.appendChild(document.createTextNode(data.get(
 							"MODULE1").toString()+
