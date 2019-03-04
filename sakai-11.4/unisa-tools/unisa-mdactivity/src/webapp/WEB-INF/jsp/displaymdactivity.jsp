@@ -78,14 +78,19 @@
 		<tr>
 			<th align="left"><fmt:message key="page.heading.promoter"/>&nbsp;</th>
 			<th align="left"><fmt:message key="page.heading.department"/>&nbsp;</th>
-			<th align="left"><fmt:message key="page.heading.supervisor"/>&nbsp;</th>
+			<th align="left"><!--<fmt:message key="page.heading.supervisor"/>-->&nbsp;</th>
 		</tr>
 		<logic:notEmpty name="mdActivityForm" property="promotorList">
 			<logic:iterate name="mdActivityForm" property="promotorList" id="promotor" indexId="i">
 			<tr>
 				<td><bean:write name="promotor" property="name"/>&nbsp;</td>
 				<td><bean:write name="promotor" property="department"/>&nbsp;<bean:write name="promotor" property="departmentDesc"/></td>
-				<td><bean:write name="promotor" property="supervisor"/>&nbsp;</td>
+				<td>
+					<logic:equal name="promotor" property="supervisor" value="Y">Supervisor</logic:equal>
+					<logic:equal name="promotor" property="supervisor" value="N">Co-supervisor</logic:equal>
+					<logic:equal name="promotor" property="supervisor" value="C">Contact person</logic:equal>
+					<!--<bean:write name="promotor" property="supervisor"/>&nbsp;-->
+				</td>
 			</tr>
 			</logic:iterate>
 		</logic:notEmpty>
