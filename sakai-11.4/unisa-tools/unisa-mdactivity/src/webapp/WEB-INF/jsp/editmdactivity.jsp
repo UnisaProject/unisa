@@ -32,8 +32,7 @@
 			</tr><tr>
 				<td><strong><fmt:message key="page.heading.feedbackdate"/></strong></td>
 				<logic:equal name="mdActivityForm" property="updateFeedbackDate" value="true">
-					<td><html:text name="mdActivityForm" property="updateActivity.feedbackDate" size="10" maxlength="8"/></td>
-					<td><strong><fmt:message key="page.format"/></strong></td>
+					<td  colspan="2"><html:text name="mdActivityForm" property="updateActivity.feedbackDate" size="10" maxlength="8"/>&nbsp;&nbsp;&nbsp;<strong><fmt:message key="page.format"/></strong></td>				
 				</logic:equal>
 				<logic:notEqual name="mdActivityForm" property="updateFeedbackDate" value="true">
 					<td colspan="2"><bean:write name="mdActivityForm" property="updateActivity.feedbackDate"/></td>
