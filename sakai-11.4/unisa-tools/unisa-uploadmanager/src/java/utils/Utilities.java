@@ -36,11 +36,11 @@ public class Utilities {
 		String server = "";
 		String serverpath = ServerConfigurationService.getServerUrl();
         
-		if (serverpath.contains("myqa")) {
+		if (serverpath.contains("qa.int.unisa.ac.za")) {
 			server = "https://lmkn-ealb01sv.int.unisa.ac.za/sharedservices/courseMaterial/direct";
 		} else if (serverpath.contains("localhost")) {
 	    	server = "http://appsdev.int.unisa.ac.za/sharedservices/courseMaterial/direct";
-		} else if (serverpath.contains("mydev")) {
+		} else if (serverpath.contains("dev.int.unisa.ac.za")) {
 			server = "http://appsdev.int.unisa.ac.za/sharedservices/courseMaterial/direct";
 		} else {
 			server = "https://apps.unisa.ac.za/sharedservices/courseMaterial/direct";
@@ -52,8 +52,8 @@ public class Utilities {
 	public static boolean isTestEnvironment() {
 		String serverpath = ServerConfigurationService.getServerUrl();
 		if ((serverpath.contains("localhost"))
-				|| (serverpath.contains("mydev"))
-				|| (serverpath.contains("myqa"))) {
+				|| (serverpath.contains("dev.int.unisa.ac.za"))
+				|| (serverpath.contains("qa.int.unisa.ac.za"))) {
 			return true;
 		} else {
 			return false;
@@ -62,7 +62,7 @@ public class Utilities {
 
  	public static boolean isPreProd() {
 		String serverpath = ServerConfigurationService.getServerUrl();
-		if (serverpath.contains("myqa")) {
+		if (serverpath.contains("qa.int.unisa.ac.za")) {
 			return true;
 		} else {
 			return false;
