@@ -45,5 +45,46 @@ public class ForgetPasswordStudentSystemDAO extends StudentSystemDAO  {
       return counrtyCode;
     }
     
+    /*
+	 * 	update idvalt with the microsoft exchange email
+	*/
+	public void updateIdvaltPassword(String studentNr, String password) throws Exception{
+		String sql1 = "UPDATE IDVALT "+
+				  "SET password=? "+
+				  "WHERE MK_STUDENT_NR = ?";
+
+		try{
+			JdbcTemplate jdt1 = new JdbcTemplate(getDataSource());
+			jdt1.update(sql1,new Object[] {password,studentNr});
+		} catch (Exception ex) {
+			throw new Exception(this+ "updatePassword: Update 8 letter to IDVALT for student("+studentNr+") failed :"+ ex.getMessage());
+		}
+	}
+    
+	public void updateIdvaltEmail(String studentNr, String email) throws Exception{
+		String sql1 = "UPDATE IDVALT "+
+				  "SET EMAIL_ADDRESS=? "+
+				  "WHERE MK_STUDENT_NR = ?";
+
+		try{
+			JdbcTemplate jdt1 = new JdbcTemplate(getDataSource());
+			jdt1.update(sql1,new Object[] {email,studentNr});
+		} catch (Exception ex) {
+			throw new Exception(this+ "updateIdvaltEmail: Update mmyLife to IDVALT for student("+studentNr+") failed :"+ ex.getMessage());
+		}
+	}
+	
+	public void updateAdrphEmail(String studentNr, String email) throws Exception{
+		String sql1 = "UPDATE ADRPH "+
+				  "SET EMAIL_ADDRESS=? "+
+				  "WHERE REFERENCE_NO = ?";
+
+		try{
+			JdbcTemplate jdt1 = new JdbcTemplate(getDataSource());
+			jdt1.update(sql1,new Object[] {email,studentNr});
+		} catch (Exception ex) {
+			throw new Exception(this+ "updateAdrphEmail: Update mmyLife to ADRPH for student("+studentNr+") failed :"+ ex.getMessage());
+		}
+	}
 
 }
