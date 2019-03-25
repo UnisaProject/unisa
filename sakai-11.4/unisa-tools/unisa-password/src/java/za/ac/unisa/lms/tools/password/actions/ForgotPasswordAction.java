@@ -543,6 +543,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 		userDirectoryService = (UserDirectoryService) ComponentManager.get(UserDirectoryService.class);
 		eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
 		usageSessionService = (UsageSessionService) ComponentManager.get(UsageSessionService.class);
+		String tempEmail = stuNum+"@mylife.unisa.ac.za";
 		if (isOldStudent(Integer.parseInt(stuNum))) {
 			/*
 			 * if the student registered before 2009 (before myLife email process
@@ -554,12 +555,30 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 			}
 			// the student academic year from 2009 should have the active myLife email
 			// account
-			if (forgetPasswordForm.getMyLifeActiveStatus().equals("Y")) {
-				if (forgetPasswordForm.getEmail().length() > 0) {
+			if (forgetPasswordForm.getMyLifeActiveStatus().equals("Y")) { 
+				//verify student email is mylife email, if not update in ADRPH
+				
+		    
+			    if (forgetPasswordForm.getEmail().length() > 0) {			   
+				if(tempEmail.equalsIgnoreCase(forgetPasswordForm.getEmail())){
 					return forceNewPassword(forgetPasswordForm, stuNum);
-				} else {
-					// student must have email address in Adrph table to get the new password
-					return emailError(forgetPasswordForm, request, usageSession);
+			    }else{
+					//update the student mylife email in adrph
+					stuDao.updateIdvaltEmail(stuNum,tempEmail);
+					log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+					stuDao.updateAdrphEmail(stuNum,tempEmail);
+					log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+					forgetPasswordForm.setEmail(tempEmail);
+					return forceNewPassword(forgetPasswordForm, stuNum);
+				}
+				}else {
+					//update the student mylife email in adrph
+					stuDao.updateIdvaltEmail(stuNum,tempEmail);
+					log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+					stuDao.updateAdrphEmail(stuNum,tempEmail);
+					log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+					forgetPasswordForm.setEmail(tempEmail);
+					return forceNewPassword(forgetPasswordForm, stuNum);
 				}
 			} else {
 				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("message.generalmessage",
@@ -574,11 +593,28 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 			 * display the initial password on the screen
 			 */
 			if (initialPasswordChanged == true) {
-				if (forgetPasswordForm.getEmail().length() > 0) {
-					return forceNewPassword(forgetPasswordForm, stuNum);
-				} else {
-					return emailError(forgetPasswordForm, request, usageSession);
-				}
+				//update adrph and idvalt with student mylife email account
+			    if (forgetPasswordForm.getEmail().length() > 0) {			   
+					if(tempEmail.equalsIgnoreCase(forgetPasswordForm.getEmail())){
+						return forceNewPassword(forgetPasswordForm, stuNum);
+				    }else{
+						//update the student mylife email in adrph
+						stuDao.updateIdvaltEmail(stuNum,tempEmail);
+						log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+						stuDao.updateAdrphEmail(stuNum,tempEmail);
+						log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+						forgetPasswordForm.setEmail(tempEmail);
+						return forceNewPassword(forgetPasswordForm, stuNum);
+					}
+					}else {
+						//update the student mylife email in adrph
+						stuDao.updateIdvaltEmail(stuNum,tempEmail);
+						log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+						stuDao.updateAdrphEmail(stuNum,tempEmail);
+						log.info(this + " FORGOT PASSWORD: updated IDVALT student mylife email  for the student number " + stuNum);
+						forgetPasswordForm.setEmail(tempEmail);
+						return forceNewPassword(forgetPasswordForm, stuNum);
+					}
 			} else {
 				eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
 				toolManager = (ToolManager) ComponentManager.get(ToolManager.class);
@@ -596,16 +632,23 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 					IdVaultUser idVaultuser = new IdVaultUser();
 					// set all variables in class idVaultUser.
 					idVaultuser.setId(user.getEid());
-					idVaultuser.setEmail(user.getEmail());
+					idVaultuser.setEmail(tempEmail);
 					idVaultuser.setFirstName(user.getFirstName());
 					idVaultuser.setLastName(user.getLastName());
 					idVaultuser.setType(user.getType());
+					
+					if(forgetPasswordForm.getPassword().length() < 8) {
+						idVaultuser.setPassword(randomPassword());
+						forgetPasswordForm.setPassword(idVaultuser.getPassword());
+						//update the password in IDVALT
+						stuDao.updateIdvaltPassword(stuNum, idVaultuser.getPassword());
+						log.info(this + " FORGOT PASSWORD: Updated 8 letter password in IDVALT for student number " + stuNum);
+					}else {
 					idVaultuser.setPassword(forgetPasswordForm.getPassword());
+					}
 					
 					try {
-						// if(!((IdVaultProvisioner)
-						// ComponentManager.get("org.sakaiproject.user.api.UserDirectoryProvider")).saveUser(idVaultuser))
-						// {
+
 						if (!saveStudentToAD.saveUser(idVaultuser)) {
 							log.error(this + " procecssMyUnisaRequest: Re-save the password to AD for   "
 									+ forgetPasswordForm.getStudentNr() + " failed ");
@@ -647,7 +690,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 		if (forgetPasswordForm.getIsForeign()) {
 			return ("processforeignStudent");
 		} else {
-			return ("processNewStudent"); // deliverymethod
+			return ("processNewStudent"); 
 		}
 	}
 
@@ -746,6 +789,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 			idVaultuser.setLastName(user.getLastName());
 			idVaultuser.setType(user.getType());
 			idVaultuser.setPassword(password);
+			
 			log.info(this + " FORGOT PASSWORD: try save new password " + studentNr);
 			try {
 				// if(!((IdVaultProvisioner)
@@ -1188,7 +1232,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 			idVaultuser.setLastName(user.getLastName());
 			idVaultuser.setType(user.getType());
 			idVaultuser.setPassword(password);
-			log.error(this + " FORGOT PASSWORD: try save new password " + tmpStno);
+			log.info(this + " FORGOT PASSWORD: try save new password " + tmpStno);
 			try {
 				// if(!((IdVaultProvisioner)
 				// ComponentManager.get("org.sakaiproject.user.api.UserDirectoryProvider")).saveUser(idVaultuser))
