@@ -28,6 +28,8 @@ import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.util.LabelValueBean;
 
 import Staae05h.Abean.Staae05sAppAdmissionEvaluator;
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.tools.studentoffer.dao.StudentOfferDAO;
 import za.ac.unisa.lms.tools.studentoffer.forms.Student;
 import za.ac.unisa.lms.tools.studentoffer.forms.StudentOfferForm;
@@ -1089,6 +1091,56 @@ public class StudentOfferAction extends LookupDispatchAction {
 	}
 
 	public String getCurrentAcademicPeriod() throws Exception {
+		String acaPeriod;
+
+		Calendar cal = Calendar.getInstance();
+		
+		int month = cal.get(Calendar.MONTH)+1; //zero-based
+		
+		int currentYear = cal.get(Calendar.YEAR);
+		int acaYear = Integer.parseInt(getCurrentAcademicYear());
+		
+		//log.debug("StudentOfferAction - currentYear: " + currentYear+", acaYear: " + acaYear+", month="+month);
+		
+		if (currentYear < acaYear){
+			acaPeriod = "1";
+		}else{
+			if (month < 8 && month > 3){
+				acaPeriod = "2";
+			}else{
+				acaPeriod = "1";
+			}
+		}
+		
+		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+		Gencod gencod = new Gencod();
+		gencod = systemDao.getGenCode("333", "OFFER");		
+		
+		//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
+		if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("Y")){
+			if (gencod.getAfrDescription()!=null 
+					&& !gencod.getAfrDescription().equals("") 
+					&& isInteger(gencod.getAfrDescription().trim())) {
+				acaPeriod = gencod.getAfrDescription().trim();
+			}
+		}	
+		
+		//log.debug("StudentOfferAction - getCurrentAcademicPeriod: " + acaPeriod);
+		return acaPeriod;
+	}
+	
+	public boolean isInteger(String stringValue) {
+		try
+		{
+			Integer i = Integer.parseInt(stringValue);
+			return true;
+		}	
+		catch(NumberFormatException e)
+		{}
+		return false;
+	}
+	
+	public String xxgetCurrentAcademicPeriod() throws Exception {
 		String acaPeriod;
 
 		Calendar cal = Calendar.getInstance();
