@@ -73,7 +73,7 @@
   	</context-param>
   	<context-param>
 		<param-name>customsmspathqa</param-name>
-		<param-value>http://stratusdev.unisa.ac.za/sms/asps/SMS_Request.asp</param-value>	
+		<param-value>http://stratusqa.unisa.ac.za/sms/asps/SMS_Request.asp</param-value>	
   	</context-param>
   	<context-param>
 		<param-name>customsmspathprod</param-name>
