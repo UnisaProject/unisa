@@ -201,13 +201,20 @@ public class SmsBatchAction extends LookupDispatchAction {
 		}
 
 		String serverpath = ServerConfigurationService.getServerUrl();
-		if (serverpath.contains("myqa")){
-			smsForm.setSmsEnvironment("qa");
-		} else if (serverpath.contains("my.unisa")){
-			smsForm.setSmsEnvironment("prod");
-		} else {
-			smsForm.setSmsEnvironment("dev");
-		}
+//		if (serverpath.contains("myqa")){
+//			smsForm.setSmsEnvironment("qa");
+//		} else if (serverpath.contains("my.unisa")){
+//			smsForm.setSmsEnvironment("prod");
+//		} else {
+//			smsForm.setSmsEnvironment("dev");
+//		}
+		if (serverpath.contains("qa.int.unisa.ac.za")){
+	            smsForm.setSmsEnvironment("qa");
+	    } else if (serverpath.contains("dev.int.unisa.ac.za")){
+	            smsForm.setSmsEnvironment("dev");
+	    } else {
+	            smsForm.setSmsEnvironment("prod");
+	    }
 		
 		if (smsForm.getRcCode().trim().equalsIgnoreCase("") && 
 				smsForm.getRcList() == null &&
