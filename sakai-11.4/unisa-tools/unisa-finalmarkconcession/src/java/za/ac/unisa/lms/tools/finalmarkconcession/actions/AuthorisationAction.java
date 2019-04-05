@@ -469,7 +469,7 @@ public class AuthorisationAction extends LookupDispatchAction{
 				String serverpath = ServerConfigurationService.getServerUrl();
 				//do not send email on dev & qa -default email to pretoj@unisa.ac.za	
 				String toAddress=authRequest.getFiConcession().getAuthResponseEmail();
-				if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+				if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 					toAddress="pretoj@unisa.ac.za";
 				}	
 				UserDAO daoUser = new UserDAO();
@@ -498,7 +498,7 @@ public class AuthorisationAction extends LookupDispatchAction{
 				//send email to examination admin to inform them that a request had been authorised
 				if (fiStudentForm.getChangeStatus().equalsIgnoreCase("AUTHORISED")){
 					toAddress="FIconcessions@unisa.ac.za";
-					if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+					if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 						toAddress="pretoj@unisa.ac.za";
 					}	
 					sendNotifyResponseEmail(toAddress, addressee, concession, fiStudentForm.getAuthComment(), responseText);
@@ -544,7 +544,7 @@ public class AuthorisationAction extends LookupDispatchAction{
 				}
 				//do not send email on dev & qa -default email to pretoj@unisa.ac.za
 				String serverpath = ServerConfigurationService.getServerUrl();
-				if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+				if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 					toAddress="pretoj@unisa.ac.za";
 				}	
 				sendNotifyRequestEmail(toAddress, addressee);	
@@ -697,7 +697,7 @@ public class AuthorisationAction extends LookupDispatchAction{
 					String serverpath = ServerConfigurationService.getServerUrl();
 					//do not send email on dev & qa -default email to pretoj@unisa.ac.za	
 					String toAddress=authRequest.getFiConcession().getAuthResponseEmail();
-					if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+					if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 						toAddress="pretoj@unisa.ac.za";
 					}	
 					UserDAO daoUser = new UserDAO();
@@ -726,7 +726,7 @@ public class AuthorisationAction extends LookupDispatchAction{
 					//send email to examination admin to inform them that a request had been authorised
 					if (fiStudentForm.getChangeStatus().equalsIgnoreCase("AUTHORISED")){
 						toAddress="FIconcessions@unisa.ac.za";
-						if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+						if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 							toAddress="pretoj@unisa.ac.za";
 						}	
 						sendNotifyResponseEmail(toAddress, addressee, concession, fiStudentForm.getAuthComment(), responseText);
