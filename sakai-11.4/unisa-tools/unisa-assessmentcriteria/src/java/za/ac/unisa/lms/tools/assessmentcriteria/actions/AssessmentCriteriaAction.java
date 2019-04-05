@@ -1333,7 +1333,7 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 				}
 				//do not send email on dev & qa -default email to pretoj@unisa.ac.za
 				String serverpath = ServerConfigurationService.getServerUrl();
-				if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+				if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 					toAddress="pretoj@unisa.ac.za";
 				}	
 				sendNotifyEmail(toAddress, addressee, course);				
