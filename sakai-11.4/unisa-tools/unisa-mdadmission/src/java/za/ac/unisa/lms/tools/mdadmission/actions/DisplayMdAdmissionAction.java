@@ -1073,7 +1073,7 @@ public class DisplayMdAdmissionAction  extends LookupDispatchAction{
 		
     	//do not send email on local machine, dev & qa -default email to tnonyack@unisa.ac.za(Developer)
 		String serverpath = ServerConfigurationService.getServerUrl();
-		if (serverpath.contains("mydev") || serverpath.contains("myqa") || serverpath.contains("localhost")){
+		if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za") || serverpath.contains("localhost")){
 			emailTo = "pretoj@unisa.ac.za";//loggedInUser.getEmailAddress();//"tnonyack@unisa.ac.za";
 		}
 		else{    	
@@ -1130,7 +1130,7 @@ public class DisplayMdAdmissionAction  extends LookupDispatchAction{
 		
     	//do not send email on local machine, dev & qa -default email to tnonyack@unisa.ac.za(Developer)
 		String serverpath = ServerConfigurationService.getServerUrl();
-		if (serverpath.contains("mydev") || serverpath.contains("myqa") || serverpath.contains("localhost")){
+		if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za") || serverpath.contains("localhost")){
 			emailTo = loggedInUser.getEmailAddress();//"tnonyack@unisa.ac.za";
 		}
 		else{    	
