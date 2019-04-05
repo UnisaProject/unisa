@@ -616,8 +616,8 @@ public class GraduationCeremonyAction extends LookupDispatchAction {
 //do not send email on dev & qa -default email to krugegj@unisa.ac.za
 		String serverpath = ServerConfigurationService.getServerUrl();
 		String toaddr = "";
-		if (serverpath.contains("mydev") || serverpath.contains("localhost")|| serverpath.contains("myqa")){
-			  toaddr="baloyar@unisa.ac.za";
+		if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("localhost")|| serverpath.contains("qa.int.unisa.ac.za")){
+			  toaddr="pretoj@unisa.ac.za";
 		}else {
 			  toaddr="gaudeamus@unisa.ac.za";
 		}
