@@ -105,6 +105,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP,gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -497,6 +498,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP,gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year >"
@@ -680,6 +682,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP, gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -849,6 +852,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP, gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -1402,20 +1406,10 @@ public class MychoiceDAO extends StudentSystemDAO {
 
 					Element modName = document.createElement("name");
 							
-					//remove offered from current year    
-					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-					int modFromYear = Integer.parseInt(data.get("mod_from_year").toString());
-										
-					if(modFromYear > currentYear){
-						modName.appendChild(document.createTextNode(data.get(
-							"MODULE1").toString()+
-							" (Offered from "+data.get("mod_from_year").toString()+")"));
-							
-					}else{
-						modName.appendChild(document.createTextNode(data.get(
+					//Module description displayed on brochure as it is (No - Offered from year)    
+					modName.appendChild(document.createTextNode(data.get(
 							"MODULE1").toString()));
-													
-					}
+
 
 					Element modCode = document.createElement("code");
 					modCode.appendChild(document.createTextNode(data.get(
