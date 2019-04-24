@@ -181,6 +181,7 @@ public class BrochureQueries {
 				    sb.append(" (select sununs.purpose from sununs where mk_study_unit_code= sun.code) \"SYLLABUS\"");
 				    sb.append(" FROM quaspc, grd, qspsun, sun, colleg, kat, qspgrp, gencod");
 				    sb.append(" WHERE quaspc.in_use_flag = 'Y'");
+					sb.append(" AND quaspc.calendar_category = 'Y'");
 				    sb.append(" AND quaspc.mk_qualification_c = grd.code");
 				   // sb.append(" and quaspc.college_code = 3");
 				    sb.append(" AND qspgrp.mk_qual_code = quaspc.mk_qualification_c");
@@ -361,7 +362,8 @@ public class BrochureQueries {
 					queryBuilder.append(" (select SUNPDT.CO_PARALLEL_REQUISITES_INFO from sunpdt where fk_suncode=sun.code and mk_academic_year="+year+" and semester_period in (0,1)) \"Co-requisite\","); 			                                      
 					queryBuilder.append(" (select sununs.purpose from sununs where mk_study_unit_code= sun.code) \"SYLLABUS\""); 			                                     
 					queryBuilder.append(" FROM quaspc, grd, qspsun, sun, colleg, kat,gencod"); 			                
-					queryBuilder.append(" WHERE quaspc.in_use_flag = 'Y'"); 			                
+					queryBuilder.append(" WHERE quaspc.in_use_flag = 'Y'"); 	
+					queryBuilder.append(" AND quaspc.calendar_category = 'Y'");					
 					queryBuilder.append(" AND quaspc.mk_qualification_c = grd.code"); 			                      
 					//queryBuilder.append(" AND qspgrp.mk_qual_code = quaspc.mk_qualification_c");
 					//queryBuilder.append(" AND qspgrp.mk_spes_code = quaspc.speciality_code");
