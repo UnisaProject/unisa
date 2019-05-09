@@ -43,6 +43,7 @@
         name="mymodules"
         path="/WEB-INF/jsp/mymodules.jsp"
         contextRelative="true" />
+		<forward name="myslp" path="/WEB-INF/jsp/myslp.jsp" contextRelative="true" />
         </action>
 	</action-mappings>
 

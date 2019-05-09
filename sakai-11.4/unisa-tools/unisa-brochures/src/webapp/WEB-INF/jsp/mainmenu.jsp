@@ -25,6 +25,9 @@
 	</tr>
 	<td><html:link href="brochures.do?act=myModules">myModules</html:link></td>
 	</tr>
+	</tr>
+		<td><html:link href="brochures.do?act=mySLP">mySlp</html:link></td>
+	</tr>
 	<tr>
 	<td><html:link href="brochures.do?act=auditReport">Audit Reports</html:link></td>
 	</tr>
