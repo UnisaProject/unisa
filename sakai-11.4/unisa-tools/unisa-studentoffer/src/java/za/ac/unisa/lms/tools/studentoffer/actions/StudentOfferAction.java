@@ -1541,8 +1541,10 @@ public class StudentOfferAction extends LookupDispatchAction {
 					op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
 					op.setInWsUserNumber(99998);
 					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
-					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode2()));
+					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));					
+					//Johanet 20190517 - Only one period valid at a time
+					//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode2()));
+					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
 					op.setInWebStuApplicationQualNewQual(qual2);
 					op.setInWebStuApplicationQualChoiceNr((short) 2);
 					op.setInWebStuApplicationQualOfferAccepted("Y");
