@@ -48,6 +48,7 @@ import za.ac.unisa.lms.tools.brochures.dao.BrochureDAO;
 import za.ac.unisa.lms.tools.brochures.dao.BrochureDetails;
 import za.ac.unisa.lms.tools.brochures.dao.MychoiceDAO;
 import za.ac.unisa.lms.tools.brochures.forms.BrochuresForm;
+import za.ac.unisa.lms.tools.brochures.dao.MyShortLearningProgrammesDAO;
 
 
 
@@ -103,7 +104,8 @@ public class BrochuresAction extends LookupDispatchAction {
 		} else if ("3".equalsIgnoreCase(request.getParameter("atStep"))){
 			gotoStepValidate = myModuleExport(mapping,form,request, response);
 		} else if ("4".equalsIgnoreCase(request.getParameter("atStep"))){
-			//gotoStepValidate = mySLPExport(mapping,form,request, response);
+			mySLPExport(mapping,form,request, response);
+			gotoStepValidate = "";
 		}
 		return mapping.findForward(gotoStepValidate);
 	}
@@ -159,6 +161,8 @@ public class BrochuresAction extends LookupDispatchAction {
 		     
 		    brochuresForm.setCategory("-1");
 	        brochuresForm.setCollegeCode("-1");
+			brochuresForm.setSchCode("-1");
+			brochuresForm.setDptCode("-1");
 	        brochuresForm.setFormat("-1");
 		   
 			return mapping.findForward("mainmenu");
@@ -793,20 +797,20 @@ public class BrochuresAction extends LookupDispatchAction {
 	 * @param response
 	 * @return ActionForward
 	 */
-	/*public String mySLPExport(
+	public String mySLPExport(
 		ActionMapping mapping,
 		ActionForm form,
 		HttpServletRequest request,
 		HttpServletResponse response)throws Exception {
-		 MychoiceDAO mychoiceDAO = new MychoiceDAO();
+		 MyShortLearningProgrammesDAO myShortLearningProgrammesDAO = new MyShortLearningProgrammesDAO();
 		 BrochureDAO dao = new BrochureDAO();
 		 ActionMessages messages = new ActionMessages();
 		 BrochuresForm brochuresForm = (BrochuresForm)form;
 		 
 		 String colCode =brochuresForm.getCollegeCode();
 		 int year =Integer.parseInt(brochuresForm.getYear());
-		 String type = request.getParameter("type");
-		 brochuresForm.setType(type);
+		 //String type = request.getParameter("type");
+		 //brochuresForm.setType(type);
 		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	     Date date = new Date();
 	     brochuresForm.setType("mySLP");
@@ -820,10 +824,10 @@ public class BrochuresAction extends LookupDispatchAction {
 				  
 				    
 				    /* ****************************************************************************************************************
-					* Source Path into the DEV, QA, and PROD folder, that holds the path for myChoiceMD.xsl
+					* Source Path into the DEV, QA, and PROD folder, that holds the path for mySLP.xsl
 					* Comment out this line of code to test on localhost, and uncomment the localhost path.
 					* 
-					/
+					*/
 					   
 				    String path = getServlet().getServletContext().getInitParameter("mypath");
 					   		    
@@ -832,23 +836,24 @@ public class BrochuresAction extends LookupDispatchAction {
 					* Source Path into the DEV, QA, and PROD folder, that holds the path for mySLP.xsl
 					* Comment out this line of code to test on localhost, and uncomment the localhost path.
 					* 
-					/
+					*/
 				    
 				    sourcePath =  getServlet().getServletContext().getInitParameter("brochures")+"/mySLP/mySLP.xsl";
+				    System.out.println("path "+path);
+					System.out.println("sourcePath "+sourcePath);
 				    
-				    
-				    //document = mychoiceDAO.myModuleXml(colCode, brochuresForm.getSchCode(), 
-					//		brochuresForm.getDptCode(),year);
+				    document = myShortLearningProgrammesDAO.mySLPXML(colCode, brochuresForm.getSchCode(), 
+							brochuresForm.getDptCode(),year);
 				  		   
 				    
-				   if(mychoiceDAO.isMySLP()==true){
+				   /*if(myShortLearningProgrammesDAO.isMySLP()==true){
 				    	messages.add(ActionMessages.GLOBAL_MESSAGE,
 								new ActionMessage("errors.message", "There is no data for your selection."));
 				    	addErrors(request, messages); 
 						return "myslp";
-				    }
+				    }*/
 				    	filename = "mySLP.xml";
-				        //filename1 = "myModules.doc";
+				        //filename1 = "mySLP.doc";
 
 				  
 				
@@ -908,14 +913,14 @@ public class BrochuresAction extends LookupDispatchAction {
 		        	
 		     
 		        	
-		        	dao.setAuditReport(brochuresForm.getUserId(), timeStamp, brochuresForm.getType(),brochuresForm.getCollegeCode(),year, brochuresForm.getFormat());
+		        	//dao.setAuditReport(brochuresForm.getUserId(), timeStamp, brochuresForm.getType(),brochuresForm.getCollegeCode(),year, brochuresForm.getFormat());
 			}catch(Exception e){
 				//TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			 
 		return null;
-	}*/
+	}
 	
 	
 	/**
@@ -1040,21 +1045,39 @@ public class BrochuresAction extends LookupDispatchAction {
 		    	 }
       
 			 }
+			 System.out.println("step? "+request.getParameter("atStep"));
+			
 			System.out.println("myLSP type ............"+brochuresForm.getType());
+			System.out.println("myLSP year ............"+brochuresForm.getYear());
 			System.out.println("myLSP college ............"+brochuresForm.getCollegeCode());
 			System.out.println("myLSP school ............"+brochuresForm.getSchCode());
 			System.out.println("myLSP department ............"+brochuresForm.getDptCode());
+			
+			if(brochuresForm.getYear() == null){
+				brochuresForm.setYear(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+				System.out.println("myLSP year after............"+brochuresForm.getYear());
+			}
+			
 			if(brochuresForm.getCollegeCode() == null){
 				brochuresForm.setCollegeCode("-1"); 
+				System.out.println("myLSP college after............"+brochuresForm.getCollegeCode());
 			}
 			if(brochuresForm.getSchCode() == null){
 				brochuresForm.setSchCode("-1");
+				System.out.println("myLSP school after............"+brochuresForm.getSchCode());
+			}
+			if(brochuresForm.getDptCode() == null){
+				brochuresForm.setDptCode("-1");
+				System.out.println("myLSP department after............"+brochuresForm.getDptCode());
 			}
 		    brochuresForm.setType("mySLP");
+			brochuresForm.setColleges(dao.getColleges());
+			brochuresForm.setSchList(dao.getSchools(brochuresForm.getCollegeCode()));
+			brochuresForm.setDptList(dao.getDepartment(brochuresForm.getCollegeCode(), brochuresForm.getSchCode()));
 	        session.setAttribute("colleges",dao.getColleges());
-			session.setAttribute("schList",dao.getSchools(brochuresForm.getCollegeCode()));
+			session.setAttribute("schList",brochuresForm.getSchList());
 			session.setAttribute("yearsList",brochuresForm.getYearsList());
-			session.setAttribute("dptList",dao.getDepartment(brochuresForm.getCollegeCode(), brochuresForm.getSchCode()));
+			session.setAttribute("dptList",brochuresForm.getDptList());
 
 			return mapping.findForward("myslp");
 	}

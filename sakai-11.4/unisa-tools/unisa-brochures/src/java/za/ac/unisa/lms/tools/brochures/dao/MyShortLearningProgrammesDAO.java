@@ -55,12 +55,11 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 
 				List slpInfo = jdt.queryForList(query);
 
-				//myReg = slpInfo.isEmpty();
-				String collegeName;
+				String collegeName = "";
 				String collegeCode;
-				String dptName;
+				String dptName = "";
 				String deptCode;
-				String qualCatName;
+				String qualCatName = "";
 				String qualName;
 				String qualCode;
 				String qualYear;
@@ -88,48 +87,57 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 				while (i.hasNext()) {
 					ListOrderedMap data = (ListOrderedMap) i.next();
 
-					System.out.println(data.get("adminReq").toString());
+
 					//college
-					college = document.createElement("college");
-					colleges.appendChild(college);
-					
-					collegeName = data.get("collegeDesc").toString();
-					Element collName = document.createElement("name");
-					collName.appendChild(document
-							.createTextNode(collegeName));
-					college.appendChild(collName);
-					
-					collegeCode = data.get("collegeCode").toString();
-					Element eCollCode = document.createElement("code");
-					eCollCode.appendChild(document
-							.createTextNode(collegeCode));
-					college.appendChild(eCollCode);
+					if(! collegeName.equals(data.get("collegeDesc").toString())){
+						college = document.createElement("college");
+						colleges.appendChild(college);
+						
+						collegeName = data.get("collegeDesc").toString();
+						Element collName = document.createElement("name");
+						collName.appendChild(document
+								.createTextNode(collegeName));
+						college.appendChild(collName);
+						
+						collegeCode = data.get("collegeCode").toString();
+						Element eCollCode = document.createElement("code");
+						eCollCode.appendChild(document
+								.createTextNode(collegeCode));
+						college.appendChild(eCollCode);
+					}
+
 					
 					//department
-					department = document.createElement("department");
-					college.appendChild(department);
-																				
-					dptName = data.get("departmentDesc").toString();
-					Element departmentName = document.createElement("name");
-					departmentName.appendChild(document
-							.createTextNode(dptName));							
-					department.appendChild(departmentName);		
-					
-					deptCode = data.get("departmentCode").toString();
-					Element departmentCode = document.createElement("code");
-					departmentCode.appendChild(document
-							.createTextNode(deptCode));							
-					department.appendChild(departmentCode);		
+					if(! dptName.equals(data.get("departmentDesc").toString())){
+						department = document.createElement("department");
+						college.appendChild(department);
+																					
+						dptName = data.get("departmentDesc").toString();
+						Element departmentName = document.createElement("name");
+						departmentName.appendChild(document
+								.createTextNode(dptName));							
+						department.appendChild(departmentName);		
+						
+						deptCode = data.get("departmentCode").toString();
+						Element departmentCode = document.createElement("code");
+						departmentCode.appendChild(document
+								.createTextNode(deptCode));							
+						department.appendChild(departmentCode);							
+					}
+	
 					
 					//category
-					qualificationCategory = document.createElement("qualificationcategory");
-					department.appendChild(qualificationCategory);
-					
-					qualCatName = data.get("qualCategory").toString();
-					Element qualCategory = document.createElement("name");
-					qualCategory.appendChild(document
-							.createTextNode(qualCatName));							
-					qualificationCategory.appendChild(qualCategory);	
+					if(! qualCatName.equals(data.get("qualCategory").toString())){
+						qualificationCategory = document.createElement("qualificationcategory");
+						department.appendChild(qualificationCategory);
+						
+						qualCatName = data.get("qualCategory").toString();
+						Element qualCategory = document.createElement("name");
+						qualCategory.appendChild(document
+								.createTextNode(qualCatName));							
+						qualificationCategory.appendChild(qualCategory);						
+					}
+	
 					
 					//qualification details
 					qualification = document.createElement("qualification");

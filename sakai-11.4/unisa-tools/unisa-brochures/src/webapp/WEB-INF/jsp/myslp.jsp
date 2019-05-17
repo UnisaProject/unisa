@@ -8,19 +8,12 @@
 
 
 <fmt:setBundle basename="za.ac.unisa.lms.tools.brochures.ApplicationResources"/>
-<script>
-	function setAction() {
-		//document.brochuresForm.action = 'brochures.do?act=mySLP';
-		//document.brochuresForm.submit();
-		document.forms[0].action = 'brochures.do?act=mySLP';
-		document.forms[0].submit();
-	}		
-</script>
 
 <sakai:html>
 	<html:form action="/brochures">
 	<html:hidden property="atStep" value="4"/>	
 	<html:hidden property="type" value="${brochuresForm.type}"/>
+
    <sakai:group_heading>Brochure Output <bean:write name="brochuresForm"  property="type"/></sakai:group_heading>
    	<p>
 	<sakai:messages/>
@@ -33,37 +26,37 @@
      <html:options collection="yearsList" property="value" labelProperty="label"/>
            </html:select> 
 	 	</td>
-  </tr> 	   
+  </tr>   
  <tr>
 	 <td><fmt:message key="college.disc"/></td>
 			
 			<td>
-			<html:select property="collegeCode" onchange="javascript:setAction()"  style="width: 350px; overflow:auto;">
-					<html:option value="-1">All</html:option>	 
-        		    <html:options  collection="colleges" property="value" labelProperty="label" />
+			<html:select name="brochuresForm" property="collegeCode" onchange="submit();"  style="width: 350px; overflow:auto;"> 
+        		    <html:option value="-1">All</html:option>
+					<html:optionsCollection name="brochuresForm"  property="colleges"/>
     		</html:select> 
 			</td>					
 	    </tr>
-	     <tr>
+  
+		<tr>
 	 <td><fmt:message key="schools.disc"/></td>
 			
 			<td>
-			<html:select property="schCode" onchange="setAction()"  style="width: 350px; overflow:auto;">
+			<html:select name="brochuresForm" property="schCode" onchange="submit();"  style="width: 350px; overflow:auto;">
 					<html:option value="-1">All</html:option>	 
-        		    <html:options  collection="schList" property="value" labelProperty="label" />
+        		    <html:optionsCollection  name="brochuresForm" property="schList"/>
     		</html:select> 
 			</td>					
 	    </tr> <tr>
 	 <td><fmt:message key="dpt.disc"/></td>
 			
 			<td>
-			<html:select property="dptCode" onchange="setAction()"  style="width: 350px; overflow:auto;">
+			<html:select name="brochuresForm" property="dptCode" onchange="submit();"  style="width: 350px; overflow:auto;">
 					<html:option value="-1">All</html:option>	 
-        		    <html:options  collection="dptList" property="value" labelProperty="label" />
+        		    <html:optionsCollection  name="brochuresForm" property="dptList"/>
     		</html:select> 
 			</td>					
-	    </tr>	    
-
+	    </tr>
 
 
 
@@ -78,21 +71,26 @@
     </tr>
 </sakai:group_table>
 <sakai:group_table>
+   <sakai:actions>
      <tr><td>
-		   <sakai:actions>
+
 			<html:submit styleClass="button" property="act">
-			    <fmt:message key="button.export"/>
-			   </html:submit>
-		     </sakai:actions>
+				<fmt:message key="button.export"/>
+		    </html:submit>
+
 		     </td>
 		     <td>
-		   <sakai:actions>
+
 			<html:submit styleClass="button" property="act">
 			    <fmt:message key="button.back"/>
-			   </html:submit>
-		     </sakai:actions>
+			</html:submit>
+
 		     </td>
 		 </tr>
+
+		<html:hidden property="act" value="mySLP"/>
+	</sakai:actions>
   </sakai:group_table>
+
 	</html:form>
 </sakai:html> 

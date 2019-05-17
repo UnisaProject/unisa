@@ -42,7 +42,7 @@ public class SLPQuery {
 			stringBuilder.append(" AND grd.MK_DEPARTMENT_CODE ="+"'"+deptCode+"'"); 			
 		}
 		
-		stringBuilder.append(" order by collegeDesc, schoolDesc, departmentDesc, grd.CODE");
+		stringBuilder.append(" order by collegeDesc, departmentDesc, qualCategory, grd.CODE");
 		
 		return stringBuilder.toString();
 	}
