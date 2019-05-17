@@ -1432,14 +1432,16 @@ public class StudentOfferAction extends LookupDispatchAction {
 			if (null!=stuRegForm.getStudentApplication().getRadioOfferAccept() && stuRegForm.getStudentApplication().getRadioOfferAccept().equalsIgnoreCase("1")) {
 				isRadio1 = true;
 				qual1 = (stuRegForm.getOfferQual1().substring(0,5));
-				String period1 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual1, "1");
-				stuRegForm.setQualPeriodCode1(period1);
+				//Johanet 20190517 - Only one period valid at a time
+				//String period1 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual1, "1");
+				//stuRegForm.setQualPeriodCode1(period1);
 			}
 			if (null!=stuRegForm.getStudentApplication().getRadioOfferAccept() && stuRegForm.getStudentApplication().getRadioOfferAccept().equalsIgnoreCase("2")) {
 				isRadio2 = true;
 				qual2 = (stuRegForm.getOfferQual2().substring(0,5));
-				String period2 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual2, "2");
-				stuRegForm.setQualPeriodCode2(period2);
+				//Johanet 20190517 - Only one period valid at a time
+				//String period2 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual2, "2");
+				//stuRegForm.setQualPeriodCode2(period2);
 			}
 			
 			if (!isRadio1 && !isRadio2){
@@ -1484,7 +1486,9 @@ public class StudentOfferAction extends LookupDispatchAction {
 					op.setInWsUserNumber(99998);
 					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
 					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode1()));
+					//Johanet 20190517 - Only one period valid at a time
+					//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode1()));
+					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
 					op.setInWebStuApplicationQualNewQual(qual1);
 					op.setInWebStuApplicationQualChoiceNr((short) 1);
 					op.setInWebStuApplicationQualOfferAccepted("Y");
