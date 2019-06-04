@@ -1165,7 +1165,7 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 						if (!existAssignmentBeforeExamAdmDate){
 							messages.add(ActionMessages.GLOBAL_MESSAGE,
 									new ActionMessage("message.generalmessage",
-												"The due date of one of the assessments must be on or before " + assessmentCritForm.getExamAdmissionDate() + ".  This is required for examination admission."));
+												"The due date of one of the assessments must be before " + assessmentCritForm.getExamAdmissionDate() + ".  This is required for examination admission."));
 						}	
 					}	
 					
