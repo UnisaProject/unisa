@@ -48,6 +48,7 @@ import za.ac.unisa.lms.tools.brochures.dao.BrochureDAO;
 import za.ac.unisa.lms.tools.brochures.dao.BrochureDetails;
 import za.ac.unisa.lms.tools.brochures.dao.MychoiceDAO;
 import za.ac.unisa.lms.tools.brochures.forms.BrochuresForm;
+import za.ac.unisa.lms.tools.brochures.dao.MyShortLearningProgrammesDAO;
 
 
 
@@ -68,6 +69,7 @@ public class BrochuresAction extends LookupDispatchAction {
 		map.put("myChoiceType","myChoiceType");
 		map.put("myRegistration","myRegistration");
 		map.put("myModules","myModules");
+		map.put("mySLP","mySLP");
 		map.put("button.export","exportReport");
 		map.put("button.back","goBack");
 		map.put("auditReport","auditReport");
@@ -101,6 +103,9 @@ public class BrochuresAction extends LookupDispatchAction {
 			gotoStepValidate = myRegExport(mapping,form,request, response);
 		} else if ("3".equalsIgnoreCase(request.getParameter("atStep"))){
 			gotoStepValidate = myModuleExport(mapping,form,request, response);
+		} else if ("4".equalsIgnoreCase(request.getParameter("atStep"))){
+			mySLPExport(mapping,form,request, response);
+			gotoStepValidate = "";
 		}
 		return mapping.findForward(gotoStepValidate);
 	}
@@ -129,6 +134,8 @@ public class BrochuresAction extends LookupDispatchAction {
 			gotoStepValidate = back2(mapping,form,request, response);
 		} else if ("3".equalsIgnoreCase(request.getParameter("atStep"))){
 			gotoStepValidate = back3(mapping,form,request, response);
+		} else if ("4".equalsIgnoreCase(request.getParameter("atStep"))){
+			gotoStepValidate = back4(mapping,form,request, response);
 		}
 		return mapping.findForward(gotoStepValidate);
 	}
@@ -154,6 +161,8 @@ public class BrochuresAction extends LookupDispatchAction {
 		     
 		    brochuresForm.setCategory("-1");
 	        brochuresForm.setCollegeCode("-1");
+			brochuresForm.setSchCode("-1");
+			brochuresForm.setDptCode("-1");
 	        brochuresForm.setFormat("-1");
 		   
 			return mapping.findForward("mainmenu");
@@ -778,6 +787,142 @@ public class BrochuresAction extends LookupDispatchAction {
 			 
 		return null;
 	}
+	
+		/**
+	 * Method mySLPExport
+	 * 		
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return ActionForward
+	 */
+	public String mySLPExport(
+		ActionMapping mapping,
+		ActionForm form,
+		HttpServletRequest request,
+		HttpServletResponse response)throws Exception {
+		 MyShortLearningProgrammesDAO myShortLearningProgrammesDAO = new MyShortLearningProgrammesDAO();
+		 BrochureDAO dao = new BrochureDAO();
+		 ActionMessages messages = new ActionMessages();
+		 BrochuresForm brochuresForm = (BrochuresForm)form;
+		 
+		 String colCode =brochuresForm.getCollegeCode();
+		 int year =Integer.parseInt(brochuresForm.getYear());
+		 //String type = request.getParameter("type");
+		 //brochuresForm.setType(type);
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	     Date date = new Date();
+	     brochuresForm.setType("mySLP");
+	     String timeStamp = dateFormat.format(date);
+	  
+			try{
+				    Document document =null;
+				    String filename ="";
+				    String filename1 ="";
+				    String sourcePath = "";
+				  
+				    
+				    /* ****************************************************************************************************************
+					* Source Path into the DEV, QA, and PROD folder, that holds the path for mySLP.xsl
+					* Comment out this line of code to test on localhost, and uncomment the localhost path.
+					* 
+					*/
+					   
+				    String path = getServlet().getServletContext().getInitParameter("mypath");
+					   		    
+				 
+				    /* ****************************************************************************************************************
+					* Source Path into the DEV, QA, and PROD folder, that holds the path for mySLP.xsl
+					* Comment out this line of code to test on localhost, and uncomment the localhost path.
+					* 
+					*/
+				    
+				    sourcePath =  getServlet().getServletContext().getInitParameter("brochures")+"/mySLP/mySLP.xsl";
+				    System.out.println("path "+path);
+					System.out.println("sourcePath "+sourcePath);
+				    
+				    document = myShortLearningProgrammesDAO.mySLPXML(colCode, brochuresForm.getSchCode(), 
+							brochuresForm.getDptCode(),year);
+				  		   
+				    
+				   /*if(myShortLearningProgrammesDAO.isMySLP()==true){
+				    	messages.add(ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("errors.message", "There is no data for your selection."));
+				    	addErrors(request, messages); 
+						return "myslp";
+				    }*/
+				    	filename = "mySLP.xml";
+				        //filename1 = "mySLP.doc";
+
+				  
+				
+				  
+				 	File file= new File(path+filename);
+				    PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+				
+				 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	 
+		        	Transformer transformer = transformerFactory.newTransformer();
+
+		        	transformer.setOutputProperty(OutputKeys.INDENT, "yes"); 
+		        	DOMSource source1 = new DOMSource(document);
+		        
+		        	StreamResult result =  new StreamResult(output);
+		        	transformer.transform(source1, result);
+		 
+		        	if (output != null){
+		        		output.close();
+		        	}
+		        	
+		        	if(brochuresForm.getFormat().equals("1")){
+			        	
+			        	Reader rdr = new InputStreamReader(new FileInputStream(path+filename), "ISO-8859-1");   
+			        	Source source = new StreamSource(rdr);
+			        	Source xsl = new StreamSource(sourcePath);
+			            TransformerFactory factory = TransformerFactory.newInstance();
+			            Templates template = factory.newTemplates(xsl);
+			           
+			            File tmpFile = new File(path+filename1);
+			            
+			            FileOutputStream file1 = new FileOutputStream(tmpFile);
+			            Result result1 = new StreamResult(file1);
+			            Transformer transformer1 = factory.newTransformer(xsl);
+			            transformer1.setOutputProperty(OutputKeys.INDENT, "yes");
+			            transformer1.transform(source, result1);	
+			        	DataInputStream in = new DataInputStream(new FileInputStream(tmpFile));
+						ServletOutputStream out = response.getOutputStream();
+						response.setDateHeader("Expires", 0);
+						response.setHeader( "Pragma", "public" );
+						response.setContentType("application/octet-stream");
+						response.setContentLength((int)tmpFile.length());
+						response.addHeader("Content-Disposition", "attachment;filename=" + filename1 );
+						saveToClient(in, out);
+			}else if(brochuresForm.getFormat().equals("2")){
+			        		File xmlfile = new File(path+filename);
+							DataInputStream in = new DataInputStream(new FileInputStream(xmlfile));
+							ServletOutputStream out = response.getOutputStream();
+							response.setDateHeader("Expires", 0);
+							response.setHeader( "Pragma", "public" );
+							response.setContentType("application/octet-stream");
+							response.setContentLength((int)file.length());
+							response.addHeader("Content-Disposition", "attachment;filename=" + filename );
+							saveToClient(in, out);
+			     
+			}
+		        	
+		     
+		        	
+		        	//dao.setAuditReport(brochuresForm.getUserId(), timeStamp, brochuresForm.getType(),brochuresForm.getCollegeCode(),year, brochuresForm.getFormat());
+			}catch(Exception e){
+				//TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+		return null;
+	}
+	
+	
 	/**
 	 * Method myRegistration
 	 * 		
@@ -873,6 +1018,68 @@ public class BrochuresAction extends LookupDispatchAction {
 		    brochuresForm.getDptCode(), brochuresForm.getYear()));
 			session.setAttribute("subjectsList",dao.getSubjects(brochuresForm.getModule()));
 			return mapping.findForward("mymodules");
+	}
+	
+		/**
+	 * Method mySLP
+	 * 		
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return ActionForward
+	 */
+	public ActionForward mySLP(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception{
+		    BrochuresForm brochuresForm = (BrochuresForm)form;
+		    HttpSession session = request.getSession(true);
+		    MychoiceDAO dao =new MychoiceDAO();
+			 Cookie[] cookies= request.getCookies();
+		     for(int i=0; i < cookies.length; i++)  {
+		    	 Cookie thisCookie = cookies[i];
+		    	 if (thisCookie.getName().equals("novelluser")){
+			                 brochuresForm.setUserId(thisCookie.getValue());
+		    	 }
+      
+			 }
+			 System.out.println("step? "+request.getParameter("atStep"));
+			
+			System.out.println("myLSP type ............"+brochuresForm.getType());
+			System.out.println("myLSP year ............"+brochuresForm.getYear());
+			System.out.println("myLSP college ............"+brochuresForm.getCollegeCode());
+			System.out.println("myLSP school ............"+brochuresForm.getSchCode());
+			System.out.println("myLSP department ............"+brochuresForm.getDptCode());
+			
+			if(brochuresForm.getYear() == null){
+				brochuresForm.setYear(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+				System.out.println("myLSP year after............"+brochuresForm.getYear());
+			}
+			
+			if(brochuresForm.getCollegeCode() == null){
+				brochuresForm.setCollegeCode("-1"); 
+				System.out.println("myLSP college after............"+brochuresForm.getCollegeCode());
+			}
+			if(brochuresForm.getSchCode() == null){
+				brochuresForm.setSchCode("-1");
+				System.out.println("myLSP school after............"+brochuresForm.getSchCode());
+			}
+			if(brochuresForm.getDptCode() == null){
+				brochuresForm.setDptCode("-1");
+				System.out.println("myLSP department after............"+brochuresForm.getDptCode());
+			}
+		    brochuresForm.setType("mySLP");
+			brochuresForm.setColleges(dao.getColleges());
+			brochuresForm.setSchList(dao.getSchools(brochuresForm.getCollegeCode()));
+			brochuresForm.setDptList(dao.getDepartment(brochuresForm.getCollegeCode(), brochuresForm.getSchCode()));
+	        session.setAttribute("colleges",dao.getColleges());
+			session.setAttribute("schList",brochuresForm.getSchList());
+			session.setAttribute("yearsList",brochuresForm.getYearsList());
+			session.setAttribute("dptList",brochuresForm.getDptList());
+
+			return mapping.findForward("myslp");
 	}
 	
 	/*
@@ -988,6 +1195,17 @@ public class BrochuresAction extends LookupDispatchAction {
 		    brochuresForm.setModule("-1");
 		    brochuresForm.setDptCode("-1");
 		    brochuresForm.setSubCode("-1");
+			return "mainmenu";
+	}
+	public String back4(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception{
+		    BrochuresForm brochuresForm = (BrochuresForm)form;
+		    brochuresForm.setSchCode("-1");
+		    brochuresForm.setCollegeCode("-1");
+		    brochuresForm.setDptCode("-1");
 			return "mainmenu";
 	}
 	public ActionForward clearAll(
