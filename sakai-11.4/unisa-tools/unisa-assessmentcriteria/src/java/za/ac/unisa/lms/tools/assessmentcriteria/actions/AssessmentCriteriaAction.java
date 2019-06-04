@@ -393,6 +393,8 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 				operListener opl = new operListener();
 				op.clear();
 				
+				//set number of electives assume only one group
+				//op.setInFinalMarkCalculationNoElectiveAssignments(s);
 				op.setInCsfClientServerCommunicationsAction("UF");
 				op.setInFinalMarkCalculationExamYear(assessmentCritForm.getDummyFirstExamination().getYear());
 				op.setInFinalMarkCalculationMkExamPeriod(assessmentCritForm.getDummyFirstExamination().getPeriod());
@@ -1001,6 +1003,7 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 				boolean existAssignmentwithRepeatWeights=false;
 				boolean existAssignmentwithAegrotatWeights=false;
 				boolean existAssignmentBeforeFirstDueDate=false;
+				boolean existAssignmentBeforeExamAdmDate=false;
 				boolean portfolioBeforeFirstDueDate=false;				
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -1084,6 +1087,9 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 						if (((Assignment)(assessmentCritForm.getListAssignment().get(i))).getOptionality().equalsIgnoreCase("E")){
 							nrElectiveAss=nrElectiveAss + 1;
 						}
+						if (dueDate.before(examAdmissionDate) && assessmentCritForm.getFinalMarkComp().getExamAdmissionMethod().equalsIgnoreCase("A1")) {
+							existAssignmentBeforeExamAdmDate = true;
+						}
 						if (((Assignment)(assessmentCritForm.getListAssignment().get(i))).getGroup().equalsIgnoreCase("F") &&
 								!((Assignment)(assessmentCritForm.getListAssignment().get(i))).getType().equalsIgnoreCase("T")){
 							nrFormativeAss = nrFormativeAss + 1;							
@@ -1151,6 +1157,17 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 //							}	
 //						}			
 					}
+					//Johanet 20190603 - Changes for 2020 BRS
+					if (assessmentCritForm.getStudyUnit().getFormalTuitionFlag().equalsIgnoreCase("C") && 
+							assessmentCritForm.getStudyUnit().getAutoExamAdmission().equalsIgnoreCase("N") &&
+							assessmentCritForm.getFinalMarkComp().getExamAdmissionMethod().equalsIgnoreCase("A1") ){
+						
+						if (!existAssignmentBeforeExamAdmDate){
+							messages.add(ActionMessages.GLOBAL_MESSAGE,
+									new ActionMessage("message.generalmessage",
+												"The due date of one of the assessments must be on or before " + assessmentCritForm.getExamAdmissionDate() + ".  This is required for examination admission."));
+						}	
+					}	
 					
 				}
 				if (assessmentCritForm.getExamBase().equalsIgnoreCase("CONT") && nrOfPortfolios > 0){
