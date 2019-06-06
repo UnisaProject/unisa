@@ -741,8 +741,9 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 				SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 				Date dueDate = dateFormatter.parse(assessmentCritForm.getAssignment().getDueDate());
 				calendar.setTime(dueDate);
-				op.setInUniqueAssignmentClosingDate(calendar);
+				op.setInUniqueAssignmentClosingDate(calendar);				
 				op.setInUniqueAssignmentOnscreenMarkFlag(assessmentCritForm.getAssignment().getOnscreenMarkFlag());
+				
 				
 				if (assessmentCritForm.getAssignment().getOnscreenMarkFlag().equalsIgnoreCase("Y")){					
 					if (assessmentCritForm.getAssignment().getFileReleaseDate().equalsIgnoreCase("")){
@@ -833,7 +834,33 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 					}else{
 						op.setInUniqueAssignmentCreditSystem(Short.parseShort("1"));
 					}					
-				}	
+				}
+				//Johanet 20190606
+				//block_esol = N means Route for onscreen marking
+				//block_esol = Y means Route for printing
+				//set Routing option to Route for Onscreen Marking
+				op.setInUniqueAssignmentBlockEsol("N");
+				//Routing option not applicable for the following assessments
+				if (op.getInUniqueAssignmentType().trim().equalsIgnoreCase("A")) {
+					op.setInUniqueAssignmentBlockEsol(" ");
+				}
+				if (op.getInUniqueAssignmentType().equalsIgnoreCase("H")) {
+						if (op.getInUniqueAssignmentOnlineTypeGc176().trim().equalsIgnoreCase("DF") ||
+							op.getInUniqueAssignmentOnlineTypeGc176().trim().equalsIgnoreCase("BL") ||
+							op.getInUniqueAssignmentOnlineTypeGc176().trim().equalsIgnoreCase("XA") ||						
+							op.getInUniqueAssignmentOnlineTypeGc176().trim().equalsIgnoreCase("SA")){
+								op.setInUniqueAssignmentBlockEsol(" ");
+						}
+						if (op.getInUniqueAssignmentOnlineTypeGc176().trim().equalsIgnoreCase("MS") &&
+								(op.getInYearMarkCalculationType().trim().equalsIgnoreCase("S") ||
+								 op.getInYearMarkCalculationType().trim().equalsIgnoreCase("R"))) {
+							op.setInUniqueAssignmentBlockEsol(" ");
+						}
+						if (op.getInYearMarkCalculationType().trim().equalsIgnoreCase("T")) {
+							op.setInUniqueAssignmentBlockEsol(" ");
+						}
+				}		
+				//Routing option for SBL should be Route for Printing
 				//Changes 2018 - On the Assessment Plan, set flag to "Block myUnisa Submission" when users create either formative or summative assessments for any module linked to the SBL
 				//Set block myUnisa Submission
 				if (assessmentCritForm.getStudyUnit()!=null && 
@@ -842,7 +869,8 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 					op.setInUniqueAssignmentBlockEsol("Y");
 					op.setInUniqueAssignmentBlockSol("Y");
 				}else{
-					op.setInUniqueAssignmentBlockEsol("N");
+					//Johanet 20190606 - Already set above
+					//op.setInUniqueAssignmentBlockEsol("N");  comment out 20190606 
 					op.setInUniqueAssignmentBlockSol("N");
 				}
 				
