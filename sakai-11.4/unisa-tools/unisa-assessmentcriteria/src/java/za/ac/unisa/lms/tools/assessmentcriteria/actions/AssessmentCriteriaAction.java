@@ -838,7 +838,7 @@ public class AssessmentCriteriaAction extends LookupDispatchAction{
 				//Johanet 20190606
 				//block_esol = N means Route for onscreen marking
 				//block_esol = Y means Route for printing
-				//set Routing option to Route for Onscreen Marking
+				//set Routing option to Route for Onscreen Marking default
 				op.setInUniqueAssignmentBlockEsol("N");
 				//Routing option not applicable for the following assessments
 				if (op.getInUniqueAssignmentType().trim().equalsIgnoreCase("A")) {
