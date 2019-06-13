@@ -46,7 +46,7 @@ public class DefaultAction extends DispatchAction {
 			request.setAttribute("user", user);
 			
 		}
-		//System.out.println("default action class test 1111");
+		//log.info("default action class test 1111");
 		return mapping.findForward("default");
 	}
 }
