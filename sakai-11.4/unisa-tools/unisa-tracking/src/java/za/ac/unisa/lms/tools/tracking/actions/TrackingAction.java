@@ -169,24 +169,24 @@ public class TrackingAction extends LookupDispatchAction{
 	    	pTrackingForm.setHostName(request.getHeader("Host"));
 	    	//log.debug("TrackingAction - "+pTrackingForm.getNovelUserId()+" - execute - Hostname "+pTrackingForm.getHostName());
 	    	pTrackingForm.setHost(pTrackingForm.getHostName());
-	    	if("my.unisa.ac.za".equals(pTrackingForm.getHost())){
-	    		pTrackingForm.setWebServiceURL("http://www2.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=");
-	    		webServiceURL = "http://www2.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
-	    		pTrackingForm.setBookInOutURL("http://www2.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML");
-	    		bookInOutURL = "http://www2.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
-	    		pGateWay.setBackEndSessionCookieName("svrstratusunisaaczaSessionId");
-			}else if("mydev.int.unisa.ac.za".equals(pTrackingForm.getHost())) {
+	    	if(pTrackingForm.getHost().contains("dev.int.unisa.ac.za")){
 				pTrackingForm.setWebServiceURL("http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=");
 				webServiceURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 				pTrackingForm.setBookInOutURL("http://stratusdev.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML");
 				bookInOutURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
 				pGateWay.setBackEndSessionCookieName("svrstratusdevunisaaczaSessionId");
-			}else if("myqa.int.unisa.ac.za".equals(pTrackingForm.getHost())){
+			}else if(pTrackingForm.getHost().contains("qa.int.unisa.ac.za")) {
 				pTrackingForm.setWebServiceURL("http://stratusqa.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=");
 				webServiceURL = "http://stratusqa.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 				pTrackingForm.setBookInOutURL("http://stratusqa.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML");
 				bookInOutURL = "http://stratusqa.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
 				pGateWay.setBackEndSessionCookieName("svrstratusqaunisaaczaSessionId");
+			}else if(pTrackingForm.getHost().contains(".unisa.ac.za")){
+				pTrackingForm.setWebServiceURL("https://stratus.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=");
+				webServiceURL = "https://stratus.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
+				pTrackingForm.setBookInOutURL("https://stratus.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML");
+				bookInOutURL = "https://stratus.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
+				pGateWay.setBackEndSessionCookieName("svrstratusunisaaczaSessionId");
 			}else{
 				pTrackingForm.setWebServiceURL("http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=");
 				webServiceURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
