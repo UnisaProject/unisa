@@ -119,19 +119,18 @@ public class TrackingAction extends LookupDispatchAction{
 	    	pTrackingForm.setHostName(request.getHeader("Host"));
 	    	log.info("TrackingAction - execute - Hostname "+pTrackingForm.getHostName());
 	    	host   = pTrackingForm.getHostName();
-	    	if("my.unisa.ac.za".equals(host)){
-	    		webServiceURL = "http://www2.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
-	    		bookInOutURL = "http://www2.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
-			}else if("mydev.int.unisa.ac.za".equals(host)) {
+	    	if(host.contains("dev.int.unisa.ac.za")){
 				webServiceURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 				bookInOutURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
-			}else if("myqa.int.unisa.ac.za".equals(host)){
+			}else if(host.contains("qa.int.unisa.ac.za")) {
 				webServiceURL = "http://stratusqa.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 				bookInOutURL = "http://stratusqa.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
+			}else if(host.contains(".unisa.ac.za")) {
+	    			webServiceURL = "https://stratus.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
+	    			bookInOutURL = "https://stratus.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
 			}else{
 				webServiceURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 				bookInOutURL = "http://stratusdev.unisa.ac.za/aol/asp/sql_exec_xml.asp?report=XML";
-	
 			}
 			
     	}
