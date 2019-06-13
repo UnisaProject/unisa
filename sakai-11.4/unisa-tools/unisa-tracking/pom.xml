@@ -4,7 +4,7 @@
   <parent>
      <artifactId>unisa-base</artifactId>
      <groupId>org.sakaiproject</groupId>
-     <version>10.5</version>
+     <version>11.4</version>
 </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sakaiproject</groupId>
@@ -47,12 +47,12 @@
 		<groupId>org.sakaiproject.kernel</groupId>
 		<artifactId>sakai-kernel-util</artifactId>
 	   </dependency>
-		<dependency>
+		<!--dependency>
 		  <groupId>org.sakaiproject</groupId>
 		  <artifactId>unisa-providers-api</artifactId>
 		  <version>${sakai.version}</version>
 		  <scope>provided</scope>
-		</dependency>
+		</dependency-->
 		<dependency>
 	   <groupId>org.sakaiproject.kernel</groupId>
 	   <artifactId>sakai-component-manager</artifactId>
