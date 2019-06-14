@@ -1,27 +1,17 @@
 package za.ac.unisa.lms.tools.tracking.dao;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.FilterInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,13 +20,27 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import sun.net.www.http.HttpClient;
 
 public class WebServiceGateWay {
+	
+	public String backEndSessionCookieName = "";
+	public String backEndSessionCookieValue = "";
+	
+	public String getBackEndSessionCookieName() {
+		return backEndSessionCookieName;
+	}
+	public void setBackEndSessionCookieName(String backEndSessionCookieName) {
+		this.backEndSessionCookieName = backEndSessionCookieName;
+	}
+	public String getBackEndSessionCookieValue() {
+		return backEndSessionCookieValue;
+	}
+	public void setBackEndSessionCookieValue(String backEndSessionCookieValue) {
+		this.backEndSessionCookieValue = backEndSessionCookieValue;
+	}
+	public void setRequestCookie(URLConnection uc) {
+		 uc.setRequestProperty("Cookie", this.getBackEndSessionCookieName()+"="+this.getBackEndSessionCookieValue());
+	}
 	
   //private String webServiceURL = "http://www2dev.unisa.ac.za/aol/asp/sql_exec_report4.asp?export=XML&myid=CDTRACKING&ID=";
 	private Log log = LogFactory.getLog(WebServiceGateWay.class.getName());
@@ -59,26 +63,33 @@ public class WebServiceGateWay {
 	public String getPersNo(String webServiceURL ,int id ,String value1,String Novell_User_Id) throws Exception{
 		return openWebServiceVal(webServiceURL+id+"&Novell_User_Id="+Novell_User_Id,value1);
 	}
+	public String[] validateUserStartSession(String webServiceURL ,int id ,String value1,String Novell_User_Id) throws Exception{
+		return openWebServiceValStartSession(webServiceURL+id+"&Novell_User_Id="+Novell_User_Id,value1);
+	}
 	public String validateUser(String webServiceURL ,int id ,String value1,String Novell_User_Id) throws Exception{
+		//log.debug("WebServiceGateWay - validateUser - webServiceURL="+webServiceURL+" ID="+id+", Value1="+value1+", Novell_User_Id="+Novell_User_Id);
 		return openWebServiceVal(webServiceURL+id+"&Novell_User_Id="+Novell_User_Id,value1);
 	}
 	public String getDefaultEmail(String webServiceURL ,int id ,String value1) throws Exception{
 		return openWebServiceVal(webServiceURL+id,value1);
 	}
 	public ArrayList<KeyValue> getUserList(String webServiceURL ,int id ,String value1 ,String value2, String value3, String value4 ,String value5 ,String value6 ,String surname) throws Exception{
-		return openWebServiceWithIDAddress(webServiceURL+id+"&surname="+surname,value1,value2,value3,value4,value5,value6);
+		return openWebServiceWithIDAddress1(webServiceURL+id+"&surname="+surname,value1,value2,value3,value4,value5,value6);
 	}
 	public ArrayList<KeyValue> getUserList1(String webServiceURL ,int id ,String value1 ,String value2, String value3, String value4 ,String value5 ,String value6 ,String persNo) throws Exception{
-		return openWebServiceWithIDAddress(webServiceURL+id+"&PersNo="+persNo,value1,value2,value3,value4,value5,value6);
+		return openWebServiceWithIDAddress1(webServiceURL+id+"&PersNo="+persNo,value1,value2,value3,value4,value5,value6);
 	}
 	public ArrayList<KeyValue> getUserList2(String webServiceURL ,int id , String value1 ,String value2, String value3, String value4 ,String value5 ,String value6, String collegeCode, String schoolCode, String departmentCode, String moduleCode  ) throws Exception {		
-		return openWebServiceWithIDAddress( webServiceURL+id+"&CollegeCode="+collegeCode+"&SchoolCode="+schoolCode+"&DeptCode="+departmentCode+"&ModuleCode="+moduleCode,value1,value2,value3,value4,value5,value6);
+		return openWebServiceWithIDAddress1( webServiceURL+id+"&CollegeCode="+collegeCode+"&SchoolCode="+schoolCode+"&DeptCode="+departmentCode+"&ModuleCode="+moduleCode,value1,value2,value3,value4,value5,value6);
 	}
 	public ArrayList<KeyValue> getUserList3(String webServiceURL ,int id , String value1 ,String value2, String value3, String value4 ,String value5 ,String value6, String provinceCode, String RegionCode) throws Exception {		
-		return openWebServiceWithIDAddress( webServiceURL+id+"&ProvinceCode="+provinceCode+"&RegionCode="+RegionCode,value1,value2,value3,value4,value5,value6);
+		return openWebServiceWithIDAddress1( webServiceURL+id+"&ProvinceCode="+provinceCode+"&RegionCode="+RegionCode,value1,value2,value3,value4,value5,value6);
 	}
 	public ArrayList<KeyValue> getUserList4(String webServiceURL ,int id , String value1 ,String value2, String value3, String value4 ,String value5 ,String value6, String buildingName  ) throws Exception {		
-		return openWebServiceWithIDAddress( webServiceURL+id+"&BuildingName="+buildingName ,value1,value2,value3,value4,value5,value6);
+		return openWebServiceWithIDAddress1( webServiceURL+id+"&BuildingName="+buildingName ,value1,value2,value3,value4,value5,value6);
+	}
+	public ArrayList<KeyValue> getUserList5(String webServiceURL ,int id ,String value1 ,String value2, String value3, String value4 ,String value5 ,String value6 ,String Novell_User_Id) throws Exception{
+		return openWebServiceWithIDAddress1(webServiceURL+id+"&NovellUserCode="+Novell_User_Id,value1,value2,value3,value4,value5,value6);
 	}
 	public ArrayList<KeyValue> getProvinceList(String webServiceURL ,int id ,String value1, String value2) throws Exception {		
 		return openWebService( webServiceURL+id, value1, value2);
@@ -118,30 +129,96 @@ public class WebServiceGateWay {
 		 return openWebServiceAssignment(webServiceURL+id+"&ShipNo="+consignmentListNumber+"&Status="+status ,value1 ,value2);
 	 }
 	 public ArrayList<KeyValue> getSelectedUserAddress(String webServiceURL ,int id ,String staffNumber , String value1 ,String value2, String value3,String value4 ,String value5 ,String value6 ,String destinationType) throws Exception{
-		 return openWebServiceWithIDAddress(webServiceURL+id+"&Destination="+staffNumber+"&DestinationType="+destinationType ,value1 ,value2 ,value3 ,value4 ,value5 ,value6);
+		 return openWebServiceWithIDAddress1(webServiceURL+id+"&Destination="+staffNumber+"&DestinationType="+destinationType ,value1 ,value2 ,value3 ,value4 ,value5 ,value6);
 	 }
 	 public ArrayList<KeyValue> getSavedUserAddress(String webServiceURL ,int id ,String novellUserID , String value1 ,String value2, String value3,String value4 ,String value5 ,String value6 ,String value7 ,String value8) throws Exception{
-		 return openWebServiceSavedAddress(webServiceURL+id+"&FromUser="+novellUserID ,value1 ,value2 ,value3 ,value4 ,value5 ,value6 ,value7 ,value8);
+		 return openWebServiceSavedAddress2(webServiceURL+id+"&FromUser="+novellUserID ,value1 ,value2 ,value3 ,value4 ,value5 ,value6 ,value7 ,value8);
 	 }
 	 public String setChangedAddress(String webServiceURL ,int id , String fromUser , String addr2, String addr3, String addr4, String addr5, String ShipNo , String addrPostal, String value1 , String value2) throws Exception {
 		 return openWebServiceSaveAddress(webServiceURL+id+"&FromUser="+fromUser+"&Adr2="+addr2+"&Adr3="+addr3+"&Adr4="+addr4+"&Adr5="+addr5+"&ShipNo="+ShipNo+"&PostalCode="+addrPostal, value1, value2); 
 	 }
 	 
-	 private String openWebServiceVal(String req_webServiceURL , String value1) throws Exception  {
-		 String keyValue = "";
+	 private String[] openWebServiceValStartSession(String req_webServiceURL , String value1) throws Exception  {
+		 String returnValues[] = new String[2];
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		 log.info("WebServiceGateWay - openWebServiceVal - Requested URL : " + noWhiteSpaceURL);
-	     URL webSeriveURL = new URL(noWhiteSpaceURL);
+		 log.debug("WebServiceGateWay - openWebServiceValStartSession - Requested URL : " + noWhiteSpaceURL);
+		 log.debug("Looking for cookie named "+getBackEndSessionCookieName());
+		 log.debug("Current cookie value stored in tomcat session is "+getBackEndSessionCookieValue());
+		 
+	     URL webServiceURL = new URL(noWhiteSpaceURL);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 URLConnection urlConn = webServiceURL.openConnection();
+		 String backEndCookieSetting = "";
+		 Iterator<String> cookieIterator = urlConn.getHeaderFields().get("Set-Cookie").iterator();
+		 while(cookieIterator.hasNext()) {
+			 backEndCookieSetting = cookieIterator.next();
+			 log.debug("Set-Cookie: "+backEndCookieSetting);
+			 if(backEndCookieSetting.toLowerCase().startsWith(this.backEndSessionCookieName.toLowerCase())) {
+				 String cookieValuePair = backEndCookieSetting.substring(0,backEndCookieSetting.indexOf(';'));
+				 returnValues[0] = cookieValuePair.substring(cookieValuePair.indexOf('=')+1,cookieValuePair.length());
+			 }
+		 }
+		 if(returnValues[0] != null) {
+			 log.debug("new Cookie value: "+returnValues[0]);
+			 //urlConn.setRequestProperty("Cookie", getBackEndSessionCookieName()+"="+returnValues[0]);
+		 }
+		 try {
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 		 NodeList listOfRecords = doc.getElementsByTagName("record");
 		
 		 if(listOfRecords.getLength()!=0){          
              
 			 for (int s = 0; s < listOfRecords.getLength(); s++) {
-				 //log.info("WebServiceGateWay - openWebServiceVal - listOfRecords="+ listOfRecords.getLength());
+				 //log.debug("WebServiceGateWay - openWebServiceVal - listOfRecords="+ listOfRecords.getLength());
+                    Node firstDocTypeNode = listOfRecords.item(s);
+                         if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
+                        	 KeyValue test = new KeyValue();
+                        	 Element firstElement = (Element) firstDocTypeNode;
+                        	 NodeList valueOneE = firstElement.getElementsByTagName(value1);
+                             Element valueOne = (Element)valueOneE.item(0);
+                             NodeList valueOneList = valueOne.getChildNodes();
+                            
+                             try{
+                            	 returnValues[1] = valueOneList.item(0).getNodeValue();
+                            	 //log.debug("WebServiceGateWay - openWebServiceVal - keyValue="+ valueOneList.item(0).getNodeValue());
+                             }catch(Exception e){
+                            	 e.printStackTrace();
+                             }
+                         }
+                      }
+                  }
+		 } catch(org.xml.sax.SAXParseException spe) {
+			 log.debug(urlConn.getInputStream());
+			 InputStream inputStream = urlConn.getInputStream();
+			 String text = org.apache.commons.io.IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+			 log.error(text);
+			 spe.printStackTrace();
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 }
+         return returnValues;
+	 }
+
+	 private String openWebServiceVal(String req_webServiceURL , String value1) throws Exception  {
+		 String keyValue = "";
+		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
+		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
+		 log.debug("WebServiceGateWay - openWebServiceVal - Requested URL : " + noWhiteSpaceURL);
+	     URL webServiceURL = new URL(noWhiteSpaceURL);
+		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		 URLConnection urlConn = webServiceURL.openConnection();
+		 setRequestCookie(urlConn);
+		 log.debug("calling gateway with request property "+urlConn.getRequestProperty("Cookie"));
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
+		 NodeList listOfRecords = doc.getElementsByTagName("record");
+		
+		 if(listOfRecords.getLength()!=0){          
+             
+			 for (int s = 0; s < listOfRecords.getLength(); s++) {
+				 //log.debug("WebServiceGateWay - openWebServiceVal - listOfRecords="+ listOfRecords.getLength());
                     Node firstDocTypeNode = listOfRecords.item(s);
                          if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
                         	 KeyValue test = new KeyValue();
@@ -152,7 +229,7 @@ public class WebServiceGateWay {
                             
                              try{
                             	 keyValue = valueOneList.item(0).getNodeValue();
-                            	 //log.info("WebServiceGateWay - openWebServiceVal - keyValue="+ valueOneList.item(0).getNodeValue());
+                            	 //log.debug("WebServiceGateWay - openWebServiceVal - keyValue="+ valueOneList.item(0).getNodeValue());
                              }catch(Exception e){
                             	 e.printStackTrace();
                              }
@@ -165,17 +242,19 @@ public class WebServiceGateWay {
 	 private ArrayList<KeyValue> openWebService(String req_webServiceURL , String value1, String value2) throws Exception  {
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		 log.info("WebServiceGateWay - openWebService - Requested URL : " + noWhiteSpaceURL);
-	     URL webSeriveURL = new URL(noWhiteSpaceURL);
+		 //log.debug("WebServiceGateWay - openWebService - Requested URL : " + noWhiteSpaceURL);
+	     URL webServiceURL = new URL(noWhiteSpaceURL);
+	     URLConnection urlConn = webServiceURL.openConnection();
+	     setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 		 NodeList listOfRecords = doc.getElementsByTagName("record");
 		
 		 if(listOfRecords.getLength()!=0){          
              
 			 for (int s = 0; s < listOfRecords.getLength(); s++) {
-				 //log.info("WebServiceGateWay - openWebService - listOfRecords="+ listOfRecords.getLength());
+				 //log.debug("WebServiceGateWay - openWebService - listOfRecords="+ listOfRecords.getLength());
                     Node firstDocTypeNode = listOfRecords.item(s);
                          if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
                         	 KeyValue test = new KeyValue();
@@ -187,7 +266,7 @@ public class WebServiceGateWay {
                              try{
                             	 
                             	 test.setKey(valueOneList.item(0).getNodeValue());
-                            	 //log.info("WebServiceGateWay - openWebService - Key="+ valueOneList.item(0).getNodeValue());
+                            	 //log.debug("WebServiceGateWay - openWebService - Key="+ valueOneList.item(0).getNodeValue());
                               }catch(Exception e){
                                    e.printStackTrace();
                              }
@@ -198,7 +277,7 @@ public class WebServiceGateWay {
                                     try{
                                     	   
                                     	test.setValue(valueTwoList.item(0).getNodeValue().trim());
-                                    	//log.info("WebServiceGateWay - openWebService - Value="+ valueTwoList.item(0).getNodeValue().trim());
+                                    	//log.debug("WebServiceGateWay - openWebService - Value="+ valueTwoList.item(0).getNodeValue().trim());
                                      }catch(Exception e){
                                           e.printStackTrace();
                                     }
@@ -211,28 +290,30 @@ public class WebServiceGateWay {
 	
 	 private ArrayList<KeyValue> openWebServiceWithID(String req_webServiceURL,String value1,String value2) throws Exception  {
 
-		 	log.info("WebServiceGateWay - openWebServiceWithID - Requested URL : " + req_webServiceURL);
+		 	//log.debug("WebServiceGateWay - openWebServiceWithID - Requested URL : " + req_webServiceURL);
 		 	 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-			 URL webSeriveURL = new URL(req_webServiceURL);
+			 URL webServiceURL = new URL(req_webServiceURL);
+			 URLConnection urlConn = webServiceURL.openConnection();
+			 setRequestCookie(urlConn);
 			 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			 Document doc = docBuilder.parse(webSeriveURL.openStream());
+			 Document doc = docBuilder.parse(urlConn.getInputStream());
 		  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 			     if(listOfRecords.getLength()!=0){
-	            //log.info("one1 ");
+	            //log.debug("one1 ");
 	                for (int s = 0; s < listOfRecords.getLength(); s++) {
 	                	 KeyValue test = new KeyValue();
-	                	 //log.info("one2 ");
+	                	 //log.debug("one2 ");
 	                	 Node firstDocTypeNode = listOfRecords.item(s);
 	                     if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-	                    	 //log.info("one3 ");
+	                    	 //log.debug("one3 ");
 	                        	
 	                    	 Element firstElement = (Element) firstDocTypeNode;
 	                    	 if(firstElement.hasAttributes()) {
-	                    		 //log.info("one4 ");  
+	                    		 //log.debug("one4 ");  
 	                    		 NamedNodeMap map = firstElement.getAttributes();  		  
 	                    		 for(int i =0 ; i < map.getLength() ; i++){		
-	                    			 //log.info("one5 ");
+	                    			 //log.debug("one5 ");
 	                    			 test.setKey(map.item(i).getNodeValue());
 	                    		 }
 	                    	 }
@@ -241,20 +322,20 @@ public class WebServiceGateWay {
 	                         NodeList valueOneList = valueOne.getChildNodes();
 	                               
 	                         try{
-	                        	 //log.info("one6 ");     
+	                        	 //log.debug("one6 ");     
 	                        	 test.setValue(valueOneList.item(0).getNodeValue().trim());
 	                         }catch(Exception e){
-	                        	 //log.info("exception "+e.getMessage());
+	                        	 //log.debug("exception "+e.getMessage());
 	                        	 value1 = " ";
 	                         }
 	                         keyvalues.add(test);  
 	                     }
 	                }
 			     }else {
-	        	 log.info("WebServiceGateWay - openWebServiceWithID : "+req_webServiceURL);	
+	        	 //log.debug("WebServiceGateWay - openWebServiceWithID : "+req_webServiceURL);	
 	        	 String docketNumberStatus = doc.getDocumentElement().getTextContent() ;
 			    	 KeyValue test = new KeyValue();
-			    	 log.info("WebServiceGateWay - openWebServiceWithID - status: " + docketNumberStatus);
+			    	 //log.debug("WebServiceGateWay - openWebServiceWithID - status: " + docketNumberStatus);
 			    	if(docketNumberStatus.contains("FromUser invalid")){
 			    		test.setKey("2");
 				    	test.setValue(docketNumberStatus);
@@ -269,30 +350,33 @@ public class WebServiceGateWay {
 			     return keyvalues;
 		 }
 	 
-	 private ArrayList<KeyValue> openWebServiceWithID1(String req_webServiceURL,String value1,String value2) throws Exception  {
+	 @SuppressWarnings("unused")
+	private ArrayList<KeyValue> openWebServiceWithID1(String req_webServiceURL,String value1,String value2) throws Exception  {
 
-		 	log.info("WebServiceGateWay - openWebServiceWithID1 - ConsignmentList number check URL: "+req_webServiceURL);
+		 	//log.debug("WebServiceGateWay - openWebServiceWithID1 - ConsignmentList number check URL: "+req_webServiceURL);
 			 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-			 URL webSeriveURL = new URL(req_webServiceURL);
+			 URL webServiceURL = new URL(req_webServiceURL);
+			 URLConnection urlConn = webServiceURL.openConnection();
+			 setRequestCookie(urlConn);
 			 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			 Document doc = docBuilder.parse(webSeriveURL.openStream());
+			 Document doc = docBuilder.parse(urlConn.getInputStream());
 		  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 			     if(listOfRecords.getLength()!=0){
-	            //log.info("one1 ");
+	            //log.debug("one1 ");
 	                for (int s = 0; s < listOfRecords.getLength(); s++) {
 	                	 KeyValue test = new KeyValue();
-	                	//log.info("one2 ");
+	                	//log.debug("one2 ");
 	                  Node firstDocTypeNode = listOfRecords.item(s);
 	                        if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-	                        	//log.info("one3 ");
+	                        	//log.debug("one3 ");
 	                        	
 	                        	Element firstElement = (Element) firstDocTypeNode;
 	                            if(firstElement.hasAttributes()) {
-	                            	 //log.info("one4 ");  
+	                            	 //log.debug("one4 ");  
 	                            	NamedNodeMap map = firstElement.getAttributes();  		  
 				                        for(int i =0 ; i < map.getLength() ; i++){		
-				                        	 //log.info("one5 ");
+				                        	 //log.debug("one5 ");
 				                        	test.setKey(map.item(i).getNodeValue());
 				                      }
 	                            }
@@ -301,10 +385,10 @@ public class WebServiceGateWay {
 	                                NodeList valueOneList = valueOne.getChildNodes();
 	                               
 	                                try{
-	                                	  //log.info("one6 ");     
+	                                	  //log.debug("one6 ");     
 	                                	test.setValue(valueOneList.item(0).getNodeValue().trim());
 	                                         }catch(Exception e){
-	                                           //log.info("exception "+e.getMessage());
+	                                           //log.debug("exception "+e.getMessage());
 	                                        	 value1 = " ";
 	                                }
 	                                keyvalues.add(test);  
@@ -317,7 +401,7 @@ public class WebServiceGateWay {
 	        }     else {
 			    	 String docketNumberStatus = doc.getDocumentElement().getTextContent() ;
 			    	 KeyValue test = new KeyValue();
-			    	 log.info("WebServiceGateWay - openWebServiceWithID1 - status: " + docketNumberStatus);
+			    	 //log.debug("WebServiceGateWay - openWebServiceWithID1 - status: " + docketNumberStatus);
 			    	if(docketNumberStatus.contains("No records returned")){
 			    	test.setKey("1");
 			    	test.setValue("No records returned");
@@ -333,12 +417,14 @@ public class WebServiceGateWay {
 		 }
 	 private ArrayList<KeyValue> openWebServiceWithIDValues(String req_webServiceURL,String value1,String value2,String value3) throws Exception  {
 
-		 log.info("WebServiceGateWay - openWebServiceWithIDValues - Requested URL: "+req_webServiceURL);
+		 //log.debug("WebServiceGateWay - openWebServiceWithIDValues - Requested URL: "+req_webServiceURL);
 	     ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-		 URL webSeriveURL = new URL(req_webServiceURL);
+		 URL webServiceURL = new URL(req_webServiceURL);
+		 URLConnection urlConn = webServiceURL.openConnection();
+		 setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		     if(listOfRecords.getLength()!=0){
          
@@ -394,12 +480,14 @@ public class WebServiceGateWay {
 
 	 private ArrayList<KeyValue> openWebServiceAssignment(String req_webServiceURL,String value1,String value2) throws Exception  {
 
-		 log.info("WebServiceGateWay - openWebServiceAssignment - Requested URL: "+req_webServiceURL);
+		 //log.debug("WebServiceGateWay - openWebServiceAssignment - Requested URL: "+req_webServiceURL);
 	     ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-		 URL webSeriveURL = new URL(req_webServiceURL);
+		 URL webServiceURL = new URL(req_webServiceURL);
+		 URLConnection urlConn = webServiceURL.openConnection();
+		 setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		     if(listOfRecords.getLength()!=0){
          
@@ -411,7 +499,7 @@ public class WebServiceGateWay {
                             if(firstElement.hasAttributes()) {
                            		  NamedNodeMap map = firstElement.getAttributes();  		  
 			                      for(int i =0 ; i < map.getLength() ; i++){		
-			                    	  log.info("WebServiceGateWay - openWebServiceAssignment - Key="+map.item(i).getNodeValue());
+			                    	  //log.debug("WebServiceGateWay - openWebServiceAssignment - Key="+map.item(i).getNodeValue());
 			                    	  //test.setKey(map.item(i).getNodeValue());
 			                      }
                             }
@@ -420,7 +508,7 @@ public class WebServiceGateWay {
                             NodeList valueOneList = valueOne.getChildNodes();
                                
                             try{
-                            	log.info("WebServiceGateWay - openWebServiceAssignment - Value1="+valueOneList.item(0).getNodeValue().trim());
+                            	//log.debug("WebServiceGateWay - openWebServiceAssignment - Value1="+valueOneList.item(0).getNodeValue().trim());
                             	test.setValue1(valueOneList.item(0).getNodeValue().trim());
                             }catch(Exception e){
                             	test.setValue1(" ");
@@ -430,7 +518,7 @@ public class WebServiceGateWay {
                              NodeList valueOneListTwo = valueTwo1.getChildNodes();
                             
                              try{
-                            	 log.info("WebServiceGateWay - openWebServiceAssignment - Value2="+valueOneListTwo.item(0).getNodeValue().trim());
+                            	 //log.debug("WebServiceGateWay - openWebServiceAssignment - Value2="+valueOneListTwo.item(0).getNodeValue().trim());
                             	 test.setValue2(valueOneListTwo.item(0).getNodeValue().trim());
                              }catch(Exception e){
                             	 test.setValue2(" ");
@@ -446,15 +534,17 @@ public class WebServiceGateWay {
         }//-------
 		     return keyvalues;
 	 }
-	 private ArrayList<KeyValue> openWebServiceWithIDAddress(String req_webServiceURL,String value1,String value2,String value3 ,String value4 ,String value5 ,String value6) throws Exception  {
+	 private ArrayList<KeyValue> openWebServiceWithIDAddress1(String req_webServiceURL,String value1,String value2,String value3 ,String value4 ,String value5 ,String value6) throws Exception  {
 
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		log.info("WebServiceGateWay - openWebServiceWithIDAddress - Requested URL: "+noWhiteSpaceURL); 
-	     URL webSeriveURL = new URL(noWhiteSpaceURL);
+		//log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Requested URL: "+noWhiteSpaceURL); 
+	     URL webServiceURL = new URL(noWhiteSpaceURL);
+	     URLConnection urlConn = webServiceURL.openConnection();
+	     setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream(), "UTF-8");
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		     if(listOfRecords.getLength()!=0){
         
@@ -475,7 +565,7 @@ public class WebServiceGateWay {
 		    			 NodeList valueOneList = valueOne.getChildNodes();
                               
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value1="+valueOneList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value1="+valueOneList.item(0).getNodeValue().trim());
 		    				 test.setValue1(valueOneList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value1 = " ";
@@ -486,7 +576,7 @@ public class WebServiceGateWay {
 		    			 NodeList valueTwoList = valueTwo1.getChildNodes();
                               
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value2="+valueTwoList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value2="+valueTwoList.item(0).getNodeValue().trim());
 		    				 test.setValue2(valueTwoList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value2 = " ";
@@ -497,7 +587,7 @@ public class WebServiceGateWay {
 		    			 NodeList valueThreeList = valueThree1.getChildNodes();
 		    			 	
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value3="+valueThreeList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value3="+valueThreeList.item(0).getNodeValue().trim());
 		    				 test.setValue3(valueThreeList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value3 = " ";
@@ -508,7 +598,7 @@ public class WebServiceGateWay {
 		    			 NodeList valueFourList = valueFour1.getChildNodes();
                               
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value4="+valueFourList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value4="+valueFourList.item(0).getNodeValue().trim());
 		    				 test.setValue4(valueFourList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value4 = " ";
@@ -519,7 +609,7 @@ public class WebServiceGateWay {
 		    			 NodeList valueFiveList = valueFive1.getChildNodes();
 		    			 
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value5="+valueFiveList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value5="+valueFiveList.item(0).getNodeValue().trim());
 		    				 test.setValue5(valueFiveList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value5 = " ";
@@ -529,12 +619,12 @@ public class WebServiceGateWay {
 		    			 NodeList valueSixList = valueSix1.getChildNodes();
 		    			 
 		    			 try{
-		    				 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Value6="+valueSixList.item(0).getNodeValue().trim());
+		    				 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Value6="+valueSixList.item(0).getNodeValue().trim());
 		    				 test.setValue6(valueSixList.item(0).getNodeValue().trim());
 		    			 }catch(Exception e){
 		    				 value6 = " ";
 		    			 }
-		    			 //log.info("WebServiceGateWay - openWebServiceWithIDAddress - Done - Adding Values for Return");
+		    			 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress1 - Done - Adding Values for Return");
 
 		    			 keyvalues.add(test);      
                        }	
@@ -543,15 +633,17 @@ public class WebServiceGateWay {
 		     return keyvalues;
 	 }
 
-	 private ArrayList<KeyValue> openWebServiceSavedAddress(String req_webServiceURL,String value1,String value2,String value3 ,String value4 ,String value5 ,String value6 ,String value7 ,String value8) throws Exception  {
+	 private ArrayList<KeyValue> openWebServiceSavedAddress2(String req_webServiceURL,String value1,String value2,String value3 ,String value4 ,String value5 ,String value6 ,String value7 ,String value8) throws Exception  {
 
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		log.info("WebServiceGateWay - openWebServiceSavedAddress - Requested URL: "+noWhiteSpaceURL); 
-	     URL webSeriveURL = new URL(noWhiteSpaceURL);
+		//log.debug("WebServiceGateWay - openWebServiceSavedAddress2 - Requested URL: "+noWhiteSpaceURL); 
+	     URL webServiceURL = new URL(noWhiteSpaceURL);
+	     URLConnection urlConn = webServiceURL.openConnection();
+	     setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		     if(listOfRecords.getLength()!=0){
         
@@ -661,12 +753,14 @@ public class WebServiceGateWay {
     	 String resultStatus = null;
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		 log.info("WebServiceGateWay - openWebServiceSaveAddress - Requested URL: "+noWhiteSpaceURL);
+		 //log.debug("WebServiceGateWay - openWebServiceSaveAddress - Requested URL: "+noWhiteSpaceURL);
 		
-		 URL webSeriveURL = new URL(noWhiteSpaceURL);
+		 URL webServiceURL = new URL(noWhiteSpaceURL);
+		 URLConnection urlConn = webServiceURL.openConnection();
+		 setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 	  	 
 	  	 if(listOfRecords.getLength()!=0){
@@ -700,29 +794,32 @@ public class WebServiceGateWay {
      }
 	 
       private String getDocketNumberStatus(String req_webServiceURL) throws Exception {
-    	  URL webSeriveURL = new URL(req_webServiceURL);
- 		 log.info("WebServiceGateWay - getDocketNumberStatus - Docketnumber Valid check URL: "+req_webServiceURL);
+    	  URL webServiceURL = new URL(req_webServiceURL);
+    	  URLConnection urlConn = webServiceURL.openConnection();
+    	  setRequestCookie(urlConn);
+ 		 //log.debug("WebServiceGateWay - getDocketNumberStatus - Docketnumber Valid check URL: "+req_webServiceURL);
  		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
  		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
- 		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+ 		 Document doc = docBuilder.parse(urlConn.getInputStream());
  	     String docketNumberStatus = doc.getDocumentElement().getTextContent() ;
  	     return docketNumberStatus ;
       }
       
     
-      public String responseFromWebService(String address,String urlParameters){
+      @SuppressWarnings("unused")
+	public String responseFromWebService(String address,String urlParameters){
     	  int successFound = 0;
     	  int errorsFound = 0;
     	  String errorStatus = null ;
     	  
     	  try{ 
-    		  	log.info("WebServiceGateWay - responseFromWebService - Requested URL: "+address);
-    		  	log.info("WebServiceGateWay - responseFromWebService - urlParameters: "+urlParameters);
-    		    //System.out.println("WebServiceGateWay - responseFromWebService - Requested URL: *["+address+"]*");
-    		    //System.out.println("WebServiceGateWay - responseFromWebService - Requested urlParameters: *["+urlParameters+"]*");
+    		  	//log.debug("WebServiceGateWay - responseFromWebService - Requested URL: "+address);
+    		  	//log.debug("WebServiceGateWay - responseFromWebService - urlParameters: "+urlParameters);
+    		    //log.debug("WebServiceGateWay - responseFromWebService - Requested URL: *["+address+"]*");
+    		    //log.debug("WebServiceGateWay - responseFromWebService - Requested urlParameters: *["+urlParameters+"]*");
     		    //FilterInputStream 
     		    
-    		    //System.out.println("WebServiceGateWay - responseFromWebService - Cleaned address: *["+address+"]*");
+    		    //log.debug("WebServiceGateWay - responseFromWebService - Cleaned address: *["+address+"]*");
     		  
     		  	URL url = new URL(address.trim()); 
     		  	URLConnection uc = url.openConnection(); 
@@ -731,18 +828,20 @@ public class WebServiceGateWay {
     		  	conn.setRequestMethod("POST"); 
     		  	conn.setRequestProperty("Accept-charset", "UTF-8");
     		  	conn.setRequestProperty("Content-type", "text/xml; charset=UTF-8");
-                
+                setRequestCookie(conn);
     		  	conn.setRequestProperty("Content-length", Integer.toString(urlParameters.getBytes().length)); 
+    		  	conn.setConnectTimeout(10000);
+    		  	conn.setReadTimeout(10000);
     		  	DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
     		  	wr.writeBytes(urlParameters);
     		  	wr.flush();
     		  	wr.close();
 	           
 	           
-    		  	//log.info(">>>>>>>>"+conn.getResponseCode());
-    		  	//log.info(">>>>>>>>"+conn.getResponseMessage());
-    		  	//System.out.println("WebServiceGateWay - responseFromWebService - getResponseCode=" +conn.getResponseCode());
-    		  	//System.out.println("WebServiceGateWay - responseFromWebService - getResponseMessage="+conn.getResponseMessage());
+    		  	//log.debug(">>>>>>>>"+conn.getResponseCode());
+    		  	//log.debug(">>>>>>>>"+conn.getResponseMessage());
+    		  	//log.debug("WebServiceGateWay - responseFromWebService - getResponseCode=" +conn.getResponseCode());
+    		  	//log.debug("WebServiceGateWay - responseFromWebService - getResponseMessage="+conn.getResponseMessage());
     		  	 
     		  	/* Debug *
     		  	String UTF8 = "utf8";
@@ -751,11 +850,13 @@ public class WebServiceGateWay {
     	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), UTF8), BUFFER_SIZE);
     	        String str;
     	        while ((str = br.readLine()) != null) {
-    	        	System.out.println("WebServiceGateWay - responseFromWebService String="+str);
+    	        	//log.debug("WebServiceGateWay - responseFromWebService String="+str);
     	        }
 
     	        */
 	           
+    		  	conn.setConnectTimeout(10000);
+    		  	conn.setReadTimeout(10000);
     		  	BufferedInputStream bis = new BufferedInputStream(conn.getInputStream()); 
     		  	DataInputStream dis = new DataInputStream(bis);
     		  	DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -763,15 +864,16 @@ public class WebServiceGateWay {
     		  	Document doc = docBuilder.parse(dis);
     		  	NodeList listOfRecords = doc.getElementsByTagName("result");
   	  	   
+    		  	//log.debug("WebServiceGateWay - listOfRecords= " +listOfRecords.getLength());
 	    	    if(listOfRecords.getLength()!=0){
-	    	    	//log.info("WebServiceGateWay - responseFromWebService - 1");
-	                  //outerloop: //log.info("Breaking"); break outerloop;
+	    	    	//log.debug("WebServiceGateWay - responseFromWebService - 1");
+	                  //outerloop: //log.debug("Breaking"); break outerloop;
 	                  for (int s = 0; s < listOfRecords.getLength(); s++) {
-	                	  //log.info("WebServiceGateWay - responseFromWebService - 2");
+	                	  //log.debug("WebServiceGateWay - responseFromWebService - 2 - RecordNo= " + s);
 	                	  Node firstDocTypeNode = listOfRecords.item(s);
-	                	  //log.info("WebServiceGateWay - responseFromWebService - firstDocTypeNode="+firstDocTypeNode.getNodeName().indexOf(s)+", Type="+firstDocTypeNode.getNodeType());
+	                	  //log.debug("WebServiceGateWay - responseFromWebService - firstDocTypeNode="+firstDocTypeNode.getNodeName().indexOf(s)+", Type="+firstDocTypeNode.getNodeType());
 	                	  if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-	                		  //log.info("WebServiceGateWay - responseFromWebService - 3");
+	                		  //log.debug("WebServiceGateWay - responseFromWebService - 3 - NodeType= " + firstDocTypeNode.getNodeType());
 	                		  Element firstElement = (Element) firstDocTypeNode;
 
 	                		  try {
@@ -783,38 +885,40 @@ public class WebServiceGateWay {
 	                				  valuet = valueOneList.item(0).getNodeValue().trim() ;
 	                				  successFound ++ ;
 	                			  }else{
-	                				  //log.info("WebServiceGateWay - responseFromWebService - 4 (valueOne.getChildNodes is NULL)");
+	                				  //log.debug("WebServiceGateWay - responseFromWebService - 4 (valueOne.getChildNodes is NULL)");
 	                				  NodeList valueOneErr = firstElement.getElementsByTagName("error");
 	                    			  Element valueOneElement = (Element)valueOneErr.item(0);
 	                    			  NodeList valueOneListErr = valueOneElement.getChildNodes();
-	                    			  //log.info("WebServiceGateWay - responseFromWebService - 5 NodeValue: "+valueOneListErr.item(0).getNodeValue().trim());
+	                    			  //log.debug("WebServiceGateWay - responseFromWebService - 5 NodeValue: "+valueOneListErr.item(0).getNodeValue().trim());
 	                    			  errorStatus = valueOneListErr.item(0).getNodeValue().trim();
 	                    			  errorsFound++;
 	                    			  return "FAILED "+errorStatus;
 	                			  }
 	                		  }catch(Exception e){
+	                			  //log.debug("WebServiceGateWay - responseFromWebService - If this fails in DEV or QA, then the STUASA & STUAST Sequence numbers are most probably out of step since a DB Restore");
 	                			  e.printStackTrace();
+	                			  errorsFound++;
 	                			  
 	                		  }
 	                	  }
 	                  }
 		          }else {
-		        	  log.info("WebServiceGateWay - responseFromWebService - 6 - Something went wrong from here ");
+		        	  //log.debug("WebServiceGateWay - responseFromWebService - 6 - Something went wrong from here ");
 		        	  errorsFound++;
 		        	  NodeList listOfRecords1 = doc.getElementsByTagName("results");
 		        	  if(listOfRecords1.getLength()!=0){
-		               //log.info("1");
+		               //log.debug("1");
 		        		  for (int s = 0; s < listOfRecords1.getLength(); s++) {
-		        			  //log.info("2");
+		        			  //log.debug("2");
 		        			  Node firstDocTypeNode = listOfRecords1.item(s);
 		                      if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-		                    	  //log.info("3");
+		                    	  //log.debug("3");
 		                    	  Element firstElement = (Element) firstDocTypeNode;
 		                          if(firstElement.hasAttributes()) {
-		                        	  //log.info("4"); 
+		                        	  //log.debug("4"); 
 		                        	  NamedNodeMap map = firstElement.getAttributes();  		  
 		 			                  for(int i =0 ; i < map.getLength() ; i++){		
-		 			                	  //log.info("node value :" + map.item(i).getNodeValue());
+		 			                	  //log.debug("node value :" + map.item(i).getNodeValue());
 	 			                      }
 		                          }
 		                          NodeList valueOneE = firstElement.getElementsByTagName("error");
@@ -827,7 +931,7 @@ public class WebServiceGateWay {
 		                               
 		                           }catch(Exception e){
 		                               e.printStackTrace();
-		                              //log.info("failures found");
+		                              //log.debug("failures found");
 		                               errorsFound++;
 		                           }
 		                      }
@@ -840,39 +944,43 @@ public class WebServiceGateWay {
 				   ex.printStackTrace();
 			   }
 	      if(errorsFound > 0){
-	    	//log.info("returns errors");
+	    	//log.debug("returns errors");
+	    	  //log.debug("WebServiceGateWay - ResponseFromWebService - returns errors:FAILED="+errorStatus);
 	    	  return "FAILED "+errorStatus;
 	      }
 	      else { 
-	    	//log.info("return no errors");
+	    	//log.debug("return no errors");
+	    	  //log.debug("WebServiceGateWay - ResponseFromWebService - returns errors:SUCCESS");
 	    	  return "SUCCESS" ;
 	      }
       }
       
       private ArrayList<KeyValue> openWebServiceWithID2(String req_webServiceURL,String value1,String value2) throws Exception  {
 
-    	     log.info("WebServiceGateWay - openWebServiceWithID2 - Requested URL: "+req_webServiceURL);
+    	     //log.debug("WebServiceGateWay - openWebServiceWithID2 - Requested URL: "+req_webServiceURL);
 			 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-			 URL webSeriveURL = new URL(req_webServiceURL);
+			 URL webServiceURL = new URL(req_webServiceURL);
+			 URLConnection urlConn = webServiceURL.openConnection();
+			 setRequestCookie(urlConn);
 			 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			 Document doc = docBuilder.parse(webSeriveURL.openStream());
+			 Document doc = docBuilder.parse(urlConn.getInputStream());
 		  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		  	 if(listOfRecords.getLength()!=0){
-	            //log.info("one1 ");
+	            //log.debug("one1 ");
 	                for (int s = 0; s < listOfRecords.getLength(); s++) {
 	                	 KeyValue test = new KeyValue();
-	                	//log.info("one2 ");
+	                	//log.debug("one2 ");
 	                  Node firstDocTypeNode = listOfRecords.item(s);
 	                        if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-	                        	//log.info("one3 ");
+	                        	//log.debug("one3 ");
 	                        	
 	                        	Element firstElement = (Element) firstDocTypeNode;
 	                            if(firstElement.hasAttributes()) {
-	                            	 //log.info("one4 ");  
+	                            	 //log.debug("one4 ");  
 	                            	NamedNodeMap map = firstElement.getAttributes();  		  
 				                        for(int i =0 ; i < map.getLength() ; i++){		
-				                        	 //log.info("one5 ");
+				                        	 //log.debug("one5 ");
 				                        	test.setKey(map.item(i).getNodeValue());
 				                      }
 	                            }
@@ -881,10 +989,10 @@ public class WebServiceGateWay {
 	                                NodeList valueOneList = valueOne.getChildNodes();
 	                               
 	                                try{
-	                                	  //log.info("one6 ");     
+	                                	  //log.debug("one6 ");     
 	                                	test.setValue(valueOneList.item(0).getNodeValue().trim());
 	                                         }catch(Exception e){
-	                                           //log.info("exception "+e.getMessage());
+	                                           //log.debug("exception "+e.getMessage());
 	                                        	 value1 = " ";
 	                                }
 	                                keyvalues.add(test);  
@@ -897,7 +1005,7 @@ public class WebServiceGateWay {
 	        }     else {
 			    	 String docketNumberStatus = doc.getDocumentElement().getTextContent() ;
 			    	 KeyValue test = new KeyValue();
-			    	 log.info("WebServiceGateWay - openWebServiceWithID2 - status" + docketNumberStatus);
+			    	 //log.debug("WebServiceGateWay - openWebServiceWithID2 - status" + docketNumberStatus);
 			    	if(docketNumberStatus.contains("No records returned")){
 			    	test.setKey("1");
 			    	test.setValue("No records returned");
@@ -912,16 +1020,19 @@ public class WebServiceGateWay {
 			     return keyvalues;
       }
       
-      private String openWebServiceWithIDAddress(String req_webServiceURL,String value1,String value2) throws Exception  {
+      @SuppressWarnings("unused")
+	private String openWebServiceWithIDAddress(String req_webServiceURL,String value1,String value2) throws Exception  {
 
     	 String resultStatus = null;
 		 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
 		 String noWhiteSpaceURL = req_webServiceURL.replaceAll(" ", "\\%20");
-		 log.info("WebServiceGateWay - openWebServiceWithIDAddress - Requested URL: "+noWhiteSpaceURL);	 
-   		URL webSeriveURL = new URL(noWhiteSpaceURL);
+		 //log.debug("WebServiceGateWay - openWebServiceWithIDAddress - Requested URL: "+noWhiteSpaceURL);	 
+   		URL webServiceURL = new URL(noWhiteSpaceURL);
+   		URLConnection urlConn = webServiceURL.openConnection();
+   		setRequestCookie(urlConn);
 		 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		 Document doc = docBuilder.parse(webSeriveURL.openStream());
+		 Document doc = docBuilder.parse(urlConn.getInputStream());
 	  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 		     if(listOfRecords.getLength()!=0){
          
@@ -957,31 +1068,34 @@ public class WebServiceGateWay {
 		     return resultStatus;
 	 }
       
- 	 private ArrayList<KeyValue> openWebServiceSearch(String req_webServiceURL) throws Exception  {
+ 	 @SuppressWarnings("unused")
+	private ArrayList<KeyValue> openWebServiceSearch(String req_webServiceURL) throws Exception  {
 		  
-		    log.info("WebServiceGateWay - openWebServiceSearch - Search webservice URL: "+req_webServiceURL);
+		    //log.debug("WebServiceGateWay - openWebServiceSearch - Search webservice URL: "+req_webServiceURL);
 			 ArrayList<KeyValue> keyvalues = new ArrayList<KeyValue>();
-			 URL webSeriveURL = new URL(req_webServiceURL);
+			 URL webServiceURL = new URL(req_webServiceURL);
+			 URLConnection urlConn = webServiceURL.openConnection();
+			 setRequestCookie(urlConn);
 			 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			 Document doc = docBuilder.parse(webSeriveURL.openStream());
+			 Document doc = docBuilder.parse(urlConn.getInputStream());
 		  	 NodeList listOfRecords = doc.getElementsByTagName("record");
 			 if(listOfRecords.getLength()!=0){
 			   	 
-				 //log.info("WebServiceGateWay - openWebServiceSearch - one1 ");
+				 //log.debug("WebServiceGateWay - openWebServiceSearch - one1 ");
 	                for (int s = 0; s < listOfRecords.getLength(); s++) {
 	                	 KeyValue test = new KeyValue();
-	                	 //log.info("WebServiceGateWay - openWebServiceSearch - one2 ");
+	                	 //log.debug("WebServiceGateWay - openWebServiceSearch - one2 ");
 	                  Node firstDocTypeNode = listOfRecords.item(s);
 	                        if (firstDocTypeNode.getNodeType() == Node.ELEMENT_NODE) {
-	                        	//log.info("WebServiceGateWay - openWebServiceSearch - one3 ");
+	                        	//log.debug("WebServiceGateWay - openWebServiceSearch - one3 ");
 	                        	
 	                        	Element firstElement = (Element) firstDocTypeNode;
 	                            if(firstElement.hasAttributes()) {
-	                            	//log.info("WebServiceGateWay - openWebServiceSearch - one4 ");  
+	                            	//log.debug("WebServiceGateWay - openWebServiceSearch - one4 ");  
 	                            	NamedNodeMap map = firstElement.getAttributes();  		  
 				                        for(int i =0 ; i < map.getLength() ; i++){		
-				                        	//log.info("WebServiceGateWay - openWebServiceSearch - one5 ");
+				                        	//log.debug("WebServiceGateWay - openWebServiceSearch - one5 ");
 				                        	test.setKey(map.item(i).getNodeValue());
 				                      }
 	                            }
@@ -990,10 +1104,10 @@ public class WebServiceGateWay {
 	                            //NodeList valueOneList = valueOne.getChildNodes();
 	                               
 	                            try{
-	                            	log.info("WebServiceGateWay - openWebServiceSearch - one6 ");     
+	                            	//log.debug("WebServiceGateWay - openWebServiceSearch - one6 ");     
 	                               	//test.setValue(valueOneList.item(0).getNodeValue().trim());
 	                            }catch(Exception e){
-	                            	log.info("WebServiceGateWay - Exception "+e.getMessage());
+	                            	//log.debug("WebServiceGateWay - Exception "+e.getMessage());
 	                           	 //value1 = " ";
 	                            }
 	                            keyvalues.add(test);  
@@ -1001,10 +1115,10 @@ public class WebServiceGateWay {
 	                }
 	               
 	        }else{
-	        	log.info("ShipList Number Creation : "+req_webServiceURL);	
+	        	//log.debug("ShipList Number Creation : "+req_webServiceURL);	
 	        	String docketNumberStatus = doc.getDocumentElement().getTextContent() ;
 			    	KeyValue test = new KeyValue();
-			    	log.info("WebServiceGateWay - openWebServiceSearch - status: " + docketNumberStatus);
+			    	//log.debug("WebServiceGateWay - openWebServiceSearch - status: " + docketNumberStatus);
 			    	if(docketNumberStatus.contains("FromUser invalid")){
 			    		test.setKey("2");
 				    	test.setValue(docketNumberStatus);
