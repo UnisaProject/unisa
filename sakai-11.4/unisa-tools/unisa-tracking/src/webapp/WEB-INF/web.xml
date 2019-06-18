@@ -16,6 +16,12 @@
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
+	
+	<!-- Path used to determine where upload file should be written on server -->
+	<context-param>
+		<param-name>applicationPDFFullPath</param-name>
+		<param-value>/data/sakai/trackingPDF</param-value>
+	</context-param>
 
 	<!-- Sakai Struts Tool Servlet, for the options helper tool -->
 	<servlet>

@@ -53,6 +53,10 @@
 	       		path="/WEB-INF/jsp/result.jsp"
 	      		contextRelative="true" />
 	      	<forward 
+	       		name="printpdf" 
+	       		path="/WEB-INF/jsp/printPDF.jsp"
+	      		contextRelative="true" />
+	      	<forward 
 	       		name="search" 
 	       		path="/WEB-INF/jsp/search.jsp"
 	      		contextRelative="true" />

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Calendar;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.struts.util.LabelValueBean;
@@ -69,7 +70,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " ELSE ' '"
 				+ " END SPEC_CODE,"
 				+ " CASE"
-				+ " WHEN quaspc.speciality_code > ' '"
+				+ " WHEN quaspc.DESCRIPTION_ON_BROCHURE = 'Y' or quaspc.DESCRIPTION_ON_BROCHURE = ' '"
 				+ " THEN quaspc.english_descriptio"
 				//+ " THEN replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(NLS_INITCAP (quaspc.english_descriptio),' For ',' for '),"
 				//+ " ' And ',' and '),' Of ',' of '),' Or ',' or '),' In ',' in '),'With','with'),'From','from'),' As ',' as '),' To ',' to '),'Prior','prior'),'Hiv','HIV'),'Aids','AIDS'),"
@@ -104,6 +105,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP,gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -472,7 +474,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " ELSE ' '"
 				+ " END SPEC_CODE,"
 				+ " CASE"
-				+ " WHEN quaspc.speciality_code > ' '"
+				+ " WHEN quaspc.DESCRIPTION_ON_BROCHURE = 'Y' or quaspc.DESCRIPTION_ON_BROCHURE = ' '"
 				+ " THEN quaspc.english_descriptio"
 				//+ " THEN replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(NLS_INITCAP (quaspc.english_descriptio),' For ',' for '),"
 				//+ " ' And ',' and '),' Of ',' of '),' Or ',' or '),' In ',' in '),'With','with'),'From','from'),' As ',' as '),' To ',' to '),'Prior','prior')"
@@ -496,6 +498,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP,gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year >"
@@ -623,7 +626,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " ELSE ' '"
 				+ " END SPEC_CODE,"
 				+ " CASE"
-				+ " WHEN quaspc.speciality_code > ' '"
+				+ " WHEN quaspc.DESCRIPTION_ON_BROCHURE = 'Y' or quaspc.DESCRIPTION_ON_BROCHURE = ' '"
 				+ " THEN quaspc.english_descriptio"
 				//+ " THEN replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(NLS_INITCAP (quaspc.english_descriptio),' For ',' for '),"
 				//+ " ' And ',' and '),' Of ',' of '),' Or ',' or '),' In ',' in '),'With','with'),'From','from'),' As ',' as '),' To ',' to '),'Prior','prior'),'Hiv','HIV'),'Aids','AIDS'),"
@@ -679,6 +682,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP, gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -792,7 +796,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " ELSE ' '"
 				+ " END SPEC_CODE,"
 				+ " CASE"
-				+ " WHEN quaspc.speciality_code > ' '"
+				+ " WHEN quaspc.DESCRIPTION_ON_BROCHURE = 'Y' or quaspc.DESCRIPTION_ON_BROCHURE = ' '"
 				+ " THEN quaspc.english_descriptio"
 				//+ " THEN replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(NLS_INITCAP (quaspc.english_descriptio),' For ',' for '),"
 				//+ " ' And ',' and '),' Of ',' of '),' Or ',' or '),' In ',' in '),'With','with'),'From','from'),' As ',' as '),' To ',' to '),'Prior','prior'),'Hiv','HIV'),'Aids','AIDS'),"
@@ -848,6 +852,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " gencod.afr_description CAT_GRP, gencod.eng_description CATEGORY_GROUP"
 				+ " FROM quaspc, grd, colleg, kat, gencod"
 				+ " WHERE quaspc.in_use_flag = 'Y'"
+				+ " AND quaspc.calendar_category = 'Y'"
 				+ " AND quaspc.mk_qualification_c = grd.code"
 				+ " AND grd.in_use_flag = 'Y'"
 				+ " AND (grd.to_year = 0 OR grd.to_year > "
@@ -1091,8 +1096,9 @@ public class MychoiceDAO extends StudentSystemDAO {
 								"SPES").toString()));
 
 						Element spesDesc = document.createElement("spesdesc");
-						spesDesc.appendChild(document.createTextNode(data.get(
-								"SPESDESC").toString()));
+						
+						spesDesc.appendChild(document.createTextNode(data.get("SPESDESC").toString()));
+						
 						spesCode = data.get("SPES").toString();
 
 						Element nqfl = document.createElement("NQFel");
@@ -1342,7 +1348,6 @@ public class MychoiceDAO extends StudentSystemDAO {
 									.createElement("qualificationlevel");
 							qualification.appendChild(qualLevel);
 							qualificationLevel = data.get("LVL").toString();
-							System.out.println("qualification level ++++++++++"+qualificationLevel);
 
 							Element level = document.createElement("name");
 							level.appendChild(document.createTextNode(data.get(
@@ -1400,8 +1405,11 @@ public class MychoiceDAO extends StudentSystemDAO {
 					qualificationchoice.appendChild(module);
 
 					Element modName = document.createElement("name");
+							
+					//Module description displayed on brochure as it is (No - Offered from year)    
 					modName.appendChild(document.createTextNode(data.get(
 							"MODULE1").toString()));
+
 
 					Element modCode = document.createElement("code");
 					modCode.appendChild(document.createTextNode(data.get(

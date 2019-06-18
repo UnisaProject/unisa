@@ -41,7 +41,7 @@ public class Consignment {
 	}
 
 	public void setShowHide(String showHide) {
-		//System.out.println("Consignment setShowHide="+showHide);
+		//log.info("Consignment setShowHide="+showHide);
 		this.showHide = showHide;
 	}
 	public List<Docket> getDockets() {
