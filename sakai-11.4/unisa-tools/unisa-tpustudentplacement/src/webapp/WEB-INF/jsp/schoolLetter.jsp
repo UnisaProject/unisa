@@ -211,7 +211,7 @@
 				<td>&nbsp;</td>
 			</tr>  
 			<tr>
-				<td colspan="2" class='normalSize'>Yours Faithfully<br><br>UNISA Teaching Practice Office<br></td>
+				<td colspan="2" class='normalSize'>Yours Faithfully<br><br>UNISA Teaching Practice Office   <br></td>
 			</tr>  
 			
         </sakai:group_table>
