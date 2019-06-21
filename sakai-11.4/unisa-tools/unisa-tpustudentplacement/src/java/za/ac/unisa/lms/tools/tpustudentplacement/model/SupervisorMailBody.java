@@ -29,10 +29,9 @@ public class SupervisorMailBody {
 		  "<li>	Contact the Teaching Practice Coordinator if you have  problems with any student/s.</li>"+
 		  "<li>	Please ensure that you have signed your claim forms where applicable  before submission.</li>"+
 		  "<li>	Please ensure clear and neat hand writing in all forms to be  submitted.</li>"+
-		  "<li>	For your claims to be timeously paid,<b> (processed by the 7th  of the next month)</b> please insure that the claim forms are recieved by the TP Office  on or before the <b>25th</b> of current month.</li>"+
 		  "<li>	Inform the Teaching Practice office in time if you need assessment forms.</li>"+
 		  "<li>	Please inform the Teaching Practice Coordinator on time if you will not be able to assess all the students due to unforeseen circumstances  so that we can re-allocate them to other supervisors.</li>"+
-		  "<br><b>Below is a list of students allocated to you for school visits.</b>";
+		  "<br><b>Below is a list of students allocated to you for school visits. </b>";
         return emailMessage;
    }
    private String getStudentsList(int supervisorCode)throws Exception{
@@ -40,8 +39,8 @@ public class SupervisorMailBody {
                     String  startTableTag="<table cellspacing='0' border='1'>";  
                     String headerRow="<tr><th>PROVINCE</th><th>DISTRICT</th><th>TOWN</th><th>STUDENT NAME</th><th>STUDENT NUMBER</th><th>CONTACT</th><th>MODULE</th><th>PERIOD</th>"+
                                      "<th>NAME OF SCHOOL</th><th>SCHOOL CONTACT</th></tr>";
-                    
-                    StudentPlacement  sp=new StudentPlacement();
+                                      
+									  StudentPlacement  sp=new StudentPlacement();
                     List stuPlacementsList=sp.getPlacementListForSuperv(supervisorCode);
                     String placedStu=makeStudentList(stuPlacementsList);
                     lastPartOfEmailBody+=makeStudentsTable(placedStu,startTableTag,headerRow);
