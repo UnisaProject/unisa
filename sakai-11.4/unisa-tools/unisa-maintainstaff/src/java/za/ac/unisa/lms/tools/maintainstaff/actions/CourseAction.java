@@ -2508,6 +2508,16 @@ public class CourseAction extends LookupDispatchAction {
 					}
 					return "addPersons";						
 				}
+				
+				//check marker have email address in staff
+				 if(courseForm.getSelectedView().equals("J")){
+					 if(studentSystemDAO.checkMarkerEmail(record.getNetworkCode()) == false){
+						 messages.add(ActionMessages.GLOBAL_MESSAGE,
+									new ActionMessage("message.generalmessage", "You cannot add the user ("+record.getNetworkCode()+"), email address does not exists."));
+							addErrors(request, messages);
+							return "addPersons";	
+					 }
+				 }
 
 
 				// check in database for existing course site.
@@ -2532,6 +2542,8 @@ public class CourseAction extends LookupDispatchAction {
 			}
 
 		}
+		
+		
 
 		courseForm.setAcadPeriodDesc(courseForm.getSelectedView());
 
