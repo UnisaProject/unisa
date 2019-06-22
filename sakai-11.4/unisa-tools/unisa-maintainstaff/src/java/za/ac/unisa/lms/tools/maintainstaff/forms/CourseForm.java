@@ -7,6 +7,11 @@ import java.util.List;
 
 
 import org.apache.struts.validator.ValidatorForm;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.event.api.UsageSession;
+import org.sakaiproject.event.api.UsageSessionService;
+import org.sakaiproject.tool.api.SessionManager;
 
 import za.ac.unisa.lms.tools.maintainstaff.DAO.MaintainStaffStudentDAO;
 
@@ -41,7 +46,7 @@ public class CourseForm extends ValidatorForm {
 	
 	
 	// variables for add of persons to existing course
-	private ArrayList yearOptions; // list of year options
+	private ArrayList yearOptions = null; // list of year options
 	private ArrayList periodOptions; // list of period (registration/examination) options
 	private ArrayList paperNrOptions; // list of paper Number options
 	
@@ -57,6 +62,10 @@ public class CourseForm extends ValidatorForm {
 	private String keepPriml; //options to keep primary lecture when updating
 	private List logsList;
 	private String displayCourseDetails;
+	
+	private UsageSessionService usageSessionService;
+	private SessionManager sessionManager;
+	private SecurityService securityService;
 	
 	public String getDisplayCourseDetails() {
 		return displayCourseDetails;
@@ -142,31 +151,68 @@ public class CourseForm extends ValidatorForm {
 	public ArrayList getYearOptions() {
 		Date d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-
 		String stringYear = sdf.format(d);
-
 		Integer i = new Integer(stringYear);
-		int currentYear = i.intValue();
-		int prevYear = currentYear -1;
-		int prevYear2 = currentYear -2;
-		int prevYear3 = currentYear -3;
-		int nextYear = currentYear + 1;
-		int nextYear2 = currentYear + 2;
-		String currentYearStr = Integer.toString(currentYear);
-		String prevYear2Str = Integer.toString(prevYear2); 
-		String prevYear3Str = Integer.toString(prevYear3);
-		String prevYearStr = Integer.toString(prevYear);
-		String nextYearStr = Integer.toString(nextYear);
-		String nextYear2Str = Integer.toString(nextYear2);
+		usageSessionService = (UsageSessionService) ComponentManager.get(UsageSessionService.class);
+		UsageSession usageSession = usageSessionService.getSession();
+		securityService = (SecurityService) ComponentManager.get(SecurityService.class);
+		String userId = usageSession.getUserId();
+		
+		 if (securityService.isSuperUser(userId)) {
+		    	int currentYear = i.intValue();
+				int prevYear = currentYear -1;
+				int prevYear2 = currentYear -2;
+				int prevYear3 = currentYear -3;
+				int prevYear4 = currentYear -4;
+				int prevYear5 = currentYear -5;
+				int prevYear6 = currentYear -6;
+				int nextYear = currentYear + 1;
 
-		yearOptions = new ArrayList();
-		yearOptions.add(new org.apache.struts.util.LabelValueBean("..", ""));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear3Str, prevYear3Str));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear2Str, prevYear2Str));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYearStr, prevYearStr));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(currentYearStr, currentYearStr));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(nextYearStr, nextYearStr));
-		yearOptions.add(new org.apache.struts.util.LabelValueBean(nextYear2Str, nextYear2Str));
+
+				String currentYearStr = Integer.toString(currentYear);
+				String prevYear2Str = Integer.toString(prevYear2); 
+				String prevYear3Str = Integer.toString(prevYear3);
+				String prevYear4Str = Integer.toString(prevYear4);
+				String prevYear5Str = Integer.toString(prevYear5);
+				String prevYear6Str = Integer.toString(prevYear6);
+				String prevYearStr = Integer.toString(prevYear);
+				String nextYearStr = Integer.toString(nextYear);
+
+				yearOptions = new ArrayList();
+				yearOptions.add(new org.apache.struts.util.LabelValueBean("..", ""));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(nextYearStr, nextYearStr));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(currentYearStr, currentYearStr));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYearStr, prevYearStr));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear2Str, prevYear2Str));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear3Str, prevYear3Str));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear4Str, prevYear4Str));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear5Str, prevYear5Str));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear6Str, prevYear6Str));
+				
+		 }else {
+			    int currentYear = i.intValue();
+				int prevYear = currentYear -1;
+				int prevYear2 = currentYear -2;
+				int prevYear3 = currentYear -3;
+				int nextYear = currentYear + 1;
+				String currentYearStr = Integer.toString(currentYear);
+				String prevYear2Str = Integer.toString(prevYear2); 
+				String prevYear3Str = Integer.toString(prevYear3);
+				String prevYearStr = Integer.toString(prevYear);
+				String nextYearStr = Integer.toString(nextYear);
+
+				yearOptions = new ArrayList();
+				yearOptions.add(new org.apache.struts.util.LabelValueBean("..", ""));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(nextYearStr, nextYearStr));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(currentYearStr, currentYearStr));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYearStr, prevYearStr));				
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear2Str, prevYear2Str));
+				yearOptions.add(new org.apache.struts.util.LabelValueBean(prevYear3Str, prevYear3Str));
+			
+		 }
+		
+		
+	
 		
 		return yearOptions;
 	}
