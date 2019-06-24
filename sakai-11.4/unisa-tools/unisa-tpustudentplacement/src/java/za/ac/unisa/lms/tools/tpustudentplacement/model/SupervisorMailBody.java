@@ -35,16 +35,15 @@ public class SupervisorMailBody {
         return emailMessage;
    }
    private String getStudentsList(int supervisorCode)throws Exception{
-                    String  lastPartOfEmailBody="<b>* New allocations since our previous communication</b><br><br>";
-                    String  startTableTag="<table cellspacing='0' border='1'>";  
-                    String headerRow="<tr><th>PROVINCE</th><th>DISTRICT</th><th>TOWN</th><th>STUDENT NAME</th><th>STUDENT NUMBER</th><th>CONTACT</th><th>MODULE</th><th>PERIOD</th>"+
-                                     "<th>NAME OF SCHOOL</th><th>SCHOOL CONTACT</th></tr>";
-                                      
-									  StudentPlacement  sp=new StudentPlacement();
-                    List stuPlacementsList=sp.getPlacementListForSuperv(supervisorCode);
-                    String placedStu=makeStudentList(stuPlacementsList);
-                    lastPartOfEmailBody+=makeStudentsTable(placedStu,startTableTag,headerRow);
-                    return lastPartOfEmailBody;
+                                                 String  lastPartOfEmailBody="<b>* New allocations since our previous communication</b><br><br>";
+                                                 String  startTableTag="<table cellspacing='0' border='1'>";  
+                                                 String headerRow="<tr><th>PROVINCE</th><th>DISTRICT</th><th>TOWN</th><th>STUDENT NAME</th><th>STUDENT NUMBER</th><th>CONTACT</th><th>MODULE</th><th>PERIOD</th>"+
+                                                                                 "<th>NAME OF SCHOOL</th><th>SCHOOL CONTACT</th></tr>";
+                                                StudentPlacement  sp=new StudentPlacement();
+                                                List stuPlacementsList=sp.getPlacementListForSuperv(supervisorCode);
+                                                String placedStu=makeStudentList(stuPlacementsList);
+                                                lastPartOfEmailBody+=makeStudentsTable(placedStu,startTableTag,headerRow);
+                                               return lastPartOfEmailBody;
    }
    private String makeStudentsTable(String rowsOfStu,String startTableTag,String headerRow){
 	                 String lastPartOfEmailBody="";
