@@ -97,9 +97,10 @@ public class SupervisorMailBody {
                      supervisor.setProvinceCode((Short.parseShort(provCodeList.get(0).toString())));
                      Coordinator  coordinator=new Coordinator();
                      coordinator=coordinator.getCoordinatorForProvince(supervisor.getProvinceCode());
+                     String placedStudentForSup=getStudentsList(supervisorCode);
                      emailBody= firstPartOfEmailMessage(supervisor.getName())+
                           "<br><br>Number of Students Allocated:"+supervisor.getStudentsAllocated()+
-                          "<br><br>"+getStudentsList(supervisorCode)+"<br><br>"+
+                          "<br><br>"+placedStudentForSup+"<br><br>"+
                           "We hope you find this in order and feel free to contact our office for any enquiries.<br><br>"+
                           "Kind Regards<br><br>Teaching Practice Coordinator:<br><b>"+coordinator.getName()+"</b><br><br>";
                       if(!coordinator.getEmailAddress().equals("")){
@@ -107,6 +108,9 @@ public class SupervisorMailBody {
                       }
                       if(!coordinator.getContactNumber().equals("")){
                     	  emailBody+="Tel:"+coordinator.getContactNumber();
+                      }
+                      if((placedStudentForSup==null)||(placedStudentForSup.isEmpty())){
+                    	           emailBody=null;
                       }
     	            return emailBody;
     }

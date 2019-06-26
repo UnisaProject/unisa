@@ -107,10 +107,11 @@ public class SupervisorMailBody {
                      if(coordinator==null){
                     	     coordinator=new Coordinator();
                      }
+                     String placedStudentForSup=getStudentsList(supervisorCode);
                      String totStuAlloc=supervisorUI.getStudentsAllocated(supervCode);
                      String emailBody= firstPartOfEmailMessage(""+supervName)+
                           "<br><br>Number of Students Allocated:"+totStuAlloc+
-                          "<br><br>"+getStudentsList(supervCode)+"<br><br>"+
+                          "<br><br>"+placedStudentForSup+"<br><br>"+
                           "We hope you find this in order and feel free to contact our office for any enquiries.<br><br>"+
                           "Kind Regards<br><br>Teaching Practice Coordinator:<br><b>"+coordinator.getName()+"</b><br><br>";
                       if(!coordinator.getEmailAddress().equals("")){
@@ -119,6 +120,9 @@ public class SupervisorMailBody {
                       if(!coordinator.getContactNumber().equals("")){
                     	  emailBody+="Tel:"+coordinator.getContactNumber();
                       }
+                      if((placedStudentForSup==null)||(placedStudentForSup.isEmpty())){
+           	                                emailBody=null;
+                       }
                       return emailBody;
     }
    

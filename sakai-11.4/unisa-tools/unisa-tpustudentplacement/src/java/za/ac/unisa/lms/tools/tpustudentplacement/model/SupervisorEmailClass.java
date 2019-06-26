@@ -7,22 +7,28 @@ import  za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 public class SupervisorEmailClass {
 
-	 public void sendEmailToSupervisor(Supervisor  supervisor) throws Exception{
+	 public boolean sendEmailToSupervisor(Supervisor  supervisor) throws Exception{
     	                       DateUtil dateUtil=new DateUtil();
     	                       SupervisorMailBody  smb=new SupervisorMailBody();
     	                       int supervCode=supervisor.getCode();
     	                       int curryear=dateUtil.getYearInt();
     	                       EmailImpl emailImpl=new EmailImpl();
-    	                       emailImpl.setBody(smb.createEmailBody(supervisor.getName(),supervisor.getCode()));
-    	                       String emailAddr=supervisor.getEmailAddress();
-    	                       prepareAdressing(emailAddr,emailImpl);
-    	                       String subject="Unisa Teaching Practice Placement Information";
-    	                       emailImpl.setSubject(subject);
-    	                       emailImpl.sendEmail();
-    	                       String totStuAllocated=supervisor.getStudentsAllocated(supervCode,curryear);
-    	                       EmailLogUI emailLogUI=new  EmailLogUI();
-    	                       emailLogUI.writeEmailLog(supervCode,emailAddr,"Students allocated :"+totStuAllocated,subject);
-    	                       updateEmailSentFieldPlacement(supervCode);
+    	                       String emailBody=smb.createEmailBody(supervisor.getName(),supervisor.getCode());
+    	                       if((emailBody==null)||(emailBody.isEmpty()){
+    	                    	                return false;
+    	                       }else{
+    	                                          emailImpl.setBody(emailBody);
+    	                                         String emailAddr=supervisor.getEmailAddress();
+    	                                         prepareAdressing(emailAddr,emailImpl);
+    	                                         String subject="Unisa Teaching Practice Placement Information";
+    	                                         emailImpl.setSubject(subject);
+    	                                         emailImpl.sendEmail();
+    	                                         String totStuAllocated=supervisor.getStudentsAllocated(supervCode,curryear);
+    	                                         EmailLogUI emailLogUI=new  EmailLogUI();
+    	                                         emailLogUI.writeEmailLog(supervCode,emailAddr,"Students allocated :"+totStuAllocated,subject);
+    	                                         updateEmailSentFieldPlacement(supervCode);
+    	                                         return true;
+    	                       }
      }
      
      private void prepareAdressing(String supervisorEmail, EmailImpl emailImpl){

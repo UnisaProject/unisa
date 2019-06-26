@@ -470,10 +470,14 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 						               "Email has not been sent, the supervisor's email is not valid"));
 		                	   addErrors(request,messages);
 		                }else{
-		                          sec.sendEmailToSupervisor(supervisor);
+		                          boolean emailSent=sec.sendEmailToSupervisor(supervisor);
+		                          if(emailSent){
+		                        	             displayMsg="Email has been sent"
+		                          }else{
+		                        	           displayMsg="Email has not been sent, the supervisor's student list is empty"
+		                          }
 	                              messages.add(ActionMessages.GLOBAL_MESSAGE,
-					                           new ActionMessage("message.generalmessage",
-								               "Email has been sent"));
+					                           new ActionMessage("message.generalmessage",displayMsg));
    	                             List emailLogList=setEmailLogList(studentPlacementForm.getSupervisor().getCode(),
    	                            		                            Integer.parseInt(studentPlacementForm.getAcadYear()));
    	                             studentPlacementForm.setSupervisorEmailLogList(emailLogList);
