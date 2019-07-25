@@ -186,7 +186,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						$("#savedSpec1").html("");
 						populateSelectedCategory1();
 						return false;*/
-					}
+					}					
 				}
 				var categoryText = $("select[name='selCategoryCode1']").find("option:selected").text();
 				if (categoryText == "Select category"){
@@ -218,6 +218,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				//Johanet - 20180823 add student nr to prevent caching if students do not close browser
 				var stuNr = $("#stuNr").val();
 				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&id='+stuNr;
+				var aspGRD = $("#selectHEMain").val();  //Johanet 20190723	
 				$.ajaxSetup( { "async": false } );
 				$.getJSON(url, function(data) {
 					data.sort(SortByDesc);
@@ -226,8 +227,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					items.push('<option value="0">Select qualification</option>');
 					var count = 0;
 					$.each(data, function(i, item) {
+						//20190723 Johanet BRS 2020 requirement 5 - do not load 0216X for grade 12 student
+						if (aspGRD === "G12" && data[i].code === "0216X"){
+							 //do nothing grade 12 student do not qualify for qualification 0216X
+						}else{
 				    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
 				    	count++;
+						}
 						//alert("Count: " + count);
 					});
 					if(count==0){
@@ -274,6 +280,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				//Johanet - 20180823 add student nr to prevent caching if students do not close browser
 				var stuNr = $("#stuNr").val();
 				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&id='+stuNr;
+				var aspGRD = $("#selectHEMain").val();  //Johanet 20190723	
 				$.ajaxSetup( { "async": false } );
 				$.getJSON(url, function(data) {
 					data.sort(SortByDesc);
@@ -282,8 +289,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					items.push('<option value="0">Select qualification</option>');
 					var count = 0;
 					$.each(data, function(i, item) {
-				    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
-				    	count++;
+						//20190723 Johanet BRS 2020 requirement 5 - do not load 0216X for grade 12 student
+						if (aspGRD === "G12" && data[i].code === "0216X"){
+							 //do nothing grade 12 student do not qualify for qualification 0216X
+						}else{
+					    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
+					    	count++;
+						}	
 						//alert("Count: " + count);
 					});
 					if(count==0){
@@ -327,7 +339,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					}else{
 						$("select[name='selSpecCode1']").html(items);
 					}
-				});
+				});		
 				
 			});
 			
@@ -337,7 +349,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				$("select[name='selSpecCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selSpecCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
 				
-				var qual = $(this).val();
+				var qual = $(this).val();					
 				var category2 = $("select[name='selCategoryCode2']").find("option:selected").val();
 				var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category2+'&selQualCode='+qual;
 				$.ajaxSetup( { "async": false } );
