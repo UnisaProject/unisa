@@ -61,9 +61,13 @@ import za.ac.unisa.lms.tools.studentregistration.bo.Status;
 import za.ac.unisa.lms.tools.studentregistration.utils.PdfDownloader;
 
 //import za.ac.unisa.utils.WorkflowFile;
+import Gistl01h.Abean.Gistl01sProxyForGistf01m;
 import Srrsa01h.Abean.Srrsa01sRegStudentPersDetail;
 import Staae05h.Abean.Staae05sAppAdmissionEvaluator;
+import Srpde01h.Abean.Srpde01sChkPersonalDetails;
 import Menu95h.Abean.Menu95S;
+
+import za.ac.unisa.utils.CellPhoneVerification;
 
 public class ApplyForStudentNumberAction extends LookupDispatchAction {
 	
@@ -1627,7 +1631,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 
 				/** Flow Check: (11) **/
 				//log.debug("ApplyForStudentNumberAction - applyLoginNew (11) - Check STUAPQ Record");
-				boolean vSTUAPQCheck = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay, stuRegForm.getStudent().getAcademicYear(),stuRegForm.getLoginSelectMain());
+				boolean vSTUAPQCheck = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay, stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),stuRegForm.getLoginSelectMain());
 
 					if (vSTUAPQCheck){ 
 						/** Flow Check: (12) **/
@@ -2128,7 +2132,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				String bDay = stuRegForm.getStudent().getBirthDay() + "/" + stuRegForm.getStudent().getBirthMonth() + "/" + stuRegForm.getStudent().getBirthYear();
 				/** Flow Check: (4) **/
 				//log.debug("ApplyForStudentNumberAction - applyLoginReturn (4) - Check STUAPQ (F851)");
-				boolean checkSTUAPQ = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay,stuRegForm.getStudent().getAcademicYear(),stuRegForm.getLoginSelectMain());
+				boolean checkSTUAPQ = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay,stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),stuRegForm.getLoginSelectMain());
 				stuRegForm.getStudent().setStuapqExist(checkSTUAPQ);
 				
 				//log.debug("ApplyForStudentNumberAction - applyLoginReturn - (IF) vAcaCheck=True - checkSTUAPQ: " + checkSTUAPQ + " - setStuExist:curStu - goto - MenuReturnStu");
@@ -2346,7 +2350,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				String bDay = stuRegForm.getStudent().getBirthDay() + "/" + stuRegForm.getStudent().getBirthMonth() + "/" + stuRegForm.getStudent().getBirthYear();
 				/** Flow Check: (20) **/
 				//log.debug("ApplyForStudentNumberAction - applyLoginReturn (20) - Check for STUAPQ (F851) record");
-				boolean checkSTUAPQ = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay,stuRegForm.getStudent().getAcademicYear(),stuRegForm.getLoginSelectMain());
+				boolean checkSTUAPQ = dao.validateSTUAPQ(stuRegForm.getStudent().getSurname(), stuRegForm.getStudent().getFirstnames(), bDay,stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),stuRegForm.getLoginSelectMain());
 				stuRegForm.getStudent().setStuapqExist(checkSTUAPQ);
 				
 				//log.debug("ApplyForStudentNumberAction - applyLoginReturn - (IF) vAcaCheck=True - checkSTUAPQ: " + checkSTUAPQ + " - setStuExist:curStu - goto - MenuReturnStu");
@@ -4529,13 +4533,22 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			setDropdownListsStep1(request,stuRegForm);
 			return "applyNewPersonal";
 		}
- 		if (!isInitialsGood(stuRegForm.getStudent().getInitials(), stuRegForm.getStudent().getFirstnames())){
+		//Johanet 20190724 BRS 2020 requirement 9.1 - Verify Initials against First names
+		String errorMsg = verifyInitials(stuRegForm.getStudent().getInitials(), stuRegForm.getStudent().getFirstnames());
+			
+		if (errorMsg!="") {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage", "Please put spaces between your initials."));
-			addErrors(request, messages);
-			setDropdownListsStep1(request,stuRegForm);
-			return "applyNewPersonal";
+		  			new ActionMessage("message.generalmessage", errorMsg));
+					addErrors(request, messages);
+			return "applyNewPersonal";		
 		}
+// 		if (!isInitialsGood(stuRegForm.getStudent().getInitials(), stuRegForm.getStudent().getFirstnames())){
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "Please put spaces between your initials."));
+//			addErrors(request, messages);
+//			setDropdownListsStep1(request,stuRegForm);
+//			return "applyNewPersonal";
+//		}
 		// Title
 		stuRegForm.getStudent().setTitle(stripXSS(stuRegForm.getStudent().getTitle(), "Title", "NewPers", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		if (stuRegForm.getStudent().getTitle() == null || "-1".equals(stuRegForm.getStudent().getTitle())){
@@ -4678,7 +4691,21 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				setDropdownListsStep1(request,stuRegForm);
 				return "applyNewPersonal";
 	        }
-		}
+	      //Johanet 20190725 BRS 2020 requirement 9.3 - Check if student exists with same ID number
+	      String vNumCheck = dao.validateStudentID(stuRegForm.getStudent().getIdNumber(), stuRegForm.getLoginSelectMain());
+	      if (vNumCheck.equalsIgnoreCase("newStu")) {
+	    	  //ok - student Number with id does not exists
+	      }else {
+//	    	  messages.add(ActionMessages.GLOBAL_MESSAGE,
+//						new ActionMessage("message.generalmessage", "You already have a student number at Unisa. Go to <a href=https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number target=\"_top\">https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number</a> to find your student number."));
+	    	  	messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage", "A student record with the same personal details was found on the system. Please e-mail your full names, surname and your Identity number/passport number to applications@unisa.ac.za for further enquiries."));
+	    		addErrors(request, messages);	    	  	
+				setDropdownListsStep1(request,stuRegForm);
+				return "applyNewPersonal";
+	      }
+	        
+		}		
 
 
 		// gender
@@ -4690,6 +4717,53 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			setDropdownListsStep1(request,stuRegForm);
 			return "applyNewPersonal";
 		}
+		
+		//call Srpde01h to verify Surname and Initials
+//				Gistl01sProxyForGistf01m op = new Gistl01sProxyForGistf01m();	
+//				operListener opl = new operListener();
+//				op.addExceptionListener(opl);
+//				op.clear();
+//				
+//				op.setAsStringInStaffPersno("1127330");
+//					
+//				op.execute();
+//
+//				if (opl.getException() != null) throw opl.getException();
+//				if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+//
+//				String gistl01Output = op.getOutCsfStringsString500();
+//				if (!gistl01Output.equalsIgnoreCase("")) {
+//					messages.add(ActionMessages.GLOBAL_MESSAGE,
+//							new ActionMessage("message.generalmessage", gistl01Output));
+//					addErrors(request, messages);
+//					setDropdownListsStep1(request,stuRegForm);
+//					return "applyNewPersonal";
+//				}		
+		
+//		//call Srpde01h to verify Surname and Initials
+//		Srpde01sChkPersonalDetails op = new Srpde01sChkPersonalDetails();	
+//		operListener opl = new operListener();
+//		op.addExceptionListener(opl);
+//		op.clear();
+//		
+//		op.setInCsfClientServerCommunicationsAction("FI"); //Check Firstnames and Initials
+//		op.setInWsStudentV3FirstNames(stuRegForm.getStudent().getFirstnames().trim());
+//		op.setInWsStudentV3Initials(stuRegForm.getStudent().getInitials().trim());	
+//			
+//		op.execute();
+//
+//		if (opl.getException() != null) throw opl.getException();
+//		if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+//
+//		String srpde01hOutput = op.getOutCsfStringsString500();
+//		if (!srpde01hOutput.equalsIgnoreCase("")) {
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", srpde01hOutput));
+//			addErrors(request, messages);
+//			setDropdownListsStep1(request,stuRegForm);
+//			return "applyNewPersonal";
+//		}		
+		
 		// set disability
 		stuRegForm.setSelectedDisability(stripXSS(stuRegForm.getSelectedDisability(), "Disability", "NewPers", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		if (stuRegForm.getSelectedDisability() != null){
@@ -5814,6 +5888,11 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//Update Student Email Address and Cellular Number
 		dao.updStudentContact(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getEmailAddress(), stuRegForm.getStudent().getCellNr());
 
+		//validate to check is student is registered.
+		boolean studentRegistered=false;
+		studentRegistered=dao.isStudentRegisteredForModules(stuRegForm.getStudent().getNumber());
+		stuRegForm.getStudent().setStuRegistered(studentRegistered);
+		
 		//log.debug("ApplyForStudentNumberAction - stepRetContact - GoTo applyRetRadio");
 		return mapping.findForward("applyRetRadio");
 	}
@@ -5868,6 +5947,21 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					new ActionMessage("message.generalmessage", "Please confirm if you are a Prisoner."));
 			addErrors(request, messages);
 			return mapping.findForward("applyRetRadio");
+		}else{
+			//20190715 BRS 2020 requirement 3 - Returning Student to select examination centre if not registered for a module			
+			if (!stuRegForm.getStudent().isStuRegistered()) {
+				stuRegForm.setSelectedExamCentre(stripXSS(stuRegForm.getSelectedExamCentre(), "SelectedExamCentre", "RetRadio", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+				if (stuRegForm.getSelectedExamCentre() == null || "-1".equals(stuRegForm.getSelectedExamCentre()) || "".equals(stuRegForm.getSelectedExamCentre().trim()) || stuRegForm.getSelectedExamCentre().length() < 5){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Select your examination centre."));
+					addErrors(request, messages);
+					return mapping.findForward("applyRetRadio");
+				}else{
+					stuRegForm.getStudent().getExam().getExamCentre().setCode(stuRegForm.getSelectedExamCentre().substring(0,5));
+					stuRegForm.getStudent().getExam().getExamCentre().setDesc(stuRegForm.getSelectedExamCentre().substring(5));
+				}
+			}
+			
 		}
 		//log.debug("ApplyForStudentNumberaction - stepRetRadio - Prisoner=" + stuRegForm.getStudentApplication().getPrisoner());
 
@@ -5998,6 +6092,20 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//Update Student Record - Hard-Code Correspondence Language to English - Vinesh 2017
 		dao.updateStudentCorrespondence(stuRegForm.getStudent().getNumber());
+		
+		//Update Student Exam Centre detail
+		//20190715 BRS 2020 requirement 3 - Returning Student to select examination centre if not registered for a module	
+		if (null != stuRegForm.getStudent().getExam().getExamCentre().getCode() 
+				&& !"".equalsIgnoreCase(stuRegForm.getStudent().getExam().getExamCentre().getCode())){
+			//get examPeriods
+			List examPeriodList = new ArrayList<Integer>();
+			int examperiod = 0;
+			examPeriodList.add(0,1);
+			examPeriodList.add(0,6);
+			examPeriodList.add(0,10);
+			
+			dao.updateStudentExamCentreDetail(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getExam().getExamCentre().getCode(),examPeriodList);
+		}		
 		
 		//Save Qualification to STUAPQ - Start
 		//log.debug("ApplyForStudentNumberAction - applyRetDeclare -  Save Qualification to STUAPQ - Start");
@@ -6765,6 +6873,16 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				new ActionMessage("message.generalmessage", "Please enter a cellular phone number."));
 			addErrors(request, messages);
 			return "applyNewContact";
+		}
+		
+		//20190724 Johanet BRS 2020 requirement 9.2 - do general cell phone validation
+		String errorMsg = verifyCellNr(stuRegForm.getStudent().getCellNr());
+		
+		if (errorMsg!="") {
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+		  			new ActionMessage("message.generalmessage", errorMsg));
+					addErrors(request, messages);
+			return "applyNewContact";		
 		}
 		
 		if(!isPhoneNumber(stuRegForm.getStudent().getCellNr())){
@@ -9448,6 +9566,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Staff Member                       = " + stuRegForm.getStudentApplication().getStaffCurrent() + "\r\n");
 		file.add(" Dependant on Deceased Staff Member = " + stuRegForm.getStudentApplication().getStaffDeceased() + "\r\n");
 		file.add(" Prisoner                           = " + stuRegForm.getStudentApplication().getPrisoner() + "\r\n");
+		if (!stuRegForm.getStudent().isStuRegistered()) {
+			file.add(" Examination centre                 = " + stuRegForm.getStudent().getExam().getExamCentre().getCode()+ " "+ stuRegForm.getStudent().getExam().getExamCentre().getDesc() + "\r\n");
+		}
 		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Completing a qualification         = " + stuRegForm.getStudentApplication().getCompleteQual()+ "\r\n");
 		file.add(" Qualification Information          = " + stuRegForm.getStudentApplication().getCompleteText()+ "\r\n");
@@ -11179,6 +11300,52 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 
 	}
 
+    private String verifyInitials(String initials, String firstnames){
+    	String errorMsg="";
+    	
+    	initials = initials.trim();
+    	firstnames = firstnames.trim();
+    	
+    	int initialsLength=initials.length();
+    	int firstnamesLength=firstnames.length();
+    	
+    	String firstNamesInitials="";
+    	firstNamesInitials=firstnames.substring(0,1);
+    	int spacesInFirstNames=0;
+    	int spacesInInitials=0;
+    	
+    	//Build initials from firstnames without spaces
+    	for (int i= 0; i < firstnamesLength - 2; i++) {
+    		if (firstnames.substring(i, i+1).equalsIgnoreCase(" ")){
+    			int nextFirstNamePos = i+1;
+    			firstNamesInitials = firstNamesInitials + firstnames.substring(nextFirstNamePos, nextFirstNamePos + 1);
+    			spacesInFirstNames=spacesInFirstNames + 1;
+    		}
+    	}  
+    	
+    	//Strip initials from spaces
+    	String strippedInitials ="";
+    	for (int i= 0; i < initialsLength; i++) {
+    		if (initials.substring(i, i+1).equalsIgnoreCase(" ")){
+    			spacesInInitials =spacesInInitials + 1;
+    		}
+    		if (!initials.substring(i, i+1).equalsIgnoreCase(" ")){
+    			strippedInitials = strippedInitials + initials.substring(i,i+1);
+    		}
+    	} 
+    	
+    	if (!firstNamesInitials.equalsIgnoreCase(strippedInitials)) {
+    		errorMsg="Invalid Initials or First Names.  The First Names doesn't correspond to Initials entered.";
+    		return errorMsg;
+    	}
+    	
+    	if (spacesInInitials != spacesInFirstNames) {
+    		errorMsg="Invalid Initials or First Names.  Please check that there is a space between each initial";
+    		return errorMsg;
+    	}
+    	
+    	return errorMsg;		
+    }
 
     private boolean isInitialsGood(String initials, String firstnames){
     	boolean result = true;
@@ -11238,6 +11405,24 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			}
 		}
 		return result;
+	}
+	
+	private String verifyCellNr(String cellNumber){
+		String error = "";
+		CellPhoneVerification verify = new CellPhoneVerification();		
+		
+		if(!verify.isCellNumber(cellNumber)){
+			error="Invalid cellular number. A cellular number must include the country dail code, must be at least 12 characthers long and may only consist of numbers after the + of the dail code.";
+			return error;
+			
+		}
+		
+		if (verify.isSaCellNumber(cellNumber)) {
+			if(!verify.validSaCellNumber(cellNumber)) {
+				error="Invalid South Africa cellular number. Either you used an invalid cell phone range or the cell phone number is not 12 characters long.";
+			}
+		}
+		return error;	
 	}
 
 	private boolean isPhoneNumber(String number){

@@ -21,6 +21,7 @@ public class Student {
 	private String stuTestNo;
 	private boolean stuSLP = false;
 	private boolean stuapq = false;
+	private boolean stuRegistered = false;
 	
 	private String initials;
 	private String maidenName;
@@ -173,7 +174,15 @@ public class Student {
 
 
 	// --------------------------------------------------------- Methods
+	
+	public boolean isStuRegistered() {
+		return stuRegistered;
+	}
 
+	public void setStuRegistered(boolean stuRegistered) {
+		this.stuRegistered = stuRegistered;
+	}
+	
 	public String getWebOpenDate() {
 		return webOpenDate;
 	}
