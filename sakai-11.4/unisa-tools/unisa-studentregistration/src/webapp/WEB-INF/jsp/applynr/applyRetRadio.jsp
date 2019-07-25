@@ -158,6 +158,67 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				$('#completeText').val(' ');
 			}
 			
+			var isStuRegistered= $("#isStuRegistered").val();
+			if (isStuRegistered == "true"){
+					$("#doExamCenter").hide();	
+					$("select[name='selectedExamCentre']").empty(); 
+					$('#completeText').val(' ');
+			}					
+			
+			//Hide completeText
+			$(".doCompleteText").css('visibility', 'hidden');
+			
+			//Manage Exam Centres according to Radio buttons 20190715 start
+			/** Check previous selected Prison value **/
+			var prisonRadio = $('#prevPrison').val(); 
+			if (prisonRadio !== null && prisonRadio !== "" && prisonRadio !== "undefined"){
+				//alert("Previous Prison Radio value="+prisonRadio);
+				var prisonPrev = $('#prevExam').val(); 
+				if (prisonPrev != null && prisonPrev != "" && prisonPrev !== "undefined"){
+					if (prisonRadio === "Y"){
+						//alert("Previous Prison Selected value="+prisonPrev);
+						populateExamCentres(prisonPrev, "P");
+					}else{
+						populateExamCentres(prisonPrev, "F");
+					}
+				}else{
+					//alert("Previous Prison Selected value Not Found!!");
+					//populateExamCentres("", "FP");
+					if (prisonRadio === "Y"){
+						//alert("Previous Prison Selected value="+prisonPrev);
+						populateExamCentres("", "P");
+					}else{
+						populateExamCentres("", "F");
+					}
+				}
+			}else{
+				//alert("Previous Prison Radio value Not Found!!");
+				//populateExamCentres("", "FP");
+				$("select[name='selectedExamCentre']").empty(); //Remove all previous options (Index cleanup for various browsers)
+				$("select[name='selectedExamCentre']").append('<option value="-1">Select Prisoner Yes/No above</option>'); //Temp option to show if database retrieval is slow
+
+			}
+			
+			$("input:radio[name='studentApplication.prisoner']").change(function() {
+				var isPrisoner = $(this).val();
+				var selectFP = "FP";
+				if (isPrisoner === 'Y') {
+					selectFP = "P";
+				}else if (isPrisoner === 'N') {
+					selectFP = "F";
+				}else{
+					selectFP = "FP"; //Catch All
+				}
+				var prisonPrev = $('#prevExam').val(); 
+				if (prisonPrev != null && prisonPrev != "" && prisonPrev !== "undefined"){
+					populateExamCentres(prisonPrev, selectFP);
+				}else{
+					populateExamCentres("", selectFP);
+				}
+			});
+			//Manage Exam Centres according to Radio buttons 20190715 end
+			
+			
 			var qualRadio = $("input:radio[name='studentApplication.completeQual']:checked").val();
 			if (qualRadio != null && qualRadio != ""){
 				if (this.value === 'Y') {
@@ -189,7 +250,58 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				var length = maxLength-length;
 				$('#chars').text(length);
 			});
+			/**Change Exam Centre - Warn about Prison list without page refresh **/
+			$("select[name='selectedExamCentre']").change(function(){
+				//var isPrison = $("input:radio[name='studentApplication.prisoner']:checked").val();
+				//if (isPrison === 'Y') {
+				var valExam = $("select[name='selectedExamCentre']").find("option:selected").text();
+				if (valExam != "-1" &&  (valExam.toLowerCase().indexOf("correctional") >= 0)){
+					var chkP = confirm("You have selected a correctional facility as exam center. Click on 'OK' to confirm or on 'Cancel' to select a new exam centre.");
+					if (chkP === false) {
+						$("input:radio[name='studentApplication.prisoner'][value='N']").prop('checked', true);
+						populateExamCentres("", "F");
+					}
+			    }
+			});	
 		});
+		
+		function populateExamCentres(examCentre, selectFP) {
+			/**Change Exam Centres - Use Ajax to Get Centre list without page refresh **/
+			$("select[name='selectedExamCentre']").empty(); //Remove all previous options (Index cleanup for various browsers)
+			$("select[name='selectedExamCentre']").append('<option value="-1">Loading....</option>'); //Temp option to show if database retrieval is slow
+			
+			var url = 'applyForStudentNumber.do?act=populateExamCentres&type='+selectFP;
+			var examErr = false;
+			$.getJSON(url, function(data) {
+				$("select[name='selectedExamCentre']").empty(); //Remove all previous options again (Remove temp option above)
+				var ddItems = [];
+				ddItems.push('<option value="-1">Select from Menu</option>');
+				cache : false,
+				$.each(data, function(key, data2) {
+					//alert("Exam Key="+key);
+					if (key === "Error"){
+						showError("Error", data2);
+						examErr = true;
+						return false;
+					}
+					if (key === "Exam"){
+						$.each(data2, function(key2, val2) {
+							var splitString = val2.split('~');
+							//alert("Option="+key2+", Value="+splitString[0]+", Description="+splitString[1]);
+							if(splitString[0].toUpperCase() === examCentre.toUpperCase()) {
+								ddItems.push("<option value='"+splitString[0].toUpperCase()+"' selected=selected>"+splitString[1].toUpperCase()+"</option>");
+						    }else{
+						    	ddItems.push("<option value='"+splitString[0].toUpperCase()+"'>"+splitString[1].toUpperCase()+"</option>");
+						    }
+						});
+					}
+				});
+				if (!examErr){
+					$("select[name='selectedExamCentre']").html(ddItems);
+				}
+			});
+		}
+
 
 		function validateSelect(){
 			//alert("In Validate");
@@ -213,6 +325,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				showError("Error", "Please confirm if you are a Prisoner.");
 				return false;
 			}
+			
+			var isStuRegistered= $("#isStuRegistered").val();
+			if (isStuRegistered == "false"){
+				var valExam = $("select[name='selectedExamCentre']").find("option:selected").val();
+				if (valExam == null || valExam == "" || valExam == "undefined" || valExam == "-1"){
+					showError("Warning", "Please select an Examination Centre."); 
+					return false;
+				}
+			}
 			if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
 				showError("Error", "Please confirm if you are in the process of completing a qualification.");
 				return false;
@@ -222,6 +343,11 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				return false;
 			}
 			doSubmit("Continue");
+		}
+		
+		function cleanError(){
+			/**Clean error**/
+			$("#forExam").text('');
 		}
 		
 		//Click button
@@ -259,7 +385,12 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	<html:hidden property="page" value="applyRetRadio"/>
 	
 	<input type="hidden" name="textLine" id="textLine" value="<bean:write name='studentRegistrationForm' property='studentApplication.completeText'/>"/>
+	<!-- 20190715 Add examcentre start -->
+	<input type="hidden" name="prevExam" id="prevExam" value="<bean:write name='studentRegistrationForm' property='selectedExamCentre'/>"/>
+	<input type="hidden" name="prevPrison" id="prevPrison" value="<bean:write name='studentRegistrationForm' property='studentApplication.prisoner'/>"/>	
+	<!-- 20190715 Add examcentre end -->
 	<input type="hidden" id="isStuSLP" name="isStuSLP" value="<bean:write name='studentRegistrationForm' property='student.stuSLP' />" />
+	<input type="hidden" id="isStuRegistered" name="isStuRegistered" value="<bean:write name='studentRegistrationForm' property='student.stuRegistered' />" />
 
 	<sakai:messages/>
 	<sakai:messages message="true"/>
@@ -301,6 +432,23 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							<td colspan="3">&nbsp;</td>
 						</tr>
 					</sakai:group_table>
+					<!-- 20190715 Add examcentre start -->	
+					<div id="doExamCenter">
+						<sakai:group_table>	
+							<tr>
+								<td colspan="2"><fmt:message key="page.examination.centre"/>&nbsp;</td>
+							</tr><tr>
+								<td colspan="2">
+									<html:select name="studentRegistrationForm" property="selectedExamCentre" 
+										errorStyleClass="error" errorKey="org.apache.struts.action.ERROR" >
+									</html:select>
+								</td>
+							</tr><tr>
+								<td colspan="2"><font size="1">&nbsp;</font></td>
+							</tr>
+						</sakai:group_table>
+					<!-- 20190715 Add examcentre end -->	
+					</div>
 					<div id="doFinAid">
 						<sakai:group_table>
 						<tr height="20px">
