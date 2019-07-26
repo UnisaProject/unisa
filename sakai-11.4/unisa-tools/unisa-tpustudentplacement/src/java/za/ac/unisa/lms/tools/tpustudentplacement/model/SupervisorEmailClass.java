@@ -28,14 +28,7 @@ public class SupervisorEmailClass {
      private void prepareAdressing(String supervisorEmail, EmailImpl emailImpl){
     	                String toEmail=supervisorEmail;
     	                String serverpath = ServerConfigurationService.getServerUrl();
-    	                if (serverpath.contains("myqa")){
-		  			    	          toEmail="RAMOBPT@UNISA.AC.ZA";
-		  			    }else if(serverpath.contains("localhost")){
-		  			    	    	  toEmail="baloyar@unisa.ac.za";
-		  			    }else if(serverpath.contains("mydev")){
-  			    	    	          toEmail="baloyar@unisa.ac.za";
-		  			    }
-    	                emailImpl.setToEmail(toEmail);
+    	                 emailImpl.setToEmail(toEmail);
     	                emailImpl.setFromEmail("teachprac@unisa.ac.za");
      }
      private void updateEmailSentFieldPlacement(int supervisoCode)throws Exception{
