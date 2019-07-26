@@ -26,14 +26,15 @@ public class SupervisorEmailClass {
      }
      
      private void prepareAdressing(String supervisorEmail, EmailImpl emailImpl){
-    	                String toEmail=supervisorEmail;
-    	                String serverpath = ServerConfigurationService.getServerUrl();
+    	                 String toEmail=supervisorEmail;
+    	                 String serverpath = ServerConfigurationService.getServerUrl();
     	                 emailImpl.setToEmail(toEmail);
-    	                emailImpl.setFromEmail("teachprac@unisa.ac.za");
+    	                 emailImpl.setFromEmail("teachprac@unisa.ac.za");
      }
      private void updateEmailSentFieldPlacement(int supervisoCode)throws Exception{
                        StudentPlacementUI  sp=new StudentPlacementUI();
                        sp.updateEmailToSupField(supervisoCode);
     }
+	
      
 }
