@@ -1,7 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.Email.EmailImpl;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.Email.EmailLogUI;
-
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import  za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
