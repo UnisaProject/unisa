@@ -371,7 +371,7 @@ public class MyChoiceMDXmlBuilder extends MychoiceDAO {
 					Element saqaId = document.createElement("saqa_id");
 					try {
 						saqaId.appendChild(document.createTextNode(data.get(
-								"approved_qual_id").toString()));
+								"saqa_id").toString()));
 					} catch (NullPointerException ne) {
 					}				    			    
 				    qualification.appendChild(qualName);

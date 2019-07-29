@@ -183,9 +183,9 @@ public class UnmarkAssFollowUpAction extends LookupDispatchAction{
 			
 			String serverpath = ServerConfigurationService.getServerUrl();
 			String link = "";
-			if (serverpath.contains("mydev") || serverpath.contains("localhost")){
+			if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("localhost")){
 				link = "https://mydev.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.unmarkassfollowup&System=Email";
-			} else if (serverpath.contains("myqa")){
+			} else if (serverpath.contains("qa.int.unisa.ac.za")){
 				link = "https://myqa.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.unmarkassfollowup&System=Email";
 			}else {
 				link = "https://my.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.unmarkassfollowup&System=Email";
@@ -240,7 +240,7 @@ public class UnmarkAssFollowUpAction extends LookupDispatchAction{
 			
 			String toAddress=recipient.getPerson().getEmailAddress();
 			//do not send email on localhost,dev or qa -default email to pretoj@unisa.ac.za	
-			if (serverpath.contains("mydev") || serverpath.contains("myqa") || serverpath.contains("localhost")){
+			if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za") || serverpath.contains("localhost")){
 				toAddress="pretoj@unisa.ac.za";
 			}
 			link = link.trim() + "&key1=" + toAddress.trim();

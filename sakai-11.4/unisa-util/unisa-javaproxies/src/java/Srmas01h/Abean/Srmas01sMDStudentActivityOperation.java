@@ -29,14 +29,14 @@ public class Srmas01sMDStudentActivityOperation
                                              "Srmas01sMDStudentActivity",
                                              "SRMAS01S",
                                              "DEV SRC STUDENT ACADEMIC REC C",
-                                             "F711",
+                                             "srmas01",
                                               new String [] {"","","","","","","",""},
                                               new String [] {"","","","","","","",""},
-                                             "f711",
-                                             "f711",
+                                             "srmas01",
+                                             "srmas01",
                                              "",
                                              "",
-                                             "f711",
+                                             "srmas01",
                                              "com.ca.gen80.odc.ITPIPTranEntry",
                                              new String [] {"", "0","Y"});
  

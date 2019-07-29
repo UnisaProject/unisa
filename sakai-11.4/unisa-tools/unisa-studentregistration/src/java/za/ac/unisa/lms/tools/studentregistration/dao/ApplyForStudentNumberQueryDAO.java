@@ -19,6 +19,7 @@ import org.apache.struts.util.LabelValueBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 
+import za.ac.unisa.lms.dao.Gencod;
 import za.ac.unisa.lms.db.StudentSystemDAO;
 import za.ac.unisa.lms.tools.studentregistration.bo.Categories;
 import za.ac.unisa.lms.tools.studentregistration.bo.Doc;
@@ -311,7 +312,6 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 					+ " and first_names = ? "
 					+ " and birth_date = (SELECT TO_DATE (?, 'DD/MM/YYYY') FROM DUAL) "
 					+ " and (nr < 70000000 or nr >= 80000000) "
-					+ " and rownum = 1 "
 					+ " order by mk_last_academic_y desc ";
 		}
 		
@@ -329,6 +329,42 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 		} catch (Exception ex) {
 			throw new Exception(
 					"ApplyForStudentNumberQueryDAO : Error validating STU student number / " + ex);
+		}
+		//log.debug("ApplyForStudentNumberQueryDAO - validateStudentLogin: stuCheck" +  stuCheck);
+		return stuCheck;
+	}
+	
+public String validateStudentID(String IdNumber, String mainSelect) throws Exception {
+		
+		String query  = "";
+		String stuCheck = "newStu"; //New Student
+		
+		if ("SLP".equalsIgnoreCase(mainSelect)){ //SLP Student 7-Series
+			query  = "select nr from stu "
+					+ " where identity_nr = ? "				
+					+ " and nr between 70000000 and 80000000 "
+					+ " order by mk_last_academic_y desc ";
+		}else{ //Formal Student
+			query  = "select nr from stu "
+					+ " where identity_nr = ? "			
+					+ " and (nr < 70000000 or nr >= 80000000) "
+					+ " order by mk_last_academic_y desc ";
+		}
+		
+		//Check if student record exists by using Surname, First Names, Date of Birth and ID (Or ForeignID or Passport)
+		
+		try {
+			//log.debug("ApplyForStudentNumberQueryDAO - validateStudentLogin: query=" +  query+", surname=" +  surname.toUpperCase()+", firstNames=" +  firstNames.toUpperCase()+". bDay=" +  bDay);
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{IdNumber.trim()});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				stuCheck = data.get("nr").toString(); //Current Student
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error validating STU identity Number for existing student / " + ex);
 		}
 		//log.debug("ApplyForStudentNumberQueryDAO - validateStudentLogin: stuCheck" +  stuCheck);
 		return stuCheck;
@@ -371,13 +407,14 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 	/**
 	 * Check if student has a student/reference number
 	 */
-	public boolean validateSTUAPQ(String surname, String firstNames, String  bDay, String acaYear) throws Exception {
+	public boolean validateSTUAPQ(String surname, String firstNames, String  bDay, String acadYear, String acadPeriod, String studentType) throws Exception {
 		
 		boolean stuapqCheck = false;
 		String dbParam = "";
 		String result = "";
+		int studentNr = 0;
 		//Check if student record exists by using Surname, First Names, Date of Birth
-		//Note we do not check the Period as student is only allowed one application per year (except SLP)
+		//Note we do not check the Period as student is only allowed one application per year (except SLP) - student allowed more than one appl record per year
 		String query  = "select DISTINCT stuapq.mk_student_nr "
 				+ " from stu, stuann, stuapq "
 				+ " where stu.nr = stuann.mk_student_nr "
@@ -385,20 +422,33 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 				+ " and stu.surname = ? "
 				+ " and stu.first_names = ? "
 				+ " and to_char(stu.birth_date, 'DD/MM/YYYY') = ? "
-				+ " and stuapq.academic_year= ? ";
+				+ " and stuapq.academic_year = ? "
+				+ " and stuapq.application_period = ?";
 		
 		try {
-			dbParam = surname.toUpperCase()+","+firstNames.toUpperCase()+","+bDay+","+acaYear;
+			dbParam = surname.toUpperCase()+","+firstNames.toUpperCase()+","+bDay+","+acadYear;
 			//log.debug("ApplyForStudentNumberQueryDAO - validateSTUAPQ - query: " +  query);
 			//log.debug("ApplyForStudentNumberQueryDAO - validateSTUAPQ - dbParam: " +  dbParam);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List queryList = jdt.queryForList(query, new Object []{surname.toUpperCase(), firstNames.toUpperCase(), bDay, acaYear});
+			List queryList = jdt.queryForList(query, new Object []{surname.toUpperCase(), firstNames.toUpperCase(), bDay, acadYear, acadPeriod});
 			
 			Iterator i = queryList.iterator();
-			if (i.hasNext()) {
+			while (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
 				//log.debug("ApplyForStudentNumberQueryDAO - validateSTUAPQ - isNumber= " +  data.get("mk_student_nr").toString());
-				stuapqCheck=true;
+				studentNr = Integer.parseInt(data.get("mk_student_nr").toString());
+				//SLP application
+				if (studentType!=null && studentType.equalsIgnoreCase("SLP")) {
+					if (studentNr >= 70000000  && studentNr < 80000000) {
+						stuapqCheck=true;
+					}
+				}					
+				//Unisa application
+				if (studentType!=null && !studentType.equalsIgnoreCase("SLP")) {
+					if (studentNr < 70000000  || studentNr >= 80000000) {				
+						stuapqCheck=true;
+					}		
+				}	
 			}
 		} catch (Exception ex) {
 			throw new Exception(
@@ -427,7 +477,9 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 				+ " and to_char(stu.birth_date, 'DD/MM/YYYY') = ? "
 				+ " and stuann.mk_academic_year= ? "
 				+ " and stuapq.academic_year= ? "
-				+ " and stuapq.application_period = ? ";
+				+ " and stuapq.application_period = ? " 
+				+ " and stuapq.mk_student_nr >= 70000000 "
+				+ " and stuapq.mk_student_nr < 80000000";
 
 		try {
 			dbParam = surname.toUpperCase()+","+firstNames.toUpperCase()+","+bDay+","+acaYear+","+acaYear+","+acaPeriod;
@@ -613,7 +665,7 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 							history.setHistoryOTHERStudnr2(data.get("OTHER_INST_STU_NR").toString().trim());
 						}else{
 							history.setHistoryOTHERStudnr2(" ");
-			}
+						}
 						if (data.get("OTHER_INST_QUAL") != null && !"".equals(data.get("OTHER_INST_QUAL").toString().trim())){
 							history.setHistoryOTHERQual2(data.get("OTHER_INST_QUAL").toString().toUpperCase().trim());
 						}else{
@@ -1657,6 +1709,35 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 
 	/**
 	 * Validate student Annual Record
+	 * Johanet 20190717 BRS 2020 - Update exam centres for returning students.  Cannot update exam centre if student registered for a module
+	 */
+	public boolean isStudentRegisteredForModules(String studentNr) throws Exception {
+		
+		String query = "select fk_student_nr "
+				+ " from stusun "
+				+ " where fk_student_nr= ? "
+				+ " and status_code in ('FC','RG')";
+
+		try {
+			//log.debug("ApplyForStudentNumberQueryDAO - validateStudentAnnual - Query="+query+", StudentNr="+studentNr+", AcademicYear="+acaYear);
+			
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error validating if student registered for a module / " + ex);
+		}
+	}
+	
+	/**
+	 * Check if student is registered for a module	 * 
+	 * 
 	 */
 	public boolean validateStudentAnnual(String studentNr, String acaYear) throws Exception {
 		
@@ -3618,6 +3699,124 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 		}
 		return ;
 	}
+	
+	
+	/*Johanet 20190717- 2020 BRS Exam Centre update for returning students*/	
+	public void updateStudentExamCentreDetail(String studentNr, String examCentre, List examPeriodList)throws Exception {
+		
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		Connection connection = jdt.getDataSource().getConnection();
+		connection.setAutoCommit(false);	
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean stusunExists = false;
+		String currentExamCentre = "";
+		
+		
+		try {
+			String sql = "select fk_student_nr "
+				+ " from stusun "
+				+ " where fk_student_nr= ? "
+				+ " and status_code in ('FC','RG')";
+			
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(studentNr));
+			
+			rs = ps.executeQuery();	
+			
+			if (rs.next()) {
+				stusunExists = true;
+			}			
+			
+			ps.close();
+			rs.close();
+			
+			//do not update if a stusun record exists
+			//check if stuxct record exist for student then update else insert
+			if (!stusunExists) {
+				
+				for (int j=0; j < examPeriodList.size(); j++) {
+					int examPeriod =  (Integer)examPeriodList.get(j);
+					boolean stuxctExists = false;
+					
+					sql = "select mk_exam_centre_cod"
+							+ " from stuxct"
+							+ " where mk_student_nr=?"
+							+ " and mk_exam_period_cod=?";
+					
+					ps = connection.prepareStatement(sql);
+					ps.setInt(1, Integer.parseInt(studentNr));
+					ps.setInt(2,examPeriod);
+					
+					rs = ps.executeQuery();		
+					
+					if (rs.next()) {
+						stuxctExists = true;
+						currentExamCentre = rs.getString("mk_exam_centre_cod");
+					}	
+					
+					ps.close();
+					rs.close();
+					
+					if (stuxctExists) {
+											 
+						if (!currentExamCentre.equalsIgnoreCase(examCentre)) {
+						//stuxct record exists with different exam centre
+						//update stuxct
+							
+						sql ="update stuxct set mk_exam_centre_cod = ? where mk_student_nr = ? and mk_exam_period_cod=?";	
+								
+							ps = connection.prepareStatement(sql);
+							
+							ps.setString(1, examCentre);
+							ps.setInt(2, Integer.parseInt(studentNr));			
+							ps.setInt(3, examPeriod);
+							
+							ps.executeUpdate(); 
+							ps.close();
+							
+						}	
+						
+					}
+					
+					if (!stuxctExists) {
+						//stuxct record does not exists
+						//insert exam centre record
+						sql = "insert into stuxct (mk_student_no,mk_exam_period_cod,mk_exam_centre_cod) " +
+								"values (?,?,?)";
+							   
+						ps = connection.prepareStatement(sql);
+							   		   
+						ps.setInt(1, Integer.parseInt(studentNr));
+						ps.setInt(2, examPeriod);
+						ps.setString(3, examCentre);					
+						ps.executeUpdate();
+						ps.close();
+					}
+				}
+				
+				connection.commit();
+				
+			}
+
+				
+		}
+			catch (Exception e) {
+				if (connection!=null){connection.rollback();}		
+				throw new Exception("ApplyForStudentNumberQueryDAO  : Error updating student exam centre (STUXCT) / " + e, e);
+			} finally {		
+				try { 
+					if (connection!=null){
+						connection.setAutoCommit(true);
+						connection.close();					
+					}
+					if (ps!=null){ps.close();}
+				} catch (Exception e) {	
+						e.printStackTrace();
+					}
+				} 
+	}
+	
 	
 	/**
 	 * This method updated the STU table with the Hard-Coded Correspondence Language = English

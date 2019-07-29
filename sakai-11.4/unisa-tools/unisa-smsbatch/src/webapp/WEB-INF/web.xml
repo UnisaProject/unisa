@@ -73,7 +73,7 @@
   	</context-param>
   	<context-param>
 		<param-name>customsmspathqa</param-name>
-		<param-value>http://stratusdev.unisa.ac.za/sms/asps/SMS_Request.asp</param-value>	
+		<param-value>http://stratusqa.unisa.ac.za/sms/asps/SMS_Request.asp</param-value>	
   	</context-param>
   	<context-param>
 		<param-name>customsmspathprod</param-name>
@@ -81,15 +81,15 @@
   	</context-param>
   	<context-param>
 	  	<param-name>smsenquirydev</param-name>
-		<param-value>https://mydev.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
+		<param-value>https://myadmindev.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
   	</context-param>
   	<context-param>
 	  	<param-name>smsenquiryqa</param-name>
-		<param-value>https://myqa.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
+		<param-value>https://myadminqa.int.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
   	</context-param>
   	<context-param>
 	  	<param-name>smsenquiryprod</param-name>
-		<param-value>https://my.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
+		<param-value>https://myadmin.unisa.ac.za/unisa-findtool/default.do?sharedTool=unisa.smsenquiry</param-value>
   	</context-param>
   	<context-param>
 		<param-name>applicationFullPath</param-name>

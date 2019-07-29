@@ -28,6 +28,8 @@ import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.util.LabelValueBean;
 
 import Staae05h.Abean.Staae05sAppAdmissionEvaluator;
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.tools.studentoffer.dao.StudentOfferDAO;
 import za.ac.unisa.lms.tools.studentoffer.forms.Student;
 import za.ac.unisa.lms.tools.studentoffer.forms.StudentOfferForm;
@@ -1109,6 +1111,56 @@ public class StudentOfferAction extends LookupDispatchAction {
 				acaPeriod = "1";
 			}
 		}
+		
+		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+		Gencod gencod = new Gencod();
+		gencod = systemDao.getGenCode("333", "OFFER");		
+		
+		//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
+		if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("Y")){
+			if (gencod.getAfrDescription()!=null 
+					&& !gencod.getAfrDescription().equals("") 
+					&& isInteger(gencod.getAfrDescription().trim())) {
+				acaPeriod = gencod.getAfrDescription().trim();
+			}
+		}	
+		
+		//log.debug("StudentOfferAction - getCurrentAcademicPeriod: " + acaPeriod);
+		return acaPeriod;
+	}
+	
+	public boolean isInteger(String stringValue) {
+		try
+		{
+			Integer i = Integer.parseInt(stringValue);
+			return true;
+		}	
+		catch(NumberFormatException e)
+		{}
+		return false;
+	}
+	
+	public String xxgetCurrentAcademicPeriod() throws Exception {
+		String acaPeriod;
+
+		Calendar cal = Calendar.getInstance();
+		
+		int month = cal.get(Calendar.MONTH)+1; //zero-based
+		
+		int currentYear = cal.get(Calendar.YEAR);
+		int acaYear = Integer.parseInt(getCurrentAcademicYear());
+		
+		//log.debug("StudentOfferAction - currentYear: " + currentYear+", acaYear: " + acaYear+", month="+month);
+		
+		if (currentYear < acaYear){
+			acaPeriod = "1";
+		}else{
+			if (month < 8 && month > 3){
+				acaPeriod = "2";
+			}else{
+				acaPeriod = "1";
+			}
+		}
 		//log.debug("StudentOfferAction - getCurrentAcademicPeriod: " + acaPeriod);
 		return acaPeriod;
 	}
@@ -1380,14 +1432,16 @@ public class StudentOfferAction extends LookupDispatchAction {
 			if (null!=stuRegForm.getStudentApplication().getRadioOfferAccept() && stuRegForm.getStudentApplication().getRadioOfferAccept().equalsIgnoreCase("1")) {
 				isRadio1 = true;
 				qual1 = (stuRegForm.getOfferQual1().substring(0,5));
-				String period1 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual1, "1");
-				stuRegForm.setQualPeriodCode1(period1);
+				//Johanet 20190517 - Only one period valid at a time
+				//String period1 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual1, "1");
+				//stuRegForm.setQualPeriodCode1(period1);
 			}
 			if (null!=stuRegForm.getStudentApplication().getRadioOfferAccept() && stuRegForm.getStudentApplication().getRadioOfferAccept().equalsIgnoreCase("2")) {
 				isRadio2 = true;
 				qual2 = (stuRegForm.getOfferQual2().substring(0,5));
-				String period2 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual2, "2");
-				stuRegForm.setQualPeriodCode2(period2);
+				//Johanet 20190517 - Only one period valid at a time
+				//String period2 = dao.getApplyPeriod(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(),qual2, "2");
+				//stuRegForm.setQualPeriodCode2(period2);
 			}
 			
 			if (!isRadio1 && !isRadio2){
@@ -1432,7 +1486,9 @@ public class StudentOfferAction extends LookupDispatchAction {
 					op.setInWsUserNumber(99998);
 					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
 					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode1()));
+					//Johanet 20190517 - Only one period valid at a time
+					//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode1()));
+					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
 					op.setInWebStuApplicationQualNewQual(qual1);
 					op.setInWebStuApplicationQualChoiceNr((short) 1);
 					op.setInWebStuApplicationQualOfferAccepted("Y");
@@ -1485,8 +1541,10 @@ public class StudentOfferAction extends LookupDispatchAction {
 					op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
 					op.setInWsUserNumber(99998);
 					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
-					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode2()));
+					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));					
+					//Johanet 20190517 - Only one period valid at a time
+					//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode2()));
+					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
 					op.setInWebStuApplicationQualNewQual(qual2);
 					op.setInWebStuApplicationQualChoiceNr((short) 2);
 					op.setInWebStuApplicationQualOfferAccepted("Y");

@@ -32,6 +32,9 @@ public class BrochuresForm extends ActionForm {
 	
 	private String researchFlag;
 	private String nqfLevel;
+	private ArrayList colleges;
+	private ArrayList schList;
+	private ArrayList dptList;
 	
 	public String getNqfLevel() {
 		return nqfLevel;
@@ -199,5 +202,30 @@ public class BrochuresForm extends ActionForm {
 	public void setYearsList(ArrayList yearsList) {
 		this.yearsList = yearsList;
 	}
+	
+	public ArrayList getColleges() {
+		return colleges;
+	}
+	
+	public void setColleges(ArrayList colleges){
+		this.colleges = colleges;
+	}
+	
+	public void setSchList(ArrayList schList){
+		this.schList = schList;
+	}
+
+		public ArrayList getSchList() {
+		return schList;
+	}
+	
+		public void setDptList(ArrayList dptList){
+		this.dptList = dptList;
+	}
+
+		public ArrayList getDptList() {
+		return dptList;
+	}
+	
 
 }

@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 
-import za.ac.unisa.lms.tools.tracking.actions.TrackingAction;
 import za.ac.unisa.lms.tools.tracking.forms.TrackingForm;
 
 public class TrackingDAO {
@@ -15,9 +14,9 @@ public class TrackingDAO {
 	WebServiceGateWay pGateWay = new WebServiceGateWay();
 	private Log log = LogFactory.getLog(TrackingDAO.class.getName());
 	
-	 public ArrayList getSearch(String webServiceURL,String searchString) throws Exception {
+	 public ArrayList<Object> getSearch(String webServiceURL,String searchString) throws Exception {
 		 int searchWebserviceId = 22222;
-		 log.info("TrackingDAO - getSearch - webServiceURL: " + webServiceURL + ", searchString: " + searchString);
+		 //log.info("TrackingDAO - getSearch - webServiceURL: " + webServiceURL + ", searchString: " + searchString);
 		  ArrayList<Object> resultList = new ArrayList<Object>();
 			 ArrayList<KeyValue> resultvalues = pGateWay.getSearch(webServiceURL,searchWebserviceId, searchString, "value1","value2");
 			   Iterator<KeyValue> result = resultvalues.iterator();
@@ -34,8 +33,8 @@ public class TrackingDAO {
 		 int webServiceID = 882045;
 		 String shipListNumber = null ;
 		 String creationErrorStatus = null ;
-		 ArrayList shipNumber = pGateWay.CreateConsignmentListNumber(webServiceURL ,webServiceID,networkId.toUpperCase(), "id", "value1");
-         Iterator it1 = shipNumber.iterator();
+		 ArrayList<?> shipNumber = pGateWay.CreateConsignmentListNumber(webServiceURL ,webServiceID,networkId.toUpperCase(), "id", "value1");
+         Iterator<?> it1 = shipNumber.iterator();
          if(it1.hasNext())
          {
              while(it1.hasNext()) 
@@ -44,7 +43,7 @@ public class TrackingDAO {
                  if(test2.getValue().contains("FromUser invalid"))
                  {
                      creationErrorStatus = test2.getValue();
-                     log.info("TrackingDAO - creatingShiplistNumber - FromUser invalid "+creationErrorStatus);
+                     //log.info("TrackingDAO - creatingShiplistNumber - FromUser invalid "+creationErrorStatus);
                  } else
                  {
                      if(test2.getKey().equals("2")){
@@ -52,18 +51,18 @@ public class TrackingDAO {
                      }else {
                  	shipListNumber = test2.getValue();
                      }
-                     log.info("TrackingDAO - creatingShiplistNumber - Successfully ShipListnumber Created "+shipListNumber);
+                     //log.info("TrackingDAO - creatingShiplistNumber - Successfully ShipListnumber Created "+shipListNumber);
                  }
              }
          }else{
              creationErrorStatus = pGateWay.shipListCreationCheck(webServiceURL ,webServiceID,networkId.toUpperCase());
-             log.info("User not entered anything so created new ShipList number "+creationErrorStatus);
+             //log.info("User not entered anything so created new ShipList number "+creationErrorStatus);
          }
 		 if(shipListNumber != null && !shipListNumber.equals("")){
-			 log.info("TrackingDAO - creatingShiplistNumber - creatingShiplistNumber Successful - ShipListnumber="+shipListNumber);
+			 //log.info("TrackingDAO - creatingShiplistNumber - creatingShiplistNumber Successful - ShipListnumber="+shipListNumber);
 			 return shipListNumber ;
 		 }else{
-			 log.info("TrackingDAO - creatingShiplistNumber - creatingShiplistNumber Failed - creationErrorStatus="+creationErrorStatus);
+			 //log.info("TrackingDAO - creatingShiplistNumber - creatingShiplistNumber Failed - creationErrorStatus="+creationErrorStatus);
 			 return creationErrorStatus;
 		 }
         
@@ -79,22 +78,22 @@ public class TrackingDAO {
 
 	 
 	 public void setAddress(ArrayList<KeyValue> userAdress , ActionForm form){
-		  //system.out.println("entered here");
-		   Iterator userAdresses = userAdress.iterator();
-		   TrackingForm pTrackingFrom = (TrackingForm)form ;
-		   while(userAdresses.hasNext()){
+		  //log.info("TrackingDAO - Entered setAddress");
+		  Iterator<KeyValue> userAdresses = userAdress.iterator();
+		  TrackingForm pTrackingFrom = (TrackingForm)form ;
+		  while(userAdresses.hasNext()){
 				
 				KeyValue test = (KeyValue) userAdresses.next();
 				if(test.getValue() != null &&  ! test.getValue().isEmpty()){
-				   //System.out.println("test1");
+					//log.info("TrackingDAO - setAddress - test1");
 					if(!test.getValue().equals("null")){
-					//system.out.println(test.getValue());
+						//log.info("TrackingDAO - setAddress - "+test.getValue());
 						pTrackingFrom.setUserAddress1(test.getValue());
 					}else{
 						pTrackingFrom.setUserAddress1("");
 					}
 				}else{
-					//System.out.println("test1 else");
+					//log.info("TrackingDAO - setAddress - test1 else");
 					pTrackingFrom.setUserAddress1("");
 				}
 				if(test.getValue1() != null &&  ! test.getValue1().isEmpty()){
@@ -133,9 +132,6 @@ public class TrackingDAO {
 				}else{
 					pTrackingFrom.setUserAddress5("");
 				}
-				
-				
-			        
 	     }
 	   }
 }

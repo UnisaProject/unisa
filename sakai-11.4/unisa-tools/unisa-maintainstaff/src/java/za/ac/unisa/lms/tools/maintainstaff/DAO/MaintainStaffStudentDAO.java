@@ -328,6 +328,193 @@ private SessionManager sessionManager;
 		return isDuplicate;
 	}
 	
+
+  public boolean checkMarkerEmail(String novellUserId) throws Exception {
+		
+		boolean emailAddress = false;
+		try {
+		if(isDuplicateStaffRecord(novellUserId)) {
+			String email = findDuplStaffEmail(novellUserId);
+				if(email == null) {
+					emailAddress = false;
+			   }else {
+				   emailAddress = true;
+			}
+		}else {
+			//check email for person			
+			String email = findStaffEmail(novellUserId.toUpperCase());
+			if(email == null) {
+				email = findEmailInUSR(novellUserId.toUpperCase());
+				if(email == null) {
+					emailAddress = false;
+				}else {
+					emailAddress = true;		
+		   }
+			}else {
+				emailAddress = true;
+				
+	    }
+		}
+		} catch (EmptyResultDataAccessException  ex) {
+			 throw new Exception("MaintainStaffStudentDAO: personExist: Error occurred / "+ ex,ex);
+		}
+		return emailAddress;
+}
+
+	
+
+public String findDuplStaffEmail(String novellUserId) throws Exception {
+		
+		String email = null;
+		
+		String findPersonInStaff = "SELECT NVL(EMAIL_ADDRESS,' ') AS  EMAIL FROM   STAFF WHERE NOVELL_USER_ID ='"+novellUserId+"' "
+									+ "and (resign_date is null or resign_date > sysdate)";
+
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(super.getDataSource());
+    		List courseInfoList = jdt.queryForList(findPersonInStaff);
+			Iterator j = courseInfoList.iterator();
+    		while (j.hasNext()) {
+    			ListOrderedMap data = (ListOrderedMap) j.next();
+    			email = data.get("EMAIL").toString();
+    			if( null != email || email.length() > 0) {    				
+    				break;
+    			}      			
+    		}
+    		
+    		return email;
+
+		} catch (Exception ex) {
+            throw new Exception("MaintainStaffStudentDAO: findDuplStaffEmail: Error occurred / "+ ex,ex);
+		}
+	}
+	
+	public boolean isDuplicateStaffRecord(String novellUserId) throws Exception {
+		boolean isDuplicate = false;
+		String noOfRecords;
+
+		String sql1 = " SELECT COUNT(*) as NoOfRecords "+
+		              " FROM   STAFF "+
+		              "   WHERE NOVELL_USER_ID = '"+novellUserId+"' ";
+				              
+		try{
+			noOfRecords = this.querySingleValue(sql1,"NoOfRecords");
+
+		} catch (Exception ex) {
+            throw new Exception("MaintainStaffStudentDAO: isDuplicateStaffRecord: Error occurred / "+ ex,ex);
+		}
+
+		if (Integer.parseInt(noOfRecords) > 1) {
+			isDuplicate = true;
+		} else {
+			isDuplicate = false;
+		}
+
+		return isDuplicate;
+	}
+	
+	public String findDuplStaffRecord(String novellUserId) throws Exception {
+		
+		String name = null;
+		
+		String findPersonInStaff = "SELECT nvl(TITLE||' '||SURNAME||' '||INITIALS, ' ') AS NAME FROM   STAFF WHERE NOVELL_USER_ID ='"+novellUserId+"' "
+									+ "and (resign_date is null or resign_date > sysdate)";
+
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(super.getDataSource());
+    		List courseInfoList = jdt.queryForList(findPersonInStaff);
+			Iterator j = courseInfoList.iterator();
+    		while (j.hasNext()) {
+    			ListOrderedMap data = (ListOrderedMap) j.next();
+    			 name = data.get("NAME").toString();
+    			if( null != name || name.length() > 0) {    				
+    				break;
+    			}      			
+    		}
+    		
+    		return name;
+
+		} catch (Exception ex) {
+            throw new Exception("MaintainStaffStudentDAO: findDuplStaffRecord: Error occurred / "+ ex,ex);
+		}
+	}
+	
+public String findStaffRecord(String novellUserId) throws Exception {
+	    JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
+		String name = null;
+		
+		 String findPersonInStaff = "SELECT nvl(TITLE||' '||SURNAME||' '||INITIALS, ' ') AS NAME FROM   STAFF WHERE NOVELL_USER_ID =?";
+
+		try{
+			String tmpName =(String) jdbcTemplate.queryForObject(findPersonInStaff.toString(), new Object[]{novellUserId.toUpperCase()}, String.class);
+			if ((null == tmpName)||(tmpName.length()==0)) {
+				name = null;
+			} else {
+				name = tmpName;
+			}	
+    		return name;
+		} catch (Exception ex) {
+            return null;
+		}
+	}
+
+public String findStaffEmail(String novellUserId) throws Exception {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
+	String name = null;
+	
+	 String findPersonInStaff = "SELECT NVL(EMAIL_ADDRESS,' ') AS  EMAIL FROM   STAFF WHERE NOVELL_USER_ID =?";
+
+	try{
+		String email =(String) jdbcTemplate.queryForObject(findPersonInStaff.toString(), new Object[]{novellUserId.toUpperCase()}, String.class);
+		if ((null == email)||(email.length()==0)) {
+			name = null;
+		} else {
+			name = email;
+		}	
+		return email;
+	} catch (Exception ex) {
+        return null;
+	}
+}
+
+public String findUSRRecord(String novellUserId) throws Exception {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
+	String name = null;
+	
+	String findPersonInUsr = "SELECT USER_CODE_OWNER FROM   USR WHERE IN_USED_FLAG = 'Y' and NOVELL_USER_CODE=?";	
+
+	try{
+		String tmpName =(String) jdbcTemplate.queryForObject(findPersonInUsr.toString(), new Object[]{novellUserId.toUpperCase()}, String.class);
+		if ((null == tmpName)||(tmpName.length()==0)) {
+			name = null;
+		} else {
+			name = tmpName;
+		}	
+		return name;
+	} catch (Exception ex) {
+      return null;
+	}
+}
+
+public String findEmailInUSR(String novellUserId) throws Exception {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
+	String emailAddress = null;
+	
+	String findPersonInUsr = "SELECT E_MAIL FROM   USR WHERE IN_USED_FLAG = 'Y' and NOVELL_USER_CODE=?";	
+
+	try{
+		String email =(String) jdbcTemplate.queryForObject(findPersonInUsr.toString(), new Object[]{novellUserId.toUpperCase()}, String.class);
+		if ((null == email)||(email.length()==0)) {
+			emailAddress = null;
+		} else {
+			emailAddress = email;
+		}	
+		return emailAddress;
+	} catch (Exception ex) {
+      return null;
+	}
+}
+	
 	/**
 	 * This method will test if valid network code was entered.
 	 *
@@ -337,40 +524,37 @@ private SessionManager sessionManager;
 	public boolean personExist(MainForm mainForm) throws Exception,EmptyResultDataAccessException {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
 		boolean personExist = false;
-		String name;
-
-		// First check if person exists in table staff
-         String findPersonInStaff = "SELECT nvl(TITLE||' '||SURNAME||' '||INITIALS, ' ') AS NAME FROM   STAFF WHERE NOVELL_USER_ID =?";
 		
 		try{
-			String tmpName =(String) jdbcTemplate.queryForObject(findPersonInStaff.toString(), new Object[]{mainForm.getPerson().toUpperCase()}, String.class);
-			if ((null == tmpName)||(tmpName.length()==0)) {
-				name = "0";
-			} else {
-				name = tmpName;
-			}
-			// no records were found for person in STAFF, check in table USR
-			if (name.equals("0")) {
-				String findPersonInUsr = "SELECT USER_CODE_OWNER FROM   USR WHERE NOVELL_USER_CODE=?";
-				
-				 tmpName =(String) jdbcTemplate.queryForObject(findPersonInUsr.toString(), new Object[]{mainForm.getPerson().toUpperCase()}, String.class);
-				 if ((null == tmpName)||(tmpName.length()==0)) {
-						name = "0";
-					} else {
-						name = tmpName;
-					}
-			}
+			//check duplicate record in staff
+		if(isDuplicateStaffRecord(mainForm.getPerson().toUpperCase())) {	
+			//check name of duplicate person
+			String userName = findDuplStaffRecord(mainForm.getPerson().toUpperCase());
+			if(userName == null) {
+				personExist = false;
+			}else {
+				personExist = true;
+				mainForm.setPersonName(userName.toUpperCase());
+			}			
+		}else{			
+			//check the name of person 
+			String userName = findStaffRecord(mainForm.getPerson().toUpperCase());
+			if(userName == null) {
+				 userName = findUSRRecord(mainForm.getPerson().toUpperCase());
+				if(userName == null) {
+					personExist = false;
+				}else {
+					personExist = true;
+					mainForm.setPersonName(userName.toUpperCase());
+		   }
+			}else {
+				personExist = true;
+				mainForm.setPersonName(userName.toUpperCase());
+	    }
+		}
 		} catch (EmptyResultDataAccessException  ex) {
-			name = "0";
-           // throw new Exception("MaintainStaffStudentDAO: networkExist: Error occurred / "+ ex,ex);
+			 throw new Exception("MaintainStaffStudentDAO: personExist: Error occurred / "+ ex,ex);
 		}
-		if (name.equals("0")) {
-			personExist = false;
-		} else {
-			personExist = true;
-			mainForm.setPersonName(name);
-		}
-
 		return personExist;
 	}
 	

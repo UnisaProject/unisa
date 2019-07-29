@@ -20,11 +20,14 @@
 	<td><html:link href="brochures.do?act=myChoiceType&type=b">myChoice M&D</html:link></td>
 	</tr><tr>
 	<td><html:link href="brochures.do?act=myRegistration&type=m">myRegistration</html:link></td>
-	</tr><tr><tr>
+	</tr><tr>
 	<td><html:link href="brochures.do?act=myRegistration&type=n">myRegistration M&D</html:link></td>
-	</tr>
+	</tr><tr>
 	<td><html:link href="brochures.do?act=myModules">myModules</html:link></td>
 	</tr>
+	<tr>
+		<td><html:link href="brochures.do?act=mySLP">mySLP</html:link></td>
+	</tr> 
 	<tr>
 	<td><html:link href="brochures.do?act=auditReport">Audit Reports</html:link></td>
 	</tr>

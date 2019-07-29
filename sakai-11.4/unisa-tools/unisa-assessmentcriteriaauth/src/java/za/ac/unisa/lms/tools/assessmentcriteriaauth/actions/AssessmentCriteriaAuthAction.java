@@ -553,7 +553,7 @@ public class AssessmentCriteriaAuthAction extends LookupDispatchAction{
 		String serverpath = ServerConfigurationService.getServerUrl();
 		String toAddress=asslog.getReturnEmailAddr();
 		//do not send email on dev & qa -default email to pretoj@unisa.ac.za	
-		if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+		if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 			toAddress="pretoj@unisa.ac.za";
 		}			
 		String addressee="To Whom it May Concern:";
@@ -570,7 +570,7 @@ public class AssessmentCriteriaAuthAction extends LookupDispatchAction{
 		if (nrElectiveAss > 2) {
 			toAddress="ramonpt@unisa.ac.za";
 			//do not send email on dev & qa -default email to pretoj@unisa.ac.za			
-			if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+			if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 				toAddress="pretoj@unisa.ac.za";
 			}		
 			addressee="Dear Tshepo, please note";
@@ -831,7 +831,7 @@ public class AssessmentCriteriaAuthAction extends LookupDispatchAction{
 		String serverpath = ServerConfigurationService.getServerUrl();
 		//do not send email on dev & qa -default email to pretoj@unisa.ac.za	
 		String toAddress=asslog.getReturnEmailAddr();
-		if (serverpath.contains("mydev") || serverpath.contains("myqa")){
+		if (serverpath.contains("dev.int.unisa.ac.za") || serverpath.contains("qa.int.unisa.ac.za")){
 			toAddress="pretoj@unisa.ac.za";
 		}	
 		UserDAO daoUser = new UserDAO();
