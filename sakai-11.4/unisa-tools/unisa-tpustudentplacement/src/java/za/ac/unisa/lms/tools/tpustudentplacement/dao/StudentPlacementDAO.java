@@ -386,12 +386,13 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
                    " and a.mk_supervisor_code="+supervisorCode+
                    " and a.mk_student_nr=d.nr"+
                    " and b.mk_prv_code=f.code"+
-                   " and b.mk_country_code="+saCode+
+                   " and b.mk_country_code='"+saCode+"'"+
                    " and b.mk_district_code=e.code"+
                    " order by prov,e.eng_description,c.surname";
                    
            return sql;
   }
+
 	 private String  getInternationalPlacementListSql(int supervisorCode,int saCode){
       DateUtil dateutil=new DateUtil();
       String sql="select a.mk_student_nr as stuNumber,(d.mk_title || ' ' ||  d.initials || ' ' || d.surname ) as stuName,"+
@@ -407,7 +408,7 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
      " and a.mk_supervisor_code=c.code"+
      " and a.mk_supervisor_code="+supervisorCode+
      " and a.mk_student_nr=d.nr"+
-     " and b.mk_country_code<>"+saCode+
+     " and b.mk_country_code<>'"+saCode+"'"+
      " and b.mk_country_code=e.code"+
      " order by e.eng_description,c.surname";
      
@@ -509,3 +510,18 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
     	                         }
   }
 }
+
+    © 2019 GitHub, Inc.
+    Terms
+    Privacy
+    Security
+    Status
+    Help
+
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+

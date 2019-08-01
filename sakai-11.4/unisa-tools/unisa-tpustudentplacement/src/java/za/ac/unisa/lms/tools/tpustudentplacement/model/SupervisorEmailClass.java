@@ -1,9 +1,9 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model;
+
 import za.ac.unisa.lms.tools.tpustudentplacement.model.Email.EmailImpl;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.Email.EmailLogUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
-
 import  za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 public class SupervisorEmailClass {
@@ -24,18 +24,19 @@ public class SupervisorEmailClass {
     	                       EmailLogUI emailLogUI=new  EmailLogUI();
     	                       emailLogUI.writeEmailLog(supervCode,emailAddr,"Students allocated :"+totStuAllocated,subject);
     	                       updateEmailSentFieldPlacement(supervCode);
+    	                       
      }
      
      private void prepareAdressing(String supervisorEmail, EmailImpl emailImpl){
-    	                 String toEmail=supervisorEmail;
-    	                 String serverpath = ServerConfigurationService.getServerUrl();
-    	                 emailImpl.setToEmail(toEmail);
-    	                 emailImpl.setFromEmail("teachprac@unisa.ac.za");
+    	                String toEmail=supervisorEmail;
+    	                String serverpath = ServerConfigurationService.getServerUrl();
+    	                emailImpl.setToEmail(toEmail);
+    	                emailImpl.setFromEmail("teachprac@unisa.ac.za");
      }
      private void updateEmailSentFieldPlacement(int supervisoCode)throws Exception{
                        StudentPlacementUI  sp=new StudentPlacementUI();
                        sp.updateEmailToSupField(supervisoCode);
     }
-	
+     
      
 }
