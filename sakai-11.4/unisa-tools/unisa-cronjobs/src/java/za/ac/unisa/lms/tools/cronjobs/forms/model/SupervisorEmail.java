@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+
 public class SupervisorEmail extends Email{
 
 	 
@@ -76,45 +77,52 @@ public class SupervisorEmail extends Email{
 	                     }catch(Exception ex2){}
 	 }
      public void sendEmailToSupervisor(int supervisorCode,Set supervListEmailSend,Set supervErrorList) {
-    	             try{
-                            SupervisorMailBody  smb=new SupervisorMailBody();
-                            Supervisor supervisor=new Supervisor();
-                            supervisor=supervisor.getSupervisor(supervisorCode);
-                            String emailAddress=supervisor.getEmailAddress();
-                            subject="Unisa Teaching Practice Placement Information";
-                            if((emailAddress!=null)&&(!emailAddress.trim().equals(""))){
-                    	           body=smb.createEmailBody(supervisorCode);
-                     	           prepAdressing(emailAddress);
-                	               sendEmail();
-                	               updateEmailSentFieldOnStuPlacement(supervisorCode);
-                                   writeEmailLog(supervisorCode,emailAddress,
-                                		   "Students allocated :"+supervisor.getStudentsAllocated(),subject);
-                                   totEmailsSentToSup++;
-                            }
-                            supervListEmailSend.add(""+supervisorCode);
-                      }catch(Exception ex){
-                    	       supervErrorList.add(""+supervisorCode);
-    	             }
+    	                                  try{
+                                                          SupervisorMailBody  smb=new SupervisorMailBody();
+                                                          Supervisor supervisor=new Supervisor();
+                                                          supervisor=supervisor.getSupervisor(supervisorCode);
+                                                          String emailAddress=supervisor.getEmailAddress();
+                                                          subject="Unisa Teaching Practice Placement Information";
+                                                          if((emailAddress!=null)&&(!emailAddress.trim().equals(""))){
+                    	                                                    body=smb.createEmailBody(supervisorCode);
+                    	                                                   if((body==null)||(body.isEmpty())){
+                    	        	                                                     body=smb.createEmailBody(supervisorCode);
+                    	                                                   }
+                    	                                                   if((body!=null)&&(!body.isEmpty())){
+                    	        	                                                         prepAdressing(emailAddress);
+                    	                                                                     sendEmail();
+                    	                                                                     updateEmailSentFieldOnStuPlacement(supervisorCode);
+                                                                                              writeEmailLog(supervisorCode,emailAddress,
+                                    		                                                                               "Students allocated :"+supervisor.getStudentsAllocated(),subject);
+                                                                                               totEmailsSentToSup++;
+                                                                                               supervListEmailSend.add(""+supervisorCode);
+                                                                           }else{
+                                	                                                            supervErrorList.add(""+supervisorCode);
+               	                                                           }
+                     	                                 }
+                                             }catch(Exception ex){
+                    	                                                 supervErrorList.add(""+supervisorCode);
+    	                                    }
      }
      private void updateEmailSentFieldOnStuPlacement(int supervisorCode){
     	                 try{
-    	                            StudentPlacement  sp=new StudentPlacement();
-    	                            sp.updateEmailToSupField(supervisorCode);
+    	                                            StudentPlacement  sp=new StudentPlacement();
+    	                                            sp.updateEmailToSupField(supervisorCode);
                          }catch(Exception ex){
 	                                 
                         }
      }
      private void writeEmailLog(int supervisorCode,String toEmail,String body,String subject){
-    	                try{
-                             EmailLogRecord seml=new EmailLogRecord();
-                             seml.setEmailAddress(toEmail);
-                             seml.setProgram("TPU_BATCH");
-                             seml.setRecipientType("SUPERVISOR");
-                             seml.setRecipient(""+supervisorCode);
-                             seml.setEmailType("STUALLOC");
-                             seml.setSubject(subject);
-                             seml.setBody(body);
-                             seml.setEmailLog();
-                       }catch(Exception ex){}
-     }
+    	                                     try{
+                                                                    EmailLogRecord seml=new EmailLogRecord();
+                                                                    seml.setEmailAddress(toEmail);
+                                                                    seml.setProgram("TPU_BATCH");
+                                                                    seml.setRecipientType("SUPERVISOR");
+                                                                    seml.setRecipient(""+supervisorCode);
+                                                                    seml.setEmailType("STUALLOC");
+                                                                    seml.setSubject(subject);
+                                                                    seml.setBody(body);
+                                                                    seml.setEmailLog();
+                                                 }catch(Exception ex){}
+       }
  }
