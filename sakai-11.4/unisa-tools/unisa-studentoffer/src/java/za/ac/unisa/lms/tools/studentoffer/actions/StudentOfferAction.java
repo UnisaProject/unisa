@@ -1086,6 +1086,20 @@ public class StudentOfferAction extends LookupDispatchAction {
 		}else{
 			acaYear = Integer.toString(year);
 		}
+		
+		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+		Gencod gencod = new Gencod();
+		gencod = systemDao.getGenCode("333", "OFFERYR");		
+		
+		//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
+		if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("Y")){
+			if (gencod.getAfrDescription()!=null 
+					&& !gencod.getAfrDescription().equals("") 
+					&& isInteger(gencod.getAfrDescription().trim())) {
+				acaYear = gencod.getAfrDescription().trim();
+			}
+		}	
+		
 		//log.debug("StudentOfferAction - getCurrentAcademicYear: " + acaYear);
 		return acaYear;
 	}
@@ -1114,7 +1128,7 @@ public class StudentOfferAction extends LookupDispatchAction {
 		
 		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
 		Gencod gencod = new Gencod();
-		gencod = systemDao.getGenCode("333", "OFFER");		
+		gencod = systemDao.getGenCode("333", "OFFERPRD");		
 		
 		//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
 		if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("Y")){
