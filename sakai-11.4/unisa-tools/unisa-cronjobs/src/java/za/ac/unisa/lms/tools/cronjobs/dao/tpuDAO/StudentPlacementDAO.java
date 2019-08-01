@@ -90,7 +90,7 @@ public class StudentPlacementDAO{
                       " and a.mk_supervisor_code="+supervisorCode+
                       " and a.mk_student_nr=d.nr"+
                       " and b.mk_prv_code=f.code"+
-                      " and b.mk_country_code="+saCode+
+                      " and b.mk_country_code='"+saCode+"'"+
                       " and b.mk_district_code=e.code"+
                       " order by prov,e.eng_description,c.surname";
                       
@@ -111,7 +111,7 @@ public class StudentPlacementDAO{
         " and a.mk_supervisor_code=c.code"+
         " and a.mk_supervisor_code="+supervisorCode+
         " and a.mk_student_nr=d.nr"+
-        " and b.mk_country_code<>"+saCode+
+        " and b.mk_country_code<>'"+saCode+"'"+
         " and b.mk_country_code=e.code"+
         " order by e.eng_description,c.surname";
         
