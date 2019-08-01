@@ -177,7 +177,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 
 		$(document).ready(function() {
 			
-			//Page Default ID = 2
+			//Page Default ID = 2			
 			var id = 2;
 			
 			$('form,input,select,textarea').attr("autocomplete", "off");
@@ -189,7 +189,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			populateOtherQualifications();
 			
 			//Check data on Back
-			getFromBack();
+			//getFromBack();
 			
 			//Configure Page Tabs
 			$(".nav-tabs").on("click", "a", function (e) {
@@ -267,7 +267,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			//alert("Done");
 		}
 		
-		function getFromBack(){
+		function xxgetFromBack(){
 			for (var n = 2; n < 16; n++){
 				var tab_no = n;
 				//Populate Tab Content
@@ -307,12 +307,44 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						setTimeout(function(){ $(".add-tab").click()}, 100);
 					}
 				}
-			}
+			}			
+			
 			//Make sure that first tab is clicked after autopopulate
 			setTimeout(function(){ $(".tabber1").click()}, 100);
 		}
 			
-		function populateOtherQualifications(){
+		function getFromBack(){			
+		
+			for (var n = 2; n < 16; n++){
+				var tab_no = n;
+				//Populate Tab Content
+				//Show correct University Detail
+				var checkCountry = $("select[name='qualOther.historyOTHERCountry"+tab_no+"']").find("option:selected").val();
+				if (checkCountry === "1015"){
+					$("#historyOTHERUniv"+tab_no).show();
+					var checkUniv = $("select[name='qualOther.historyOTHERUniv"+tab_no+"']").find("option:selected").val();
+					if (checkUniv === "OTHR"){
+						$("#historyOTHERUnivText"+tab_no).show();
+					}else{
+						$("#historyOTHERUnivText"+tab_no).hide();
+					}
+				}else{
+					$("#historyOTHERUniv"+tab_no).hide();
+					$("#historyOTHERUnivText"+tab_no).show();
+				}
+					
+				//setup completed year according to first year
+				var firstYear = $("select[name='qualOther.historyOTHERYearStart"+ tab_no +"']").find("option:selected").val();
+				var lastYear = $("select[name='qualOther.historyOTHERYearEnd"+ tab_no +"']").find("option:selected").val();
+				if (lastYear != null && lastYear != "" && lastYear != " " && lastYear != "undefined" && lastYear != "-1" ){
+					populateOTHERYear(tab_no, firstYear, lastYear);
+				}else{
+					populateOTHERYear(tab_no, firstYear, "");
+				}
+			}
+		}
+			
+	function xxpopulateOtherQualifications(){
 			
 			//alert("Start populateOtherQualifications");
 			//$.blockUI({ message: "<strong><img src='<c:url value='/resources/images/ajax-loader.gif' />' alt=' * ' /> <br>Populating qualifications...</strong>" });
@@ -423,6 +455,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							count++;
 							tab_no++;
 						});
+						
 						//Add new Tabs automatically for populated tabs
 						for (var i = 3; i <16; i++){
 							var tabCountry = $("select[name='qualOther.historyOTHERCountry"+i+"']").find("option:selected").val();
@@ -438,6 +471,133 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				});
 			});
 			$.unblockUI();
+		}	
+			
+		function populateOtherQualifications(){
+			
+			//alert("Start populateOtherQualifications");
+			//$.blockUI({ message: "<strong><img src='<c:url value='/resources/images/ajax-loader.gif' />' alt=' * ' /> <br>Populating qualifications...</strong>" });
+			var otherErr = false;
+			var count = 0;
+			var url = 'applyForStudentNumber.do?act=populateSTUPREV';
+			
+			//$.ajaxSetup( { "async": false } );
+			$.getJSON(url, function(data) {
+				//data.sort(SortByCode);
+				cache : false,
+				$.each(data, function(key, keyValue) {
+					//alert("Subject Key="+key);
+					if (key === "Error"){
+						showError("Error", keyValue);
+						otherErr = true;
+						$.unblockUI();
+						return false;
+					}else if (key === "Empty"){
+						//showError("Empty", keyValue); //No reason to show if empty as it may be
+						//otherErr = true;
+						$.unblockUI();
+						return false;
+					}else if (key === "PREVQUAL"){
+						var tab_no = 2;
+						$.each(keyValue, function(key2, keyValue2) {
+							//Clear Tab Content
+							//$('#tab_'+tab_no).empty();
+							//alert("Key2="+key2+" & "+keyValue2.toUpperCase());
+							var splitSEQ = keyValue2.split('@');
+							//alert("SEQ="+splitSEQ[0]+", Detail="+splitSEQ[1]+" - TAB="+tab_no);
+							var splitDetail = splitSEQ[1].split('~');
+							
+							//Populate Tab Content
+							//Show correct University Detail
+							var checkCountry = $("select[name='qualOther.historyOTHERCountry"+tab_no+"']").find("option:selected").val();
+							if (checkCountry === "1015"){
+								$("#historyOTHERUniv"+tab_no).show();
+								var checkUniv = $("select[name='qualOther.historyOTHERUniv"+tab_no+"']").find("option:selected").val();
+								if (checkUniv === "OTHR"){
+									$("#historyOTHERUnivText"+tab_no).show();
+								}else{
+									$("#historyOTHERUnivText"+tab_no).hide();
+								}
+							}else{
+								$("#historyOTHERUniv"+tab_no).hide();
+								$("#historyOTHERUnivText"+tab_no).show();
+							}
+								
+							//setup completed year according to first year
+							populateOTHERYear(tab_no, splitDetail[4], splitDetail[5]);
+							//populate last/completed year
+							//$("select[name='qualOther.historyOTHERYearEnd"+ tab_no +"']").val(splitDetail[5]); //Populate End Year
+							
+							//Set up hidden values
+								//alert("TAB: "+tab_no+" - FOREIGN_IND="+splitDetail[8]);
+							//$("input[name='qualOther.historyOTHERForeign"+ tab_no +"']").val(splitDetail[8]);
+							if (checkCountry === "1015"){
+								$("input[name='qualOther.historyOTHERForeign"+ tab_no +"']").val("Y");
+							}else{
+								$("input[name='qualOther.historyOTHERForeign"+ tab_no +"']").val("N");
+							}
+								
+								//alert("TAB: "+tab_no+" - LOCK_UPDATE_IND="+splitDetail[9]);
+							$("input[name='qualOther.historyOTHERLock"+ tab_no +"']").val(splitDetail[9]);
+								
+							//If details come from DB, then do not allow update of qual
+							var checkDBVal = $("input[name='qualOther.historyOTHERYearEndDB"+ tab_no +"']").val();
+							if (checkDBVal != null && checkDBVal != "" && checkDBVal != "undefined" && checkDBVal != NaN ){
+								$("input[name='qualOther.historyOTHERQual"+ tab_no +"']").prop('readonly', true);						
+
+								//Change locked Background colour							
+								$("input[name='qualOther.historyOTHERQual"+ tab_no +"']").css("background-color","#FFFEEE");						
+							}
+							
+							//If DB input has been processed, don't allow any updates, except for complete indicator and YearEnd.
+							if (splitDetail[9] == "Y"){ //Lock
+								$("select[name='qualOther.historyOTHERCountry"+ tab_no +"'] option:not(:selected)").prop("disabled", true); 	
+								$("select[name='qualOther.historyOTHERUniv"+ tab_no +"'] option:not(:selected)").prop("disabled", true); 								//Disable 
+								$("input[name='qualOther.historyOTHERUnivText"+ tab_no +"']").prop('readonly', true);
+								$("input[name='qualOther.historyOTHERStudnr"+ tab_no +"']").prop('readonly', true);
+								$("input[name='qualOther.historyOTHERQual"+ tab_no +"']").prop('readonly', true);								
+								$("select[name='qualOther.historyOTHERYearStart"+ tab_no +"'] option:not(:selected)").prop("disabled", true);
+								//Change locked Background colour
+								$("select[name='qualOther.historyOTHERCountry"+ tab_no +"']").css("background-color","#FFFEEE");
+								$("select[name='qualOther.historyOTHERUniv"+ tab_no +"']").css("background-color","#FFFEEE");
+								$("input[name='qualOther.historyOTHERUnivText"+ tab_no +"']").css("background-color","#FFFEEE");
+								$("input[name='qualOther.historyOTHERStudnr"+ tab_no +"']").css("background-color","#FFFEEE");
+								$("input[name='qualOther.historyOTHERQual"+ tab_no +"']").css("background-color","#FFFEEE");								
+								$("select[name='qualOther.historyOTHERYearStart"+ tab_no +"']").css("background-color","#FFFEEE");							
+								
+								if(splitDetail[8]=="Y"){
+									$("select[name='qualOther.historyOTHERYearEnd"+ tab_no +"'] option:not(:selected)").prop("disabled", true);
+									$("input[name='qualOther.historyOTHERComplete"+ tab_no +"']").prop("disabled", true);
+									
+									//Change locked Background colour								
+									$("input[name='qualOther.historyOTHERComplete"+ tab_no +"']").css("background-color","#FFFEEE");									
+									$("select[name='qualOther.historyOTHERYearEnd"+ tab_no +"']").css("background-color","#FFFEEE");
+								}	
+								
+							}
+								
+								//alert("Saved Data Tab="+tab_no+" - Done");
+							count++;
+							tab_no++;
+						});			
+					}
+				});
+			//Add new Tabs automatically for populated tabs
+			for (var i = 3; i <16; i++){						
+				var tabQual = $("input[name='qualOther.historyOTHERQual"+i+"']").val();
+				//alert("tabQual - qualOther.historyOTHERQual"+i+"=["+tabQual+"]");
+				if (tabQual != null && tabQual != "" && tabQual != "undefined"){
+					//$('.add-tab').click();
+					//alert("populate qual add tab - var: " + i);
+					setTimeout(function(){ $(".add-tab").click()}, 100);
+				}	
+					
+			}
+			//Make sure that first tab is clicked after autopopulate
+			setTimeout(function(){ $(".tabber1").click()}, 100);		
+			getFromBack();  //test Johanet to only execute after first qualspopulate
+			});
+			$.unblockUI(); 
 		}
 		//"0":"1@OTHR~CAPE TECHNICON~12345~WHOKNOWS~8~2009~2011~~N~N~N"
 		//"0":"1@OTHR~CAPE TECHNICON~12345~WHOKNOWS~8~2009~2011~~Y~N~N"
@@ -466,11 +626,11 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			}
 		}
 		
-		function validateSelect(){
+		function xxvalidateSelect(){
 			//alert("In Validate");
 			var validUnisa = $("input[name='unisaFound']").val();
 			var checkOTHERCountry2 = $("select[name='qualOther.historyOTHERCountry2']").find("option:selected").val();
-			var checkOTHERCountry3 = $("select[name='qualOther.historyOTHERCountry3']").find("option:selected").val();
+			var checkOTHERCountry3 = $("select[name='qualOther.historyOTHERCountry3']").find("option:selected").val();		
 			if (validUnisa != "true" && ((checkOTHERCountry2 == null || checkOTHERCountry2 == "" || checkOTHERCountry2 == "undefined" || checkOTHERCountry2 == "-1") && (checkOTHERCountry3 == null || checkOTHERCountry3 == "" || checkOTHERCountry3 == "undefined" || checkOTHERCountry3 == "-1"))){
 				showError("Error","Please enter at least one degree or diploma for post-graduate studies");
 				return false;
@@ -526,7 +686,86 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						$("input[name='qualOther.historyOTHERHiddenComplete"+i+"']").val([radioComplete]);
 					}
 					//alert("Final - qualOther.historyOTHERHiddenComplete"+i+"="+radioComplete);
+				}else{
+					//Johanet 20190729 BRD 2020 requirment 4.1 validate on prev qualification not complete
+					showError("Error","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
+					return false;
 				}
+			}
+			doSubmit("Continue");
+		}
+		
+		
+		function validateSelect(){
+			//alert("In Validate");
+			var validUnisa = $("input[name='unisaFound']").val();
+			var checkOTHERQual2 = $("input[name='qualOther.historyOTHERQual2']").val();
+			var checkOTHERQual3 = $("input[name='qualOther.historyOTHERQual3']").val();
+			if (validUnisa != "true" && ((checkOTHERQual2 == null || checkOTHERQual2 == "" || checkOTHERQual2 == "undefined" || checkOTHERQual2 == "-1") && (checkOTHERQual3 == null || checkOTHERQual3 == "" || checkOTHERQual3 == "undefined" || checkOTHERQual3 == "-1"))){
+				showError("Error","Please enter at least one degree or diploma for post-graduate studies");
+				return false;
+			}
+			for (var i = 2; i <16; i++){
+				
+				var validCountry = $("select[name='qualOther.historyOTHERCountry"+i+"']").find("option:selected").val();
+				var validUniv = $("select[name='qualOther.historyOTHERUniv"+i+"']").find("option:selected").val();
+				var validText = $("input[name='qualOther.historyOTHERUnivText"+i+"']").val();
+				var validEnd = $("select[name='qualOther.historyOTHERYearEnd"+i+"']").find("option:selected").val();
+				var validStart = $("select[name='qualOther.historyOTHERYearStart"+i+"']").find("option:selected").val();
+				var validQual = $("input[name='qualOther.historyOTHERQual"+i+"']").val();
+				
+			    //Test if qualification entered
+			    if (validQual != null && validQual != "" && validQual != "undefined" ) 	{
+			       	//test all fields
+			    	if (validCountry == null || validCountry == "" || validCountry == "undefined" || validCountry == "-1"){
+			    		showError("Error","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
+						return false;
+			    	}
+			    	if (validCountry == "1015" && (validUniv == "-1" || validUniv == null && validUniv == "" && validUniv == "undefined")){
+						showError("Error","Please select the Institution or University for the Qualification on Tab "+i);
+						return false;
+					}
+					if (validCountry != "1015" && (validText == null || validText == "" || validText == "undefined")){
+						showError("Error","Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						return false;
+					}
+					if (validUniv === "OTHR" && (validText == null || validText == "" || validText == "undefined")){
+						showError("Error","You selected Other as the Institution. Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						return false;
+					}
+					
+					//alert("qualOther.historyOTHERQual"+i+"=["+validQual+"]");
+					if (validQual == null || validQual == "" || validQual == "undefined"){
+						showError("Error","Please enter the Qualification code or Description for the Qualification on Tab "+i);
+						return false;
+					}
+					
+					//alert("qualOther.historyOTHERYearStart"+i+"=["+validStart+"]");
+					if (validStart == null || validStart == "" || validStart == "undefined" || validStart == "-1" || validStart < 1960){
+						showError("Error","Please enter the year you first registered for the Qualification on Tab "+i);
+						return false;
+					}
+				
+					//alert("qualOther.historyOTHERYearEnd"+i+"=["+validEnd+"]");
+					if (validEnd == null || validEnd == "" || validEnd == "undefined" || validEnd == "-1" || validEnd < 1960){
+						showError("Error","Please enter the year of your last registration or when you completed the Qualification on Tab "+i);
+						return false;
+					}
+					if (validStart > validEnd){
+						showError("Error","The last registration or completion year be before the first year for the Qualification on Tab "+i);
+						return false;
+					}
+					var radioComplete = $("input:radio[name='qualOther.historyOTHERComplete"+i+"']:checked").val();	
+					//alert("Final - radioComplete="+radioComplete);
+					if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
+						showError("Error", "Please indicate if you have completed the Qualification on Tab "+i);
+						return false;
+					}else{
+						$("input[name='qualOther.historyOTHERHiddenComplete"+i+"']").val([radioComplete]);
+					}
+			    	
+			    }
+			    	
 			}
 			doSubmit("Continue");
 		}
@@ -642,6 +881,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 2 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual2"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual2"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -666,9 +908,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr2"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr2"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual2"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual2"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -704,6 +943,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 3 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual3"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual3"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -728,9 +970,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr3"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr3"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual3"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual3"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -766,6 +1005,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 4 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual4"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual4"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -790,9 +1032,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr4"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr4"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual4"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual4"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -828,6 +1067,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 5 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual5"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual5"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -852,9 +1094,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr5"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr5"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual5"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual5"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -890,6 +1129,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 6 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual6"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual6"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -914,9 +1156,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr6"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr6"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual6"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual6"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -952,6 +1191,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 7 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual7"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual7"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -976,9 +1218,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr7"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr7"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual7"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual7"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1014,6 +1253,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 8 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual8"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual8"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1038,9 +1280,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr8"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr8"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual8"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual8"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1076,6 +1315,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 9 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual9"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual9"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1100,9 +1342,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr9"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr9"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual8"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual8"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1138,6 +1377,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 10 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual10"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual10"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1162,9 +1404,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr10"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr10"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual9"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual9"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1200,6 +1439,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 11 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual11"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual11"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1224,9 +1466,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr11"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr11"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual11"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual11"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1262,6 +1501,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 12 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual12"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual12"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1286,9 +1528,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr12"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr12"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual12"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual12"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1324,6 +1563,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 13 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual13"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual13"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1348,9 +1590,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr13"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr13"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual13"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual13"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1386,6 +1625,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 14 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual14"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual14"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1410,9 +1652,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr14"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr14"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual14"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual14"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
@@ -1448,6 +1687,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							Qualification 15 details:<br/>
 							<table style="width:100%">
 								<tr>
+									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
+									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual15"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual15"/>" maxlength="50" size="21"/></td>
+								</tr><tr>
 									<td colspan="2">&nbsp;</td>
 								</tr><tr>
 									<td><fmt:message key="page.last.country"/>&nbsp;</td>
@@ -1472,9 +1714,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 								<tr>
 									<td><fmt:message key="page.last.ha6"/><fmt:message key="page.last.hb6"/><fmt:message key="page.last.hc6"/>&nbsp;</td>
 									<td><input class="stretch" type="text" name="qualOther.historyOTHERStudnr15"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERStudnr15"/>" maxlength="20" size="15"/></td>
-								</tr><tr>
-									<td><fmt:message key="page.last.ha3"/>&nbsp;<fmt:message key="page.last.hb3"/>&nbsp;<fmt:message key="page.last.hc3"/>&nbsp;</td>
-									<td><input class="stretch" type="text" name="qualOther.historyOTHERQual15"  value="<bean:write name="studentRegistrationForm" property="qualOther.historyOTHERQual15"/>" maxlength="50" size="21"/></td>
 								</tr><tr>
 									<td><fmt:message key="page.last.complete"/></td>
 									<td>
