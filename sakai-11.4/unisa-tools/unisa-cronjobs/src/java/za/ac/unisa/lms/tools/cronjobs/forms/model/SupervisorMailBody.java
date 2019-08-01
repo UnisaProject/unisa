@@ -6,7 +6,8 @@ import za.ac.unisa.lms.tools.cronjobs.forms.model.School;
 import za.ac.unisa.lms.tools.cronjobs.forms.model.Supervisor;
 import za.ac.unisa.lms.tools.cronjobs.forms.model.Coordinator;
 public class SupervisorMailBody {
-	          
+
+          
 	private String firstPartOfEmailMessage(String supName){
         String emailMessage="Dear  "+supName+"<br><br>"+
         "The   Teaching Practice Unit  would like to thank you for the support you are giving to our "+ 
@@ -20,11 +21,10 @@ public class SupervisorMailBody {
 		  "<li>	Write the correct kilometres when completing your claim forms  as the Teaching Practice Coordinator will check them before payment is made.</li>"+
 		  "<li>	Contact the Teaching Practice Coordinator if you have  problems with any student/s.</li>"+
 		  "<li>	Please ensure that you have signed your claim forms where applicable  before submission.</li>"+
-		  "<li>	Please ensure clear and neat hand writing in all forms to be  submitted.</li>"+
-		  "<li>	For your claims to be timeously paid,<b> (processed by the 7th  of the next month)</b> please insure that the claim forms are recieved by the TP Office  on or before the <b>25th</b> of current month.</li>"+
-		  "<li>	Inform the Teaching Practice office in time if you need assessment forms.</li>"+
+		  "<li>	Please ensure clear and neat hand writing in all forms to be  submitted.  </li>"+
+		   "<li>	Inform the Teaching Practice office in time if you need assessment forms. </li>"+
 		  "<li>	Please inform the Teaching Practice Coordinator on time if you will not be able to assess all the students due to unforeseen circumstances  so that we can re-allocate them to other supervisors.</li>"+
-		  "<br><b>Below is a list of students allocated to you for school visits.</b>";
+		  "<br><b>Below is a list of students allocated to you for school visits.   </b>";
         return emailMessage;
    }
    private String getStudentsList(int supervisorCode)throws Exception{
@@ -98,9 +98,10 @@ public class SupervisorMailBody {
                      supervisor.setProvinceCode((Short.parseShort(provCodeList.get(0).toString())));
                      Coordinator  coordinator=new Coordinator();
                      coordinator=coordinator.getCoordinatorForProvince(supervisor.getProvinceCode());
+                     String placedStudentForSup=getStudentsList(supervisorCode);
                      emailBody= firstPartOfEmailMessage(supervisor.getName())+
                           "<br><br>Number of Students Allocated:"+supervisor.getStudentsAllocated()+
-                          "<br><br>"+getStudentsList(supervisorCode)+"<br><br>"+
+                          "<br><br>"+placedStudentForSup+"<br><br>"+
                           "We hope you find this in order and feel free to contact our office for any enquiries.<br><br>"+
                           "Kind Regards<br><br>Teaching Practice Coordinator:<br><b>"+coordinator.getName()+"</b><br><br>";
                       if(!coordinator.getEmailAddress().equals("")){
@@ -108,6 +109,9 @@ public class SupervisorMailBody {
                       }
                       if(!coordinator.getContactNumber().equals("")){
                     	  emailBody+="Tel:"+coordinator.getContactNumber();
+                      }
+                      if((placedStudentForSup==null)||(placedStudentForSup.isEmpty())){
+                    	           emailBody=null;
                       }
     	            return emailBody;
     }
@@ -129,7 +133,7 @@ public class SupervisorMailBody {
   	                            emailBody+="Email Address:"+coordinator.getEmailAddress()+"<br>";
                      }
                      if(!coordinator.getContactNumber().equals("")){
-  	                          emailBody+="Tel:"+coordinator.getContactNumber();
+  	                          emailBody+="Tel: "+coordinator.getContactNumber();
                      }
                      return emailBody;
   }
