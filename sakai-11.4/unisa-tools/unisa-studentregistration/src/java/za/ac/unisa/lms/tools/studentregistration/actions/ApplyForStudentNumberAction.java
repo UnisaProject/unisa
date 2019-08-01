@@ -64,7 +64,7 @@ import za.ac.unisa.lms.tools.studentregistration.utils.PdfDownloader;
 import Gistl01h.Abean.Gistl01sProxyForGistf01m;
 import Srrsa01h.Abean.Srrsa01sRegStudentPersDetail;
 import Staae05h.Abean.Staae05sAppAdmissionEvaluator;
-import Srpde01h.Abean.Srpde01sChkPersonalDetails;
+//import Srpde01h.Abean.Srpde01sChkPersonalDetails;
 import Menu95h.Abean.Menu95S;
 
 import za.ac.unisa.utils.CellPhoneVerification;
@@ -4696,10 +4696,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 	      if (vNumCheck.equalsIgnoreCase("newStu")) {
 	    	  //ok - student Number with id does not exists
 	      }else {
-//	    	  messages.add(ActionMessages.GLOBAL_MESSAGE,
-//						new ActionMessage("message.generalmessage", "You already have a student number at Unisa. Go to <a href=https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number target=\"_top\">https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number</a> to find your student number."));
-	    	  	messages.add(ActionMessages.GLOBAL_MESSAGE,
-						new ActionMessage("message.generalmessage", "A student record with the same personal details was found on the system. Please e-mail your full names, surname and your Identity number/passport number to applications@unisa.ac.za for further enquiries."));
+	    	  messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage", "You already have a student number at Unisa. Go to <a href=https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number target=\"_top\">https://www.unisa.ac.za/sites/myunisa/default/Forgotten-Student-Number</a> to find your student number."));
+//	    	  	messages.add(ActionMessages.GLOBAL_MESSAGE,
+//						new ActionMessage("message.generalmessage", "A student record with the same personal details was found on the system. Please e-mail your full names, surname and your Identity number/passport number to applications@unisa.ac.za for further enquiries."));
 	    		addErrors(request, messages);	    	  	
 				setDropdownListsStep1(request,stuRegForm);
 				return "applyNewPersonal";
@@ -6098,11 +6098,13 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		if (null != stuRegForm.getStudent().getExam().getExamCentre().getCode() 
 				&& !"".equalsIgnoreCase(stuRegForm.getStudent().getExam().getExamCentre().getCode())){
 			//get examPeriods
-			List examPeriodList = new ArrayList<Integer>();
-			int examperiod = 0;
-			examPeriodList.add(0,1);
-			examPeriodList.add(0,6);
-			examPeriodList.add(0,10);
+			List<Integer> examPeriodList = new ArrayList<Integer>();
+//			int examperiod = 0;
+//			examPeriodList.add(0,1);
+//			examPeriodList.add(0,6);
+//			examPeriodList.add(0,10);
+			
+			examPeriodList = dao.getExamPeriods();
 			
 			dao.updateStudentExamCentreDetail(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getExam().getExamCentre().getCode(),examPeriodList);
 		}		
@@ -6487,8 +6489,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						String saveSTUXML =  dao.saveSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "stuPrev", "1", other.getOtherSEQ(),  "YES",  "stepPrevQual", "UPDATE");
 						//Update only if Final year has changed and row is not locked
 						if ("N".equalsIgnoreCase(other.getOtherLock())){
-							resultUpdate = dao.updatePREVADM(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearEnd(), other.getOtherComplete());
+							resultUpdate = dao.updatePREVADM(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearStart(), other.getOtherYearEnd(), other.getOtherComplete(), other.getOtherUnivText(), other.getOtherStudnr(), other.getOtherQual(), other.getOtherForeign(), other.getOtherUniv(), other.getOtherCountry());
 							//log.debug("ApplyForStudentNumberAction - applyRetDeclare - studentNr=" + stuRegForm.getStudent().getNumber()+", RecordNo="+i+", resultUpdate="+resultUpdate);
+						}else {							
+							resultUpdate = dao.updatePREVADMLock(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearEnd(), other.getOtherComplete());
 						}
 					}else{
 						// Save to database if there are any Qualifications added
@@ -8603,7 +8607,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				return mapping.findForward("applyNewAddress3");
 			}else if (errorMsg.toUpperCase().contains("PHYSICAL")){
 				return mapping.findForward("applyNewAddress2");
-			}else if (errorMsg.toUpperCase().contains("POSTAL")){
+			}else if (errorMsg.toUpperCase().contains("POSTAL") || errorMsg.toUpperCase().contains("P O BOX")){
 				setDropdownListsStep2(request,stuRegForm);
 				return mapping.findForward("applyNewAddress1");
 			}else if (errorMsg.toUpperCase().contains("CELL") || errorMsg.toUpperCase().contains("EMAIL")){
@@ -8652,8 +8656,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 							String saveSTUXML =  dao.saveSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "stuPrev", "1", other.getOtherSEQ(), "YES",  "stepPrevQual", "UPDATE");
 							//Update only if Final year has changed and row is not locked
 							if ("N".equalsIgnoreCase(other.getOtherLock())){
-								resultUpdate = dao.updatePREVADM(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearEnd(), other.getOtherComplete());
+								resultUpdate =  dao.updatePREVADM(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearStart(), other.getOtherYearEnd(), other.getOtherComplete(), other.getOtherUnivText(), other.getOtherStudnr(), other.getOtherQual(), other.getOtherForeign(), other.getOtherUniv(), other.getOtherCountry());
 								//log.debug("ApplyForStudentNumberAction - applyNewDeclare - studentNr=" + stuRegForm.getStudent().getNumber()+", RecordNo="+i+", resultUpdate="+resultUpdate);
+							}else {							
+								resultUpdate = dao.updatePREVADMLock(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearEnd(), other.getOtherComplete());
 							}
 						}else{
 							// Save to database if there are any Qualifications added

@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
@@ -1414,7 +1415,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 		
 		try {
 			String query  = "select MK_STUDENT_NR, SEQ_NR, FIRST_YEAR_REG, YEAR_COMPLETED, INSTITUTION, "
-					+ " OTHER_INST_STU_NR, OTHER_INST_QUAL, FOREIGN_IND, LOCK_UPDATE_IND, "
+					+ " COALESCE(OTHER_INST_STU_NR,' ') as OTHER_INST_STU_NR, OTHER_INST_QUAL, FOREIGN_IND, LOCK_UPDATE_IND, "
 					+ " COALESCE(COMPLETED_IND, 'N') as COMPLETED_IND, COALESCE(MK_UNK, ' ') as MK_UNK, COALESCE(MK_COUNTRY_CODE, ' ') as MK_COUNTRY_CODE "
 					+ " from STUPREV "
 					+ " where MK_STUDENT_NR = ? "
@@ -1504,7 +1505,49 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 	
 	/** Update Existing Previous Academic Record 
 	 * @throws Exception **/
-	public int updatePREVADM(String UnisaStuNr, int SEQ_NR, String finalYear, String complete) throws Exception {
+	public int updatePREVADM(String UnisaStuNr, int SEQ_NR, String firstYear, String finalYear, String complete, String institution, 
+			String otherStuNr, String qualCode, String foreign, String instCode, String country) throws Exception {
+
+			//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - Start");
+		
+			String dbParam = "";
+			int resultInt = 0;
+			int intLastYear = Integer.parseInt(finalYear);
+			int intFirstYear = Integer.parseInt(firstYear);
+			try {
+				String query  = "update STUPREV "
+							+ " set FIRST_YEAR_REG = ?, "
+							+ " YEAR_COMPLETED = ?, "
+							+ " COMPLETED_IND = ?, "
+							+ " MK_COUNTRY_CODE = ?, "
+							+ " MK_UNK = ?, "
+							+ " INSTITUTION = ?, "
+							+ " OTHER_INST_STU_NR = ?, "
+							+ " OTHER_INST_QUAL = ?, "
+							+ " FOREIGN_IND = ?"
+							+ " where MK_STUDENT_NR = ? " 
+							+ " and SEQ_NR = ? ";
+		
+				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+				resultInt = jdt.update(query, new Object []{intFirstYear, intLastYear, complete, country, instCode, institution, otherStuNr,qualCode,foreign,UnisaStuNr, SEQ_NR});
+				dbParam = intFirstYear +", "+intLastYear +", "+complete+", " + country +", " + UnisaStuNr+", "+SEQ_NR;
+			
+				//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - Update - Query="+query+", resultInt="+resultInt);
+				//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - Update - resultInt: "+resultInt);
+				//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - Update - dbParam: "+dbParam);
+
+			} catch (Exception ex) {
+				log.warn("ApplyForStudentNumberQueryDAO: Error - Updating Previous Academic Qualification for student nr / "+UnisaStuNr + " / " + dbParam + " / " +ex);
+				throw new Exception(
+						"ApplyForStudentNumberQueryDAO : Error - Updating Previous Academic Qualification for student nr / "+UnisaStuNr + " / " + dbParam + " / " +ex);
+			}
+		//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - End");
+		return resultInt;
+	}
+	
+	/** Update Existing Previous Academic Record 
+	 * @throws Exception **/
+	public int updatePREVADMLock(String UnisaStuNr, int SEQ_NR, String finalYear, String complete) throws Exception {
 
 			//log.debug("ApplyForStudentNumberQueryDAO - updatePREVADM - Start");
 		
@@ -3700,9 +3743,104 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 		return ;
 	}
 	
+	public List getExamPeriods() {
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		List results = jdt.queryForList("SELECT code FROM XAMPRD where in_use_flag='Y' ORDER BY CODE");
+		
+		List<Integer> xamprds = new ArrayList<Integer>();
+		
+		Iterator i = results.iterator();
+		while (i.hasNext()) {
+			ListOrderedMap data = (ListOrderedMap) i.next();
+			int code = Integer.parseInt((String)data.get("CODE").toString());		
+			
+			xamprds.add(code);
+		}
+		
+		return xamprds;
+	}
+	
 	
 	/*Johanet 20190717- 2020 BRS Exam Centre update for returning students*/	
 	public void updateStudentExamCentreDetail(String studentNr, String examCentre, List examPeriodList)throws Exception {
+		
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		Connection connection = jdt.getDataSource().getConnection();
+		connection.setAutoCommit(false);	
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean stusunExists = false;
+		String currentExamCentre = "";
+		
+		
+		try {
+			String sql = "select fk_student_nr "
+				+ " from stusun "
+				+ " where fk_student_nr= ? "
+				+ " and status_code in ('FC','RG')";
+			
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(studentNr));
+			
+			rs = ps.executeQuery();	
+			
+			if (rs.next()) {
+				stusunExists = true;
+			}			
+			
+			ps.close();
+			rs.close();
+			
+			//do not update if a stusun record exists
+			//check if stuxct record exist for student then update else insert
+			if (!stusunExists) {
+				
+				sql ="delete from stuxct where mk_student_nr = ?";	
+				
+				ps = connection.prepareStatement(sql);
+				
+				ps.setInt(1, Integer.parseInt(studentNr));	
+				
+				ps.executeUpdate(); 
+				ps.close();
+				
+				for (int j=0; j < examPeriodList.size(); j++) {
+					int examPeriod =  (Integer)examPeriodList.get(j);
+					
+						//stuxct record does not exists
+						//insert exam centre record
+						sql = "insert into stuxct (mk_student_nr,mk_exam_period_cod,mk_exam_centre_cod) " +
+								"values (?,?,?)";
+							   
+						ps = connection.prepareStatement(sql);
+							   		   
+						ps.setInt(1, Integer.parseInt(studentNr));
+						ps.setInt(2, examPeriod);
+						ps.setString(3, examCentre);					
+						ps.executeUpdate();
+						ps.close();
+					}
+				}
+				
+				connection.commit();				
+		}
+			catch (Exception e) {
+				if (connection!=null){connection.rollback();}		
+				throw new Exception("ApplyForStudentNumberQueryDAO  : Error updating student exam centre (STUXCT) / " + e, e);
+			} finally {		
+				try { 
+					if (connection!=null){
+						connection.setAutoCommit(true);
+						connection.close();					
+					}
+					if (ps!=null){ps.close();}
+				} catch (Exception e) {	
+						e.printStackTrace();
+					}
+				} 
+	}
+	
+	public void xxupdateStudentExamCentreDetail(String studentNr, String examCentre, List examPeriodList)throws Exception {
 		
 		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
 		Connection connection = jdt.getDataSource().getConnection();
