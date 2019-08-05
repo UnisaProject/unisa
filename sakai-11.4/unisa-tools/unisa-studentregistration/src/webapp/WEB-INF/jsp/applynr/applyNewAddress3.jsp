@@ -198,14 +198,20 @@ if(emailAddressGood){
 					<h3 class="panel-title text-center"><fmt:message key="page.studentnr.apply.heading"/></h3>
 				</div>
 				<div class="panel-body">	
+					<table>					
+						<tr><td><strong><fmt:message key="page.courier"/></strong></td></tr>				
+						<tr><td><fmt:message key="page.courier3"/></td></tr>					
+					</table>
+				</div>	
+				<div class="panel-body">	
 					<table>
-						<tr>
+						<!-- <tr>
 							<td colspan="2">&nbsp;<strong><fmt:message key="page.courier"/></strong></td>
 						</tr><tr>
 							<td colspan="2">&nbsp;<fmt:message key="page.courier3"/></td>
 						</tr><tr>
 							<td colspan="2"><font size="1">&nbsp;</font></td>
-						</tr><tr>
+						</tr> --><tr>
 							<td style="width:50%;">
 								<table>
 									<tr>
