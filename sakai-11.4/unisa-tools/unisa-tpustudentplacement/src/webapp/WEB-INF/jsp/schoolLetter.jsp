@@ -26,6 +26,7 @@
 			.pagestart{page-break-before:always;}
 		}
 	</style>	
+	
 	<html:form action="/studentPlacement">
 		<sakai:messages/>
 		<sakai:messages message="true"/>
@@ -189,7 +190,8 @@
                                 <LI>Should the student require permission to write examinations, arrangements with the school and the Teaching Practice Office
                                 should be made well in advance. The student is also required to supply the Principal with an official examination time-table.</LI>
                                 <LI>The student should at all times adhere to the safety regulations of the school.</LI>
-                               </OL>  
+                               </OL> 
+							   
 				 </td>
 			</tr>
 			  
@@ -212,7 +214,7 @@
 				<td>&nbsp;</td>
 			</tr>  
 			<tr>
-				<td colspan="2" class='normalSize'>Yours Faithfully<br><br>UNISA Teaching Practice Office<br><br>Teaching Practice Manager<br><br>Prof MW Mndawe</td>
+				<td colspan="2" class='normalSize'>Yours Faithfully<br><br>UNISA Teaching Practice Office<br><br>Teaching Practice Manager</td>
 			</tr>  
 			
         </sakai:group_table>

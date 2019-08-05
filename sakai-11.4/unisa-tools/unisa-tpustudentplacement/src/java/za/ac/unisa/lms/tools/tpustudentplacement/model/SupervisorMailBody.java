@@ -3,6 +3,7 @@ package za.ac.unisa.lms.tools.tpustudentplacement.model;
 
 import java.util.List;
 
+
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
@@ -29,8 +30,7 @@ public class SupervisorMailBody {
 		  "<li>	Contact the Teaching Practice Coordinator if you have  problems with any student/s.</li>"+
 		  "<li>	Please ensure that you have signed your claim forms where applicable  before submission.</li>"+
 		  "<li>	Please ensure clear and neat hand writing in all forms to be  submitted.</li>"+
-		  "<li>	For your claims to be timeously paid,<b> (processed by the 7th  of the next month)</b> please insure that the claim forms are recieved by the TP Office  on or before the <b>25th</b> of current month.</li>"+
-		  "<li>	Inform the Teaching Practice office in time if you need assessment forms.</li>"+
+		   "<li>	Inform the Teaching Practice office in time if you need assessment forms.</li>"+
 		  "<li>	Please inform the Teaching Practice Coordinator on time if you will not be able to assess all the students due to unforeseen circumstances  so that we can re-allocate them to other supervisors.</li>"+
 		  "<br><b>Below is a list of students allocated to you for school visits.</b>";
         return emailMessage;
@@ -69,8 +69,7 @@ public class SupervisorMailBody {
 	                  return row;
    }
    private String getStudentPlacementData(PlacementListRecord plr)throws Exception{
-                     
-                      String row="";
+                        String row="";
                       SchoolUI schoolUI=new SchoolUI();
              	      School school=schoolUI.getSchool(plr.getSchoolCode(),null);
              	      plr.setTown(school.getTown());
@@ -96,8 +95,7 @@ public class SupervisorMailBody {
                        
                 return row;
    }
-
-    public String createEmailBody(String supervName,Integer supervCode)throws Exception{
+   public String createEmailBody(String supervName,Integer supervCode)throws Exception{
     	             SupervisorUI supervisorUI=new SupervisorUI();
     	             List provCodeList=supervisorUI.getSupervProvList(supervCode);
     	             if(provCodeList.size()==0){
