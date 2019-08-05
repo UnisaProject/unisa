@@ -196,7 +196,7 @@ if(emailAddressGood){
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title text-center"><fmt:message key="page.studentnr.apply.heading"/></h3>
-				</div>
+				</div>					
 				<div class="panel-body">	
 					<table>
 						<tr>
