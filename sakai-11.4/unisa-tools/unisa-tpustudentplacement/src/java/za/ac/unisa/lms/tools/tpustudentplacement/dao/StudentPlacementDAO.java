@@ -62,6 +62,7 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
 			int result = jdt.update(sql);	
 		}
+		
 		catch (Exception ex) {
 			throw new Exception("StudentPlacementDao : Error inserting TPUSPL / " + ex,ex);
 		}	
@@ -510,18 +511,3 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
     	                         }
   }
 }
-
-    © 2019 GitHub, Inc.
-    Terms
-    Privacy
-    Security
-    Status
-    Help
-
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
