@@ -407,36 +407,37 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				<div class="panel-body">	
 					<sakai:group_table>
 						<tr>
-							<td><strong><fmt:message key="page.required.instruction"/></strong></td>
-							<td width="50px" align="center"><fmt:message key="page.yes"/></td>
-							<td width="50px" align="center"><fmt:message key="page.no"/></td>
+							<td colspan="4"><strong><fmt:message key="page.required.instruction"/></strong></td>						
 						</tr><tr height="5px">
-							<td colspan="3">&nbsp;</td>
+							<td colspan="4">&nbsp;</td>
 						</tr><tr height="20px">
 							<td><fmt:message key="page.apply.currentStaff"/>&nbsp;</td>
-							<td><html:radio property="studentApplication.staffCurrent" value="Y"/></td>
-							<td><html:radio property="studentApplication.staffCurrent" value="N"/></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.staffCurrent" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.staffCurrent" value="N"/><fmt:message key="page.no"/></td>
 						</tr><tr height="5px">
-							<td colspan="3">&nbsp;</td>
+							<td colspan="4">&nbsp;</td>
 						</tr><tr height="20px">
 							<td><fmt:message key="page.apply.deceasedStaff"/>&nbsp;</td>
-							<td><html:radio property="studentApplication.staffDeceased" value="Y"/></td>
-							<td><html:radio property="studentApplication.staffDeceased" value="N"/></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.staffDeceased" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.staffDeceased" value="N"/><fmt:message key="page.no"/></td>
 						</tr><tr height="5px">
-							<td colspan="3">&nbsp;</td>
+							<td colspan="4">&nbsp;</td>
 						</tr><tr height="20px">
 							<td><fmt:message key="page.apply.prisoner"/>&nbsp;</td>
-							<td><html:radio property="studentApplication.prisoner" value="Y"/></td>
-							<td><html:radio property="studentApplication.prisoner" value="N"/></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.prisoner" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.prisoner" value="N"/><fmt:message key="page.no"/></td>
 						</tr><tr height="5px">
-							<td colspan="3">&nbsp;</td>
+							<td colspan="4">&nbsp;</td>
 						</tr>
 					</sakai:group_table>
 					<!-- 20190715 Add examcentre start -->	
 					<div id="doExamCenter">
 						<sakai:group_table>	
 							<tr>
-								<td colspan="2"><fmt:message key="page.examination.centre"/>&nbsp;</td>
+								<td><fmt:message key="page.examination.centre"/></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							</tr><tr>
 								<td colspan="2">
 									<html:select name="studentRegistrationForm" property="selectedExamCentre" 
@@ -453,12 +454,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						<sakai:group_table>
 						<tr height="20px">
 								<td><fmt:message key="page.apply.complete"/></td>
-								<td><html:radio property="studentApplication.completeQual" value="Y"/></td>
-								<td><html:radio property="studentApplication.completeQual" value="N"/></td>
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td><html:radio property="studentApplication.completeQual" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td><html:radio property="studentApplication.completeQual" value="N"/><fmt:message key="page.no"/></td>
 							</tr><tr height="5px">
-								<td colspan="3">&nbsp;</td>
+								<td colspan="4">&nbsp;</td>
 							</tr><tr height="20px">
-								<td colspan="3">
+								<td colspan="4">
 									<div class="doCompleteText">
 										<fmt:message key="page.apply.completeInfo"/>
 									</div>
