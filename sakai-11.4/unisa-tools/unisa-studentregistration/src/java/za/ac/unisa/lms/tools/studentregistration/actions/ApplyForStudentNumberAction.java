@@ -218,82 +218,117 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//StudentRegistrationForm stuRegForm =  new StudentRegistrationForm();
 		
 		resetForm(stuRegForm, "ApplyForStudentNumberAction WalkThrough");
-		stuRegForm.setSelectReset("");
-		stuRegForm.setWebUploadMsg("");
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
-		
-		//Write version number to log to check all servers
-		//log.debug("Applications Version="+stuRegForm.getVersion());
-		
-		//log.debug("ApplyForStudentNumberAction walkthrough - sessionID=" + request.getSession().getId());
-
-		
-		if (stuRegForm.getStudent().getAcademicYear() == null){
-			stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
-			stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
-		}
-			
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		if (stuRegForm.getStudent().getAcademicYear() == null){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-				new ActionMessage("message.generalmessage", "Academic year invalid, please log on again to retry."));
-			addErrors(request, messages);
-			return mapping.findForward("loginSelect");
-		}
-		//log.debug("ApplyForStudentNumberAction - walkthrough - dateCheck");
-
-		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-		if (!dateCheck.isEmpty()){ //Check Dates Array
-			for (int i=0; i < dateCheck.size(); i++){
-				//log.debug("ApplyForStudentNumberAction - walkthrough - dateCheck="+dateCheck.get(i).toString());
-				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPD(true);
-				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPDOC(true);
-				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPPAY(true);
-				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPH(true);
-				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPM(true);
-				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRH(true);
-				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRU(true);
-				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPU(true);
-				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPS(true);
-				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMU(true);
-				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMH(true);
-				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMS(true);
-				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMM(true);
-				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMD(true);
-				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMNEW(true);
-				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMRET(true);
-				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPSTAT(true);
-				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPAPL(true);
-				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFER(true);
-				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFICE(true);
-				}
-			}
-		}
-		
-		//log.debug("ApplyForStudentNumberAction - walkthrough - AcademicYear="+stuRegForm.getStudent().getAcademicYear()+", LoginSelectMain="+stuRegForm.getLoginSelectMain()+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
-		
-		//log.debug("ApplyForStudentNumberAction - walkthrough -Return to loginSelect");
+//		stuRegForm.setSelectReset("");
+//		stuRegForm.setWebUploadMsg("");
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");
+//		
+//		//Write version number to log to check all servers
+//		//log.debug("Applications Version="+stuRegForm.getVersion());
+//		
+//		//log.debug("ApplyForStudentNumberAction walkthrough - sessionID=" + request.getSession().getId());
+//
+//		
+//		if (stuRegForm.getStudent().getAcademicYear() == null){
+//			stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
+//			stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
+//		}
+//			
+//		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//		if (stuRegForm.getStudent().getAcademicYear() == null){
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//				new ActionMessage("message.generalmessage", "Academic year invalid, please log on again to retry."));
+//			addErrors(request, messages);
+//			return mapping.findForward("loginSelect");
+//		}
+//		//log.debug("ApplyForStudentNumberAction - walkthrough - dateCheck");
+//
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - walkthrough - dateCheck="+dateCheck.get(i).toString());
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}
+//		//Johanet add code for flexdat - start
+//		//Determine if any flexdat dates are open before displaying menu
+//		if (!stuRegForm.getStudent().isDateWAPU()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPU");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPU(true);
+//				stuRegForm.getStudent().setDateWAPRU(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPH()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPH");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPH(true);
+//				stuRegForm.getStudent().setDateWAPRH(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPS()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPS");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPS(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPD()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPD");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPD(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPM()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPM");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPM(true);
+//			}
+//		}
+//		//Johanet add code for flexdat - end
+//		
+//		//log.debug("ApplyForStudentNumberAction - walkthrough - AcademicYear="+stuRegForm.getStudent().getAcademicYear()+", LoginSelectMain="+stuRegForm.getLoginSelectMain()+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
+//		
+//		//log.debug("ApplyForStudentNumberAction - walkthrough -Return to loginSelect");
 		return mapping.findForward("loginSelect");
 	}
 	
@@ -304,7 +339,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - loginAdmin - Start");
 	    
 		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 		
 		//log.debug("ApplyForStudentNumberAction - loginAdmin - Session ID: " + request.getSession().getId());
 		//log.debug("ApplyForStudentNumberAction - loginAdmin - Session State 1: " + request.getSession().getAttribute(SESSION_STATE));
@@ -313,62 +348,62 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		resetForm(stuRegForm, "ApplyForStudentNumberAction - loginAdmin");
 		
-		stuRegForm.setSelectReset("");
-		stuRegForm.setWebUploadMsg("");
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
+//		stuRegForm.setSelectReset("");
+//		stuRegForm.setWebUploadMsg("");
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");
 	
 		stuRegForm.setFromPage("stepLoginAdmin");
 		
 		//log.debug("ApplyForStudentNumberAction - loginAdmin - dateCheck");
 
-		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-		if (!dateCheck.isEmpty()){ //Check Dates Array
-			for (int i=0; i < dateCheck.size(); i++){
-				//log.debug("ApplyForStudentNumberAction - loginAdmin - dateCheck="+dateCheck.get(i).toString());
-				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPD(true);
-				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPDOC(true);
-				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPPAY(true);
-				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPH(true);
-				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPM(true);
-				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRH(true);
-				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRU(true);
-				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPU(true);
-				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPS(true);
-				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMU(true);
-				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMH(true);
-				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMS(true);
-				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMM(true);
-				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMD(true);
-				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMNEW(true);
-				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMRET(true);
-				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPSTAT(true);
-				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPAPL(true);
-				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFER(true);
-				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFICE(true);
-				}
-			}
-		}
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - loginAdmin - dateCheck="+dateCheck.get(i).toString());
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}
 		
 		//log.debug("ApplyForStudentNumberAction - loginAdmin - AcademicYear="+stuRegForm.getStudent().getAcademicYear()+", LoginSelectMain="+stuRegForm.getLoginSelectMain()+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
 
@@ -411,66 +446,102 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			//"applyMain"(String value, String valueDesc, String action, String studentNr, String year, String period, boolean logYN)
 			stuRegForm.setLoginSelectMain(stripXSS(request.getParameter("mainSelection"), "mainSelection", "applyMain", null, getCurrentAcademicYear(), getCurrentAcademicPeriod(), stuRegForm.getApplySEQUENCE(), false));
 			
-			stuRegForm.setWebLoginMsg("");
-			stuRegForm.setWebLoginMsg2("");
-			
-			if (stuRegForm.getStudent().getAcademicYear() == null){
-				stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
-				stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
-			}
-				
-			ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-			//log.debug("ApplyForStudentNumberAction - stepLoginSelect - dateCheck");
-
-			ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-			if (!dateCheck.isEmpty()){ //Check Dates Array
-				for (int i=0; i < dateCheck.size(); i++){
-					//log.debug("ApplyForStudentNumberAction - stepLoginSelect - dateCheck="+dateCheck.get(i).toString());
-					if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPD(true);
-					}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPDOC(true);
-					}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPPAY(true);
-					}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPH(true);
-					}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPM(true);
-					}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPRH(true);
-					}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPRU(true);
-					}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPU(true);
-					}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPS(true);
-					}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMU(true);
-					}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMH(true);
-					}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMS(true);
-					}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMM(true);
-					}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMD(true);
-					}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMNEW(true);
-					}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPADMRET(true);
-					}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPSTAT(true);
-					}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPAPL(true);
-					}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPOFFER(true);
-					}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-						stuRegForm.getStudent().setDateWAPOFFICE(true);
-					}
-				}
-			}
-			stuRegForm.setWebLoginMsg("");
-			stuRegForm.setWebLoginMsg2("");
+//			stuRegForm.setWebLoginMsg("");
+//			stuRegForm.setWebLoginMsg2("");
+//			
+//			if (stuRegForm.getStudent().getAcademicYear() == null){
+//				stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
+//				stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
+//			}
+//				
+//			ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//			//log.debug("ApplyForStudentNumberAction - stepLoginSelect - dateCheck");
+//
+//			ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//			if (!dateCheck.isEmpty()){ //Check Dates Array
+//				for (int i=0; i < dateCheck.size(); i++){
+//					//log.debug("ApplyForStudentNumberAction - stepLoginSelect - dateCheck="+dateCheck.get(i).toString());
+//					if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPD(true);
+//					}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPDOC(true);
+//					}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPPAY(true);
+//					}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPH(true);
+//					}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPM(true);
+//					}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPRH(true);
+//					}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPRU(true);
+//					}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPU(true);
+//					}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPS(true);
+//					}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMU(true);
+//					}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMH(true);
+//					}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMS(true);
+//					}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMM(true);
+//					}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMD(true);
+//					}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMNEW(true);
+//					}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPADMRET(true);
+//					}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPSTAT(true);
+//					}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPAPL(true);
+//					}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPOFFER(true);
+//					}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//						stuRegForm.getStudent().setDateWAPOFFICE(true);
+//					}
+//				}
+//			}
+//			//Johanet add code for flexdat - start
+//			//Johanet add code for flexdat - start
+//			if (!stuRegForm.getStudent().isDateWAPU() && stuRegForm.getLoginSelectMain().equalsIgnoreCase("UD")) {			
+//				boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPU");
+//				if (flexDateCheck) {
+//					stuRegForm.getStudent().setDateWAPU(true);
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}
+//			}
+//			if (!stuRegForm.getStudent().isDateWAPH() && stuRegForm.getLoginSelectMain().equalsIgnoreCase("HON")) {			
+//				boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPH");
+//				if (flexDateCheck) {
+//					stuRegForm.getStudent().setDateWAPH(true);
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}
+//			}
+//			if (!stuRegForm.getStudent().isDateWAPS() && stuRegForm.getLoginSelectMain().equalsIgnoreCase("SLP")) {			
+//				boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPS");
+//				if (flexDateCheck) {
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}
+//			}
+//			if (!stuRegForm.getStudent().isDateWAPD() && stuRegForm.getLoginSelectMain().equalsIgnoreCase("MD")) {			
+//				boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPD");
+//				if (flexDateCheck) {
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}
+//			}
+//			if (!stuRegForm.getStudent().isDateWAPM() && stuRegForm.getLoginSelectMain().equalsIgnoreCase("MD")) {			
+//				boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPM");
+//				if (flexDateCheck) {
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}
+//			}
+//			//Johanet add code for flexdat - end
+//			
+//			stuRegForm.setWebLoginMsg("");
+//			stuRegForm.setWebLoginMsg2("");
 			
 			//log.debug("ApplyForStudentNumberAction - stepLoginSelect - LoginSelectMain=" + stuRegForm.getLoginSelectMain());
 			//log.debug("ApplyForStudentNumberAction - stepLoginSelect - AcademicYear="+stuRegForm.getStudent().getAcademicYear()+", LoginSelectMain="+stuRegForm.getLoginSelectMain()+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
@@ -5782,6 +5853,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			}
 		}
 		
+		stuRegForm.getStudent().setCellNr(stuRegForm.getStudent().getCellNr().trim());
+		
 		stuRegForm.getStudent().setCellNr(stripXSS(stuRegForm.getStudent().getCellNr(), "CellNr", "RetContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		stuRegForm.getStudent().setCellNr2(stripXSS(stuRegForm.getStudent().getCellNr2(), "CellNr2", "RetContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 
@@ -5790,6 +5863,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				new ActionMessage("message.generalmessage", "Please enter a cellular phone number."));
 			addErrors(request, messages);
 			return mapping.findForward("applyRetContact");
+		}
+		
+		//Johanet BRD 2020 validate cellphone number
+		//20190724 Johanet BRS 2020 requirement 9.2 - do general cell phone validation
+		String errorMsg = verifyCellNr(stuRegForm.getStudent().getCellNr().trim());
+				
+		if (errorMsg!="") {
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+		  			new ActionMessage("message.generalmessage", errorMsg));
+					addErrors(request, messages);
+			return mapping.findForward("applyRetContact");	
 		}
 		
 		if (stuRegForm.getStudent().getCellNr().trim() != null && !"".equalsIgnoreCase(stuRegForm.getStudent().getCellNr().trim())){
@@ -11498,6 +11582,73 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		return result;
 	}
 
+	public void xxresetForm(StudentRegistrationForm stuRegForm, String callAction)	throws Exception {
+
+		//log.debug("ApplyForStudentNumberAction - resetForm - callAction="+callAction);
+		// Clear fields
+		
+		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+		
+		stuRegForm.resetFormFields();
+		
+		//Johanet 20190805 - code below has no effect comment out Student class reset above in resetFormFields - start comment out
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - Cancel - dateCheck="+dateCheck.get(i).toString());
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}	
+		//Johanet 20190805 - end comment out
+		
+		stuRegForm.setAllowLogin(true);
+		stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
+		stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
+		//log.debug("ApplyForStudentNumberaction - All StudentRegistrationForm Variables Cleared - Year="+stuRegForm.getStudent().getAcademicYear()+". Period="+stuRegForm.getStudent().getAcademicPeriod());
+		
+	}
+	
+	//20190806 Johanet new resetForm 
 	public void resetForm(StudentRegistrationForm stuRegForm, String callAction)	throws Exception {
 
 		//log.debug("ApplyForStudentNumberAction - resetForm - callAction="+callAction);
@@ -11507,6 +11658,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		stuRegForm.resetFormFields();
 		
+		stuRegForm.setAllowLogin(true);
+		stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
+		stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());		
+	
 		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
 		if (!dateCheck.isEmpty()){ //Check Dates Array
 			for (int i=0; i < dateCheck.size(); i++){
@@ -11553,11 +11708,42 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.getStudent().setDateWAPOFFICE(true);
 				}
 			}
+		}	
+		//Johanet add code for flexdat - start
+		//Determine if any flexdat dates are open before displaying menu
+		if (!stuRegForm.getStudent().isDateWAPU()) {			
+			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPU");
+			if (flexDateCheck) {
+				stuRegForm.getStudent().setDateWAPU(true);
+				stuRegForm.getStudent().setDateWAPRU(true);
+				}
+			}
+		if (!stuRegForm.getStudent().isDateWAPH()) {			
+			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPH");
+			if (flexDateCheck) {
+				stuRegForm.getStudent().setDateWAPH(true);
+				stuRegForm.getStudent().setDateWAPRH(true);
+			}
 		}
-		stuRegForm.setAllowLogin(true);
-		stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
-		stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
-		//log.debug("ApplyForStudentNumberaction - All StudentRegistrationForm Variables Cleared - Year="+stuRegForm.getStudent().getAcademicYear()+". Period="+stuRegForm.getStudent().getAcademicPeriod());
+		if (!stuRegForm.getStudent().isDateWAPS()) {			
+			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPS");
+			if (flexDateCheck) {
+				stuRegForm.getStudent().setDateWAPS(true);
+			}
+		}
+		if (!stuRegForm.getStudent().isDateWAPD()) {			
+			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPD");
+			if (flexDateCheck) {
+				stuRegForm.getStudent().setDateWAPD(true);
+			}
+		}
+		if (!stuRegForm.getStudent().isDateWAPM()) {			
+			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPM");
+			if (flexDateCheck) {
+				stuRegForm.getStudent().setDateWAPM(true);
+			}
+		}
+		//Johanet add code for flexdat - end
 		
 	}
 	
@@ -11704,76 +11890,120 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			HttpServletResponse response) throws Exception {
 
 		//log.debug("ApplyForStudentNumberAction - cancel");
-
-		StudentRegistrationForm stuRegFormOld = (StudentRegistrationForm) form;
-		boolean checkAdmin=false;
-		if (stuRegFormOld.getAdminStaff().isAdmin()){
-			checkAdmin = true;
-		}
-		resetForm(stuRegFormOld, "ApplyForStudentNumberAction Cancel(Action)");
 		
 		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		
-		// Clear fields - Just in case
-		resetForm(stuRegForm, "ApplyForStudentNumberAction Cancel(Action)");
-		stuRegForm.setWebUploadMsg("");
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
-
-		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-		if (!dateCheck.isEmpty()){ //Check Dates Array
-			for (int i=0; i < dateCheck.size(); i++){
-				//log.debug("ApplyForStudentNumberAction - Cancel - dateCheck="+dateCheck.get(i).toString());
-				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPD(true);
-				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPDOC(true);
-				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPPAY(true);
-				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPH(true);
-				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPM(true);
-				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRH(true);
-				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRU(true);
-				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPU(true);
-				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPS(true);
-				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMU(true);
-				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMH(true);
-				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMS(true);
-				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMM(true);
-				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMD(true);
-				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMNEW(true);
-				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMRET(true);
-				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPSTAT(true);
-				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPAPL(true);
-				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFER(true);
-				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFICE(true);
-				}
-			}
+		boolean checkAdmin=false;
+		if (stuRegForm.getAdminStaff().isAdmin()){
+			checkAdmin = true;
 		}
-		
-		//log.debug("ApplyForStudentNumberAction - Cancel - validateClosingDate - AcademicYear="+ stuRegForm.getStudent().getAcademicYear() + ",  AcademicPeriod=" + stuRegForm.getStudent().getAcademicPeriod());
+		resetForm(stuRegForm, "ApplyForStudentNumberAction Cancel(Action)");
 
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
-		
+//		StudentRegistrationForm stuRegFormOld = (StudentRegistrationForm) form;
+//		boolean checkAdmin=false;
+//		if (stuRegFormOld.getAdminStaff().isAdmin()){
+//			checkAdmin = true;
+//		}
+//		resetForm(stuRegFormOld, "ApplyForStudentNumberAction Cancel(Action)");
+//		
+//		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
+//		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//		
+//		// Clear fields - Just in case
+//		resetForm(stuRegForm, "ApplyForStudentNumberAction Cancel(Action)");
+//		stuRegForm.setWebUploadMsg("");
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");		
+//	
+//		//Academic year and period set in resetform. 
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - Cancel - dateCheck="+dateCheck.get(i).toString());
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}
+//		
+//		//Johanet add code for flexdat - start
+//				//Determine if any flexdat dates are open before displaying menu
+//		if (!stuRegForm.getStudent().isDateWAPU()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPU");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPU(true);
+//				stuRegForm.getStudent().setDateWAPRU(true);
+//				}
+//			}
+//		if (!stuRegForm.getStudent().isDateWAPH()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPH");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPH(true);
+//				stuRegForm.getStudent().setDateWAPRH(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPS()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPS");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPS(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPD()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPD");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPD(true);
+//			}
+//		}
+//		if (!stuRegForm.getStudent().isDateWAPM()) {			
+//			boolean flexDateCheck = dao.flexDateQualsOpen(stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"WAPM");
+//			if (flexDateCheck) {
+//				stuRegForm.getStudent().setDateWAPM(true);
+//			}
+//		}
+//		//Johanet add code for flexdat - end
+//		
+//		//log.debug("ApplyForStudentNumberAction - Cancel - validateClosingDate - AcademicYear="+ stuRegForm.getStudent().getAcademicYear() + ",  AcademicPeriod=" + stuRegForm.getStudent().getAcademicPeriod());
+//
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");
+//		
 		//log.debug("ApplyForStudentNumberAction -Cancel - validateClosingDate: AcademicYear="+ stuRegForm.getStudent().getAcademicYear() + ",  AcademicPeriod=" + stuRegForm.getStudent().getAcademicPeriod());
 
 		//log.debug("ApplyForStudentNumberAction - Cancel - CheckAdmin="+checkAdmin);
@@ -11799,62 +12029,62 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			checkAdmin = true;
 		}
 		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		
+//		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//		
 		// Clear fields - Just in case
 		resetForm(stuRegForm, "ApplyForStudentNumberAction Quit(Action)");
 		
-		stuRegForm.setWebUploadMsg("");
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
-	
-		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-		if (!dateCheck.isEmpty()){ //Check Dates Array
-			for (int i=0; i < dateCheck.size(); i++){
-				//log.debug("ApplyForStudentNumberAction - Quit - dateCheck=["+dateCheck.get(i).toString()+"]");
-				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPD(true);
-				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPDOC(true);
-				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPPAY(true);
-				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPH(true);
-				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPM(true);
-				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRH(true);
-				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRU(true);
-				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPU(true);
-				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPS(true);
-				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMU(true);
-				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMH(true);
-				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMS(true);
-				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMM(true);
-				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMD(true);
-				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMNEW(true);
-				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMRET(true);
-				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPSTAT(true);
-				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPAPL(true);
-				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFER(true);
-				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFICE(true);
-				}
-			}
-		}
+//		stuRegForm.setWebUploadMsg("");
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");
+//	
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - Quit - dateCheck=["+dateCheck.get(i).toString()+"]");
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}
 		
 		//log.debug("ApplyForStudentNumberAction - Quit - validateClosingDate: AcademicYear="+ stuRegForm.getStudent().getAcademicYear() + ",  AcademicPeriod=" + stuRegForm.getStudent().getAcademicPeriod());
 		
@@ -11906,64 +12136,64 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 
 		// Clear fields
 		resetForm(stuRegForm, "ApplyForStudentNumberAction Cancel(String)");
-		stuRegForm.setApplyType("");
-
-		stuRegForm.setWebUploadMsg("");
-		stuRegForm.setWebLoginMsg("");
-		stuRegForm.setWebLoginMsg2("");
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
-		stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
-
-		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
-		if (!dateCheck.isEmpty()){ //Check Dates Array
-			for (int i=0; i < dateCheck.size(); i++){
-				//log.debug("ApplyForStudentNumberAction - Cancel - dateCheck="+dateCheck.get(i).toString());
-				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPD(true);
-				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPDOC(true);
-				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPPAY(true);
-				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPH(true);
-				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPM(true);
-				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRH(true);
-				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPRU(true);
-				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPU(true);
-				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPS(true);
-				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMU(true);
-				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMH(true);
-				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMS(true);
-				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMM(true);
-				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMD(true);
-				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMNEW(true);
-				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPADMRET(true);
-				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPSTAT(true);
-				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPAPL(true);
-				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFER(true);
-				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
-					stuRegForm.getStudent().setDateWAPOFFICE(true);
-				}
-			}
-		}
-		
+//		stuRegForm.setApplyType("");
+//
+//		stuRegForm.setWebUploadMsg("");
+//		stuRegForm.setWebLoginMsg("");
+//		stuRegForm.setWebLoginMsg2("");
+//		
+//		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+//		stuRegForm.getStudent().setAcademicYear(getCurrentAcademicYear());
+//		stuRegForm.getStudent().setAcademicPeriod(getCurrentAcademicPeriod());
+//
+//		ArrayList<String> dateCheck = dao.validateClosingDate(stuRegForm.getStudent().getAcademicYear());
+//		if (!dateCheck.isEmpty()){ //Check Dates Array
+//			for (int i=0; i < dateCheck.size(); i++){
+//				//log.debug("ApplyForStudentNumberAction - Cancel - dateCheck="+dateCheck.get(i).toString());
+//				if ("WAPD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPD(true);
+//				}else if ("WAPDOC".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPDOC(true);
+//				}else if ("WAPPAY".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPPAY(true);
+//				}else if ("WAPH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPH(true);
+//				}else if ("WAPM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPM(true);
+//				}else if ("WAPRH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRH(true);
+//				}else if ("WAPRU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPRU(true);
+//				}else if ("WAPU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPU(true);
+//				}else if ("WAPS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPS(true);
+//				}else if ("WAPADMU".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMU(true);
+//				}else if ("WAPADMH".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMH(true);
+//				}else if ("WAPADMS".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMS(true);
+//				}else if ("WAPADMM".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMM(true);
+//				}else if ("WAPADMD".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMD(true);
+//				}else if ("WAPADMNEW".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMNEW(true);
+//				}else if ("WAPADMRET".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPADMRET(true);
+//				}else if ("WAPSTAT".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPSTAT(true);
+//				}else if ("WAPAPL".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPAPL(true);
+//				}else if ("WAPOFFER".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFER(true);
+//				}else if ("WAPOFFICE".equalsIgnoreCase(dateCheck.get(i).toString())){
+//					stuRegForm.getStudent().setDateWAPOFFICE(true);
+//				}
+//			}
+//		}
+//		
 		//log.debug("ApplyForStudentNumberAction - Cancel - validateClosingDate: AcademicYear="+ stuRegForm.getStudent().getAcademicYear() + ",  AcademicPeriod=" + stuRegForm.getStudent().getAcademicPeriod());
 
 		//log.debug("ApplyForStudentNumberAction - Cancel(String) - CheckAdmin="+checkAdmin);
