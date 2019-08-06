@@ -1918,6 +1918,35 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 			
 			return sDates;
 		}
+		
+	public boolean flexDateQualsOpen(String acadYear, String period, String category) throws Exception {
+		
+		String query="select * from flexdat,quaspc where "
+				+ " FLEXDAT.MK_QUALIFICATION_C=QUASPC.MK_QUALIFICATION_C"
+				+ " and FLEXDAT.SPECIALITY_CODE=QUASPC.SPECIALITY_CODE"
+				+ " and FLEXDAT.Year = ?"
+				+ " and FLEXDAT.period = ?"
+				+ " and FLEXDAT.type='APP'"
+				+ " and QUASPC.APP_OPEN= ?"
+				+ " and QUASPC.IN_USE_FLAG='Y'"
+				+ " and QUASPC.FROM_YEAR <= ?"
+				+ " and (QUASPC.TO_YEAR <= ? or QUASPC.TO_YEAR=0)"
+				+ " and (trunc(sysdate) > flexdat.from_date and trunc(sysdate) < flexdat.to_date)";
+		
+		try {
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{acadYear,period,category,acadYear,acadYear});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {				
+				return true;
+			}else{				
+				return false;
+			}
+		}  catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error reading flexdat category " + category + "  / " + ex);
+			}
+	}
 	
 	public String validateQualification(String studentNr, String sQual) throws Exception {
 
