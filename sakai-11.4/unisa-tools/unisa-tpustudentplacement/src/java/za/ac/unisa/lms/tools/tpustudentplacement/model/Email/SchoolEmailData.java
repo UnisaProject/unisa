@@ -109,6 +109,5 @@ public class SchoolEmailData {
 				                     "<p>Yours Faithfully<br><br>UNISA Teaching Practice Office<br><br>Teaching Practice Manager</p>"+
 				                     "</body></html>";
 				return message;
-		
 	}
 }
