@@ -106,7 +106,7 @@ public class SchoolEmailData {
 				                     "" + user.getName() + "<br>" +
 				                     "Tel. no.:&nbsp;" + user.getContactNumber() + "<br> " +
 				                     "Email:&nbsp;" + user.getEmailAddress() + " </p>"+
-				                     "<p>Yours Faithfully<br><br>UNISA Teaching Practice Office<br><br>Teaching Practice Manager</p>"+
+				                     "<p>Yours Faithfully<br><br>UNISA Teaching Practice Office  <br><br>Teaching Practice Manager</p>"+
 				                     "</body></html>";
 				return message;
 	}
