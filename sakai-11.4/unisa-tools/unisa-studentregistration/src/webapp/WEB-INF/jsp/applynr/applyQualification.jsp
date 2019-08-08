@@ -450,7 +450,21 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    	msg += newLine;
 		    	msg += "NB: If you do not comply with any of the admission requirements for the qualification you selected, you will not be admitted to the PGCE.";
 		        alert(msg);
-		    }    
+		    }
+		    //Johanet 20190808 - add additional test for grade 12
+		    var aspGRD = $("#selectHEMain").val();
+			if (aspGRD === "G12"){
+				if(jQuery.trim(category1) == "03" || jQuery.trim(category1) == "05" || jQuery.trim(category1) == "06" || jQuery.trim(category1) == "09" || jQuery.trim(category1) == "10"){
+		  			showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
+		  			checkError = 1;
+			    	return false;
+				}
+		    	if(jQuery.trim(category2) == "03" || jQuery.trim(category2) == "05" || jQuery.trim(category2) == "06" || jQuery.trim(category2) == "09" || jQuery.trim(category2) == "10"){
+		  			showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
+		  			checkError = 1;
+			    	return false;
+				}
+			}
 		    doSubmit('Continue');
 		}
 		
