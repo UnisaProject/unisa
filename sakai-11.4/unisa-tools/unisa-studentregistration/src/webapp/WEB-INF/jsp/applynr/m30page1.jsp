@@ -19,11 +19,117 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+	<!-- Sakai Themes -->
 	<link href="<c:url value='/resources/css/tool_base.css' />" rel="stylesheet"  type="text/css" />	
 	<link href="<c:url value='/resources/css/tool.css' />" rel="stylesheet"  type="text/css" />	
-	<script type="text/javascript" src="<c:url value='/resources/js/jquery-1.12.4.min.js' />"></script>  
+	<link href="<c:url value='/resources/css/portal.css' />" rel="stylesheet"  type="text/css" />
+
+	<!-- Bootstrap core CSS -->
+	<link href="<c:url value="/resources/css/bootstrap.css" />" rel="stylesheet"  type="text/css" />	
+	<!-- Bootstrap theme -->
+    <link href="<c:url value="/resources/css/bootstrap-theme.css" />" rel="stylesheet"  type="text/css" />
+	<!-- jQuery modal styles -->
+    <link href="<c:url value='/resources/css/jquery-ui.css' />" rel="stylesheet"  type="text/css" />
+	
+	<script type="text/javascript" src="<c:url value='/resources/js/jquery-1.12.4.min.js' />"></script>
+	<script type="text/javascript" src="<c:url value='/resources/js/bootstrap.min.js' />"></script> 
 	<script type="text/javascript" src="<c:url value='/resources/js/jquery.blockUI.js' />"></script> 
 	<script type="text/javascript" src="<c:url value='/resources/js/jquery-ui.js' />"></script> 
+	
+	<style type="text/css">
+	   <!-- CSS code from Bootply.com editor -->
+    	.equal, .equal > div[class*='col-'] {  
+		    display: -webkit-flex;
+		    display: flex;
+		    flex:1 1 auto;
+		}
+		.panel {
+	        /*height : 300px;*/
+	        margin-bottom:1px;
+	        position: relative;
+	        /*font-size: 12px !important;*/
+			font-weight: normal !important;
+	    }
+	    .panel .panel-footer {
+	        position : relative;
+	        /*bottom : 0;*/
+	        margin-bottom:1px;
+	        width : 100%;
+	    }
+	    <!-- Bootply end -->
+	    
+		.light {
+			opacity : 0.5;
+		    filter: alpha(opacity=50);   /* For IE8 and earlier */
+		}
+		input[type='radio'] {
+			float: left;
+		}
+		label:hover {
+		    cursor:pointer;
+		}
+		label.inline {
+			font-weight: normal;
+		    display: table-cell;
+		}
+		table { 
+		    border-spacing: 2px;
+		    <!-- border-collapse: separate; -->
+		    /*font-size: 12px !important;
+			font-weight: bold !important;*/
+		}
+		table.itemSummary td, td.itemSummaryLite {
+			padding: .1em;
+			/*font-size: 12px !important;*/
+			font-weight: normal !important;
+		}
+		td { 
+		    padding: 2px;
+		}
+		.nav-tabs { 
+			border-bottom: none;
+		}
+		.nav-tabs > li {
+		    position:relative;
+		    color : white;
+		    background-color:#ededed;
+		    padding : 2px 2px;
+		    border-radius: 5px 5px 0px 0px ;
+		    border:0;
+		    display: inline-block;
+		}
+		.nav-tabs > li .close {
+		    margin: -3px 0 0 10px;
+		    font-size: 18px;
+		    padding: 5px 0;
+		    float: right;
+		}
+		.nav-tabs > li > a	{
+		    /* adjust padding for height*/
+		    padding-top: 4px; 
+		    padding-bottom: 4px;
+		}
+		.nav-tabs > li a[data-toggle=tab] {
+		    float: left!important;
+		}
+		li span{
+			display:block;
+			white-space: nowrap;
+		}
+		.stretch {
+		    width: 100%;
+		
+		    padding: 0 5px;
+		    /*border: 0;    */
+		    /*margin: 0 -5px;  compensate horizontal padding and border-width with negative horizontal marfin */
+		
+		    /* small styling 
+		    border-radius: 5px; 
+		    box-shadow: 0 0 5px #555 inset;*/
+		}
+	</style>
 	
 	<script type="text/javascript">  
 	
