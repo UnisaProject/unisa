@@ -61,7 +61,6 @@ public class SupervisorDAO extends StudentSystemDAO {
             	    	            	  return "The record   has been updated successfully";
             	    	              }
             	 	}
-            	    
             	    private void insertAllocationAllowed(int supervisorCode,int studentsAllowed,int year,int semester)throws Exception {
             	    	            String sql="Insert into tpusuptot(mk_academic_year,mk_supervisor_code,semester_period,tot_stud_alloc)values("+
             	    	                       year+","+supervisorCode+","+semester+","+studentsAllowed+")";
@@ -321,19 +320,18 @@ public class SupervisorDAO extends StudentSystemDAO {
 			
 			return postalCodes;
 		}
-		private String getSupervisorDistrict(SupervisorListRecord supervisor,
-                               String province,JdbcTemplate jdt) throws Exception{
-                               String district = "";
-                               List queryListDistrict = new ArrayList();
+		private String getSupervisorDistrict(SupervisorListRecord supervisor, String province) throws Exception{
+                                             String district = "";
+                                             List queryListDistrict = new ArrayList();
                 if (province!=null){
                         int provCode = Integer.parseInt(province.toString());
                         String sqlDistrict = "select eng_description" +
                                              " from tpusar, ldd" +
                                              " where tpusar.mk_superv_code=" + supervisor.getCode() +
-                                             " and tpusar.mk_district_code = ldd.code" +
-                                             " and tpusar.mk_prv_code=" + provCode;
+                                             " and tpusar.mk_district_code = ldd.code" ;
+                                          //   " and tpusar.mk_prv_code=" + provCode;
                         try{ 
-                              queryListDistrict = jdt.queryForList(sqlDistrict);
+                              queryListDistrict = dbutil.queryForList(sqlDistrict,"Database error  when whenjoining the tables,tpusar,ldd");
                               Iterator j = queryListDistrict.iterator();
                               while (j.hasNext()) {
                                      ListOrderedMap dataDistrict = (ListOrderedMap) j.next();
@@ -344,32 +342,63 @@ public class SupervisorDAO extends StudentSystemDAO {
                                      }					
                               }
                        }catch (Exception ex) {
-                                 throw new Exception("StudentPlacementDAO : : Error reading Postal ADR / " + ex);
+                                 throw new Exception("Supervisor : : Error reading Postal ADR / " + ex);
                        }
                    }
                    return  district;
           }
-		  
-		  private void initialiseContactData(Supervisor supervisor){
-		                supervisor.setPostalAddress1("");
-                        supervisor.setPostalAddress2("");
-                        supervisor.setPostalAddress3("");
-                        supervisor.setPostalAddress4("");
-                        supervisor.setPostalAddress5("");
-                        supervisor.setPostalAddress6("");
-                        supervisor.setPhysicalAddress1("");
-                        supervisor.setPhysicalAddress2("");
-                        supervisor.setPhysicalAddress3("");
-                        supervisor.setPhysicalAddress4("");
-                        supervisor.setPhysicalAddress5("");
-                        supervisor.setPhysicalAddress6("");
-                        supervisor.setPhysicalPostalCode("");
-                        supervisor.setEmailAddress("");
-                        supervisor.setCellNr("");
-                        supervisor.setLandLineNr("");
+		private int  getSupervisorProv(int superviorCode) throws Exception{
+			                                int provCode=getSupervisorSubProv(superviorCode);
+			                                if( provCode==0){
+			                            	   	              String  sql="select  tpusar.mk_prv_code a provCode   from tpusar a, ldd" +
+			                                                                " where tpusar.mk_superv_code=" +superviorCode +
+			                                                                " and tpusar.mk_district_code = ldd.code" +
+			                                                                "  and tpusar.mk_prv_code= ldd.fk_prvcode" ;     
+			                                                   provCode=getProvCode( superviorCode,sql) ;
+			                                 }
+			                                return  provCode;
+	   }
+		private int  getSupervisorSubProv(int superviorCode) throws Exception{
+                                                   String  sql="select  c.code as provCode   from tpusar a, ldd b,tpusubprv c" +
+                                                                      " where tpusar.mk_superv_code=" +superviorCode +
+                                                                      " and a.mk_district_code = b.code" +
+                                                                     "  and  b.fk_tpusubprv_code=c.code" ;
+         	                                                           return getProvCode(superviorCode, sql) ;
+       }
+		private int  getProvCode(int superviorCode,String sql) throws Exception{
+                                             List queryListDistrict = dbutil.queryForList(sql,"Database error  when whenjoining the tables,tpusar,ldd");
+                                             Iterator j = queryListDistrict.iterator();
+                                             int provCode=0;
+                                             while (j.hasNext()) {
+                                                          ListOrderedMap dataDistrict = (ListOrderedMap) j.next();
+                                                         String provCodeStr=dbutil.replaceNull(dataDistrict.get("provCode"));
+                                                         if(provCodeStr.equals("")){
+                                                 	                provCodeStr="0";
+                                                         }
+                                                         provCode= Integer.parseInt( provCodeStr);
+                                                         break;
+                                            }		
+                                            return provCode;
+     }
+	  private void initialiseContactData(Supervisor supervisor){
+		                                    supervisor.setPostalAddress1("");
+                                            supervisor.setPostalAddress2("");
+                                            supervisor.setPostalAddress3("");
+                                            supervisor.setPostalAddress4("");
+                                            supervisor.setPostalAddress5("");
+                                            supervisor.setPostalAddress6("");
+                                            supervisor.setPhysicalAddress1("");
+                                            supervisor.setPhysicalAddress2("");
+                                            supervisor.setPhysicalAddress3("");
+                                            supervisor.setPhysicalAddress4("");
+                                            supervisor.setPhysicalAddress5("");
+                                            supervisor.setPhysicalAddress6("");
+                                            supervisor.setPhysicalPostalCode("");
+                                            supervisor.setEmailAddress("");
+                                            supervisor.setCellNr("");
+                                            supervisor.setLandLineNr("");
           }
-          
-		  public Supervisor getSupervisor(Integer code) throws Exception {
+     	  public Supervisor getSupervisor(Integer code) throws Exception {
 
                       Supervisor supervisor = new Supervisor();
                       String sql = "select code,mk_title,initials,surname,occupation,contract,to_char(contract_start,'YYYY/MM/DD') as startDate , mk_country_code," +
@@ -527,11 +556,14 @@ List listArea = new ArrayList<SupervisorAreaRecord>();
 List queryList = new ArrayList();
 
 //Get district supervisor is linked to
-String sql = "TT6U";
+String sqlDistrict = "select a.mk_prv_code as supProv, (select eng_description from prv where prv.code = a.mk_prv_code) as supProvDesc,a.mk_district_code as supDistrictCode,(select eng_description from ldd where ldd.code=a.mk_district_code) as supDistrictDesc" +
+		  " from tpusar a" +
+		  " where mk_superv_code=" + supervisorCode +
+	      " order by supProvDesc, supDistrictDesc";
 
 try{ 
 JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-queryList = jdt.queryForList(sql);
+queryList = jdt.queryForList(sqlDistrict );
 Iterator j = queryList.iterator();
 while (j.hasNext()) {
 	ListOrderedMap dataDistrict = (ListOrderedMap) j.next();						
@@ -666,23 +698,45 @@ public List getSupervisorList(String country,Short province,Short district,Strin
 }
 public List getNationalSupervisorList(String country,Short province,Short district,String filter,String contractStatus,int timeLimit) throws Exception {
 
-	                        String sql = "select distinct a.code as supCode," + 
-	                        " a.surname || ' ' || a.initials || ' ' || a.mk_title as supName," +
-	                        " (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber, " +
-	                        " to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart," +
-	                        " to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd," +
-	                        " b.mk_prv_code as supProvCode," +
-	                        " Decode(b.mk_prv_code,null,' ',(select prv.eng_description from prv where prv.code=b.mk_prv_code)) as supProv, " +
-	                        " a.contract as contract,c.eng_description as supCountry" +
-	                        " from tpusup a,tpusar b, lns c" +
-	                        " where a.code = b.mk_superv_code" + 
-	                        " and a.mk_country_code = c.code";
+	                        String sql="";
+	                        if((province==null)||(Province.isProvince(province))||(province.compareTo(Short.parseShort("0"))==0)){
+	                        	sql=  "select distinct a.code as supCode," + 
+	                        	                                                                 " a.surname || ' ' || a.initials || ' ' || a.mk_title as supName," +
+	                                                                                            " (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber, " +
+	                                                                                            "  to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart," +
+	                                                                                             "  to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd," +
+	                                                                                            "  b.mk_prv_code as supProvCode," +
+	                                                                                             "  Decode(b.mk_prv_code,null,' ',(select prv.eng_description from prv where prv.code=b.mk_prv_code)) as prov, " +
+	                                                                                             "  a.contract as contract,c.eng_description as supCountry" +
+	                                                                                             "   from tpusup a,tpusar b, lns c" +
+	                                                                                             "  where a.code = b.mk_superv_code" + 
+	                                                                                            "  and a.mk_country_code = c.code";
+	                        }else{
+	                        	
+	                        	sql= "select distinct a.code as supCode," + 
+                                         "  a.surname || ' ' || a.initials || ' ' || a.mk_title as supName," +
+                                        "  (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber, " +
+                                        "  to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart," +
+                                         "  to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd," +
+                                        "   b.mk_prv_code as supProvCode," +
+                                         "   d.description as prov, " +
+                                         "   a.contract as contract,e.eng_description as supCountry" +
+                                         "   from tpusup a,tpusar b,ldd c,tpusubprv d, lns e" +
+                                         "  where a.code = b.mk_superv_code" + 
+                                         "  b.mk_ditrict_code=c.code"+
+                                         " c.fk_tpusubprv_code=d.code"+
+                                        "  and a.mk_country_code = e.code";
+	                        }
 				
 	                        if (country!=null && !country.trim().equalsIgnoreCase("")){
 		                                  sql = sql + " and a.mk_country_code = '" + country + "'";
 	                        }
 	                        if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
-		                                sql = sql  + " and b.mk_prv_code = " + province; 
+	                        	              if(Province.isProvince(province)){
+		                                                          sql = sql  + " and b.mk_prv_code = " + province; 
+	                        	              }else{
+	                        		                             sql = sql  + " and d.code = " + province; 
+	                        	             }
 	                        }
 		                    if (district!=null && district!=0){
 		                                    sql = sql + " and b.mk_district_code = " + district;
@@ -694,10 +748,9 @@ public List getNationalSupervisorList(String country,Short province,Short distri
 	                         sql = sql + " order by a.surname || ' ' || a.initials || ' ' || a.mk_title";
 	                         List listSupervisor  = new ArrayList<SupervisorListRecord>();
                              listSupervisor=getSupervisoList(sql,country,contractStatus,timeLimit);
-
-                 return listSupervisor;
+                        return listSupervisor;
      }
-     private List getSupervisoList(String sql,String country,String contractStatus,int timeLimit) throws Exception{
+    private List getSupervisoList(String sql,String country,String contractStatus,int timeLimit) throws Exception{
 	                databaseUtils dbutil=new databaseUtils();
                     List listSupervisor  = new ArrayList<SupervisorListRecord>();
                     List queryList = new ArrayList();
@@ -726,9 +779,9 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                     return listSupervisor;
 
      }
-     public List getSupervProvList(int supervisorCode){
-    	          String sql= "select  b.mk_prv_code as supProvCode" +
-                              " from tpusup a,tpusar b, lns c" +
+   /* public List getSupervProvList(int supervisorCode){
+    	                                String sql= "select  b.mk_prv_code as supProvCode" +
+                                                         " from tpusup a,tpusar b, lns c" +
                               " where a.code = b.mk_superv_code" + 
                               " and a.mk_country_code = c.code"+
                               " and b.mk_superv_code="+supervisorCode;
@@ -743,7 +796,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                    }
                    return provList;
     	 
-     }
+     }*/
      private void addSupervToList(List listSupervisor,SupervisorListRecord supervisor,String contractStatus,int timeLimit){
     	                if(contractStatus.equals("All")){
     	            	    listSupervisor.add(supervisor);
@@ -980,10 +1033,7 @@ public void insertSupervisor(Supervisor supervisor) throws Exception {
 		    }
 	     }		
      }
-    
-
-
-public void addSupervisorArea(Supervisor supervisor , SupervisorAreaRecord area)throws Exception {
+ public void addSupervisorArea(Supervisor supervisor , SupervisorAreaRecord area)throws Exception {
 
 String sql = "insert into tpusar (mk_prv_code,mk_district_code,mk_superv_code) " +
 	"values " +

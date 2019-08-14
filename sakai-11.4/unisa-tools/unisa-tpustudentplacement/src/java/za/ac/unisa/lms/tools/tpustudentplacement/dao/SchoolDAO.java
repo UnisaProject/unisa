@@ -17,6 +17,7 @@ import za.ac.unisa.lms.db.StudentSystemDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SchoolListRecord;
 
 public class SchoolDAO extends StudentSystemDAO {
@@ -33,68 +34,97 @@ public class SchoolDAO extends StudentSystemDAO {
                              districtDAO=new DistrictDAO();
                              countryDAO=new CountryDAO();
                         } 
+                      
+             private String getSqlForSelectingnSchools(String strForColumnsToBeSelected,String strForColumnsToBeSelectedSubProv,String type,String category,String country,Short province,Short district,
+                                              String filter){
+                      		                   String  sqlForProv, sqlForSubProv ,lastPartOfSql;
+                                           if((province==null)||(Province.isProvince(province))||(province.compareTo(Short.parseShort("0"))==0)){
+                                                                      sqlForProv = "select " + strForColumnsToBeSelected+
+        		                                                     "  from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
+                                                                     "  where  a.mk_country_code = c.code" +
+                                                                    " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code";
+                                      	   }else{
+                          		                   sqlForSubProv= "select  "+strForColumnsToBeSelectedSubProv+
+                                                                       "  from tpusch a, tpusubPrv b, lns c, gencod d, gencod e, ldd f" +
+                                                                      "  where  a.mk_country_code = c.code" +
+                                                                        "  and a.mk_district_code = f.code   and f.fk_subPrv_code= b.code ";
+                                        	}
+                                               	lastPartOfSql+= "  and a.type_gc148 = d.code  and d.fk_gencatcode=148  and a.category_gc149 = e.code" +
+                                                                          "  and e.fk_gencatcode=149 ";
+                                               if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
+	                                                                  lastPartOfSql= lastPartOfSql + " and d.code = '" + type + "'";
+                                              }
+                                              if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
+	                                                                  lastPartOfSql =lastPartOfSql+ " and e.code = '" + category + "'";
+                                              }
+                                              if (country!=null && !country.trim().equalsIgnoreCase("")){
+  	                                                                     lastPartOfSql=lastPartOfSql + " and c.code = '" + country + "'";
+                                              }
+                                             if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
+  	                                                          lastPartOfSql= lastPartOfSql + " and b.code = " + province; 
+                                               }
+                                               if (district!=null && district!=0){
+                                                      	 lastPartOfSql = lastPartOfSql+ " and f.code=" + district;
+                                              }
+                                              if (filter!=null && !filter.trim().equalsIgnoreCase("")){
+                                                                  filter = filter.replaceAll("'", "''");
+                                                                  lastPartOfSql = lastPartOfSql + " and a.name like '" + filter.trim().toUpperCase() + "'";
+                                              }
+                                              lastPartOfSql= lastPartOfSql+ " order by a.name";
+                                               sqlForProv+= lastPartOfSql;
+                                               sqlForSubProv += lastPartOfSql;
+                                               String sql="select  "+sqlForProv+"   union  "+  sqlForSubProv;
+                                         return sql;
+                      	}
                         public List getSchoolList(String type,String category,String country,Short province,Short district,
-			                                      String filter) throws Exception {
-		    	                                   String sql = "select a.code as schCode, a.name as schName, a.in_use_flag as schInUse, " +
-		                                                        " d.eng_description as schType, e.eng_description as schCategory," +
-		                                                        " b.code as schProvCode, b.eng_description as schProv, c.eng_description as schCountry, " +
-		                                                        " f.code as schDistrictCode, f.eng_description as schDistrict" +
-		                                                        " from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
-		                                                        " where  a.mk_country_code = c.code" +
-		    	                                                " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code"+
-		    	                                                " and a.type_gc148 = d.code" +
-		                                                        " and d.fk_gencatcode=148" +
-		                                                        " and a.category_gc149 = e.code" +
-		                            " and e.fk_gencatcode=149";
-		
-		                       if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
-			                         sql = sql + " and d.code = '" + type + "'";
-		                       }
-		                	   if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
-			                          sql = sql + " and e.code = '" + category + "'";
-		                       }
-		          		       if (country!=null && !country.trim().equalsIgnoreCase("")){
-			                          sql = sql + " and c.code = '" + country + "'";
-		                      }
-		          		      if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
-			                               sql = sql  + " and b.code = " + province; 
-		                             }
-			                         if (district!=null && district!=0){
-		    	                          sql = sql + " and f.code=" + district;
-		                       }
-		                       if (filter!=null && !filter.trim().equalsIgnoreCase("")){
-			                        filter = filter.replaceAll("'", "''");
-			                        sql = sql + " and a.name like '" + filter.trim().toUpperCase() + "'";
-		                       }
-		                       sql = sql + " order by a.name";
-		                       List listSchool=getSchoolListFromDatabase(sql,country);
-		                    return listSchool;		
+			                                                        String filter) throws Exception {
+                        	                                                                            String strForColumnsToBeSelected="  a.code as schCode, a.name as schName, a.in_use_flag as schInUse, " +
+                                                                                                                         "  d.eng_description as schType, e.eng_description as schCategory," +
+                                                                                                                         "  b.code as schProvCode, b.eng_description as schProv, c.eng_description as schCountry, " +
+                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict" ;
+                                                                                                       String strForColumnsToBeSelectedSubProv =" a.code as schCode, a.name as schName, a.in_use_flag as schInUse,  " +
+                                                                                                                         "  d.eng_description as schType, e.eng_description as schCategory," +
+                                                                                                                         "  b.code as schProvCode, b.description as schProv, c.eng_description as schCountry, " +
+                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict " ;
+                                                                                                     String sql= getSqlForSelectingnSchools(strForColumnsToBeSelected,strForColumnsToBeSelectedSubProv,type,category, country,province, district,filter);
+			                                                                                          List listSchool=getSchoolListFromDatabase(sql,country);
+		                                                                                         return listSchool;		
 	                    }
                         public List getSchoolList(String country,Short province,Short district) throws Exception {
-                                 String sql = " select a.code as schCode a.name as schoolName, f.eng_description as dist, b.eng_description as prov"+
-                                              " from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
-                                              " where  a.mk_country_code = c.code" +
-                                              " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code"+
-                                              " and a.type_gc148 = d.code" +
-                                              " and d.fk_gencatcode=148" +
-                                              " and a.category_gc149 = e.code" +
-                                              " and e.fk_gencatcode=149";
-                                             if (country!=null && !country.trim().equalsIgnoreCase("")){
-                                                  sql = sql + " and c.code = '" + country + "'";
-                                             }
-                                             if(country.equals(dbutil.saCode)){
-		                                           if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
-                                                            sql = sql  + " and b.code = " + province; 
-                                                   }
-                                                   if (district!=null && district!=0){
-                                                       sql = sql + " and f.code=" + district;
-                                                   }
-                                             }
-                                             List listSchool=getSchoolListFromDatabase(sql);
-                                             return listSchool;		
+                                                                     String strForColumnsToBeSelected=" a.code as schCode a.name as schoolName, f.eng_description as dist, b.eng_description as prov";
+                                                                     String strForColumnsToBeSelectedSubProv =" a.code as schCode a.name as schoolName, f.eng_description as dist, b.description as prov";
+                                                                     String sql= getSqlForSelectingnSchools(strForColumnsToBeSelected,strForColumnsToBeSelectedSubProv,null,null, country,province, district,null);
+                                                        return getSchoolListFromDatabase(sql);		
                         }
+                        public List getSchoolList(String type,String category,String country,String filter) throws Exception {
+          		    	  String sql ="select a.code as schCode, a.name as schName, a.in_use_flag as schInUse,"+ 
+                                        "  d.eng_description as schType, e.eng_description as schCategory,"+
+                                        "  c.eng_description as schCountry,a.mk_prv_code as schProvCode,"+ 
+                                        "  a.town as town"+
+                                        "  from tpusch a,lns c, gencod d, gencod e"+
+                                        "  where  a.mk_country_code = c.code"+
+                                        "  and a.mk_country_code ='"+country+"'"+
+          	                          "  and a.type_gc148 = d.code"+
+                                        "  and d.fk_gencatcode=148"+
+                                        "  and a.category_gc149 = e.code"+
+                                        "  and e.fk_gencatcode=149";
+          		                       if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
+          			                         sql = sql + " and d.code = '" + type + "'";
+          		                       }
+          		                	   if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
+          			                          sql = sql + " and e.code = '" + category + "'";
+          		                       }
+          		                	   if (filter!=null && !filter.trim().equalsIgnoreCase("")){
+          			                        filter = filter.replaceAll("'", "''");
+          			                        sql = sql + " and a.name like '" + filter.trim().toUpperCase() + "'";
+          		                       }
+          		          		       sql = sql + " order by a.name";
+          		                     List listSchool=getSchoolListFromDatabase(sql,country);
+          		                    return listSchool;		
+          	}
                         public List getSchoolCodeList(String country,Short province,Short district) throws Exception {
-                            String sql = " select a.code as schCode "+
+                                String sqlForProv= "";
+                                sqlForProv=" select a.code as schCode "+
                                          " from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
                                          " where  a.mk_country_code = c.code" +
                                          " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code"+
@@ -103,39 +133,64 @@ public class SchoolDAO extends StudentSystemDAO {
                                          " and a.category_gc149 = e.code" +
                                          " and e.fk_gencatcode=149";
                                         if (country!=null && !country.trim().equalsIgnoreCase("")){
-                                             sql = sql + " and c.code = '" + country + "'";
+                                        	sqlForProv= sqlForProv + " and c.code = '" + country + "'";
                                         }
                                         if(country.equals(dbutil.saCode)){
 	                                           if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
-                                                       sql = sql  + " and b.code = " + province; 
+	                                        	   sqlForProv= sqlForProv + " and b.code = " + province; 
                                               }
                                               if (district!=null && district!=0){
-                                                  sql = sql + " and f.code=" + district;
+                                            	  sqlForProv= sqlForProv+ " and f.code=" + district;
                                               }
                                         }
-                                        List listSchool=getSchoolCodeListFromDatabase(sql);
+                                        String sqlForSubProv= "";
+                                        sqlForSubProv="select a.code as schCode "+
+                                                " from tpusch a, tpusubprv b, lns c, gencod d, gencod e, ldd f" +
+                                                " where  a.mk_country_code = c.code" +
+                                                "  and a.mk_district_code = f.code   and f.fk_subPrv_code= b.code "+
+                                                " and a.type_gc148 = d.code" +
+                                                " and d.fk_gencatcode=148" +
+                                                " and a.category_gc149 = e.code" +
+                                                " and e.fk_gencatcode=149";
+                                               if (country!=null && !country.trim().equalsIgnoreCase("")){
+                                            	             sqlForSubProv = sqlForSubProv+ " and c.code = '" + country + "'";
+                                               }
+                                               if(country.equals(dbutil.saCode)){
+       	                                                    if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
+       	                                        	                      sqlForSubProv= sqlForSubProv+ " and b.code = " + province; 
+                                                            }
+                                                            if (district!=null && district!=0){
+                                                    	               sqlForSubProv= sqlForSubProv + " and f.code=" + district;
+                                                            }
+                                               }
+                                               String sql="";
+                                             	if((province==null)||(Province.isProvince(province))||(province.compareTo(Short.parseShort("0"))==0)){
+                                           		              sql=sqlForProv;
+                                             	}else{
+                                             		          sql=sqlForSubProv;     
+                                             	}
+                                                List listSchool=getSchoolCodeListFromDatabase(sql);
                                         return listSchool;		
                    }
-                   
-                        private List getSchoolListFromDatabase(String sql){
-             		                       databaseUtils dbutil=new databaseUtils();
-             		                       List listSchool  = new ArrayList<SchoolListRecord>();
-             		                       List queryList = new ArrayList();
-             		                       JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-             		                       queryList = jdt.queryForList(sql);
-             		                       for (int i=0; i<queryList.size();i++){
-             			                          ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-             			                          SchoolListRecord  schoolListRecord=new  SchoolListRecord();
-             			                          schoolListRecord.setCode(Integer.parseInt(dbutil.replaceNull(data.get("schCode").toString())));
-             			                          schoolListRecord.setDistrict(dbutil.replaceNull(data.get("dist").toString()));
-             			                          schoolListRecord.setProvince(dbutil.replaceNull(data.get("prov").toString()));
-             			                          schoolListRecord.setName(dbutil.replaceNull(data.get("schoolName").toString()));
-             			                          listSchool.add(schoolListRecord);	
+                   private List getSchoolListFromDatabase(String sql){
+             		                          databaseUtils dbutil=new databaseUtils();
+             		                          List listSchool  = new ArrayList<SchoolListRecord>();
+             		                          List queryList = new ArrayList();
+             		                          JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+             		                         queryList = jdt.queryForList(sql);
+             		                         for (int i=0; i<queryList.size();i++){
+             			                                  ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+             			                                  SchoolListRecord  schoolListRecord=new  SchoolListRecord();
+             			                                  schoolListRecord.setCode(Integer.parseInt(dbutil.replaceNull(data.get("schCode").toString())));
+             			                                  schoolListRecord.setDistrict(dbutil.replaceNull(data.get("dist").toString()));
+             			                                  schoolListRecord.setProvince(dbutil.replaceNull(data.get("prov").toString()));
+             			                                  schoolListRecord.setName(dbutil.replaceNull(data.get("schoolName").toString()));
+             			                                  listSchool.add(schoolListRecord);	
              			                   }
              		                       return listSchool; 
              	        }
                         private List getSchoolCodeListFromDatabase(String sql){
-		                       databaseUtils dbutil=new databaseUtils();
+		                                              databaseUtils dbutil=new databaseUtils();
 		                       List listSchool  = new ArrayList<SchoolListRecord>();
 		                       List queryList = new ArrayList();
 		                       JdbcTemplate jdt = new JdbcTemplate(getDataSource());
@@ -175,32 +230,7 @@ public class SchoolDAO extends StudentSystemDAO {
         	    			}
         	    			return countryName;
                       }
-   public List getSchoolList(String type,String category,String country,String filter) throws Exception {
-		    	  String sql ="select a.code as schCode, a.name as schName, a.in_use_flag as schInUse,"+ 
-                              " d.eng_description as schType, e.eng_description as schCategory,"+
-                              " c.eng_description as schCountry,a.mk_prv_code as schProvCode,"+ 
-                              " a.town as town"+
-                              " from tpusch a,lns c, gencod d, gencod e"+
-                              " where  a.mk_country_code = c.code"+
-                              " and a.mk_country_code ='"+country+"'"+
-	                          " and a.type_gc148 = d.code"+
-                              " and d.fk_gencatcode=148"+
-                              " and a.category_gc149 = e.code"+
-                              " and e.fk_gencatcode=149";
-		                       if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
-			                         sql = sql + " and d.code = '" + type + "'";
-		                       }
-		                	   if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
-			                          sql = sql + " and e.code = '" + category + "'";
-		                       }
-		                	   if (filter!=null && !filter.trim().equalsIgnoreCase("")){
-			                        filter = filter.replaceAll("'", "''");
-			                        sql = sql + " and a.name like '" + filter.trim().toUpperCase() + "'";
-		                       }
-		          		       sql = sql + " order by a.name";
-		                     List listSchool=getSchoolListFromDatabase(sql,country);
-		                    return listSchool;		
-	}
+   
 	public String getSchoolCountry(int schoolCode)  throws Exception{
                        return countryDAO.getSchoolCountry(schoolCode);
 	}
@@ -236,7 +266,7 @@ public class SchoolDAO extends StudentSystemDAO {
     	     		School school = new School();
 		
 		String sql ="";
-		    if(countryCode.equals("1015")){
+		    if(countryCode.equals(dbutil.saCode)){
 		       sql= "select code,name,type_gc148,category_gc149,agreement_flag," +
 			        " mk_country_code,mk_prv_code,mk_district_code,contact_name,suburb,town,in_use_flag" +
 			        " from tpusch";
@@ -715,7 +745,4 @@ public class SchoolDAO extends StudentSystemDAO {
          }
   return contactNum;
 }
-
-	
-
 }

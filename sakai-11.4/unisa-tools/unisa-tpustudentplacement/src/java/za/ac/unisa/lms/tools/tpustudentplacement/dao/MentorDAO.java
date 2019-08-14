@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.MentorFilteringData;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.MentorModel;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.FileExtractorClass;
@@ -66,8 +67,8 @@ for (int i=0; i<queryList.size();i++){
     mentorModelInList.setPhoneNumber(dbutil.replaceNull(data.get("work_number")));
     mentorModelInList.setFaxNumber(dbutil.replaceNull(data.get("fax_number")));
     if(mentorModelInList.getSchoolCode()!=0){
-         mentorModelInList.setDistrictName(dbutil.replaceNull(data.get("districtName")));
-         mentorModelInList.setProvinceName(dbutil.replaceNull(data.get("provinceName")));
+                    mentorModelInList.setDistrictName(dbutil.replaceNull(data.get("districtName")));
+                    mentorModelInList.setProvinceName(dbutil.replaceNull(data.get("provinceName")));
     }
     mentorList.add(mentorModelInList);
 }
@@ -95,16 +96,24 @@ return mentorList;
 		   String filter=filteringData.getMentorFilter();
 		   String  isTrained=filteringData.getMentorIsTrained();
            String  sql="select a.code as code,a.mk_school_code as mk_school_code,f.name as schoolName,trained,mk_title,initials,surname,a.mk_country_code as mk_country_code,"+
-		               " occupation, a.in_use_flag as in_use_flag,email_address,cell_number,work_number,fax_number " ;
+		                     " occupation, a.in_use_flag as in_use_flag,email_address,cell_number,work_number,fax_number " ;
           
            		 if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
-        	                  sql+=(" ,d.eng_description as provinceName ");
-      	              	   sql+=(", e.eng_description as districtName ");
+           		                    if(Province.isProvince(prov) ||(prov==0)){
+           			            	                sql+=(" ,d.eng_description as provinceName ");
+           			                }else{
+        	                                     sql+=(" ,d.description as provinceName ");
+           			                }
+      	              	            sql+=(", e.eng_description as districtName ");
         	    }
            		sql+=(" from tpumen a,adrph b,tpusch f ");
-           if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
-        	                  sql+=(" ,prv d");
-      	                	   sql+=(",ldd e");
+              if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
+        	                            if(Province.isProvince(prov) ||(prov==0)){
+        	        	                              sql+=(" ,prv d");
+	                                   }else{
+	                                	         sql+=(" ,tpusubPrv d");
+	                                  }
+      	                	          sql+=(",ldd e");
            }
            sql+=("  where a.in_use_flag='Y' and a.mk_school_code<>0 and a.code=b.reference_no and a.MK_SCHOOL_CODE=f.code and f.mk_country_code=a.MK_COUNTRY_CODE and fk_adrcatcode=232"); 
            if((filter!=null)&&(!filter.trim().equals(""))){
@@ -119,16 +128,19 @@ return mentorList;
            	      sql+=(" and  a.MK_SCHOOL_CODE="+schoolCode);
            }
            if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
-        	  	sql+=(" and f.mk_prv_code=d.code ");
-               	sql+=(" and f.mk_district_code= e.code ");
-            }
+        	                     if(Province.isProvince(prov) ||(prov==0)){
+        	                 	               sql+=(" and f.mk_prv_code=d.code ");
+        	                     }else{
+        	                    	           sql+=(" and  d.code= e.fk_tpusubPrv_code ");
+        	                     }
+                              	sql+=(" and f.mk_district_code= e.code ");
+          }
            if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
-       	    
-               if(prov!=0){
-               	sql+=(" and d.code ="+prov);
+       	      if(prov!=0){
+                   	sql+=(" and d.code ="+prov);
                }
                if(district!=0){
-               	sql+=("  and  e.code="+district);
+               	    sql+=("  and  e.code="+district);
                }
            }
            if(!countrycode.trim().equals("0")){
@@ -156,36 +168,34 @@ return mentorList;
 	    }
 
      public void  getMentor(int mentorcode)throws Exception{
-    	                  String query="select * from tpumen a,adrph b,tpusch f where a.code=b.reference_no  and  a.MK_SCHOOL_CODE=f.code and a.code="+mentorcode+
-    	            		     "and fk_adrcatcode=232"; 
-    	                  String errorMsg="MentorDAO:Error reading tpumen";
-                          List queryList=dbutil.queryForList(query,errorMsg);
-                       for (int i=0; i<queryList.size();i++){
-                          ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-                          setMentorCode(Integer.parseInt(dbutil.replaceNull(data.get("code"))));
-                          setSchoolCode(Integer.parseInt(dbutil.replaceNull(data.get("mk_school_code"))));
-                          setSchoolName(dbutil.replaceNull(data.get("name")));
-                          setTrained(dbutil.replaceNull(data.get("trained")));
-                          setTitle(dbutil.replaceNull(data.get("mk_title")));
-                          setInitials(dbutil.replaceNull(data.get("initials")));
-                          setSurname(dbutil.replaceNull(data.get("surname")));
-                          setName(getTitle()+" "+getInitials()+" "+getSurname());
-                          setCountryCode(dbutil.replaceNull(data.get("mk_country_code")));
-                          setOccupation(dbutil.replaceNull(data.get("occupation")));
-                          setInUseFlag(dbutil.replaceNull(data.get("in_use_flag")));
-                          setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
-                          setCellNumber(dbutil.replaceNull(data.get("cell_number")));
-                          setPhoneNumber(dbutil.replaceNull(data.get("work_number")));
-                          setFaxNumber(dbutil.replaceNull(data.get("fax_number")));
-	    			 }
+    	                                 String query="select * from tpumen a,adrph b,tpusch f where a.code=b.reference_no  and  a.MK_SCHOOL_CODE=f.code and a.code="+mentorcode+
+    	            		                                 "and fk_adrcatcode=232"; 
+    	                                 String errorMsg="MentorDAO:Error reading tpumen";
+                                         List queryList=dbutil.queryForList(query,errorMsg);
+                                         for (int i=0; i<queryList.size();i++){
+                                                            ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+                                                            setMentorCode(Integer.parseInt(dbutil.replaceNull(data.get("code"))));
+                                                            setSchoolCode(Integer.parseInt(dbutil.replaceNull(data.get("mk_school_code"))));
+                                                            setSchoolName(dbutil.replaceNull(data.get("name")));
+                                                            setTrained(dbutil.replaceNull(data.get("trained")));
+                                                            setTitle(dbutil.replaceNull(data.get("mk_title")));
+                                                            setInitials(dbutil.replaceNull(data.get("initials")));
+                                                            setSurname(dbutil.replaceNull(data.get("surname")));
+                                                            setName(getTitle()+" "+getInitials()+" "+getSurname());
+                                                            setCountryCode(dbutil.replaceNull(data.get("mk_country_code")));
+                                                            setOccupation(dbutil.replaceNull(data.get("occupation")));
+                                                            setInUseFlag(dbutil.replaceNull(data.get("in_use_flag")));
+                                                            setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
+                                                            setCellNumber(dbutil.replaceNull(data.get("cell_number")));
+                                                            setPhoneNumber(dbutil.replaceNull(data.get("work_number")));
+                                                            setFaxNumber(dbutil.replaceNull(data.get("fax_number")));
+	    			                  }
     }
     public void saveMentor()throws Exception{
-    	           String query="insert into tpumen(CODE,MK_SCHOOL_CODE,TRAINED,SURNAME,MK_TITLE,INITIALS,MK_COUNTRY_CODE,OCCUPATION,IN_USE_FLAG)values("
-    	        		   +"?,?,?,?,?,?,?,?,?)";
-    	           Connection connection = null;
-    	          
-
-	                 try{
+    	                    String query="insert into tpumen(CODE,MK_SCHOOL_CODE,TRAINED,SURNAME,MK_TITLE,INITIALS,MK_COUNTRY_CODE,OCCUPATION,IN_USE_FLAG)values("
+    	        		                        +"?,?,?,?,?,?,?,?,?)";
+    	                    Connection connection = null;
+    	               try{
 	                	 String sql = "select max(code) + 1 from tpumen";
 	         	       	JdbcTemplate jdt = dbutil.getdbcTemplate();
 	         	       	int mentorCode = jdt.queryForInt(sql) ;

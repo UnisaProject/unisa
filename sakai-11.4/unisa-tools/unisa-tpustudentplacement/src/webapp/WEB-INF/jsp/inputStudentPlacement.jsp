@@ -34,6 +34,9 @@
 			<html:link href="mentorMaintenance.do?action=initial">
 				      <fmt:message key="link.mentor"/>
 		     </html:link>
+		     <html:link href="subProvinceMaintenance.do?action=initial">
+				      <fmt:message key="link.mentor"/>
+		     </html:link>
 		</sakai:tool_bar>
 		<sakai:messages/>
 		<sakai:messages message="true"/>			

@@ -20,13 +20,15 @@ public class DistrictImpl {
        public DistrictImpl(){
         	    dao = new DistrictDAO();
        }   
-       public void updateDistrict(District district) throws Exception {
+       /*public void updateDistrict(District district) throws Exception {
                       	dao.updateDistrict(district);
-       }
+       }*/
        public District getDistrict(Short code, String description) throws Exception {
    		             return 	dao.getDistrict(code, description);		
        }
-
+       public void linkToSubProv(Short districtCode, Short subProvCode) throws Exception {
+	                        	dao.linkToSubProv(districtCode, subProvCode);
+      }
        public List getDistrictList(String inUseFlag, Short provCode, String filter) throws Exception {
                        return dao.getDistrictList(inUseFlag, provCode, filter);	
        }

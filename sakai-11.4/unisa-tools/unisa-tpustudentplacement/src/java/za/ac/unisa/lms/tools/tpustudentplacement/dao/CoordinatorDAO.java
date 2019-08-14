@@ -12,35 +12,39 @@ public class CoordinatorDAO {
                         
 	                    databaseUtils dbutil;
                         public CoordinatorDAO(){
-                                    dbutil=new databaseUtils();
+                                          dbutil=new databaseUtils();
                         }
                         public   String isCoordinatorActive(String username) throws Exception{
                         	               return isCoordinator(username);
 	                    }
                         public String  isCoordinator(String username) throws Exception{
-	                            String sql="Select count(*) as tot from STAFF a,TPUWSC b, prv c"+
-	           		                       " where a.persno = b.mk_persno and a.novell_user_id='"+username+"' and b.mk_prv_code=c.code ";
-	                            String errorMsg="CoordinatorDAO:Error reading tpuwsc";
-	                            String totalLinks=dbutil.querySingleValue(sql,"tot",errorMsg);
-	                         if((totalLinks==null)||(totalLinks.equals(""))||totalLinks.equals("0")){
-                         	   return "N";
-                            }else{
-                         	   return "Y";
-                            }
-                        }
+	                                                              String sqlForPrv="Select count(*) as tot from STAFF a,TPUWSC b, prv c"+
+	           		                                                                         "  where a.persno = b.mk_persno and a.novell_user_id='"+username+"' and b.mk_prv_code=c.code ";
+	                                                              String sqlForSubPRV="   Select count(*) as tot from STAFF a,TPUWSC b, TpuSubPrv c"+
+                                                                                                    "  where a.persno = b.mk_persno and a.novell_user_id='"+username+"' and b.mk_prv_code=c.code ";
+                                                                    String errorMsg="CoordinatorDAO:Error reading tpuwsc";
+	                                                                String totalLinks=dbutil.querySingleValue(sqlForPrv,"tot",errorMsg);
+	                                                                if((totalLinks==null)||(totalLinks.equals(""))||totalLinks.equals("0")){
+	                        	                                                          totalLinks=dbutil.querySingleValue(sqlForSubPRV,"tot",errorMsg);
+	                        	                                                          if((totalLinks==null)||(totalLinks.equals(""))||totalLinks.equals("0")){
+                         	                                                                      return "N";
+	                        	                                                          }
+                                                                     }
+                         	                                         return "Y";
+                     }
 	                    public String getPersonnelNumber(String username)throws Exception{
-	                    	            String query="select   persno from  staff where NOVELL_USER_ID is not null and "+
-	                                                 " (resign_date is null or resign_date>sysdate) and novell_user_id='"+username+"'";
-	                    	            String errorMsg="CoordinatorDAO:Error reading staff";
-            	                        List queryList=dbutil.queryForList(query,errorMsg);
-            	                        String personnelNum="";
-            	                        for (int i=0; i<queryList.size();i++){
-       			                                Coordinator   coordinator = new Coordinator();	
-                                                ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-                                                coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("persno")));
-                                               break;
-                                        }
-                                        return personnelNum;
+	                    	                            String query="select   persno from  staff where NOVELL_USER_ID is not null and "+
+	                                                                          " (resign_date is null or resign_date>sysdate) and novell_user_id='"+username+"'";
+	                    	                             String errorMsg="CoordinatorDAO:Error reading staff";
+            	                                         List queryList=dbutil.queryForList(query,errorMsg);
+            	                                         String personnelNum="";
+            	                                          for (int i=0; i<queryList.size();i++){
+       			                                                              Coordinator   coordinator = new Coordinator();	
+                                                                              ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+                                                                              coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("persno")));
+                                                                               break;
+                                                         }
+                                                        return personnelNum;
             	        }
 	                   public   String  getSadecInt(String personnelNumber)throws Exception{
 	                    	                String query="Select  mk_sadec_int _ind  from tpuwsc where mk_persno="+personnelNumber;
@@ -55,16 +59,15 @@ public class CoordinatorDAO {
                                            return sadecIn;
 	                    }
 	                    public   boolean isCoordinatorLinked(String personnelNum,String workstation)throws Exception{
-   	                                 String query="Select  count(*)   as tot from  tpuwsc where mk_persno="+personnelNum+" and mk_prv_code='"+workstation+"'";
-   	                                 String errorMsg="CoordinatorDAO:Error reading tpuwsc";
-   	                               String totalLinks=dbutil.querySingleValue(query,"tot",errorMsg);
-   	                               if((totalLinks==null)||(totalLinks.equals(""))||totalLinks.equals("0")){
-   	                            	   return false;
-   	                               }else{
-   	                            	   return true;
-   	                               }
-   	             
-                        }
+   	                                                                      String query="Select  count(*)   as tot from  tpuwsc where mk_persno="+personnelNum+" and mk_prv_code='"+workstation+"'";
+   	                                                                      String errorMsg="CoordinatorDAO:Error reading tpuwsc";
+   	                                                                      String totalLinks=dbutil.querySingleValue(query,"tot",errorMsg);
+   	                                                                      if((totalLinks==null)||(totalLinks.equals(""))||totalLinks.equals("0")){
+   	                            	                                                       return false;
+   	                                                                      }else{
+   	                            	                                                       return true;
+   	                                                                      }
+   	                  }
 	                    public   boolean coordinatorsExit()throws Exception{
            	                              String query="Select  mk_persno from tpuwsc";
            	                              String errorMsg="CoordinatorDAO:Error reading tpuwsc";
@@ -76,80 +79,92 @@ public class CoordinatorDAO {
  	                    	             }
 	                    }
            	            public Coordinator getCoordinator(int persno) throws Exception{
-           	            	                   String sql=  "Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
-                 	           		                      " a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
-                 	           		                      " c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber  from STAFF a,TPUWSC b, prv c"+
-                 	           		                      " where  a.NOVELL_USER_ID is not null and  (a.resign_date is null or a.resign_date>sysdate) and "+
-                 	           		                      " a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code  order by workstationDescr,networkcode";
- 	                                           String errorMsg="CoordinatorDAO:Error reading STAFF ,TPUWSC , prv ";
-                                              List queryList = dbutil.queryForList(sql,errorMsg);
-                                              Coordinator   coordinator = new Coordinator();
-                                              if(!queryList.isEmpty()){
-                                	                    ListOrderedMap data = (ListOrderedMap) queryList.get(0);
-                                                        coordinator.setName(dbutil.replaceNull(data.get("coordName")));
-                                                        coordinator.setNetworkCode(dbutil.replaceNull(data.get("networkcode")));
-                                                        coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
-                                                        coordinator.setWorkStationDescr(dbutil.replaceNull(data.get("workstationDescr")));
-                                                        coordinator.setWorkStationCode(dbutil.replaceNull(data.get("workstationCode")));
-                                                        coordinator.setSadecInt(dbutil.replaceNull(data.get("sadecIndicator")));
-                                                        coordinator.setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
-                                                        coordinator.setContactNumber(dbutil.replaceNull(data.get("contactNumber")));
-                                             }
-                                             return coordinator;
+           	            	                                       String sql=  "Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
+                 	           		                                                  "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
+                 	           		                                                  "  c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber  "+
+                 	           		                                                  "  from STAFF a,TPUWSC b, prv c  where  a.NOVELL_USER_ID is not null and  (a.resign_date is null or a.resign_date>sysdate) and "+
+                 	           		                                                   " a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code  order by workstationDescr,networkcode  "+
+                 	           		                                                  "  union  Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
+             	           		                                                      "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
+             	           		                                                      "  c.description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber "+
+             	           		                                                      "  from STAFF a,TPUWSC b,  TpuSubPrv  c  where  a.NOVELL_USER_ID is not null and"+
+             	           		                                                       "  (a.resign_date is null or    a.resign_date>sysdate) and "+
+             	           		                                                      "  a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code  order by workstationDescr,networkcode";
+ 	                                                                 String errorMsg="CoordinatorDAO:Error reading STAFF ,TPUWSC , prv/TpuSubPrv  ";
+                                                                     List queryList = dbutil.queryForList(sql,errorMsg);
+                                                                     Coordinator   coordinator = new Coordinator();
+                                                                     if(!queryList.isEmpty()){
+                                	                                                    ListOrderedMap data = (ListOrderedMap) queryList.get(0);
+                                                                                        coordinator.setName(dbutil.replaceNull(data.get("coordName")));
+                                                                                        coordinator.setNetworkCode(dbutil.replaceNull(data.get("networkcode")));
+                                                                                        coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
+                                                                                        coordinator.setWorkStationDescr(dbutil.replaceNull(data.get("workstationDescr")));
+                                                                                        coordinator.setWorkStationCode(dbutil.replaceNull(data.get("workstationCode")));
+                                                                                        coordinator.setSadecInt(dbutil.replaceNull(data.get("sadecIndicator")));
+                                                                                        coordinator.setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
+                                                                                        coordinator.setContactNumber(dbutil.replaceNull(data.get("contactNumber")));
+                                                                    }
+                                                                    return coordinator;
                      }
            	         public Coordinator getProspectiveCoordinator(int persno) throws Exception{
-           	                                String sql="Select title || ' ' || initials  || ' ' ||  surname as coordName," +
-           	           		                           " novell_user_id  networkcode,persno as personnelNumber,email_Address,CONTACT_TELNO as contactNumber  from STAFF "+
-           	           		                           " where persno ="+persno;
-                          List coordinatorList  = new ArrayList<Coordinator>();
-                          String errorMsg="CoordinatorDAO:Error reading STAFF";
-                          List queryList = dbutil.queryForList(sql,errorMsg);
-                          Coordinator   coordinator = new Coordinator();
-                          if(!queryList.isEmpty()){
-                          	    ListOrderedMap data = (ListOrderedMap) queryList.get(0);
-                                coordinator.setName(dbutil.replaceNull(data.get("coordName")));
-                                coordinator.setNetworkCode(dbutil.replaceNull(data.get("networkcode")));
-                                coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
-                                coordinator.setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
-                                coordinator.setContactNumber(dbutil.replaceNull(data.get("contactNumber")));
-                                coordinator.setWorkStationCode("1");
-                                coordinator.setSadecInt("N");
-                         }
-                         return coordinator;
+           	                                                      String sql="Select title || ' ' || initials  || ' ' ||  surname as coordName," +
+           	           		                                                       " novell_user_id  networkcode,persno as personnelNumber,email_Address,CONTACT_TELNO as contactNumber  from STAFF "+
+           	           		                                                     " where persno ="+persno;
+                                                                     List coordinatorList  = new ArrayList<Coordinator>();
+                                                                     String errorMsg="CoordinatorDAO:Error reading STAFF";
+                                                                    List queryList = dbutil.queryForList(sql,errorMsg);
+                                                                    Coordinator   coordinator = new Coordinator();
+                                                                     if(!queryList.isEmpty()){
+                          	                                                       ListOrderedMap data = (ListOrderedMap) queryList.get(0);
+                                                                                   coordinator.setName(dbutil.replaceNull(data.get("coordName")));
+                                                                                   coordinator.setNetworkCode(dbutil.replaceNull(data.get("networkcode")));
+                                                                                   coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
+                                                                                   coordinator.setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
+                                                                                   coordinator.setContactNumber(dbutil.replaceNull(data.get("contactNumber")));
+                                                                                   coordinator.setWorkStationCode("1");
+                                                                                   coordinator.setSadecInt("N");
+                                                                   }
+                                                                   return coordinator;
                  }
            	     public Coordinator getCoordinatorForProv(int provinceCode) throws Exception{
-           	        	                   Coordinator  coordinator=null;
-           	        	                   String persno=getPersnoForProvWSC(provinceCode);
-           	        	                   if(persno!=null){
-           	        	                	     if(!persno.trim().equals("")){
-           	        	                	          int personnelNum=Integer.parseInt(persno);
-           	        	                              coordinator=getCoordinator(personnelNum);
-           	        	                	    }
-           	                               }
-                                           return coordinator;
+           	        	                                       Coordinator  coordinator=null;
+           	        	                                       String persno=getPersnoForProvWSC(provinceCode);
+           	        	                                       if(persno!=null){
+           	        	                	                              if(!persno.trim().equals("")){
+           	        	                	                                         int personnelNum=Integer.parseInt(persno);
+           	        	                                                              coordinator=getCoordinator(personnelNum);
+           	        	                	                              }
+           	                                                    }
+                                                                return coordinator;
                  }
            	  public Coordinator getCoordinatorForSadecInt() throws Exception{
-	                                  Coordinator  coordinator=null;
-	                                  String persno=getPersnoForSadecInt();
-	                                  if(persno!=null){
-	                	                    if(!persno.trim().equals("")){
-	                	                          int personnelNum=Integer.parseInt(persno);
-	                                               coordinator=getCoordinator(personnelNum);
-	                	                    }
-                                      }
-                                    return coordinator;
+	                                                       Coordinator  coordinator=null;
+	                                                       String persno=getPersnoForSadecInt();
+	                                                        if(persno!=null){
+	                	                                                   if(!persno.trim().equals("")){
+	                	                                                            int personnelNum=Integer.parseInt(persno);
+	                                                                                 coordinator=getCoordinator(personnelNum);
+	                	                                                  }
+                                                             }
+                                                            return coordinator;
              }
-           	
-           	     public List getCoordinatorList() throws Exception{
+              public List getCoordinatorList() throws Exception{
 	                    	           String sql="Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
 	                    	           		      " a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
 	                    	           		      " c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
 	                    	           		      " from STAFF a,TPUWSC b, prv c"+
 	                    	           		      " where   a.NOVELL_USER_ID is not null and "+
 	                                              " (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
+	                    	           		      "  and b.mk_prv_code=c.code order by workstationDescr,networkcode "+
+	                    	           		   " UNION ALL Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
+	                    	           		      " a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
+	                    	           		      " c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
+	                    	           		      " from STAFF a,TPUWSC b,TpuSubPrv  c"+
+	                    	           		      " where   a.NOVELL_USER_ID is not null and "+
+	                                              " (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
 	                    	           		      "  and b.mk_prv_code=c.code order by workstationDescr,networkcode";
 	    	                           List coordinatorList  = new ArrayList<Coordinator>();
-	    	                           String errorMsg="CoordinatorDAO:Error reading STAFF ,TPUWSC , prv ";
+	    	                           String errorMsg="CoordinatorDAO:Error reading STAFF ,TPUWSC , prv ,subPrv";
 	                                   List queryList = dbutil.queryForList(sql,errorMsg);
 	                                   for (int i=0; i<queryList.size();i++){
 	    			                         Coordinator   coordinator = new Coordinator();	
@@ -167,43 +182,43 @@ public class CoordinatorDAO {
 	                                  return coordinatorList;
 	                    }
 	                          public List getCoordinatorProvinceList(int personnelNumber)throws Exception{
-	                    	         String sql="Select mk_persno as personnelNumber,mk_prv_code as workstationCode from TPUWSC"+
-   	           		                            " where mk_persno ="+personnelNumber;
-                                     List coordinatorList  = new ArrayList<Coordinator>();
-                                     String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
-                                     List queryList = dbutil.queryForList(sql,errorMsg);
-                                     for (int i=0; i<queryList.size();i++){
-                                            Coordinator   coordinator = new Coordinator();	
-                                            ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-                                            coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
-                                            coordinator.setWorkStationCode(dbutil.replaceNull(data.get("workstationCode")));
-                                            coordinatorList.add(coordinator);			
-                                    }
-                                    return coordinatorList;
+	                    	                             String sql="Select mk_persno as personnelNumber,mk_prv_code as workstationCode from TPUWSC"+
+   	           		                                                     " where mk_persno ="+personnelNumber;
+                                                                        List coordinatorList  = new ArrayList<Coordinator>();
+                                                                        String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
+                                                                        List queryList = dbutil.queryForList(sql,errorMsg);
+                                                                        for (int i=0; i<queryList.size();i++){
+                                                                                              Coordinator   coordinator = new Coordinator();	
+                                                                                               ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+                                                                                               coordinator.setPersonnelNumber(dbutil.replaceNull(data.get("personnelNumber")));
+                                                                                               coordinator.setWorkStationCode(dbutil.replaceNull(data.get("workstationCode")));
+                                                                                               coordinatorList.add(coordinator);			
+                                                                        }
+                                                                        return coordinatorList;
 	                    }
 	                    public String  getPersnoForProvWSC(int provinceCode)throws Exception{
-               	                           String sql="Select mk_persno as personnelNumber from TPUWSC a,staff b  where  a.mk_persno=b.persno "+
-               	                        		      "  and  b.NOVELL_USER_ID is not null and  (b.resign_date is null or b.resign_date>sysdate) and a.mk_prv_code="+provinceCode;
-         		                           String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
-                                           List queryList = dbutil.queryForList(sql,errorMsg);
-                                           if(queryList.isEmpty()){
-                                        	   return "";
-                                           }else{
-                                               ListOrderedMap data = (ListOrderedMap) queryList.get(0);
-                                               return dbutil.replaceNull(data.get("personnelNumber"));
-                                           }
+               	                                             String sql="Select mk_persno as personnelNumber from TPUWSC a,staff b  where  a.mk_persno=b.persno "+
+               	                        		                          "  and  b.NOVELL_USER_ID is not null and  (b.resign_date is null or b.resign_date>sysdate) and a.mk_prv_code="+provinceCode;
+         		                                             String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
+                                                             List queryList = dbutil.queryForList(sql,errorMsg);
+                                                              if(queryList.isEmpty()){
+                                        	                                 return "";
+                                                              }else{
+                                                                            ListOrderedMap data = (ListOrderedMap) queryList.get(0);
+                                                                            return dbutil.replaceNull(data.get("personnelNumber"));
+                                                             }
                       }
 	                  public String  getPersnoForSadecInt()throws Exception{
-	                                          String sql="Select mk_persno as personnelNumber from TPUWSC a,staff b   where a.mk_persno=b.persno and a.sadec_int_ind='Y'"+
-	                        		                    " and b.NOVELL_USER_ID is not null and  (b.resign_date is null or b.resign_date>sysdate)";
-                                              String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
-                                              List queryList = dbutil.queryForList(sql,errorMsg);
-                                              if(queryList.isEmpty()){
-                         	                           return "";
-                                              }else{
-                                                       ListOrderedMap data = (ListOrderedMap) queryList.get(0);
-                                                       return dbutil.replaceNull(data.get("personnelNumber"));
-                                              }
+	                                                          String sql="Select mk_persno as personnelNumber from TPUWSC a,staff b   where a.mk_persno=b.persno and a.sadec_int_ind='Y'"+
+	                        		                                           " and b.NOVELL_USER_ID is not null and  (b.resign_date is null or b.resign_date>sysdate)";
+                                                             String errorMsg="CoordinatorDAO:Error reading TPUWSC  ";
+                                                             List queryList = dbutil.queryForList(sql,errorMsg);
+                                                             if(queryList.isEmpty()){
+                         	                                                return "";
+                                                              }else{
+                                                                             ListOrderedMap data = (ListOrderedMap) queryList.get(0);
+                                                                            return dbutil.replaceNull(data.get("personnelNumber"));
+                                                             }
                       }
 	                  public void deleteCoordinator(String personnelNumber,String provinceCode)throws Exception{
                                            Connection connection = null;
@@ -321,9 +336,9 @@ public class CoordinatorDAO {
 	                                      }
                        }
                        public void insertSadecIntCode(String sadecIntCode )throws Exception{//Insert SADEC and International in the tables of provinces
-              	                      String sql="Insert into prv(code,eng_description,in_use_flag)values("+
-              	                              sadecIntCode+",'SADEC and International','N')";
-              	                     String errorMsg="CoordinatorDAO:Error inserting into prv ";
-              	                      dbutil.update(sql,errorMsg);
+              	                                             String sql="Insert into prv(code,eng_description,in_use_flag)values("+
+              	                                                               sadecIntCode+",'SADEC and International','N')";
+              	                                              String errorMsg="CoordinatorDAO:Error inserting into prv ";
+              	                                             dbutil.update(sql,errorMsg);
                        }
 }

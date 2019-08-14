@@ -116,8 +116,7 @@ public class DistrictMaintenanceAction extends LookupDispatchAction{
 			studentPlacementForm.setDistrictFilterProvince(studentPlacementForm.getSchool().getDistrict().getProvince().getCode());
 			return display(mapping,form,request,response);	
 		}
-		
-		studentPlacementForm.setCurrentPage("inputDistrict");
+			studentPlacementForm.setCurrentPage("inputDistrict");
 		return mapping.findForward("inputDistrict");	
 	}
 	
@@ -198,15 +197,69 @@ public class DistrictMaintenanceAction extends LookupDispatchAction{
 		studentPlacementForm.setSchoolFilterDistrictDesc(district.getDescription());
 		studentPlacementForm.setSchoolFilterProvince(district.getProvince().getCode());
 		if (studentPlacementForm.getDistrictCalledFrom().equalsIgnoreCase("editSchool")){
-			studentPlacementForm.getSchool().setDistrict(district);
+			            studentPlacementForm.getSchool().setDistrict(district);
 		}		
 		if (studentPlacementForm.getDistrictCalledFrom().equalsIgnoreCase("addSupervisorArea")){
-			studentPlacementForm.getSupervisorArea().setDistrict(district);
-			studentPlacementForm.getSupervisorArea().setProvince(province);
+			           studentPlacementForm.getSupervisorArea().setDistrict(district);
+			           studentPlacementForm.getSupervisorArea().setProvince(province);
 		}		
 		return mapping.findForward(studentPlacementForm.getDistrictCalledFrom());
 	}		
-
+	public ActionForward linkDistrict(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;		
+		
+		ActionMessages messages = new ActionMessages();	
+		
+		if (studentPlacementForm.getIndexNrSelected()==null ||
+				studentPlacementForm.getIndexNrSelected().length==0){
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage",
+									"Please select a district"));
+			}
+		if (studentPlacementForm.getIndexNrSelected()!=null &&
+				studentPlacementForm.getIndexNrSelected().length>1){
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage",
+									"Please select only one district"));
+			}
+		if (!messages.isEmpty()) {
+			addErrors(request,messages);
+			studentPlacementForm.setCurrentPage("listDistrict");
+			return mapping.findForward("listDistrict");				
+		}
+		District district = new District();
+		Province province = new Province();
+		
+		for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
+			String array[] = studentPlacementForm.getIndexNrSelected();
+			district = (District)studentPlacementForm.getListDistrict().get(Integer.parseInt(array[i]));			
+			i=studentPlacementForm.getIndexNrSelected().length;
+		}
+		province = district.getProvince();
+		studentPlacementForm.setDistrictCode(district.getCode());
+		studentPlacementForm.setDistrictName(district.getDescription());
+		studentPlacementForm.setDistrictInUse(district.getInUse());
+		studentPlacementForm.setDistrictProvince(district.getProvince().getCode());		
+		studentPlacementForm.setSupervisorFilterDistrict(district.getCode());
+		studentPlacementForm.setSupervisorFilterDistrictDesc(district.getDescription());
+		studentPlacementForm.setSupervisorFilterProvince(district.getProvince().getCode());
+		studentPlacementForm.setSchoolFilterDistrict(district.getCode());
+		studentPlacementForm.setSchoolFilterDistrictDesc(district.getDescription());
+		studentPlacementForm.setSchoolFilterProvince(district.getProvince().getCode());
+		if (studentPlacementForm.getDistrictCalledFrom().equalsIgnoreCase("editSchool")){
+			            studentPlacementForm.getSchool().setDistrict(district);
+		}		
+		if (studentPlacementForm.getDistrictCalledFrom().equalsIgnoreCase("addSupervisorArea")){
+			           studentPlacementForm.getSupervisorArea().setDistrict(district);
+			           studentPlacementForm.getSupervisorArea().setProvince(province);
+		}		
+		return mapping.findForward(studentPlacementForm.getDistrictCalledFrom());
+	}		
 	
 	public ActionForward addDistrict(
 			ActionMapping mapping,
