@@ -771,7 +771,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
             	              String provinceCode=dbutil.replaceNull(data.get("supProvCode").toString());
             	              String province=dbutil.replaceNull(data.get("supProv").toString());
                               supervisor.setProvince(province);
-                              String district=getSupervisorDistrict(supervisor,provinceCode,jdt);
+                              String district=getSupervisorDistrict(supervisor,provinceCode);
                               supervisor.setDistrict(district);		
                          }
                          setAditionalFields(supervisor,supervisor.getCode());
@@ -780,7 +780,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                     return listSupervisor;
 
      }
-   /* public List getSupervProvList(int supervisorCode){
+    public List getSupervProvList(int supervisorCode){
     	                                String sql= "select  b.mk_prv_code as supProvCode" +
                                                          " from tpusup a,tpusar b, lns c" +
                               " where a.code = b.mk_superv_code" + 
@@ -797,7 +797,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                    }
                    return provList;
     	 
-     }*/
+     }
      private void addSupervToList(List listSupervisor,SupervisorListRecord supervisor,String contractStatus,int timeLimit){
     	                if(contractStatus.equals("All")){
     	            	    listSupervisor.add(supervisor);

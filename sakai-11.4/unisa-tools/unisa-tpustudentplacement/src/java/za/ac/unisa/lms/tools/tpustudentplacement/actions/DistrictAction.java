@@ -1,5 +1,4 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.actions;
-package za.ac.unisa.lms.tools.tpustudentplacement.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;

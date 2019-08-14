@@ -5,11 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.map.ListOrderedMap;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SubProvince;
-import za.ac.unisa.lms.tools.tpustudentplacement.forms.subProv;
 
 public class SubProvinceDAO {
 	                        public SubProvinceDAO(){

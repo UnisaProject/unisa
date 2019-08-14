@@ -383,7 +383,7 @@ public class DistrictMaintenanceAction extends LookupDispatchAction{
 			district.setInUse(studentPlacementForm.getDistrictInUse());
 			province.setCode(studentPlacementForm.getDistrictProvince());
 			district.setProvince(province);
-			dao.updateDistrict(district);			s
+			dao.updateDistrict(district);			
 		}
 		return display(mapping,form,request,response);	
 	}

@@ -174,7 +174,7 @@ public class DistrictDAO extends StudentSystemDAO {
                                                          sql = sql + " order by a.eng_description";
                                                          return sql;
   }
-	private List getResultSetOfDitricts(String inUseFlag, Short provCode, String filter){
+	private List getResultSetOfDitricts(String inUseFlag, Short provCode, String filter) throws Exception {
 		                                        String sql = "";
 		                                        String errorMsg="Database error, error accesing ldd,prv,TpuSubPrv  tables in DitrictDAO";
                                   	            if(Province.isProvince(provCode)||(provCode==0)){
@@ -183,7 +183,7 @@ public class DistrictDAO extends StudentSystemDAO {
                                                                   sql=districtListForSubProvSql;
                                                }
                                   	           sql+=lastpartOfdistrictListSql(inUseFlag,provCode,filter);
-                                               List queryList =  dbutil.queryForList(sql,errorMsg);
+                                               return  dbutil.queryForList(sql,errorMsg);
    	}
 	public List getDistrictList(String inUseFlag, Short provCode, String filter) throws Exception {
 		                          List listDistrict  = new ArrayList<District>();

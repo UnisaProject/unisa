@@ -38,7 +38,7 @@ public class SchoolDAO extends StudentSystemDAO {
                       
              private String getSqlForSelectingnSchools(String strForColumnsToBeSelected,String strForColumnsToBeSelectedSubProv,String type,String category,String country,Short province,Short district,
                                               String filter){
-                      		                   String  sqlForProv, sqlForSubProv ,lastPartOfSql;
+                      		                   String  sqlForProv="", sqlForSubProv="" ,lastPartOfSql="";
                                            if((province==null)||(Province.isProvince(province))||(province.compareTo(Short.parseShort("0"))==0)){
                                                                       sqlForProv = "select " + strForColumnsToBeSelected+
         		                                                     "  from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
