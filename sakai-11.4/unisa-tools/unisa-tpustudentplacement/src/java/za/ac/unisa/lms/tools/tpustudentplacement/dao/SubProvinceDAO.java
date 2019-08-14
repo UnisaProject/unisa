@@ -67,6 +67,7 @@ public class SubProvinceDAO {
                                                                   break;
                                                    }
                                                    return (SubProvince )subProvList.get(0);
+                                                   
         	}
 			public void  delete(int code)throws Exception{
 	                                                      String sql=" update  tpusubProv   set in_use_flag='N'  where    code="+code;

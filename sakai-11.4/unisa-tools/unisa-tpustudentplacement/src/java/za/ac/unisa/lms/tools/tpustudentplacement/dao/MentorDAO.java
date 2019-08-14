@@ -43,6 +43,7 @@ public class MentorDAO extends MentorModel{
        }
 	     
 	   private List  getMentors(String sql) throws Exception{
+		   
            String errorMsg="MentorDAO:Error reading tpumen";
            List queryList=dbutil.queryForList(sql,errorMsg);
            List<MentorModel> mentorList=new ArrayList<MentorModel>();

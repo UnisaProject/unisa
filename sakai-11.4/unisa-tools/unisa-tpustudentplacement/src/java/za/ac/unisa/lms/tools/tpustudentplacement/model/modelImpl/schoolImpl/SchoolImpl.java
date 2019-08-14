@@ -24,6 +24,7 @@ public class SchoolImpl {
 	  public SchoolImpl(){
 		       dao=new SchoolDAO(); 
 	  }
+	  
 	  public String getEmailAddress(int code) throws Exception{
 		return  dao.getEmailAddress(code);
   	 }

@@ -62,6 +62,6 @@
 					<fmt:message key="button.back"/>
 			</html:submit>			
 		</sakai:actions>		
-		</logic:notEmpty>
+				</logic:notEmpty>
 	</html:form>
 </sakai:html>

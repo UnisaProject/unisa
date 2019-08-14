@@ -43,6 +43,6 @@
 			<html:submit property="action">
 					<fmt:message key="button.prev"/>
 			</html:submit>			
-		</sakai:actions>						
+	 </sakai:actions>						
 	</html:form>
 </sakai:html>

@@ -8,7 +8,7 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources"/>
 
 <sakai:html>	
-	<html:form action="/district">
+	<html:form action="/subProvinceMaintenance">
 		        <sakai:messages/>
 		        <sakai:messages message="true"/>
 				<sakai:group_heading>

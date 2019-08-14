@@ -82,6 +82,7 @@ public class SupervisorDAO extends StudentSystemDAO {
 		                         if(!supervisor.getCountryCode().equals(PlacementUtilities.getSaCode())){
 			                              supervisor.setPostalCode("0");    
 		                         }
+		                         
 		                         Connection connection = null;
 			                     try{
 				                      JdbcTemplate jdt = new JdbcTemplate(getDataSource());

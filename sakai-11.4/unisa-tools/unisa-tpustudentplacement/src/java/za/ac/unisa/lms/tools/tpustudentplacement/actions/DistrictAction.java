@@ -151,6 +151,7 @@ public class DistrictAction extends LookupDispatchAction{
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
               StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+              
 ActionMessages messages = new ActionMessages();	
 if (studentPlacementForm.getIndexNrSelected()==null ||
 studentPlacementForm.getIndexNrSelected().length==0){

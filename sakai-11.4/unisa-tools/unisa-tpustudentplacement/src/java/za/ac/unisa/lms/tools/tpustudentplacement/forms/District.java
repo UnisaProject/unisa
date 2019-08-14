@@ -50,4 +50,5 @@ public class District {
 	public void setSubProvCode(Short subProvCode) {
 		this.subProvCode = subProvCode;
 	}
+	
 }

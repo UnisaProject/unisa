@@ -30,6 +30,7 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			                list.add(i, (Gencod)(dao.getGenCodes((short)54,1).get(i)));
 		            }
 		          return list;
+		          
 	}
 		public void insertStudentPlacement(Short acadYear, Short semester, Integer studentNr, StudentPlacement placement) throws Exception {
 			

@@ -46,6 +46,7 @@ public class databaseUtils extends StudentSystemDAO {
 			public JdbcTemplate getdbcTemplate(){
 				         jdt = new JdbcTemplate(getDataSource());
 	                     return jdt;
+	                     
 			}
 			
 			public void update(String sql,String errorMsg) throws Exception{

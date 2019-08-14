@@ -72,6 +72,7 @@ public class ProvinceDAO extends StudentSystemDAO {
         				listProvince.add(new LabelValueBean(label, value));		
        }
           return listProvince;	
+          
 }
 	public String getProvinceDescription(int code)throws Exception {
 		                                       String sql ="";

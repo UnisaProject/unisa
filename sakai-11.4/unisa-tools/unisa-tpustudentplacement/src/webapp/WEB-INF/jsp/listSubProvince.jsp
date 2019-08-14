@@ -63,7 +63,7 @@
 			<html:submit property="action">
 					<fmt:message key="button.delete"/>
 			</html:submit>	
-		</sakai:actions>		
+			</sakai:actions>		
 		</logic:notEmpty>
 	</html:form>
 </sakai:html>

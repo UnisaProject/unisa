@@ -46,6 +46,7 @@ public class DistrictMaintenanceAction extends LookupDispatchAction{
 		map.put("button.save", "saveDistrict");	
 		map.put("button.select", "selectDistrict");	
 		return map;
+		
 	}
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -382,7 +383,7 @@ public class DistrictMaintenanceAction extends LookupDispatchAction{
 			district.setInUse(studentPlacementForm.getDistrictInUse());
 			province.setCode(studentPlacementForm.getDistrictProvince());
 			district.setProvince(province);
-			dao.updateDistrict(district);			
+			dao.updateDistrict(district);			s
 		}
 		return display(mapping,form,request,response);	
 	}

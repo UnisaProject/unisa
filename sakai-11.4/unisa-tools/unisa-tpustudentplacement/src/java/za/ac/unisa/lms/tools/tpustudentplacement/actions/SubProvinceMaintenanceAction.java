@@ -207,6 +207,7 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
             		SubProvinceDAO dao = new SubProvinceDAO();
 		            dao.delete(studentPlacementForm.getSubProvince().getCode());
 		           return display(mapping,form,request,response);	
+		           
 	}
 
 }

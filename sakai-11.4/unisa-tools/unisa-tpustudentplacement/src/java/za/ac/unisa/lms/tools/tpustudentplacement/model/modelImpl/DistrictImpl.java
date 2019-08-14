@@ -20,9 +20,9 @@ public class DistrictImpl {
        public DistrictImpl(){
         	    dao = new DistrictDAO();
        }   
-       /*public void updateDistrict(District district) throws Exception {
+      public void updateDistrict(District district) throws Exception {
                       	dao.updateDistrict(district);
-       }*/
+       }
        public District getDistrict(Short code, String description) throws Exception {
    		             return 	dao.getDistrict(code, description);		
        }

@@ -75,6 +75,7 @@ public class DistrictDAO extends StudentSystemDAO {
 			                             }
                		   		             return district;		
 	                 }
+	                  
 	                  public List<District> getDistrictList(Short provinceCode) throws Exception {
                                                                     String sql = "select a.code as districtCode,a.eng_description  as districtDescr,a.fk_prvcode  a provCode,b.eng_description as provinceDescr, "+
                                                                        " (decode (a.fk_TpuSubPrv_code ,0,'  ',(select  description as subprovDescr from  TpuSubPrv where  TpuSubPrv.code=a.fk_TpuSubPrv_code) ) "+

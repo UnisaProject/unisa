@@ -45,7 +45,8 @@ public class ProvinceUI extends Province{
                                                              province.setIn_use("Y");
                                                              listFilter.addAll(list);
                                                              listFilter.add(0, province);
-                	                                         studentPlacementForm.setListFilterProvince(listFilter);		
+                	                                         studentPlacementForm.setListFilterProvince(listFilter);	
+                	                                         
             }
 	        private void  transformSubProvToProv( Province  province,SubProvince subProvince){
 	        	                                         province.setCode(new Short(""+subProvince.getCode()));
