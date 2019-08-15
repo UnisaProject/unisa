@@ -105,25 +105,25 @@ public class CoordinatorMaintenanceAction extends LookupDispatchAction{
 			return mapping.findForward("listCoordinator");
 		}
 			public ActionForward addCoordinator(
-				ActionMapping mapping,
-				ActionForm form,
-				HttpServletRequest request,
-				HttpServletResponse response) throws Exception {
-			       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;		
-			  	   Coordinator coordinator = new Coordinator();
-			  	   coordinator.setSadecInt("Y");
-			  	   coordinator.setWorkStationCode(""+sadecIntCode);
-			  	   coordinator.setWorkStationDescr("NONE");
-			  	   coordinator.setEmailAddress("");
-			  	   coordinator.setContactNumber("");
-			       studentPlacementForm.setCoordinator(coordinator);
-				   studentPlacementForm.setCurrentPage("inputCoordinator");
-				   ProvinceDAO dao=new ProvinceDAO();
-				   List provinceList=dao.getProvinceLabelValueList(""+sadecIntCode,"NONE");
-				   studentPlacementForm.setListProvince(provinceList);
-				   studentPlacementForm.setStaffInfoStatus("");
-				   studentPlacementForm.setSaveAction("Save");
-			       return mapping.findForward("inputCoordinator");
+				                                                  ActionMapping mapping,
+				                                                  ActionForm form,
+				                                                  HttpServletRequest request,
+				                                                  HttpServletResponse response) throws Exception {
+			                                                                   StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;		
+			  	                                                               Coordinator coordinator = new Coordinator();
+			  	                                                               coordinator.setSadecInt("Y");
+			  	                                                               coordinator.setWorkStationCode(""+sadecIntCode);
+			  	                                                               coordinator.setWorkStationDescr("NONE");
+			  	                                                               coordinator.setEmailAddress("");
+			  	                                                               coordinator.setContactNumber("");
+			                                                                    studentPlacementForm.setCoordinator(coordinator);
+				                                                                studentPlacementForm.setCurrentPage("inputCoordinator");
+				                                                                ProvinceDAO dao=new ProvinceDAO();
+				                                                                List provinceList=dao.getProvinceLabelValueList(""+sadecIntCode,"NONE");
+				                                                                studentPlacementForm.setListProvince(provinceList);
+				                                                                studentPlacementForm.setStaffInfoStatus("");
+				                                                                studentPlacementForm.setSaveAction("Save");
+			                                                  return mapping.findForward("inputCoordinator");
 		}
 		public ActionForward initial(
 				ActionMapping mapping,
@@ -199,15 +199,15 @@ public class CoordinatorMaintenanceAction extends LookupDispatchAction{
 			}
 		
 			public ActionForward save(
-					ActionMapping mapping,
-					ActionForm form,
-					HttpServletRequest request,
-					HttpServletResponse response) throws Exception {
-				         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-				         ActionMessages messages = new ActionMessages();	
-				         studentPlacementForm.setStaffInfoStatus("");
-				         Coordinator coordinator=studentPlacementForm.getCoordinator();
-				         CoordinatorValidation cval=new  CoordinatorValidation();
+					                                      ActionMapping mapping,
+					                                      ActionForm form,
+					                                      HttpServletRequest request,
+					                                      HttpServletResponse response) throws Exception {
+				                                                                             StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+				                                                                             ActionMessages messages = new ActionMessages();	
+				                                                                             studentPlacementForm.setStaffInfoStatus("");
+				                                                                             Coordinator coordinator=studentPlacementForm.getCoordinator();
+				                                                                             CoordinatorValidation cval=new  CoordinatorValidation();
 				         cval.validateInput(coordinator, messages);
 				 		 if (!messages.isEmpty()) {
 			 			           addErrors(request,messages);

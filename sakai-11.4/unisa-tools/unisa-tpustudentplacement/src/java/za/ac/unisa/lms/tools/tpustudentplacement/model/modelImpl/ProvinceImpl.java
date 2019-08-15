@@ -38,5 +38,11 @@ public class ProvinceImpl {
 	        public String getProvinceDescription(int code)throws Exception {
 	        	              ProvinceDAO  dao=new ProvinceDAO();
                               return dao.getProvinceDescription(code);
-            }
-}
+            } 
+	        public static boolean isProvince(int code){
+	        	                if((code>0)&&(code <10)){
+	        	                     	  return true;
+	        	                }
+	        	                return false;
+	        }
+	   }

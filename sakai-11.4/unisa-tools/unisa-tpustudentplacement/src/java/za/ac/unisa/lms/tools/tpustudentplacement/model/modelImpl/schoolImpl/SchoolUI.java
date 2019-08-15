@@ -20,6 +20,7 @@ public class SchoolUI extends SchoolImpl {
 	                	       screeenBuilder=new SchoolScreenBuilder();
 	                           schoolValidator=new SchoolValidator();
 	                 }
+	                 
 	                 public School getSchool(StudentPlacementForm studentPlacementForm) throws Exception{
 		                               int schoolCode=studentPlacementForm.getCommunicationSchool();
 		                               String countryCode=studentPlacementForm.getSchoolFilterCountry();
