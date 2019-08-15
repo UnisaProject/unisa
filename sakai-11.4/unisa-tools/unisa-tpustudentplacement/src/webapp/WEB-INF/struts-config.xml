@@ -437,6 +437,42 @@
 				path="/WEB-INF/jsp/editStudentPlacement.jsp"
 				contextRelative="true" />		
 		</action> 
+		
+		
+		<action
+			name="studentPlacementForm"
+			attribute="studentPlacementForm"
+			parameter="action"
+			path="/SupProvinceMaintenance"
+			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.SupProvinceMaintenanceAction"
+			validate="false">
+			<forward
+				name="listSubProvinces"
+				path="/WEB-INF/jsp/listSubProvinces.jsp"
+				contextRelative="true" />
+			<forward
+				name="editSubProv"
+				path="/WEB-INF/jsp/editSubProvince.jsp"
+				contextRelative="true" />
+		</action> 
+		
+		<action
+			name="studentPlacementForm"
+			attribute="studentPlacementForm"
+			parameter="action"
+			path="/District"
+			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.DistrictAction"
+			validate="false">
+			<forward
+				name="districtScreen"
+				path="/WEB-INF/jsp/districtScreen.jsp"
+				contextRelative="true" />
+			<forward
+				name="linkDistToSubProv"
+				path="/WEB-INF/jsp/linkDistToSubProv.jsp"
+				contextRelative="true" />
+		</action> 
+		
 	</action-mappings>
 
 	<message-resources

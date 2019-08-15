@@ -32,6 +32,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacemen
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementLogUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.CommunicationUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.LetterUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.*;
@@ -591,18 +592,9 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		studentPlacementForm.setListCountry(country.listAllCountries());
 		
 		//Get Province list
-		list = new ArrayList<Province>();
-		Province  province=new Province();
-		list = province.getProvinceList();
-		studentPlacementForm.setListProvince(list);
-		listFilter = new ArrayList<Province>();
-		province.setCode(Short.parseShort("0"));
-		province.setDescription("ALL");
-		province.setIn_use("Y");
-		listFilter.addAll(list);
-		listFilter.add(0, province);
-		studentPlacementForm.setListFilterProvince(listFilter);		
-		
+			 ProvinceUI   province=new  ProvinceUI();
+		 province.setProvAndSubProvListToForm( studentPlacementForm);
+		 province.setProvinceListToForm(studentPlacementForm);
 		//Initialise values
 		PlacementUtilities util = new PlacementUtilities();
 		if (studentPlacementForm.getSemester()==null || studentPlacementForm.getSemester().equalsIgnoreCase("")){

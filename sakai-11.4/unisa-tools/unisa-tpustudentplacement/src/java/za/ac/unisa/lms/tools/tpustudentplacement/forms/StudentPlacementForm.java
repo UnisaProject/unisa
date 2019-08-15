@@ -20,6 +20,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String personnelNumber;
 	private String userId;
 	private Person user;
+	private List listFilterPoliticalProvince;
 	private List listSemester;
 	private List listSchoolType;
 	private List listFilterSchoolType;
@@ -29,6 +30,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private List listProvince;
 	private List listFilterProvince;
 	private List listDistrict;
+	private List listForLinkingDistrict;
 	private List listFilterSchoolDistrict;
 	private List listFilterSupervisorDistrict;
 	private List listFilterPlacementDistrict;
@@ -39,6 +41,9 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private List listPlacement;
 	private List listPracticalModules;
 	private List listMentors;
+	private List listRSAProvinces;
+	private List listDistrictsOfProvince;
+	private List listSubProvince;
 	private String previousPage;
 	private String schoolCalledFrom;
 	private String supervisorCalledFrom;
@@ -47,6 +52,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String managementCalledFrom;
 	private String mentorCalledFrom;
 	
+	private int selectedDistrictIndex;
 	
 	private Integer communicationSchool;
 	private String communicationTo;
@@ -167,8 +173,13 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private List listMentor;
 	private String addMentorScreen="N";
 	private MentorFilteringData mentorFilterData;
+	
+	//ub Provinces
+	private List listSubProvincesOfProvince;
+	private SubProvince subProvince;
+
 	public void setCurrProv(String currProv){
-		this.currProv=currProv;
+		                    this.currProv=currProv;
 	}
 	public String getCurrProv(){
 		            return currProv;
@@ -976,4 +987,61 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	public void setPlacementFilterTrained(String placementFilterTrained) {
 		this.placementFilterTrained = placementFilterTrained;
 	}
+	public List getListForLinkingDistrict() {
+		return listForLinkingDistrict;
+	}
+	public void setListForLinkingDistrict(List listForLinkingDistrict) {
+		this.listForLinkingDistrict = listForLinkingDistrict;
+	}
+	public List getListFilterPoliticalProvince() {
+		return listFilterPoliticalProvince;
+	}
+	public void setListFilterPoliticalProvince(List listFilterPoliticalProvince) {
+		this.listFilterPoliticalProvince = listFilterPoliticalProvince;
+	}
+	public int getSelectedDistrictIndex() {
+		return selectedDistrictIndex;
+	}
+	public void setSelectedDistrictIndex(int selectedDistrictIndex) {
+		this.selectedDistrictIndex = selectedDistrictIndex;
+	}
+	private District district;
+	public District getDistrict() {
+		return district;
+	}
+	public void setDistrict(District district) {
+		this.district = district;
+	}
+	public List getListRSAProvinces() {
+		return listRSAProvinces;
+	}
+	public void setListRSAProvinces(List listRSAProvinces) {
+		this.listRSAProvinces = listRSAProvinces;
+	}
+	public List getListDistrictsOfProvince() {
+		return listDistrictsOfProvince;
+	}
+	public void setListDistrictsOfProvince(List listDistrictsOfProvince) {
+		this.listDistrictsOfProvince = listDistrictsOfProvince;
+	}
+	public List getListSubProvince() {
+		return listSubProvince;
+	}
+	public void setListSubProvince(List listSubProvince) {
+		this.listSubProvince = listSubProvince;
+	}
+	public List getListSubProvincesOfProvince() {
+		return listSubProvincesOfProvince;
+	}
+	public void setListSubProvincesOfProvince(List listSubProvincesOfProvince) {
+		this.listSubProvincesOfProvince = listSubProvincesOfProvince;
+	}
+	public SubProvince getSubProvince() {
+		return subProvince;
+	}
+	public void setSubProvince(SubProvince subProvince) {
+		this.subProvince = subProvince;
+	}
+	
+	
 }

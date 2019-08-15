@@ -5,7 +5,9 @@ public class District {
 	private String description;
 	private String inUse;
 	private Province province;
-	
+	private String provinceName;
+	private String subProvince;
+   private Short subProvCode;
 	public Short getCode() {
 		return code;
 	}
@@ -30,4 +32,23 @@ public class District {
 	public void setProvince(Province province) {
 		this.province = province;
 	}
+	public String getSubProvince() {
+		return subProvince;
+	}
+	public void setSubProvince(String subProvince) {
+		this.subProvince = subProvince;
+	}
+	public String getProvinceName() {
+		return provinceName;
+	}
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+	public Short getSubProvCode() {
+		return subProvCode;
+	}
+	public void setSubProvCode(Short subProvCode) {
+		this.subProvCode = subProvCode;
+	}
+	
 }
