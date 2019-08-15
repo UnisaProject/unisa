@@ -24,7 +24,7 @@
 		</sakai:group_heading>
 		<sakai:group_table>	
 			<tr>
-				<td><fmt:message key="page.examYear"/>&nbsp;<fmt:message key="page.mandatory"/>&nbsp;&nbsp;&nbsp;</td>
+				<td><fmt:message key="page.examYear"/>&nbsp;<fmt:message key="page.mandatory"/>&nbsp;&nbsp;</td>
 				<td><html:text name="examScriptStatsForm" property="examYear" size="4" maxlength="4"/></td>
 			</tr>
 			<tr>
