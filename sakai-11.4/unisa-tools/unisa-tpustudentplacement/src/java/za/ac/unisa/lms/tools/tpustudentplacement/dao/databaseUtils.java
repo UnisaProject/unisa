@@ -46,6 +46,7 @@ public class databaseUtils extends StudentSystemDAO {
 			public JdbcTemplate getdbcTemplate(){
 				         jdt = new JdbcTemplate(getDataSource());
 	                     return jdt;
+	                     
 			}
 			
 			public void update(String sql,String errorMsg) throws Exception{
@@ -80,8 +81,16 @@ public class databaseUtils extends StudentSystemDAO {
                          }
 	                     return totRows;
             }
-			
-			
+			 public   boolean  isEmptyTablet(String column,String table)throws Exception{
+                                                        String query="Select  "+column+"  from   "+table;
+                                                        String errorMsg="Database error   when reading from   table:"+table;
+   	                                                   String trackerString=querySingleValue(query,column,errorMsg);
+                                                       if(trackerString.equals("")){
+                                                              	 return false;
+                                                       }else{
+                                                            	 return true;
+                                                       }
+                }
 	
 
 }
