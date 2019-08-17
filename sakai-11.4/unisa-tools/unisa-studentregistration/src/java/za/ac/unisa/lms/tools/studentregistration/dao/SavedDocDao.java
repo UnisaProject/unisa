@@ -127,6 +127,7 @@ public class SavedDocDao extends StudentSystemDAO {
 								+ " and stuxml.reference_value = '2' "
 								+ " and stuxml.mk_student_nr = ? "
 								+ " and stuxml.mk_academic_year = ? "
+								+ " and stuxml.mk_academic_period = ? "
 								+ "	and gencod.code not in ("
 								+ " select distinct code AS docCode"  
 								+ " from gencod " 
@@ -134,7 +135,7 @@ public class SavedDocDao extends StudentSystemDAO {
 								+ " and in_use_flag = 'Y' " 
 								+ " and code = 'UG01')";
 						//log.debug("DocDao - getDocs - query=" + query);
-						queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});					
+						queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, acaPeriod});					
 					} else {
 							 query = "select stuxml.reference_type as DocCode, stuxml.detail as DocName, gencod.eng_description as docDescription "
 										+ "	from stuxml "
@@ -143,6 +144,7 @@ public class SavedDocDao extends StudentSystemDAO {
 										+ " and stuxml.reference_value = '2' "
 										+ " and stuxml.mk_student_nr = ? "
 										+ " and stuxml.mk_academic_year = ? "
+										+ " and stuxml.mk_academic_period = ? "
 										+ "	and gencod.code not in ( "
 										+ "	(select gencod.code "
 										+ "	from qspdoc, gencod "
@@ -160,7 +162,7 @@ public class SavedDocDao extends StudentSystemDAO {
 										+ "	and qspdoc.mk_qual_code = ? "
 										+ "	and qspdoc.mk_spes_code = ?) "
 										+ "	)order by docDescription asc";
-								queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, qual1, spec1, qual2, spec2});
+								queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, acaPeriod, qual1, spec1, qual2, spec2});
 						}
 				}
 				
@@ -283,7 +285,7 @@ public class SavedDocDao extends StudentSystemDAO {
 		}
 	}
 
-		public void addSavedDocSTUAPD(SavedDoc doc, String mandatory, String studentNr, String acaYear, String acaPeriod, String optReq) throws Exception{
+		public void addSavedDocSTUAPD(SavedDoc doc, String mandatory, String studentNr, String acaYear, String period, String optReq) throws Exception{
 
 		  /************ Update STUAPD for documents per Qualification *************/
 		//log.debug("SavedDocDao - addSavedDocSTUAPD - Update STUAPD - ExistQual studentNr: " + studentNr);
@@ -296,12 +298,13 @@ public class SavedDocDao extends StudentSystemDAO {
 							+ " from stuapq "
 							+ " where mk_student_nr = ? "
 							+ " and academic_year = ? "
+							+ " and application_period = ? "
 							+ " order by choice_nr ";
 							//+ " and application_period = '" + period + "'"; //2014 Removed as we check for any existing record for this academic year
 										    	  
 				//log.debug("SavedDocDao - addSavedDocSTUAPD - Part1(Select Qual) - query="+query+", studentNr="+studentNr+", acaYear="+acaYear);
 				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-				List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+				List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 				Iterator<?> i = queryList.iterator();
 				while (i.hasNext()) {
 					ListOrderedMap data = (ListOrderedMap) i.next();
