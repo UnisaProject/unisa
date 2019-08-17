@@ -30,6 +30,8 @@ import org.apache.struts.actions.DispatchAction;
 import org.apache.struts.upload.FormFile;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.tools.studentupload.bo.SavedDoc;
 import za.ac.unisa.lms.tools.studentupload.dao.StudentUploadDAO;
 import za.ac.unisa.lms.tools.studentupload.dao.SavedDocDao;
@@ -430,7 +432,7 @@ public class UploadAction extends DispatchAction {
 										requiredDoc.setDocCode(fb.getDoc().getDocCode());
 										requiredDoc.setDocName(file.getFileName());
 										//log.debug("UploadAction - Upload - Required File - Calling Required File addSavedDoc 1 - Doc:" + requiredDoc + "............");
-										dao.addSavedDocSTUAPD(requiredDoc,"Y",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),"1");
+										dao.addSavedDocSTUAPD(requiredDoc,"Y",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"1");
 										dao.addSavedDocSTUXML(requiredDoc,"Y",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"1");
 									}else {
 										//Uploaded file not found on Filesystem
@@ -528,7 +530,7 @@ public class UploadAction extends DispatchAction {
 						optionDoc.setDocCode(stuRegForm.getOptionFileBean().getDoc().getDocCode());
 						optionDoc.setDocName(file.getFileName());
 						//log.debug("UploadAction - Upload - Optional File - Calling addSavedDoc 2 - optionDoc:" + optionDoc + "............");
-						dao.addSavedDocSTUAPD(optionDoc,"N",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),"2");
+						dao.addSavedDocSTUAPD(optionDoc,"N",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"2");
 						dao.addSavedDocSTUXML(optionDoc,"N",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(),"2");
 					}else {
 						//Uploaded file not found on Filesystem
@@ -598,59 +600,75 @@ public class UploadAction extends DispatchAction {
 				//log.debug("UploadAction - Checking if MD, if so do not write STUAPQ record for Student");
 				if(!"MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 					//log.debug("UploadAction - Not MD, so write STUAPQ record for Student");
-					dao.setSTUAPQ(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear());
+					dao.setSTUAPQ(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod());
 				}
 			 
 				//log.debug("UploadAction - Upload - STUAPQ Done");
 				
-				//log.debug("UploadAction - Upload - Do Staae05sAppAdmissionEvaluator Letter");
-				/**2018 Edmund Start of Send Letter**/
-				/**2018 July - Johanet enable code that was commented out to email application received letter - BRD SR198094 5.1**/
-				/* studentUpload tool*/
-				try{
-					Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
-					operListener opl = new operListener();
-					op.addExceptionListener(opl);
-					op.clear();
-	
-					op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
-					op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
-					op.setInCsfClientServerCommunicationsAction("PR");
-					op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
-					op.setInWsUserNumber(99998);
-					//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
-					op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-					//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
-					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
-					//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
-					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));					
-					////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - RetQualOneFinal=" + stuRegForm.getStudent().getRetQualOneFinal());
-					//op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getRetQualOneFinal());
-					////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Choice Nr= 1");
-					//op.setInWebStuApplicationQualChoiceNr((short) 1);
-					//Get Current Status
-					////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Get Basic Status");
-					//String status = applyDAO.getBasicStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1");
-					////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
-					//op.setInWebStuApplicationQualStatusCode(status);
-					
-					//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
+				/**Johanet 20190813 - Elfriede request to control sending of letter using gencod entry - debug201908
+				/*20190813 Start change*/
+				boolean sendLetter = true;
+				StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+				Gencod gencod = new Gencod();
+				gencod = systemDao.getGenCode("333", "APPLRECL");		
+				
+				//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
+				if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("N")){
+					sendLetter = false;
+				}			
+				
+				if (sendLetter) {
+					//log.debug("UploadAction - Upload - Do Staae05sAppAdmissionEvaluator Letter");
+					/**2018 Edmund Start of Send Letter**/
+					/**2018 July - Johanet enable code that was commented out to email application received letter - BRD SR198094 5.1**/
+					/* studentUpload tool*/
+					try{
+						Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
+						operListener opl = new operListener();
+						op.addExceptionListener(opl);
+						op.clear();
 		
-					op.execute();
-		
-					if (opl.getException() != null) throw opl.getException();
-					if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
-		
-					//log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
-					String opResult = op.getOutCsfStringsString500();
-					//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
-				}catch(Exception e){
-					log.debug("Unisa-StudentUpload - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
-					log.warn("Unisa-StudentUpload - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+						op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
+						op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
+						op.setInCsfClientServerCommunicationsAction("PR");
+						op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
+						op.setInWsUserNumber(99998);
+						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
+						op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+						op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
+						op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
+						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
+						op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));					
+						////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - RetQualOneFinal=" + stuRegForm.getStudent().getRetQualOneFinal());
+						//op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getRetQualOneFinal());
+						////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Choice Nr= 1");
+						//op.setInWebStuApplicationQualChoiceNr((short) 1);
+						//Get Current Status
+						////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Get Basic Status");
+						//String status = applyDAO.getBasicStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1");
+						////log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
+						//op.setInWebStuApplicationQualStatusCode(status);
+						
+						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
+			
+						op.execute();
+			
+						if (opl.getException() != null) throw opl.getException();
+						if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+			
+						//log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
+						String opResult = op.getOutCsfStringsString500();
+						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
+					}catch(Exception e){
+						log.debug("Unisa-StudentUpload - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+						log.warn("Unisa-StudentUpload - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+					}
+					/**End of Send Letter**/
+					/*Johanet 2018July - end of enabling code*/
 				}
-				/**End of Send Letter**/
-				/*Johanet 2018July - end of enabling code*/
+				/*20190813 End change*/	
+				
 				
 				//log.debug("UploadAction moveDocuments if any: " + stuRegForm.getStudent().getNumber());
 				 
@@ -813,8 +831,8 @@ public class UploadAction extends DispatchAction {
 			StudentUploadDAO applyDAO = new StudentUploadDAO();
 			
 	        try {
-	        	String qual1 = applyDAO.vrfyNewQualShort("QUAL", "1", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear());
-	        	String qual2 = applyDAO.vrfyNewQualShort("QUAL", "2", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear());
+	        	String qual1 = applyDAO.vrfyNewQualShort("QUAL", "1", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod());
+	        	String qual2 = applyDAO.vrfyNewQualShort("QUAL", "2", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod());
 	        	
 	        	//log.debug("UploadAction - moveDocuments - Qual1="+qual1);
 	        	//log.debug("UploadAction - moveDocuments - Qual2="+qual2);
@@ -891,6 +909,7 @@ public class UploadAction extends DispatchAction {
 					 try {
 				            boolean recursive = false;
 				            boolean isDoRemoveFiles = false;
+				            int countFileCopyFailed = 0;
 
 				            Collection<File> files = FileUtils.listFiles(root, null, recursive);
 
@@ -1033,10 +1052,17 @@ public class UploadAction extends DispatchAction {
 				        	        		isDoRemoveFiles = true;
 				        	        		result = "Success";
 				        	        	}else{
+				        	        		countFileCopyFailed = countFileCopyFailed + 1;
 				        	        		result = "Error - Copying Temporaru Files to Uniflow failed, please try again";
 				        	        	}
 				        	       	}
 							 }
+							//Johanet 20190815 - added code - to prevent files disappearing - start
+							 if (countFileCopyFailed > 0) {
+								isDoRemoveFiles = false;  
+		        	        	result = "Error - Copying Temporaru Files to Uniflow failed, please try again";
+							 }
+							//Johanet 20190815 - added code - to prevent files disappearing - end
 							 if (isDoRemoveFiles){
 								//Check if student and group folders are empty. 
 								 //Delete them if they are as we don't want to clutter the Unix filesystem unnecessary
@@ -1198,10 +1224,10 @@ public class UploadAction extends DispatchAction {
 		form.getMap().clear();
 		SavedDocDao savedDocDao = new SavedDocDao();
 		//log.debug("StudentRegistrationForm - reLoad - Reloading uploaded docs..");
-		savedDocDao.getAllNonRequiredDocInfo(form.getDesc(), form.getMap(), form.getStudent().getNumber(),form.getStudent().getAcademicYear(),form.getStudent().isStuExist(),form.getStudent().getMatrix());
+		savedDocDao.getAllNonRequiredDocInfo(form.getDesc(), form.getMap(), form.getStudent().getNumber(),form.getStudent().getAcademicYear(),form.getStudent().getAcademicPeriod(),form.getStudent().isStuExist(),form.getStudent().getMatrix());
 		for(FileBean fb : form.getRequiredFileBeans()){
 			//log.debug("StudentRegistrationForm - reLoad - Settigng FileBean Uploaded..");
-			fb.setUploaded(savedDocDao.getSavedDocByDoc(fb.getDoc().getDocCode(),form.getStudent().getNumber(),form.getStudent().getAcademicYear()));
+			fb.setUploaded(savedDocDao.getSavedDocByDoc(fb.getDoc().getDocCode(),form.getStudent().getNumber(),form.getStudent().getAcademicYear(),form.getStudent().getAcademicPeriod()));
 		}
 		//log.debug("StudentRegistrationForm - reLoad - Done");
 	}
