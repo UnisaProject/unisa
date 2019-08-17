@@ -52,6 +52,8 @@ import za.ac.unisa.lms.tools.studentregistration.forms.Student;
 import za.ac.unisa.lms.tools.studentregistration.forms.StudentFile;
 import za.ac.unisa.lms.tools.studentregistration.forms.StudentRegistrationForm;
 import za.ac.unisa.lms.tools.studentregistration.forms.Subject;
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.tools.studentregistration.actions.WorkflowTempFile;
 import za.ac.unisa.lms.tools.studentregistration.bo.Categories;
 import za.ac.unisa.lms.tools.studentregistration.bo.Qualifications;
@@ -179,6 +181,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 	    map.put("populateQualifications", "populateQualifications");
 	    map.put("populateSpecializations", "populateSpecializations");
 	    map.put("populatePrevQualifications", "populatePrevQualifications");
+	    map.put("verifyStuQualify", "verifyStuQualify");
 	    map.put("stepPrevQual", "stepPrevQual");
 	    
 	    map.put("populateUnisaQualifications","populateUnisaQualifications");
@@ -2815,10 +2818,131 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		return result;
 	}
 
+	public ActionForward verifyStuQualify(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		//log.debug("ApplyForStudentNumberAction - populateCategories");
+		
+		ActionMessages messages = new ActionMessages();
+		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;	
+		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+		List<Gencod> listCollege = new ArrayList<Gencod>();
+		StudentSystemGeneralDAO daoGen = new StudentSystemGeneralDAO();
+		
+		listCollege=daoGen.getGenCodes((short)345,0);
+		
+		stuRegForm.setWebUploadMsg("");
+		stuRegForm.setWebLoginMsg("");
+		stuRegForm.setWebLoginMsg2("");
+			
+			try{	
+				//Johanet 20190816 Block student for certain colleges if student do not qualify
+						String errorMessage = "";
+						boolean doNotQualify = false;
+						String qual1OptionDesc = request.getParameter("qual1OptionDesc");  //JohanetTest						
+						if (qual1OptionDesc.contains("You may not qualify")) {
+							String qual1 = qual1OptionDesc.substring(0, 5); 
+							String college = dao.getQualCollege(qual1);
+							for (int i=0; i < listCollege.size(); i++) {
+							      Gencod  gencod=(Gencod)(listCollege.get(i));
+						          if(gencod.getCode().equalsIgnoreCase(college)){		        	
+						        	  doNotQualify=true;
+						        	  errorMessage = qual1OptionDesc.substring(0, 5);	
+						        	  i = listCollege.size();
+						          }
+							}			
+						}
+						String qual2OptionDesc = request.getParameter("qual2OptionDesc");  //JohanetTest						
+						if (qual2OptionDesc.contains("You may not qualify")) {
+							String qual2 = qual2OptionDesc.substring(0, 5); 
+							String college = dao.getQualCollege(qual2);
+							for (int i=0; i < listCollege.size(); i++) {
+							      Gencod  gencod=(Gencod)(listCollege.get(i));
+						          if(gencod.getCode().equalsIgnoreCase(college)){		        	
+						        	  doNotQualify=true;
+										if (errorMessage.equalsIgnoreCase("")) {
+											errorMessage = qual2OptionDesc.substring(0, 5);
+										}else {
+											errorMessage = errorMessage + " and " + qual2OptionDesc.substring(0, 5);
+										}
+						        	  i = listCollege.size();
+						          }
+							}
+						}
+						if (doNotQualify) {
+							errorMessage = "Based on your grade 12/matric results, you do not appear to meet the admission requirements for " + errorMessage + ". <br>Click 'Ok' and change your choice of qualifications to other qualifications for which you meet the admission requirements.";							
+						}
+		    
+			StringBuffer sb = new StringBuffer("[");
+			sb.append("{\"error\":\""+errorMessage+"\"}");	
+			sb.append("]");
+			String jsonString = sb.toString();
+			//log.debug(jsonString);
+			PrintWriter out = response.getWriter();
+			out.write(jsonString);
+			out.flush();
+		}catch(Exception ex){
+			log.warn("ApplyForStudentNumberAction verifyStuQualify - Error="+ex);
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+				new ActionMessage("message.generalmessage", "An Error occurred when verifying is student qualify for qualification. Please log on again to retry."));
+			addErrors(request, messages);
+			if (stuRegForm.getAdminStaff().isAdmin()){
+				if(stuRegForm.getLoginSelectYesNo().equalsIgnoreCase("NO")){
+					stuRegForm.setWebLoginMsg("Administrator - First-time applicant");
+					stuRegForm.setWebLoginMsg2("");
+					try {
+						setDropdownListsLogin(request,stuRegForm);
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+					setDropdownListsLogin(request,stuRegForm);
+					return mapping.findForward("applyLogin");
+				}else{
+					stuRegForm.setWebLoginMsg("Administrator - Returning applicant");
+					stuRegForm.setWebLoginMsg2("");
+					try {
+						setDropdownListsLogin(request,stuRegForm);
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+					setDropdownListsLogin(request,stuRegForm);
+					return mapping.findForward("applyLogin");
+				}
+			}else{
+				if(stuRegForm.getLoginSelectYesNo().equalsIgnoreCase("NO")){
+					stuRegForm.setWebLoginMsg("First-time applicant");
+					stuRegForm.setWebLoginMsg2("");
+					try {
+						setDropdownListsLogin(request,stuRegForm);
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+					setDropdownListsLogin(request,stuRegForm);
+					return mapping.findForward("applyLogin");
+				}else{
+					stuRegForm.setWebLoginMsg("Returning applicant");
+					stuRegForm.setWebLoginMsg2("");
+					try {
+						setDropdownListsLogin(request,stuRegForm);
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+					setDropdownListsLogin(request,stuRegForm);
+					return mapping.findForward("applyLogin");
+				}
+			}
+		}
+		return null;
+	}
 	
 	/*
 	 * populates the qualification categories dropdown
-	 */
+	 */	
 
 	public ActionForward populateCategories(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
@@ -4183,7 +4307,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			stuRegForm.getStudent().setQual2(stripXSS(stuRegForm.getSelQualCode2(), "SelQualCode2", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setSpec1(stripXSS(stuRegForm.getSelSpecCode1(), "SelSpecCode1", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setSpec2(stripXSS(stuRegForm.getSelSpecCode2(), "SelSpecCode2", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
-
+						
 			// Proposed Primary Specialization
 			if (stuRegForm.getStudent().getSpec1() == null || "0".equals(stuRegForm.getStudent().getSpec1()) || "".equals(stuRegForm.getStudent().getSpec1()) || "NVT".equalsIgnoreCase(stuRegForm.getStudent().getSpec1()) || "undefined".equalsIgnoreCase(stuRegForm.getStudent().getSpec1())){
 				stuRegForm.getStudent().setSpec1("0");
@@ -4279,8 +4403,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			//log.debug("ApplyForStudentNumberAction - saveStudyNew - N " + stuRegForm.getStudent().getNumber() + " Error="+ex);
 			log.warn("ApplyForStudentNumberAction - saveStudyNew - N " + stuRegForm.getStudent().getNumber() + " Error="+ex);
 			isError = true;
-		}
-		
+		}		
+				
 		if (stuRegForm.getStudent().getQual1().equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
 			//log.debug("ApplyForStudentNumberAction - saveStudyNew - Same Choice 1 & 2 - Qual1="+stuRegForm.getStudent().getQual1()+" = Qual2="+stuRegForm.getStudent().getQual2());
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -4288,7 +4412,32 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			addErrors(request, messages);
 			return "applyQualification";
 		}
-
+		
+//		//Johanet 20190816 Block student for certain colleges if student do not qualify
+//		String errorMessage = "";
+//		boolean doNotQualify = false;
+//		String qual1OptionDesc = request.getParameter("qual1OptionDesc");  //JohanetTest
+//		if (qual1OptionDesc.contains("You may not qualify")) {
+//			doNotQualify=true;
+//			errorMessage = qual1OptionDesc.substring(0, 5);				
+//		}
+//		String qual2OptionDesc = request.getParameter("qual2OptionDesc");  //JohanetTest
+//		if (qual2OptionDesc.contains("You may not qualify")) {
+//			doNotQualify=true;
+//			if (errorMessage.equalsIgnoreCase("")) {
+//				errorMessage = qual2OptionDesc.substring(0, 5);
+//			}else {
+//				errorMessage = errorMessage + " and " + qual2OptionDesc.substring(0, 5);
+//			}
+//			
+//		}
+//		if (doNotQualify) {
+//			errorMessage = "Based on your grade 12/ matric results, you do not appear to meet the admission requirements for " + errorMessage + ". Please change your choice of qualifications to other qualifications for which you meet the admission requirements.";
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//						new ActionMessage("message.generalmessage", errorMessage));
+//						addErrors(request, messages);
+//			return "applyQualification";
+//		}
 		
 		if (isError){
 			//log.debug("ApplyForStudentNumberAction - saveStudyNew - " + stuRegForm.getStudent().getNumber() +" - Error");
@@ -5776,7 +5925,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		String firstRPL = dao.getBasicSTUAPQInfo(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "1", "RPL");
 		//log.debug("ApplyForStudentNumberAction - stepSLPConfirm - Choice1 - firstRPL: " + firstRPL);
 		
-		String collegeCode2 = dao.getCollegeCategory(stuRegForm.getSelQualCode2());
+		String collegeCode2 = dao.getQualCollege(stuRegForm.getSelQualCode2());
 		//log.debug("ApplyForStudentNumberAction - stepSLPConfirm - Choice2 - CollegeCategory2: " + collegeCode2);
 		
 		String adminSection2 = dao.getQualAdminSection(stuRegForm.getStudent().getQual2());
@@ -6320,8 +6469,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			newSpec2 = " ";
 		}
 		
-		String collegeCode1 = dao.getCollegeCategory(stuRegForm.getStudent().getQual1());
-		String collegeCode2 = dao.getCollegeCategory(stuRegForm.getStudent().getQual2());
+		String collegeCode1 = dao.getQualCollege(stuRegForm.getStudent().getQual1());
+		String collegeCode2 = dao.getQualCollege(stuRegForm.getStudent().getQual2());
 		String adminSection1 = dao.getQualAdminSection(stuRegForm.getStudent().getQual1());
 		String adminSection2 = dao.getQualAdminSection(stuRegForm.getStudent().getQual2());
 		
@@ -6485,58 +6634,70 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				new ActionMessage("message.generalmessage", "An error occurred while saving Secondary Qualification. Please try again."));
 			addErrors(request, messages);
 			return mapping.findForward("applyQualification");
+		}
+		
+		/**Johanet 20190813 - Elfriede request to control sending of letter using gencod entry - debug201908
+		/*20190813 Start change*/
+		boolean sendLetter = true;
+		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+		Gencod gencod = new Gencod();
+		gencod = systemDao.getGenCode("333", "APPLRECL");		
+		
+		//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
+		if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("N")){
+			sendLetter = false;
 		}			
 		
-		/**2018 Johanet Start of Send Letter**/
-		/**2018 July - Johanet Add code for returning student - email application received letter - BRD SR198094 5.1**/
-		/**/
-		try{
-			Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
-			operListener opl = new operListener();
-			op.addExceptionListener(opl);
-			op.clear();
+		if (sendLetter) {
+			/**2018 Johanet Start of Send Letter**/
+			/**2018 July - Johanet Add code for returning student - email application received letter - BRD SR198094 5.1**/
+			/**/
+			try{
+				Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
+				operListener opl = new operListener();
+				op.addExceptionListener(opl);
+				op.clear();
 
-			op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
-			op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
-			op.setInCsfClientServerCommunicationsAction("PR");
-			op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
-			op.setInWsUserNumber(99998);
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
-			op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-			op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
-			op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
-			op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Qual1=" + stuRegForm.getStudent().getQual1());
-			op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual1());
-			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Choice Nr= 1");
-			//op.setInWebStuApplicationQualChoiceNr((short) 1);
-			//Get Current Status
-			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Get Basic Status");
-			//String status = applyDAO.getBasicStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1");
-			//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
-			//op.setInWebStuApplicationQualStatusCode(status);
-			
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
+				op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
+				op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
+				op.setInCsfClientServerCommunicationsAction("PR");
+				op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
+				op.setInWsUserNumber(99998);
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
+				op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+				op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
+				op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
+				op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Qual1=" + stuRegForm.getStudent().getQual1());
+				op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual1());
+				//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Choice Nr= 1");
+				//op.setInWebStuApplicationQualChoiceNr((short) 1);
+				//Get Current Status
+				//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Get Basic Status");
+				//String status = applyDAO.getBasicStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1");
+				//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
+				//op.setInWebStuApplicationQualStatusCode(status);
+				
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
 
-			op.execute();
+				op.execute();
 
-			if (opl.getException() != null) throw opl.getException();
-			if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+				if (opl.getException() != null) throw opl.getException();
+				if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
 
-			log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
-			String opResult = "No Result";
-			opResult = op.getOutCsfStringsString500();
-			log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
-		}catch(Exception e){
-			log.debug("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
-			log.warn("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+				log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
+				String opResult = "No Result";
+				opResult = op.getOutCsfStringsString500();
+				log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
+			}catch(Exception e){
+				log.debug("Unisa-StudentRegistration - ApplyForStudentNumberAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+				log.warn("Unisa-StudentRegistration - ApplyForStudentNumberAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+			}
+			/**End of Send Letter**/
 		}
-		/**End of Send Letter**/
-		
-		//log.debug("ApplyForStudentNumberAction - applyRetDeclare -  Save Qualification to STUAPQ - End");
-		//Save Qualification to STUAPQ - End
+		/*20190813 End change*/
 		
 		//Save Previous Qualifications - Start
 		int resultUpdate = 0;
@@ -9878,12 +10039,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				//log.debug("ApplyForStudentNumberAction - Nextpage - StudentNr="+stuRegForm.getStudent().getNumber()+" - Goto saveStudyNew");
 				nextPage = saveStudyNew(mapping,form,request, response);
 			}else{
-				//log.debug("ApplyForStudentNumberAction - Nextpage - StudentNr="+stuRegForm.getStudent().getNumber()+" - Goto saveStudyRet");
+				//log.debug("ApplyForStudentNumberAction - Nextpage - StudentNr="+stuRegForm.getStudent().getNumber()+" - Goto saveStudyRet");				
 				nextPage = saveStudyRet(mapping,form,request, response);
-			}
-			
-		}
-		
+			}			
+		}		
 		if ("applyLogin".equalsIgnoreCase(page)){
 			setDropdownListsLogin(request,stuRegForm);
 			return mapping.findForward("applyLogin");

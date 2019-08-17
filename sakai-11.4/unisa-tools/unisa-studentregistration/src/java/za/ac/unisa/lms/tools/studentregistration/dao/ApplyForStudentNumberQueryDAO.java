@@ -4312,7 +4312,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 		return admin;
 	}
 	
-	public String getCollegeCategory(String qualCode2) throws Exception{
+	public String getQualCollege(String qualCode2) throws Exception{
 
 		//log.debug("ApplyForStudentNumberQueryDAO - GetQualCollegeCategory - Start");
 		
