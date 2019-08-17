@@ -79,7 +79,7 @@ public class SavedDocDao extends StudentSystemDAO {
 	 * @param acaYear
 	 * @throws Exception
 	 */
-	public void getAllNonRequiredDocInfo(List<String> docDescs,Map<String, List<String>> map, String studentNr, String acaYear, boolean isStuExist, String matrix) throws Exception{
+	public void getAllNonRequiredDocInfo(List<String> docDescs,Map<String, List<String>> map, String studentNr, String acaYear, String period, boolean isStuExist, String matrix) throws Exception{
 
 		//log.debug("SavedDocDao - Entering getAllNonRequiredDocInfo");
 		StudentUploadDAO dao = new StudentUploadDAO();
@@ -90,7 +90,7 @@ public class SavedDocDao extends StudentSystemDAO {
 
 		 try {
 
-				if (isStuExist || !"".equalsIgnoreCase(getSTUAPQUpload(studentNr, acaYear))){
+				if (isStuExist || !"".equalsIgnoreCase(getSTUAPQUpload(studentNr, acaYear, period))){
 					query = "select stuxml.reference_type as DocCode, stuxml.detail as DocName, gencod.eng_description as docDescription "
 							+ "	from stuxml "
 							+ "	inner join gencod on stuxml.reference_type = gencod.code " 
@@ -98,11 +98,12 @@ public class SavedDocDao extends StudentSystemDAO {
 							+ " and stuxml.reference_value = '2' "
 							+ " and stuxml.mk_student_nr = ? "
 							+ " and stuxml.mk_academic_year = ? "
+							+ " and stuxml.mk_academic_period = ? "
 							+ " order by docDescription asc";
-					queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+					queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 				}else{
 					
-					StudySelected selected = dao.queryStudySelected(studentNr, acaYear);
+					StudySelected selected = dao.queryStudySelected(studentNr, acaYear, period);
 				
 					String qual1 = "";
 					String qual2 = "";
@@ -125,6 +126,7 @@ public class SavedDocDao extends StudentSystemDAO {
 								+ " and stuxml.reference_value = '2' "
 								+ " and stuxml.mk_student_nr = ? "
 								+ " and stuxml.mk_academic_year = ? "
+								+ " and stuxml.mk_academic_period = ? "
 								+ "	and gencod.code not in ("
 								+ " select distinct code AS docCode"  
 								+ " from gencod " 
@@ -132,7 +134,7 @@ public class SavedDocDao extends StudentSystemDAO {
 								+ " and in_use_flag = 'Y' " 
 								+ " and code = 'UG01')";
 						//log.debug("DocDao - getDocs - query=" + query);
-						queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});					
+						queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});					
 					} else {
 							 query = "select stuxml.reference_type as DocCode, stuxml.detail as DocName, gencod.eng_description as docDescription "
 										+ "	from stuxml "
@@ -141,6 +143,7 @@ public class SavedDocDao extends StudentSystemDAO {
 										+ " and stuxml.reference_value = '2' "
 										+ " and stuxml.mk_student_nr = ? "
 										+ " and stuxml.mk_academic_year = ? "
+										+ " and stuxml.mk_academic_period = ? "
 										+ "	and gencod.code not in ( "
 										+ "	(select gencod.code "
 										+ "	from qspdoc, gencod "
@@ -158,7 +161,7 @@ public class SavedDocDao extends StudentSystemDAO {
 										+ "	and qspdoc.mk_qual_code = ? "
 										+ "	and qspdoc.mk_spes_code = ?) "
 										+ "	)order by docDescription asc";
-								queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, qual1, spec1, qual2, spec2});
+								queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period, qual1, spec1, qual2, spec2});
 						}
 				}
 				
@@ -203,7 +206,7 @@ public class SavedDocDao extends StudentSystemDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<SavedDoc> getSavedDocByDoc(String docCode,String studentNr,String acaYear) throws Exception{
+	public List<SavedDoc> getSavedDocByDoc(String docCode,String studentNr,String acaYear, String period) throws Exception{
 		//log.debug("SavedDocDao - getSavedDocByDoc");
 		List<SavedDoc> docs = new ArrayList<SavedDoc>();
 
@@ -213,12 +216,13 @@ public class SavedDocDao extends StudentSystemDAO {
 						+ " where mk_student_nr = ? "
 						+ " and stuxml.reference_value = '1' "
 						+ " and mk_academic_year = ? "
+						+ " and mk_academic_period = ?"
 						+ " and reference_type = ? " 
 						+ " order by DocName";
 
 			//log.debug(query);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, docCode});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period, docCode});
 			Iterator<?> i = queryList.iterator();
 			while (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
@@ -278,7 +282,7 @@ public class SavedDocDao extends StudentSystemDAO {
 		}
 	}
 
-		public void addSavedDocSTUAPD(SavedDoc doc, String mandatory, String studentNr, String acaYear, String optReq) throws Exception{
+		public void addSavedDocSTUAPD(SavedDoc doc, String mandatory, String studentNr, String acaYear, String period, String optReq) throws Exception{
 
 		  /************ Update STUAPD for documents per Qualification *************/
 		//log.debug("SavedDocDao - addSavedDocSTUAPD - Update STUAPD - ExistQual studentNr: " + studentNr);
@@ -291,11 +295,12 @@ public class SavedDocDao extends StudentSystemDAO {
 							+ " from stuapq "
 							+ " where mk_student_nr = ? "
 							+ " and academic_year = ? "
+							+ " and application_period = ?"
 							+ " order by choice_nr ";
 										    	  
 				//log.debug("SavedDocDao - addSavedDocSTUAPD - Part1(Select Qual) - query="+query+", studentNr="+studentNr+", acaYear="+acaYear);
 				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-				List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+				List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 				Iterator<?> i = queryList.iterator();
 				while (i.hasNext()) {
 					ListOrderedMap data = (ListOrderedMap) i.next();
@@ -357,7 +362,7 @@ public class SavedDocDao extends StudentSystemDAO {
 			}
 	}
 	
-	public void setSTUAPQ(String studentNr, String acaYear) throws Exception{
+	public void setSTUAPQ(String studentNr, String acaYear, String period) throws Exception{
 		//log.debug("SavedDocDao - setSTUAPQ");
 		  /************ Update STUAPQ to set document record *************/
 			  //log.debug("ExistQual studentNr: " + studentNr);
@@ -369,11 +374,12 @@ public class SavedDocDao extends StudentSystemDAO {
 								+ " set status_code = 'NP' "
 								+ " where mk_student_nr = ? "
 								+ " and academic_year = ? "
+								+ " and application_period = ?"
 								+ " and status_code = 'ND' "											;
 
 					//log.debug("setSTUAPQ query Update: " + updSql);
 					JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-					int result = jdt.update(query, new Object []{studentNr, acaYear});
+					int result = jdt.update(query, new Object []{studentNr, acaYear, period});
 					//log.debug("setSTUAPQ Update Result: " + result);
 		      	} catch (Exception ex) {
 		      			throw new Exception(
@@ -383,7 +389,7 @@ public class SavedDocDao extends StudentSystemDAO {
 		      	}
 	}
 	
-	public String getSTUAPQUpload(String studentNr,String acaYear) throws Exception{
+	public String getSTUAPQUpload(String studentNr,String acaYear, String period) throws Exception{
 		//log.debug("SavedDocDao - getSTUAPQUpload");
 		String checkAP = "";
 
@@ -392,11 +398,12 @@ public class SavedDocDao extends StudentSystemDAO {
 						+ " from STUAPQ "
 						+ " where mk_student_nr = ? "
 						+ " and academic_year = ? "
+						+ " and application_period = ? "
 						+ " and status_code in ('AP','TN','RG') ";
 			
 			//log.debug("getSTUAPQUpload - query: " + query );
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 			Iterator<?> i = queryList.iterator();
 			if (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
@@ -494,7 +501,7 @@ public class SavedDocDao extends StudentSystemDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public String vrfyNewQual(String qualSpec, String choice, String studentNr, String acaYear) throws Exception {
+	public String vrfyNewQual(String qualSpec, String choice, String studentNr, String acaYear, String period) throws Exception {
 
 		String query = "";
 		String stuChoice = "";
@@ -508,6 +515,7 @@ public class SavedDocDao extends StudentSystemDAO {
 					+ " where stuapq.new_qual = grd.code "
 					+ " and stuapq.mk_student_nr = ? "
 					+ " and stuapq.academic_year = ? "
+					+ " and stuapq.application_period = ?"
 					+ " and stuapq.choice_nr = ? ";
 		}else{
 			query = "select stuapq.new_spes, stuapq.choice_nr, "
@@ -518,13 +526,14 @@ public class SavedDocDao extends StudentSystemDAO {
 					+ " and stuapq.new_spes = quaspc.speciality_code "
 					+ " and stuapq.mk_student_nr = ? "
 					+ " and stuapq.academic_year = ? "
+					+ " and stuapq.application_period = ?"
 					+ " and stuapq.choice_nr = ? ";
 		}
 
 		try {
 			//log.debug("SavedDocDaoDAO - vrfyNewQual - qualSpec: " + qualSpec + ", query:" + query);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, choice});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period, choice});
 			Iterator<?> i = queryList.iterator();
 			while (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();

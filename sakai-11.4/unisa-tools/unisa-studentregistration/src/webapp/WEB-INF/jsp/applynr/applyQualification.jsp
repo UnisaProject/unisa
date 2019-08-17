@@ -319,7 +319,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				$("select[name='selSpecCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selSpecCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
 				
-				var qual = $(this).val();
+				var qual = $(this).val();				
 				var category1 = $("select[name='selCategoryCode1']").find("option:selected").val();
 				var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category1+'&selQualCode='+qual;
 				$.ajaxSetup( { "async": false } );
@@ -378,14 +378,21 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		//Change Category
 		function validate(){
 			
-			var checkError = 0;
+			var checkError = 0;	
 			
 			var category1 = $("select[name='selCategoryCode1']").find("option:selected").val();
 			var qual1 =     $("select[name='selQualCode1']").find("option:selected").val();
+			var qual1OptionDesc = $("select[name='selQualCode1']").find("option:selected").text();  //JohanetTest
+			$('input[id=qual1OptionDesc]').val(qual1OptionDesc);
+			//document.getElementById("qual1Desc").value=qual1Desc;
+			
 		    var spec1 =     $("select[name='selSpecCode1']").find("option:selected").val();
+		    
 		    
 		    var category2 = $("select[name='selCategoryCode2']").find("option:selected").val();
 			var qual2 =     $("select[name='selQualCode2']").find("option:selected").val();
+			var qual2OptionDesc = $("select[name='selQualCode2']").find("option:selected").text();  //JohanetTest
+			$('input[id=qual2OptionDesc]').val(qual2OptionDesc);
 		    var spec2 =     $("select[name='selSpecCode2']").find("option:selected").val();
 		    
 		    if(jQuery.trim(category1) == "0"){
@@ -465,7 +472,29 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			    	return false;
 				}
 			}
-		    doSubmit('Continue');
+			
+			if (qual1OptionDesc.indexOf('You may not qualify') !== -1 || qual2OptionDesc.indexOf('You may not qualify') !== -1){
+				var url = 'applyForStudentNumber.do?act=verifyStuQualify&qual1OptionDesc='+qual1OptionDesc+'&qual2OptionDesc='+qual2OptionDesc;
+				var verifyError ="";
+				
+				$.ajaxSetup( { "async": false } );
+				$.getJSON(url, function(data) {
+					$.each(data, function(i, item) {
+						if(data[i].error !== ""){
+							verifyError = data[i].error;						
+						}
+					});
+					if (verifyError !== ""){
+						showError("Error", verifyError);
+				    	checkError = 1;
+				    	return false;
+					}
+					doSubmit('Continue');
+				});		
+			}else{				
+				doSubmit('Continue');
+			}	
+		    
 		}
 		
 		//This will sort your array
@@ -749,7 +778,9 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	<input type="hidden" id="selectHEMain" name="selectHEMain" value="<bean:write name='studentRegistrationForm' property='selectHEMain' />" />
 	<input type="hidden" id="isSTUSLP" name="isSTUSLP" value="<bean:write name='studentRegistrationForm' property='student.stuSLP' />" />
 	<input type="hidden" id="isSTUAPQ" name="isSTUAPQ" value="<bean:write name='studentRegistrationForm' property='student.stuapq' />" />
-	<input type="hidden" id="stuNr" name="stuNr" value="<bean:write name='studentRegistrationForm' property='student.number' />" />
+	<input type="hidden" id="stuNr" name="stuNr" value="<bean:write name='studentRegistrationForm' property='student.number' />" />	
+	<input type="hidden" id="qual1OptionDesc" name="qual1OptionDesc" value="" />
+	<input type="hidden" id="qual2OptionDesc" name="qual2OptionDesc" value="" />
 		
 	<div style="display: none;" id="dialogHolder"><p id="dialogContent"></p></div>
 

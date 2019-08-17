@@ -706,7 +706,7 @@ public class StudentUploadForm extends ValidatorActionForm {
 		try {
 			//log.debug("studentuploadForm - loadData - getAllRequiredDocs - Try: " + getStudent().getNumber() + " : " + getStudent().getAcademicYear() + " : " + getStudent().getAcademicPeriod() + " : Y : " + getStudent().getMatrix());
 			DocDao docDao = new DocDao();
-			requiredDocs = docDao.getAllRequiredDocs(getStudent().getNumber(),getStudent().getAcademicYear(),"Y",getStudent().getMatrix(), getStudent().isStuExist(), getLoginSelectMain());
+			requiredDocs = docDao.getAllRequiredDocs(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod() ,"Y",getStudent().getMatrix(), getStudent().isStuExist(), getLoginSelectMain());
 		} catch (Exception e1) {
 			//log.debug("studentuploadForm - loadData - getAllRequiredDocs - Catch: " + getStudent().getNumber() + " : " + getStudent().getAcademicYear() + " : " + getStudent().getAcademicPeriod() + " : Y : " + getStudent().getMatrix());
 			e1.printStackTrace();
@@ -734,7 +734,7 @@ public class StudentUploadForm extends ValidatorActionForm {
 				requiredFileBeans[index++] = fb;
 				try {
 					SavedDocDao savedDocDao = new SavedDocDao();
-					fb.setUploaded(savedDocDao.getSavedDocByDoc(doc.getDocCode(),getStudent().getNumber(),getStudent().getAcademicYear()));
+					fb.setUploaded(savedDocDao.getSavedDocByDoc(doc.getDocCode(),getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -768,7 +768,7 @@ public class StudentUploadForm extends ValidatorActionForm {
 		   try {
 			   SavedDocDao savedDocDao = new SavedDocDao();
 			   //log.debug("studentuploadForm - loadData - Getting SavedDocDAOInfo");
-			   savedDocDao.getAllNonRequiredDocInfo(desc, map, getStudent().getNumber(),getStudent().getAcademicYear(), getStudent().isStuExist(), getStudent().getMatrix());
+			   savedDocDao.getAllNonRequiredDocInfo(desc, map, getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), getStudent().isStuExist(), getStudent().getMatrix());
 		   } catch (Exception e) {
 			   e.printStackTrace();
 		   }
@@ -780,10 +780,10 @@ public class StudentUploadForm extends ValidatorActionForm {
 		map.clear();
 		SavedDocDao savedDocDao = new SavedDocDao();
 		//log.debug("studentuploadForm - reLoad - Reloading uploaded docs..");
-		savedDocDao.getAllNonRequiredDocInfo(desc, map, getStudent().getNumber(),getStudent().getAcademicYear(), getStudent().isStuExist(), getStudent().getMatrix());
+		savedDocDao.getAllNonRequiredDocInfo(desc, map, getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), getStudent().isStuExist(), getStudent().getMatrix());
 		for(FileBean fb : requiredFileBeans){
 			//log.debug("studentuploadForm - reLoad - Setting FileBean Uploaded..");
-			fb.setUploaded(savedDocDao.getSavedDocByDoc(fb.getDoc().getDocCode(),getStudent().getNumber(),getStudent().getAcademicYear()));
+			fb.setUploaded(savedDocDao.getSavedDocByDoc(fb.getDoc().getDocCode(),getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod()));
 		}
 		//log.debug("studentuploadForm - reLoad - Done");
 	}
