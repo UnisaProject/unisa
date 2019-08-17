@@ -81,7 +81,7 @@ public class DocDao extends StudentSystemDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Doc> getAllRequiredDocs(String studentNr, String year, String required, String matrix, boolean isStuExist, String loginSelectMain) throws Exception{
+	public List<Doc> getAllRequiredDocs(String studentNr, String year, String period, String required, String matrix, boolean isStuExist, String loginSelectMain) throws Exception{
 
 		//log.debug("DocDao - getAllRequiredDocs - isStuExist: " + isStuExist + " studentNr: " + studentNr + " year: " + year + " required: " + required + " matrix: " + matrix);
 		
@@ -113,11 +113,11 @@ public class DocDao extends StudentSystemDAO {
 				//log.debug("DocDao - getDocs - NEWSTU - In New Student");
 				//Get choice 1 and 2 from STUAPQ for New Student
 
-				StudySelected selected = querySTUAPQSelected(studentNr, year);				
+				StudySelected selected = querySTUAPQSelected(studentNr, year, period);				
 				String spec = (selected==null||selected.getDocSpec()==null) ||"0".equals(selected.getDocSpec()) ? " " :selected.getDocSpec();
 				String qual = (selected==null||selected.getDocQual()==null) ||"0".equals(selected.getDocQual()) ? "" :selected.getDocQual();
 				
-				StudySelected selectedNew = querySTUAPQSelectedNew(studentNr, year);
+				StudySelected selectedNew = querySTUAPQSelectedNew(studentNr, year, period);
 				String qual1 = selectedNew.getDocQual1()==null ||"0".equals(selectedNew.getDocQual1()) ? "" :selectedNew.getDocQual1();
 				String qual2 = selectedNew.getDocQual2()==null ||"0".equals(selectedNew.getDocQual2()) ? "" :selectedNew.getDocQual2();
 				String spec1 = selectedNew.getDocSpec1()==null ||"0".equals(selectedNew.getDocSpec1()) ? " " :selectedNew.getDocSpec1();
@@ -244,17 +244,18 @@ public class DocDao extends StudentSystemDAO {
 		return docs;
 	}
 	
-	public StudySelected querySTUAPQSelected(String studentNr, String acaYear) throws Exception{
+	public StudySelected querySTUAPQSelected(String studentNr, String acaYear, String period) throws Exception{
 
 		try {
 			String query = "select new_qual as qualification_code, new_spes as speciality_code "
 						+ " from STUAPQ "
 						+ " where mk_student_nr = ? "
-						+ " and academic_year = ? ";
+						+ " and academic_year = ? "
+						+ " and application_period = ?";
 
 			//log.debug("DocDao - queryStudySelected - query: " + query+"studentNr="+studentNr+", acaYear="+acaYear);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 			Iterator<?> i = queryList.iterator();
 			if (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
@@ -282,7 +283,7 @@ public class DocDao extends StudentSystemDAO {
 		return null;
 	}
 
-	public StudySelected querySTUAPQSelectedNew(String studentNr, String acaYear) throws Exception {
+	public StudySelected querySTUAPQSelectedNew(String studentNr, String acaYear, String period) throws Exception {
 
 		StudySelected selectedNew = new StudySelected();
 
@@ -293,11 +294,12 @@ public class DocDao extends StudentSystemDAO {
 								+ " from STUAPQ "
 								+ " where mk_student_nr = ? "
 								+ " and academic_year = ? "
+								+ " and application_period = ?"
 								+ " order by choice_nr";
 
 			//log.debug("DocDao - queryStudySelectedNew - query: " + query+"studentNr="+studentNr+", acaYear="+acaYear);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 			Iterator<?> i = queryList.iterator();
 			if (i.hasNext()) {
 				while (i.hasNext()) {
@@ -335,7 +337,7 @@ public class DocDao extends StudentSystemDAO {
 		return null;
 	}
 	
-	public String getSTUAPQStatus(String studentNr,String acaYear) throws Exception{
+	public String getSTUAPQStatus(String studentNr,String acaYear, String period) throws Exception{
 		
 		String checkAP = "";
 
@@ -344,11 +346,12 @@ public class DocDao extends StudentSystemDAO {
 						+ " from STUAPQ "
 						+ " where mk_student_nr = ? "
 						+ " and academic_year = ? "
+						+ " and application_period = ?"
 						+ " and status_code in ('AP','TN','RG') ";
 			
 			//log.debug("DocDao - getSTUAPQStatus - query: " + query );
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear});
+			List<?> queryList = jdt.queryForList(query, new Object []{studentNr, acaYear, period});
 			Iterator<?> i = queryList.iterator();
 			if (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
