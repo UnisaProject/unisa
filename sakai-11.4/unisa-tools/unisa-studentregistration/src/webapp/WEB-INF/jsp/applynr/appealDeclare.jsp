@@ -118,7 +118,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    //Declare Radio
 			var agreeVal = $('input[name=agree]:checked').val();
 			if(agreeVal != "Y"){
-				showError("Error","Please indicate your agreement to the declaration and undertaking.");
+				showError("Note","Please indicate your agreement to the declaration and undertaking.");
 				return false;
 		    }
 			//doSubmit("Continue");

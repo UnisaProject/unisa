@@ -259,39 +259,39 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var radioComplete = $("input:radio[name='studentApplication.completeQual']:checked").val();
 				
 			if (radioCounsel == null || radioCounsel == "" || radioCounsel == "undefined"){
-				showError("Warning", "Please confirm if you require further Career counceling.");
+				showError("Note", "Please confirm if you require further Career counceling.");
 				return false;
 			}
 			if (radioStaff == null || radioStaff == "" || radioStaff == "undefined"){
-				showError("Warning", "Please confirm if you are a current or retired Unisa staff member.");
+				showError("Note", "Please confirm if you are a current or retired Unisa staff member.");
 				return false;
 			}
 			if (radioDeceased == null || radioDeceased == "" || radioDeceased == "undefined"){
-				showError("Warning", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member.");
+				showError("Note", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member.");
 				return false;
 			}
 			if (radioPrisoner == null || radioPrisoner == "" || radioPrisoner == "undefined"){
-				showError("Warning", "Please confirm if you are a prisoner.");
+				showError("Note", "Please confirm if you are a prisoner.");
 				return false;
 			}
 			var valExam = $("select[name='selectedExamCentre']").find("option:selected").val();
 			if (valExam == null || valExam == "" || valExam == "undefined" || valExam == "-1"){
-				showError("Warning", "Please select an Examination Centre."); 
+				showError("Note", "Please select an Examination Centre."); 
 				return false;
 			}
 			if (radioNSFAS == null || radioNSFAS == "" || radioNSFAS == "undefined"){
-				showError("Warning", "Please indicate whether you will require Financial aid from NSFAS.");
+				showError("Note", "Please indicate whether you will require Financial aid from NSFAS.");
 				return false;
 			}
 			if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
-				showError("Warning", "Please confirm if you are in the process of completing a qualification.");
+				showError("Note", "Please confirm if you are in the process of completing a qualification.");
 				return false;
 			}else{
 				if (radioComplete == "Y"){ 
 					 var comment = $.trim($('#completeText').val());
 					 if(comment.length == 0){
 					    // textarea is empty or contains only white-space
-						showError("Warning", "Please enter which qualification you will be completing.");
+						showError("Note", "Please enter which qualification you will be completing.");
 						return false;
 					}
 				}

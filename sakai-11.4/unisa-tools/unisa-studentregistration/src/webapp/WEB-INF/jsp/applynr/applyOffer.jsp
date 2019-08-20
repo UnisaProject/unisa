@@ -195,7 +195,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				isSet2 = true;
 			}
 			if (isSet1 === false && isSet2 === false){
-				showError("Error", "Please select an offer of admission to accept, or decline or Cancel to quit");
+				showError("Note", "Please select an offer of admission to accept, or decline or Cancel to quit");
 				return false;
 			}else{
 				if (radioSelected1 == "Y"){

@@ -424,7 +424,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var subjectText = $("select[name='subjectName1']").find("option:selected").text();
 			if (subject==null || subject==="0" || subject=="" || subject==="undefined" || subject==="false" || subject==false || !subject){
 				checkError = true;
-				showError("Error", "Please select at least one subject");
+				showError("Note", "Please select at least one subject");
 				return false;
 			}
 				
@@ -440,18 +440,18 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						var subjectSymbol = $("select[name='subjectSymbol"+i+"']").find("option:selected").val();
 						if (subjectGrade==null || subjectGrade=="" || subjectGrade==="0" || subjectGrade==="undefined" || subjectGrade==="false" || subjectGrade==false || !subjectGrade){
 							checkError = true;
-							showError("Error", "Please select a Grade for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Grade for subject: <br/>"+subjectText);
 							return false;
 						}else if (subjectSymbol==null || subjectSymbol=="" || subjectSymbol==="0" || subjectSymbol==="undefined" || subjectSymbol==="false" || subjectSymbol==false || !subjectSymbol){
 							checkError = true;
-							showError("Error", "Please select a Result/Symbol for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Result/Symbol for subject: <br/>"+subjectText);
 							return false;
 						}
 					}else if(matCert === "DEGR" || matCert === "DIPL" || matCert === "HCER"){
 						var subjectResult = $("select[name='subjectResult"+i+"']").find("option:selected").val();
 						if (subjectResult==null || subjectResult=="" || subjectResult==="0" || subjectResult==="undefined" || subjectResult==="false" || subjectResult==false || !subjectResult){
 							checkError = true;
-							showError("Error", "Please select a Result for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Result for subject: <br/>"+subjectText);
 							return false;
 						}
 					}
@@ -468,18 +468,18 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						var subjectSymbol = $("select[name='subjectSymbol"+i+"']").find("option:selected").val();
 						if (subjectGrade==null || subjectGrade=="" || subjectGrade==="0" || subjectGrade==="undefined" || subjectGrade==="false" || subjectGrade==false || !subjectGrade){
 							checkError = true;
-							showError("Error", "Please select a Grade for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Grade for subject: <br/>"+subjectText);
 							return false;
 						}else if (subjectSymbol==null || subjectSymbol=="" || subjectSymbol==="0" || subjectSymbol==="undefined" || subjectSymbol==="false" || subjectSymbol==false || !subjectSymbol){
 							checkError = true;
-							showError("Error", "Please select a Result/Symbol for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Result/Symbol for subject: <br/>"+subjectText);
 							return false;
 						}
 					}else if(matCert === "DEGR" || matCert === "DIPL" || matCert === "HCER"){
 						var subjectResult = $("select[name='subjectResult"+i+"']").find("option:selected").val();
 						if (subjectResult==null || subjectResult=="" || subjectResult==="0" || subjectResult==="undefined" || subjectResult==="false" || subjectResult==false || !subjectResult){
 							checkError = true;
-							showError("Error", "Please select a Result for subject: <br/>"+subjectText);
+							showError("Note", "Please select a Result for subject: <br/>"+subjectText);
 							return false;
 						}
 					}
@@ -490,7 +490,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			if(matCert === "DEGR" || matCert === "DIPL" || matCert === "HCER"){
 				if (isLOR == true  && isSelected == false){
 					checkError = true;
-					showError("Error", "Please select another subject other than, <br/>or in addition to Life Orientation");
+					showError("Note", "Please select another subject other than, <br/>or in addition to Life Orientation");
 					return false;
 				}
 			}
@@ -499,7 +499,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    	$.blockUI({ message: "<strong><img src='<c:url value='/resources/images/ajax-loader.gif' />' alt=' * ' /> <br>Processing. Please wait...</strong>" });
 		    	//doSubmit("Continue");
 		  	}else{
-		  		showError("Error", "An error occurred during processing of the page. Please check all your information or restart application process.");
+		  		showError("Note", "An error occurred during processing of the page. Please check all your information or restart application process.");
 				return false;
 		  	}
 		}
