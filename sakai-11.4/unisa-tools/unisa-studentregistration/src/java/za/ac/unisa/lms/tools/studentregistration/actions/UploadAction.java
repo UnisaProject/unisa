@@ -646,7 +646,9 @@ public class UploadAction extends DispatchAction {
 				//Note! If gencod.EngDescription='Y' then overwrite default application period with value in gencod.AfrDescription
 				if (gencod!=null && gencod.getEngDescription()!=null && gencod.getEngDescription().equalsIgnoreCase("N")){
 					sendLetter = false;
-				}			
+				}	
+				
+				String logPoint = "start";
 				
 				if (sendLetter) {
 					log.debug("UploadAction - Upload - Do Staae05sAppAdmissionEvaluator Letter");
@@ -664,14 +666,18 @@ public class UploadAction extends DispatchAction {
 						op.setInCsfClientServerCommunicationsAction("PR");
 						op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
 						op.setInWsUserNumber(99998);
-						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
+						logPoint = "Before setting AcadYear";						
+						log.debug("Unisa-StudentRegistration - UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Year=" + stuRegForm.getStudent().getAcademicYear());
 						op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
 						op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
-						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
+						logPoint = "Before setting AcadPeriod";	
+						log.debug("Unisa-StudentRegistration - UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Academic Period=" + stuRegForm.getStudent().getAcademicPeriod());
 						op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
-						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
+						logPoint = "Before setting StudentNr";	
+						log.debug("Unisa-StudentRegistration - UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Student Number=" + stuRegForm.getStudent().getNumber());
 						op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
-						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Qual1" + stuRegForm.getStudent().getQual1());
+						logPoint = "Before setting Qual";	
+						log.debug("Unisa-StudentRegistration - UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Qual1" + stuRegForm.getStudent().getQual1());
 						op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual1());
 						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - RetQualOneFinal=" + stuRegForm.getStudent().getRetQualOneFinal());
 						//op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getRetQualOneFinal());
@@ -683,6 +689,8 @@ public class UploadAction extends DispatchAction {
 						//log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Basic Status="+status);
 						//op.setInWebStuApplicationQualStatusCode(status);
 						
+						logPoint = "Before Execute";	
+						
 						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) - Execute");
 			
 						op.execute();
@@ -690,13 +698,15 @@ public class UploadAction extends DispatchAction {
 						if (opl.getException() != null) throw opl.getException();
 						if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
 			
-						log.debug("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
+						logPoint = "After Execute";	
+						
+						log.warn("UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute");
 						String opResult = "No Result";
 						opResult = op.getOutCsfStringsString500();
 						log.debug("UploadAction - Upload - (Staae05sAppAdmissionEvaluator) opResult: " + opResult);
 					}catch(Exception e){
 						log.debug("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
-						log.warn("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - After Execute / sessionID=" + request.getSession().getId() + " / Error=" + e );
+						log.warn("Unisa-StudentRegistration - UploadAction - Upload - Staae05sAppAdmissionEvaluator - last execution=" + logPoint + " sessionID=" +  request.getSession().getId() + " / Error=" + e );
 					}
 					/**End of Send Letter**/
 					/*Johanet 2018July - end of enabling code*/
