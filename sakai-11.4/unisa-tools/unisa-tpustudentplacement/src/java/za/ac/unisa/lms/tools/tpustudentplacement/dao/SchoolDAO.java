@@ -19,6 +19,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SchoolListRecord;
+import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 
 public class SchoolDAO extends StudentSystemDAO {
 	                    databaseUtils dbutil;
@@ -38,62 +39,71 @@ public class SchoolDAO extends StudentSystemDAO {
                       
              private String getSqlForSelectingnSchools(String strForColumnsToBeSelected,String strForColumnsToBeSelectedSubProv,String type,String category,String country,Short province,Short district,
                                               String filter){
-                      		                   String  sqlForProv="", sqlForSubProv="" ,lastPartOfSql="";
-                                           if((province==null)||(Province.isProvince(province))||(province.compareTo(Short.parseShort("0"))==0)){
-                                                                      sqlForProv = "select " + strForColumnsToBeSelected+
-        		                                                     "  from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
-                                                                     "  where  a.mk_country_code = c.code" +
-                                                                    " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code";
-                                      	   }else{
-                          		                   sqlForSubProv= "select  "+strForColumnsToBeSelectedSubProv+
-                                                                       "  from tpusch a, tpusubPrv b, lns c, gencod d, gencod e, ldd f" +
-                                                                      "  where  a.mk_country_code = c.code" +
-                                                                        "  and a.mk_district_code = f.code   and f.fk_subPrv_code= b.code ";
-                                        	}
-                                               	lastPartOfSql+= "  and a.type_gc148 = d.code  and d.fk_gencatcode=148  and a.category_gc149 = e.code" +
-                                                                          "  and e.fk_gencatcode=149 ";
-                                               if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
-	                                                                  lastPartOfSql= lastPartOfSql + " and d.code = '" + type + "'";
-                                              }
-                                              if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
-	                                                                  lastPartOfSql =lastPartOfSql+ " and e.code = '" + category + "'";
-                                              }
-                                              if (country!=null && !country.trim().equalsIgnoreCase("")){
-  	                                                                     lastPartOfSql=lastPartOfSql + " and c.code = '" + country + "'";
-                                              }
-                                             if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
-  	                                                          lastPartOfSql= lastPartOfSql + " and b.code = " + province; 
-                                               }
-                                               if (district!=null && district!=0){
-                                                      	 lastPartOfSql = lastPartOfSql+ " and f.code=" + district;
-                                              }
-                                              if (filter!=null && !filter.trim().equalsIgnoreCase("")){
-                                                                  filter = filter.replaceAll("'", "''");
-                                                                  lastPartOfSql = lastPartOfSql + " and a.name like '" + filter.trim().toUpperCase() + "'";
-                                              }
-                                              lastPartOfSql= lastPartOfSql+ " order by a.name";
-                                               sqlForProv+= lastPartOfSql;
-                                               sqlForSubProv += lastPartOfSql;
-                                               String sql="select  "+sqlForProv+"   union  "+  sqlForSubProv;
-                                         return sql;
-                      	}
+                      		                                          String  sql ,lastPartOfSql="";
+                      		                                          lastPartOfSql=  getLlastPart(type,category,country, province,district, filter);
+                                                                     sql = "select " + strForColumnsToBeSelected+
+        		                                                              "  from tpusch a, prv b, lns c, gencod d, gencod e, ldd f" +
+                                                                              "  where  a.mk_country_code = c.code" +
+                                                                               " and  a.mk_prv_code = b.code  and a.mk_district_code = f.code  and f.fk_tpusubprv_code is null";
+                                                                     sql+= "  and a.type_gc148 = d.code  and d.fk_gencatcode=148  and a.category_gc149 = e.code" +
+                                                                             "  and e.fk_gencatcode=149  ";
+                                                                     sql+=  lastPartOfSql;
+                                                                      sql+= " union select  "+strForColumnsToBeSelectedSubProv+
+                                                                          "  from tpusch a, tpusubPrv b, lns c, gencod d, gencod e, ldd f" +
+                                                                          "  where  a.mk_country_code = c.code" +
+                                                                          "  and a.mk_district_code = f.code   and f.fk_tpusubPrv_code= b.code ";
+                                                                       sql+= "  and a.type_gc148 = d.code  and d.fk_gencatcode=148  and a.category_gc149 = e.code" +
+                                                                               "  and e.fk_gencatcode=149  ";
+                                                                       sql+=  lastPartOfSql;
+                                                                       sql+= " order by schName";
+                                                                       
+                                                   return sql;
+            	}
+                private String      getLlastPart(String type,String category,String country,Short province,Short district,
+                                                  String filter){
+                                                                   	 String lastPartOfSql="";
+                                                                     if (type!=null && !type.trim().equalsIgnoreCase("") && !type.trim().equalsIgnoreCase("All")){
+          	                                                                      lastPartOfSql+=  " and d.code = '" + type + "'";
+                                                                        }
+                                                                        if (category!=null && !category.trim().equalsIgnoreCase("") && !category.trim().equalsIgnoreCase("All")){
+          	                                                                      lastPartOfSql+=  " and e.code = '" + category + "'";
+                                                                       }
+                                                                        if (country!=null && !country.trim().equalsIgnoreCase("")){
+          	                                                                            lastPartOfSql+= " and c.code = '" + country + "'";
+          	                                                                            if(country.trim().equals(PlacementUtilities.getSaCode())){
+          	                                                                                              if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
+          	                            	                                                                             lastPartOfSql+=  " and b.code = " + province; 
+                                                                                                         }
+                                                                                                         if (district!=null && district!=0){
+                                      	                                                                               lastPartOfSql+=" and f.code=" + district;
+                                                                                                          }
+          	                                                                            }
+          	                                                              }
+                                                                           if (filter!=null && !filter.trim().equalsIgnoreCase("")){
+                                                                                            filter = filter.replaceAll("'", "''");
+                                                                                            lastPartOfSql+=  " and a.name like '" + filter.trim().toUpperCase() + "'";
+                                                                         }
+          
+                                                    return  lastPartOfSql;
+             }
+     
                         public List getSchoolList(String type,String category,String country,Short province,Short district,
 			                                                        String filter) throws Exception {
                         	                                                                            String strForColumnsToBeSelected="  a.code as schCode, a.name as schName, a.in_use_flag as schInUse, " +
                                                                                                                          "  d.eng_description as schType, e.eng_description as schCategory," +
                                                                                                                          "  b.code as schProvCode, b.eng_description as schProv, c.eng_description as schCountry, " +
-                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict" ;
+                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict " ;
                                                                                                        String strForColumnsToBeSelectedSubProv =" a.code as schCode, a.name as schName, a.in_use_flag as schInUse,  " +
                                                                                                                          "  d.eng_description as schType, e.eng_description as schCategory," +
-                                                                                                                         "  b.code as schProvCode, b.description as schProv, c.eng_description as schCountry, " +
-                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict " ;
+                                                                                                                         "  b.code as schProvCode, b.eng_description as schProv, c.eng_description as schCountry, " +
+                                                                                                                         "  f.code as schDistrictCode, f.eng_description as schDistrict  " ;
                                                                                                      String sql= getSqlForSelectingnSchools(strForColumnsToBeSelected,strForColumnsToBeSelectedSubProv,type,category, country,province, district,filter);
 			                                                                                          List listSchool=getSchoolListFromDatabase(sql,country);
 		                                                                                         return listSchool;		
 	                    }
                         public List getSchoolList(String country,Short province,Short district) throws Exception {
-                                                                     String strForColumnsToBeSelected=" a.code as schCode a.name as schoolName, f.eng_description as dist, b.eng_description as prov";
-                                                                     String strForColumnsToBeSelectedSubProv =" a.code as schCode a.name as schoolName, f.eng_description as dist, b.description as prov";
+                                                                     String strForColumnsToBeSelected=" a.code as schCode a.name as schoolName, f.eng_description as dist, b.eng_description as prov ";
+                                                                     String strForColumnsToBeSelectedSubProv =" a.code as schCode a.name as schoolName, f.eng_description as dist, b.eng_description as prov ";
                                                                      String sql= getSqlForSelectingnSchools(strForColumnsToBeSelected,strForColumnsToBeSelectedSubProv,null,null, country,province, district,null);
                                                         return getSchoolListFromDatabase(sql);		
                         }

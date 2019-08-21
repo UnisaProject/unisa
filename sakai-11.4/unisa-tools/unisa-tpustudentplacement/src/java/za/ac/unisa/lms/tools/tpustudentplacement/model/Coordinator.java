@@ -79,9 +79,7 @@ public class Coordinator extends Personnel{
             	                    SchoolUI school=new SchoolUI();
 	    	                        String schoolName=school.getSchoolName(schoolCode);
 	    	                        if(school.isSchoolLocal(schoolCode)){
-	    	                        	    ProvinceUI  prov=new ProvinceUI ();
-	            	                        prov.setProvinceData(schoolCode);
-		    	                            message+=("Placement is linked to a Dummy Supervisor.The province ( "+ prov.getDescription()+" )  where the school ("+
+	    	                        	       message+=("Placement is linked to a Dummy Supervisor.The province ( "+ school.getSchoolProvinceDescription(schoolCode)+" )  where the school ("+
 	    	                        		schoolName+") is situated has no"+
 	    	                                " Provincial Workstation coordinator.The email can't be sent till this error is fixed");
 	    	                        }else{

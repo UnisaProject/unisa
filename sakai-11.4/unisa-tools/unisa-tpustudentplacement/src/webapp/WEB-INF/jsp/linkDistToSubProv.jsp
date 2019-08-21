@@ -24,11 +24,12 @@
 				        <td><bean:write name="studentPlacementForm" property="district.provinceName"/></td>	
 				</tr>
 				<tr>
-							<td style="white-space:nowrap;align:top"><fmt:message key="prompt.district"/>&nbsp;</td>
-						<html:select name="studentPlacementForm" property="district.subProvCode" multiple="false" size="20">
-							<html:optionsCollection name="studentPlacementForm" property="listSubProvince" value="value" label="label"/>
-						</html:select>
-				</td>				
+							<td style="white-space:nowrap;align:top"><fmt:message key="prompt.column.subprovince"/></td>
+						    <td><html:select name="studentPlacementForm" property="district.subProvCode"  >
+							              <html:optionsCollection name="studentPlacementForm" property="listSubProvincesOfProvince" value="code" label="description"/>
+					               	</html:select>
+						</td>
+				</tr>				
 			</sakai:group_table>
 		<sakai:actions>
 			<html:submit property="action">
@@ -37,12 +38,6 @@
 			<html:submit property="action">
 					<fmt:message key="button.back"/>
 			</html:submit>	
-			<html:submit property="action">
-					<fmt:message key="button.next"/>
-			</html:submit>	
-			<html:submit property="action">
-					<fmt:message key="button.prev"/>
-			</html:submit>			
-	 </sakai:actions>						
+			 </sakai:actions>						
 	</html:form>
 </sakai:html>

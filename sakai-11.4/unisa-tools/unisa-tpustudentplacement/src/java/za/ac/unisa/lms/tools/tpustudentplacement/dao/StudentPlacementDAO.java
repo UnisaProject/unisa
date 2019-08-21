@@ -13,6 +13,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.dao.databaseUtils;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.schoolImpl.SchoolUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
@@ -227,7 +228,8 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
 	                    " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
 	                    " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
 	                    " to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-	                    " a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year, a.semester_period  semester,email_to_sup as dateSent,stu_FullTime_sch";
+	                    " a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  as year, a.semester_period   as semester,"+
+	                    "email_to_sup as dateSent,stu_FullTime_sch";
                if((country!=null)&&country.equals(databaseUtils.saCode)){
             	   sqlStr+=" ,a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+mentordatasql+" from tpuspl a, tpusch b, tpusup c, stu d, ldd e";
                }else{
@@ -244,16 +246,22 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
                       Integer supervisor, Integer school, String module, String sortOn,String country){
 	     
 	                  String sql=getFirstPartOfSqlStrForPlacementList(acadYear,semester,country);       
-	                  if((country!=null)&&country.equals(databaseUtils.saCode)){  
-                               sql+=" and b.mk_district_code=e.code";
-                      }
-                      if((country!=null)&&country.equals(databaseUtils.saCode)){
+	                 if((country!=null)&&country.equals(databaseUtils.saCode)){
+	                                    if((country!=null)&&country.equals(databaseUtils.saCode)){  
+                                                         sql+=" and b.mk_district_code=e.code";
+                                       }
+               
                              if (province!=null && province.compareTo(Short.parseShort("0"))>0){
-                                  sql = sql.trim() + " and b.mk_prv_code=" + province;
-                             }
+                            	                  if(Province.isProvince(province)){
+                            	                      sql = sql.trim() + "   and b.mk_prv_code=" + province;
+                            	                  }else{
+                            	                         sql = sql.trim() + "  and  "+ province+" = ( select fk_tpusubprv_code  from ldd where  code=  b.mk_district_code   )" ;
+                            	                  }
+                              }
                              if (district!=null && district.compareTo(Short.parseShort("0"))>0){
                                    sql = sql.trim() + " and b.mk_district_code=" + district;
                              }
+                           
                      }
                      if (school!=null && school!=0){
                             sql = sql.trim() + " and a.mk_school_code=" + school;

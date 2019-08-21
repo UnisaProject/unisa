@@ -15,6 +15,7 @@ import org.apache.struts.actions.LookupDispatchAction;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.DistrictUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.SubProvinceUI;
 
 public class DistrictAction extends LookupDispatchAction{
 	private class operListener implements java.awt.event.ActionListener {
@@ -44,17 +45,23 @@ public class DistrictAction extends LookupDispatchAction{
 		map.put("button.remove", "removeDistrictFromSubProv");	
 		return map;
 	}
-		public ActionForward prevPage(
+	public ActionForward prevPage(
 			ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-
-			return mapping.findForward(studentPlacementForm.getPreviousPage());	
+	                	StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+	                	if( studentPlacementForm.getCurrentPage().equals("districtScreen")){
+	                	   	              studentPlacementForm.setPreviousPage("inputStudentPlacement");
+	                	 }
+	                	 if(  studentPlacementForm.getCurrentPage().equals("linkDistToSubProv")){
+               	   	                    studentPlacementForm.setPreviousPage("districtScreen");
+               	          }
+	                	 studentPlacementForm.setCurrentPage( studentPlacementForm.getPreviousPage());
+                 	return mapping.findForward(studentPlacementForm.getPreviousPage());	
 		}
-	public ActionForward linkDistrictToSubProv(
+public ActionForward linkDistrictToSubProv(
 			                                           ActionMapping mapping,
 		                                    	       ActionForm form,
 			                                           HttpServletRequest request,
@@ -80,28 +87,26 @@ public class DistrictAction extends LookupDispatchAction{
 		                                                             		District district = new District();
 		                                                             		for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
 		                                                             			String array[] = studentPlacementForm.getIndexNrSelected();
-		                                                             			district = (District)studentPlacementForm.getListDistrict().get(Integer.parseInt(array[i]));			
+		                                                             			district = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));			
 		                                                             			studentPlacementForm.setSelectedDistrictIndex(i);
 		                                                             			i=studentPlacementForm.getIndexNrSelected().length;
 		                                                             		}
 		                                                             		studentPlacementForm.setDistrict(district);
-		                                                             		     SubProvince subProvince=new SubProvince();
-		                                                                     List  subProvincesList=subProvince.getSubProvinceList(studentPlacementForm.getDistrict().getProvince().getCode());
-		                                                                     studentPlacementForm.setListSubProvince(subProvincesList);
-		                                                                     studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
+		                                                             		 SubProvinceUI  subProvinceUI  = new SubProvinceUI();
+		                                		                             subProvinceUI.setSubProvinceListToFrom(studentPlacementForm);
+		                                			                         studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
 		                                                                    studentPlacementForm.setCurrentPage("linkDistToSubProv");
 		                                                                 	return mapping.findForward( studentPlacementForm.getCurrentPage());	
 	}
 		public ActionForward initial(
-			                         ActionMapping mapping,
-			                        ActionForm form,
-			                        HttpServletRequest request,
-			                        HttpServletResponse response) throws Exception {
-		
-		                                                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		                                                         studentPlacementForm.setPreviousPage("inputStudentPlacement");
-		                                                         studentPlacementForm.setCurrentPage("districtScreen");
-		                              return mapping.findForward("districtScreen");
+			                                           ActionMapping mapping,
+			                                           ActionForm form,
+			                                           HttpServletRequest request,
+			                                           HttpServletResponse response) throws Exception {
+			                                                                                       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+			                                                                                       studentPlacementForm.setPreviousPage("inputStudentPlacement");
+		                                                                                           studentPlacementForm.setCurrentPage("districtScreen");
+		                                                                               return mapping.findForward("districtScreen");
 	}
 	
 	public ActionForward display(
@@ -171,7 +176,7 @@ return mapping.findForward("districtScreen");
 District district = new District();
 for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
 		String array[] = studentPlacementForm.getIndexNrSelected();
-		district = (District)studentPlacementForm.getListDistrict().get(Integer.parseInt(array[i]));			
+		district = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));			
 		studentPlacementForm.setSelectedDistrictIndex(i);
 		i=studentPlacementForm.getIndexNrSelected().length;
 	}
