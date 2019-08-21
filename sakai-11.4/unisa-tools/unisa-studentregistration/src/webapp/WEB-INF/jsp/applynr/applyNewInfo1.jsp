@@ -112,37 +112,37 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 
 			var language = $("select[name='selectedHomeLanguage']").find("option:selected").val();
 			if (language == "-1"){
-				showError("Error", "Please select your home language");
+				showError("Note", "Please select your home language");
 				return false;
 			}
 			var isTwin = $("input:radio[name='student.twinflag']:checked").val();
 			if (isTwin !== "Y" && isTwin !== "N"){
-				showError("Error", "Please indicate if you have a twin sibling");
+				showError("Note", "Please indicate if you have a twin sibling");
 				return false;
 			}
 			var nationality = $("select[name='selectedNationality']").find("option:selected").val();
 			if (nationality == "-1"){
-				showError("Error", "Please select your nationality");
+				showError("Note", "Please select your nationality");
 				return false;
 			}
 			var population = $("select[name='selectedPopulationGroup']").find("option:selected").val();
 			if (population == "-1"){
-				showError("Error", "Please select your population group");
+				showError("Note", "Please select your population group");
 				return false;
 			}
 			var occupation = $("select[name='selectedOccupation']").find("option:selected").val();
 			if (occupation == "-1"){
-				showError("Error", "Please select your occupation");
+				showError("Note", "Please select your occupation");
 				return false;
 			}
 			var economic = $("select[name='selectedEconomicSector']").find("option:selected").val();
 			if (economic == "-1"){
-				showError("Error", "Please select your economic sector");
+				showError("Note", "Please select your economic sector");
 				return false;
 			}
 			var activity = $("select[name='selectedPrevActivity']").find("option:selected").val();
 			if (activity == "-1"){
-				showError("Error", "Please select your previous activity");
+				showError("Note", "Please select your previous activity");
 				return false;
 			}
 		}

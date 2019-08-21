@@ -112,19 +112,19 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var ndpRegList1 = $("input[name='studentApplication.ndpRegSu1']").val();
 			
 			if (radioPrev == null || radioPrev == "" || radioPrev == "undefined"){
-				showError("Error", "Please indicate if you have previously applied for postgraduate qualifications at Unisa");
+				showError("Note", "Please indicate if you have previously applied for postgraduate qualifications at Unisa");
 				return false;
 			}
 			if (radioRPL == null || radioRPL == "" || radioRPL == "undefined"){
-				showError("Error", "Please indicate if you applied for direct admission via the Recognition of Prior Learning (RPL) route");
+				showError("Note", "Please indicate if you applied for direct admission via the Recognition of Prior Learning (RPL) route");
 				return false;
 			}
 			if (radioNDP == null || radioNDP == "" || radioNDP == "undefined"){
-				showError("Error", "Please indicate if you have completed or if you wish to register for any non-degree purposes (NDP) module/s to gain admission to a specific qualification");
+				showError("Note", "Please indicate if you have completed or if you wish to register for any non-degree purposes (NDP) module/s to gain admission to a specific qualification");
 				return false;
 			}
 			if (radioNDP == "Y" && (ndpRegList1 == null || ndpRegList1 == "" || ndpRegList1 == "undefined")){
-				showError("Error", "Please enter at least one Study Unit or Module you wish to register for.");
+				showError("Note", "Please enter at least one Study Unit or Module you wish to register for.");
 				return false;
 			}
 			doSubmit("Continue");

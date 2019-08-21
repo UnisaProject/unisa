@@ -314,15 +314,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var textComplete = $('#completeText').val();
 			
 			if (radioStaff == null || radioStaff == "" || radioStaff == "undefined"){
-				showError("Error", "Please confirm if you are a current or retired Unisa staff member.");
+				showError("Note", "Please confirm if you are a current or retired Unisa staff member.");
 				return false;
 			}
 			if (radioDeceased == null || radioDeceased == "" || radioDeceased == "undefined"){
-				showError("Error", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member.");
+				showError("Note", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member.");
 				return false;
 			}
 			if (radioPrison == null || radioPrison == "" || radioPrison == "undefined"){
-				showError("Error", "Please confirm if you are a Prisoner.");
+				showError("Note", "Please confirm if you are a Prisoner.");
 				return false;
 			}
 			
@@ -330,16 +330,16 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			if (isStuRegistered == "false"){
 				var valExam = $("select[name='selectedExamCentre']").find("option:selected").val();
 				if (valExam == null || valExam == "" || valExam == "undefined" || valExam == "-1"){
-					showError("Warning", "Please select an Examination Centre."); 
+					showError("Note", "Please select an Examination Centre."); 
 					return false;
 				}
 			}
 			if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
-				showError("Error", "Please confirm if you are in the process of completing a qualification.");
+				showError("Note", "Please confirm if you are in the process of completing a qualification.");
 				return false;
 			}
 			if (radioComplete == "Y" && (textComplete == null || textComplete == "" || textComplete == "undefined")){
-				showError("Error", "Please enter which qualification you will be completing.");
+				showError("Note", "Please enter which qualification you will be completing.");
 				return false;
 			}
 			doSubmit("Continue");

@@ -135,7 +135,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		function validateSelect(){
 			var matricVal = $('input[name="selectMatric"]:checked').val();
 			if(matricVal == null || matricVal == "" || matricVal == "undefinded"){
-				showError("Error", "Please select a Higher Education option");
+				showError("Note", "Please select a Higher Education option");
 				return false;
 			}
 		}

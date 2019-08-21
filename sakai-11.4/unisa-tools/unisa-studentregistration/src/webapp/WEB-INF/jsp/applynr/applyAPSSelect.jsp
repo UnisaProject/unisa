@@ -119,7 +119,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			if (button === "Continue"){
 				var matricVal = $('input[name="selectHEMain"]:checked').val();
 				if(matricVal == null || matricVal == "" || matricVal == "undefinded"){
-					showError("Error", "Please select a Higher Education option");
+					showError("Note", "Please select a Higher Education option");
 					return false;
 				}
 				document.studentRegistrationForm.action='applyForStudentNumber.do?act=stepAPSSelect';

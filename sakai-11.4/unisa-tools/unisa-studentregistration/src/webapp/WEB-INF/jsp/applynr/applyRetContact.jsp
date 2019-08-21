@@ -155,31 +155,31 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			//alert("In Validate");
 			var cellNr1 = $("input[name='student.cellNr']").val();
 			if (cellNr1 == null || cellNr1 == "" || cellNr1 == "undefined"){
-				showError("Error", "Please enter your mobile number");
+				showError("Note", "Please enter your mobile number");
 				return false;
 			}
 			var cellNr2 = $("input[name='student.cellNr2']").val();
 			if (cellNr2 == null || cellNr2 == "" || cellNr2 == "undefined"){
-				showError("Error", "Please confirm your mobile number");
+				showError("Note", "Please confirm your mobile number");
 				return false;
 			}
 			if (cellNr1 != cellNr2){
-				showError("Error", "Entered Mobile numbers do not match. Please try again.");
+				showError("Note", "Entered Mobile numbers do not match. Please try again.");
 				return false;
 			}
 			
 			var email1 = $("input[name='student.emailAddress']").val();
 			if (email1 == null || email1 == "" || email1 == "undefined"){
-				showError("Error", "Please enter your email address");
+				showError("Note", "Please enter your email address");
 				return false;
 			}
 			var email2 = $("input[name='student.emailAddress2']").val();
 			if (email2 == null || email2 == "" || email2 == "undefined"){
-				showError("Error", "Please confirm your email address");
+				showError("Note", "Please confirm your email address");
 				return false;
 			}
 			if (email1 != email2){
-				showError("Error", "Entered Email addresses do not match. Please try again.");
+				showError("Note", "Entered Email addresses do not match. Please try again.");
 				return false;
 			}
 			doSubmit("Continue");
