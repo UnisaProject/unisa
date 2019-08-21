@@ -632,7 +632,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var checkOTHERCountry2 = $("select[name='qualOther.historyOTHERCountry2']").find("option:selected").val();
 			var checkOTHERCountry3 = $("select[name='qualOther.historyOTHERCountry3']").find("option:selected").val();		
 			if (validUnisa != "true" && ((checkOTHERCountry2 == null || checkOTHERCountry2 == "" || checkOTHERCountry2 == "undefined" || checkOTHERCountry2 == "-1") && (checkOTHERCountry3 == null || checkOTHERCountry3 == "" || checkOTHERCountry3 == "undefined" || checkOTHERCountry3 == "-1"))){
-				showError("Error","Please enter at least one degree or diploma for post-graduate studies");
+				showError("Note","Please enter at least one degree or diploma for post-graduate studies");
 				return false;
 			}
 			for (var i = 2; i <16; i++){
@@ -644,43 +644,43 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					var validText = $("input[name='qualOther.historyOTHERUnivText"+i+"']").val();
 					//alert("qualOther.historyOTHERUnivText"+i+"=["+validText+"]");
 					if (validCountry == "1015" && validUniv == "-1"){
-						showError("Error","Please select the Institution or University for the Qualification on Tab "+i);
+						showError("Note","Please select the Institution or University for the Qualification on Tab "+i);
 						return false;
 					}
 					if (validCountry != "1015" && (validText == null || validText == "" || validText == "undefined")){
-						showError("Error","Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						showError("Note","Please enter the Institution name in the field provided for the Qualification on Tab "+i);
 						return false;
 					}
 					if (validUniv === "OTHR" && (validText == null || validText == "" || validText == "undefined")){
-						showError("Error","You selected Other as the Institution. Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						showError("Note","You selected Other as the Institution. Please enter the Institution name in the field provided for the Qualification on Tab "+i);
 						return false;
 					}
 					var validQual = $("input[name='qualOther.historyOTHERQual"+i+"']").val();
 					//alert("qualOther.historyOTHERQual"+i+"=["+validQual+"]");
 					if (validQual == null || validQual == "" || validQual == "undefined"){
-						showError("Error","Please enter the Qualification code or Description for the Qualification on Tab "+i);
+						showError("Note","Please enter the Qualification code or Description for the Qualification on Tab "+i);
 						return false;
 					}
 					var validStart = $("select[name='qualOther.historyOTHERYearStart"+i+"']").find("option:selected").val();
 					//alert("qualOther.historyOTHERYearStart"+i+"=["+validStart+"]");
 					if (validStart == null || validStart == "" || validStart == "undefined" || validStart == "-1"){
-						showError("Error","Please enter the year you first registered for the Qualification on Tab "+i);
+						showError("Note","Please enter the year you first registered for the Qualification on Tab "+i);
 						return false;
 					}
 					var validEnd = $("select[name='qualOther.historyOTHERYearEnd"+i+"']").find("option:selected").val();
 					//alert("qualOther.historyOTHERYearEnd"+i+"=["+validEnd+"]");
 					if (validEnd == null || validEnd == "" || validEnd == "undefined" || validEnd == "-1"){
-						showError("Error","Please enter the year of your last registration or when you completed the Qualification on Tab "+i);
+						showError("Note","Please enter the year of your last registration or when you completed the Qualification on Tab "+i);
 						return false;
 					}
 					if (validStart > validEnd){
-						showError("Error","The last registration or completion year be before the first year for the Qualification on Tab "+i);
+						showError("Note","The last registration or completion year be before the first year for the Qualification on Tab "+i);
 						return false;
 					}
 					var radioComplete = $("input:radio[name='qualOther.historyOTHERComplete"+i+"']:checked").val();	
 					//alert("Final - radioComplete="+radioComplete);
 					if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
-						showError("Error", "Please indicate if you have completed the Qualification on Tab "+i);
+						showError("Note", "Please indicate if you have completed the Qualification on Tab "+i);
 						return false;
 					}else{
 						$("input[name='qualOther.historyOTHERHiddenComplete"+i+"']").val([radioComplete]);
@@ -688,7 +688,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					//alert("Final - qualOther.historyOTHERHiddenComplete"+i+"="+radioComplete);
 				}else{
 					//Johanet 20190729 BRD 2020 requirment 4.1 validate on prev qualification not complete
-					showError("Error","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
+					showError("Note","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
 					return false;
 				}
 			}
@@ -702,7 +702,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var checkOTHERQual2 = $("input[name='qualOther.historyOTHERQual2']").val();
 			var checkOTHERQual3 = $("input[name='qualOther.historyOTHERQual3']").val();
 			if (validUnisa != "true" && ((checkOTHERQual2 == null || checkOTHERQual2 == "" || checkOTHERQual2 == "undefined" || checkOTHERQual2 == "-1") && (checkOTHERQual3 == null || checkOTHERQual3 == "" || checkOTHERQual3 == "undefined" || checkOTHERQual3 == "-1"))){
-				showError("Error","Please enter at least one degree or diploma for post-graduate studies");
+				showError("Note","Please enter at least one degree or diploma for post-graduate studies");
 				return false;
 			}
 			for (var i = 2; i <16; i++){
@@ -718,47 +718,47 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			    if (validQual != null && validQual != "" && validQual != "undefined" ) 	{
 			       	//test all fields
 			    	if (validCountry == null || validCountry == "" || validCountry == "undefined" || validCountry == "-1"){
-			    		showError("Error","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
+			    		showError("Note","Please select the Country in which the qualification was obtained for the Qualification on Tab  "+i);
 						return false;
 			    	}
 			    	if (validCountry == "1015" && (validUniv == "-1" || validUniv == null && validUniv == "" && validUniv == "undefined")){
-						showError("Error","Please select the Institution or University for the Qualification on Tab "+i);
+						showError("Note","Please select the Institution or University for the Qualification on Tab "+i);
 						return false;
 					}
 					if (validCountry != "1015" && (validText == null || validText == "" || validText == "undefined")){
-						showError("Error","Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						showError("Note","Please enter the Institution name in the field provided for the Qualification on Tab "+i);
 						return false;
 					}
 					if (validUniv === "OTHR" && (validText == null || validText == "" || validText == "undefined")){
-						showError("Error","You selected Other as the Institution. Please enter the Institution name in the field provided for the Qualification on Tab "+i);
+						showError("Note","You selected Other as the Institution. Please enter the Institution name in the field provided for the Qualification on Tab "+i);
 						return false;
 					}
 					
 					//alert("qualOther.historyOTHERQual"+i+"=["+validQual+"]");
 					if (validQual == null || validQual == "" || validQual == "undefined"){
-						showError("Error","Please enter the Qualification code or Description for the Qualification on Tab "+i);
+						showError("Note","Please enter the Qualification code or Description for the Qualification on Tab "+i);
 						return false;
 					}
 					
 					//alert("qualOther.historyOTHERYearStart"+i+"=["+validStart+"]");
 					if (validStart == null || validStart == "" || validStart == "undefined" || validStart == "-1" || validStart < 1960){
-						showError("Error","Please enter the year you first registered for the Qualification on Tab "+i);
+						showError("Note","Please enter the year you first registered for the Qualification on Tab "+i);
 						return false;
 					}
 				
 					//alert("qualOther.historyOTHERYearEnd"+i+"=["+validEnd+"]");
 					if (validEnd == null || validEnd == "" || validEnd == "undefined" || validEnd == "-1" || validEnd < 1960){
-						showError("Error","Please enter the year of your last registration or when you completed the Qualification on Tab "+i);
+						showError("Note","Please enter the year of your last registration or when you completed the Qualification on Tab "+i);
 						return false;
 					}
 					if (validStart > validEnd){
-						showError("Error","The last registration or completion year be before the first year for the Qualification on Tab "+i);
+						showError("Note","The last registration or completion year be before the first year for the Qualification on Tab "+i);
 						return false;
 					}
 					var radioComplete = $("input:radio[name='qualOther.historyOTHERComplete"+i+"']:checked").val();	
 					//alert("Final - radioComplete="+radioComplete);
 					if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
-						showError("Error", "Please indicate if you have completed the Qualification on Tab "+i);
+						showError("Note", "Please indicate if you have completed the Qualification on Tab "+i);
 						return false;
 					}else{
 						$("input[name='qualOther.historyOTHERHiddenComplete"+i+"']").val([radioComplete]);

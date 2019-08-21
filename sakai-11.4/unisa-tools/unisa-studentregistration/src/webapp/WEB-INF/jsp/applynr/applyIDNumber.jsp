@@ -119,7 +119,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			if (button === "Continue"){
 				var idNumber = $('input[name="student.idNumber"]').val();
 				if(idNumber == null || idNumber == "" || idNumber == "undefinded"){
-					showError("Error", "Please enter your RSA Identification number");
+					showError("Note", "Please enter your RSA Identification number");
 					return false;
 				}
 				document.studentRegistrationForm.action='applyForStudentNumber.do?act=stepID';

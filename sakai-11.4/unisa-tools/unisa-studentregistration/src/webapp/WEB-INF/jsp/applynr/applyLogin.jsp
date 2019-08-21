@@ -121,7 +121,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var nextStep = "applyLoginReturn";
 			var number = $('input[name="student.number"]').val();
 			if(number == null || number.trim() == "" || number == "undefinded"){
-				showError("Error", "Please enter your Student number");
+				showError("Note", "Please enter your Student number");
 				return false;
 			}
 		}
@@ -134,23 +134,23 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		var bDay = $("select[name='student.birthDay']").find("option:selected").val();
 
 		if(surname == null || surname.trim() == "" || surname == "undefinded"){
-			showError("Error", "Please enter your Surname");
+			showError("Note", "Please enter your Surname");
 			return false;
 		}
 		if(firstname == null || firstname.trim() == "" || firstname == "undefinded"){
-			showError("Error", "Please enter your First name(s)");
+			showError("Note", "Please enter your First name(s)");
 			return false;
 		}
 		if(bYear == null || bYear.trim() == "" || bYear == "undefinded" || bYear == "00"){
-			showError("Error", "Please enter the Year you were born");
+			showError("Note", "Please enter the Year you were born");
 			return false;
 		}
 		if(bMonth == null || bMonth.trim() == "" || bMonth == "undefinded" || bMonth == "00"){
-			showError("Error", "Please enter the Month you were born");
+			showError("Note", "Please enter the Month you were born");
 			return false;
 		}
 		if(bDay == null || bDay.trim() == "" || bDay == "undefinded" || bDay == "00"){
-			showError("Error", "Please enter the Day you were born");
+			showError("Note", "Please enter the Day you were born");
 			return false;
 		}
 		doSubmit("Continue", nextStep);

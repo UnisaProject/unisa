@@ -180,7 +180,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				var aspGRD = $("#selectHEMain").val();
 				if (aspGRD === "G12"){
 					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10"){
-						showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
+						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
 						/*$("#savedCategory1").html(""); 
 						$("#savedQual1").html(""); 
 						$("#savedSpec1").html("");
@@ -238,7 +238,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					});
 					if(count==0){
 					     //Show msg
-						 showError("Error","The application period for this category is closed");
+						 showError("Note","The application period for this category is closed");
 						 $("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 						 $("select[name='selQualCode1']").html('<option value="0"> </option>'); 
 						 $("select[name='selSpecCode1']").html('<option value="0"> </option>');
@@ -257,7 +257,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				var aspGRD = $("#selectHEMain").val();
 				if (aspGRD === "G12"){
 					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10"){
-						showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
+						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
 						/*$("#savedCategory2").html(""); 
 						$("#savedQual2").html(""); 
 						$("#savedSpec2").html(""); 
@@ -300,7 +300,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					});
 					if(count==0){
 						//Show msg
-						showError("Error","The application period for this category is closed");
+						showError("Note","The application period for this category is closed");
 						$("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
 						$("select[name='selQualCode2']").html('<option value="0"> </option>'); 
 						$("select[name='selSpecCode2']").html('<option value="0"> </option>');
@@ -396,47 +396,47 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    var spec2 =     $("select[name='selSpecCode2']").find("option:selected").val();
 		    
 		    if(jQuery.trim(category1) == "0"){
-		    	showError("Error","Please select a category from the drop list provided.");
+		    	showError("Note","Please select a category from the drop list provided.");
 		    	checkError = 1;
 		    	return false;
 		    }
 		    if(jQuery.trim(qual1) == "0"){
-		    	showError("Error","Please select a qualification from the drop list provided.");
+		    	showError("Note","Please select a qualification from the drop list provided.");
 		    	checkError = 1;
 		    	return false;
 			}else if (typeof(jQuery.trim(qual1)) == "undefined" || jQuery.trim(qual1) == "undefined"){
-				showError("Error","The qualification is invalid. Please try again or contact the application office at applications@unisa.ac.za");
+				showError("Note","The qualification is invalid. Please try again or contact the application office at applications@unisa.ac.za");
 				checkError = 1;
 				return false;
 		    }
 		    
 		    if(jQuery.trim(spec1) == "0"  && $("select[name='selSpecCode1'] option").length >1){
-		    	showError("Error","Please select a specialization from the drop list provided.");
+		    	showError("Note","Please select a specialization from the drop list provided.");
 		    	checkError = 1;
 		    	return false;
 		    }else if (typeof(jQuery.trim(spec1)) == "undefined" || jQuery.trim(spec1) == "undefined"){
-		    	showError("Error","The specialization is invalid. Please try again or contact the application office at applications@unisa.ac.za");
+		    	showError("Note","The specialization is invalid. Please try again or contact the application office at applications@unisa.ac.za");
 		    	checkError = 1;
 		    	return false;
 		    }
 		    
 		    if (jQuery.trim(category2) != "0"  ){
 			    if(jQuery.trim(qual2) == "0"  ){
-			    	showError("Error","Please select a qualification from the drop list provided.");
+			    	showError("Note","Please select a qualification from the drop list provided.");
 			    	checkError = 1;
 			    	return false;
 				}else if (typeof(jQuery.trim(qual2)) == "undefined" || jQuery.trim(qual2) == "undefined"){
-					showError("Error","The qualification is invalid. Please try again or contact the application office at applications@unisa.ac.za");
+					showError("Note","The qualification is invalid. Please try again or contact the application office at applications@unisa.ac.za");
 					checkError = 1;
 					return false;
 			    }
 			    
 			    if(jQuery.trim(spec2) == "0"  && $("select[name='selSpecCode2'] option").length >1 ){
-			    	showError("Error","Please select a specialization from the drop list provided.");
+			    	showError("Note","Please select a specialization from the drop list provided.");
 			    	checkError = 1;
 			    	return false;
 			    }else if (typeof(jQuery.trim(spec2)) == "undefined" || jQuery.trim(spec2) == "undefined"){
-			    	showError("Error","The specialization is invalid. Please try again or contact the application office at applications@unisa.ac.za");
+			    	showError("Note","The specialization is invalid. Please try again or contact the application office at applications@unisa.ac.za");
 			    	checkError = 1;
 			    	return false;
 			    }
@@ -462,12 +462,12 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    var aspGRD = $("#selectHEMain").val();
 			if (aspGRD === "G12"){
 				if(jQuery.trim(category1) == "03" || jQuery.trim(category1) == "05" || jQuery.trim(category1) == "06" || jQuery.trim(category1) == "09" || jQuery.trim(category1) == "10"){
-		  			showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
+		  			showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
 		  			checkError = 1;
 			    	return false;
 				}
 		    	if(jQuery.trim(category2) == "03" || jQuery.trim(category2) == "05" || jQuery.trim(category2) == "06" || jQuery.trim(category2) == "09" || jQuery.trim(category2) == "10"){
-		  			showError("Error", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
+		  			showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
 		  			checkError = 1;
 			    	return false;
 				}
@@ -485,7 +485,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						}
 					});
 					if (verifyError !== ""){
-						showError("Error", verifyError);
+						showError("Note", verifyError);
 				    	checkError = 1;
 				    	return false;
 					}
