@@ -6,12 +6,14 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.util.LabelValueBean;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.DistrictDAO;
+import za.ac.unisa.lms.tools.tpustudentplacement.dao.SchoolDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SchoolListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.SchoolValidator;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
-public class SchoolUI extends SchoolImpl {
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
+public class SchoolUI extends SchoolDAO {
 
           
 	                 SchoolScreenBuilder screeenBuilder;
@@ -173,5 +175,20 @@ public class SchoolUI extends SchoolImpl {
                              }//for
                   }//if	
   }
-		    
+		     public School getSchool(Integer code, String name) throws Exception {
+		                       return getSchool(code,name, getSchoolCountryCode(code));
+		     }
+				 public   boolean   isSchoolLocal(int schoolCode) throws Exception {
+		                            if(getSchCountryCode(schoolCode)==1015){
+		        	                       return true;
+		                            }else{
+		        	                       return false;
+		                           }
+		     }    
+				public  String getSchoolProvinceDescription(int schoolCode) throws Exception {
+				                         	ProvinceUI provinceUI=new ProvinceUI();
+				                         	int provCode=getSchoolProvCode( schoolCode);
+					                        return provinceUI.getProvinceDescription(provCode);
+					
+				}
 }

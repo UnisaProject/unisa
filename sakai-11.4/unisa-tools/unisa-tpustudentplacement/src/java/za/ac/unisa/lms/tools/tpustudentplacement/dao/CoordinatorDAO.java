@@ -83,10 +83,10 @@ public class CoordinatorDAO {
                  	           		                                                  "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
                  	           		                                                  "  c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber  "+
                  	           		                                                  "  from STAFF a,TPUWSC b, prv c  where  a.NOVELL_USER_ID is not null and  (a.resign_date is null or a.resign_date>sysdate) and "+
-                 	           		                                                   " a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code  order by workstationDescr,networkcode  "+
+                 	           		                                                   " a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code   "+
                  	           		                                                  "  union  Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
              	           		                                                      "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
-             	           		                                                      "  c.description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber "+
+             	           		                                                      "  c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber "+
              	           		                                                      "  from STAFF a,TPUWSC b,  TpuSubPrv  c  where  a.NOVELL_USER_ID is not null and"+
              	           		                                                       "  (a.resign_date is null or    a.resign_date>sysdate) and "+
              	           		                                                      "  a.persno = b.mk_persno and a.persno="+persno+" and b.mk_prv_code=c.code  order by workstationDescr,networkcode";
@@ -150,18 +150,18 @@ public class CoordinatorDAO {
              }
               public List getCoordinatorList() throws Exception{
 	                    	           String sql="Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
-	                    	           		      " a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
-	                    	           		      " c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
-	                    	           		      " from STAFF a,TPUWSC b, prv c"+
-	                    	           		      " where   a.NOVELL_USER_ID is not null and "+
-	                                              " (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
-	                    	           		      "  and b.mk_prv_code=c.code order by workstationDescr,networkcode "+
-	                    	           		   " UNION ALL Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
-	                    	           		      " a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
-	                    	           		      " c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
-	                    	           		      " from STAFF a,TPUWSC b,TpuSubPrv  c"+
-	                    	           		      " where   a.NOVELL_USER_ID is not null and "+
-	                                              " (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
+	                    	           		      "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
+	                    	           		      "  c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
+	                    	           		      "  from STAFF a,TPUWSC b, prv c"+
+	                    	           		      "  where   a.NOVELL_USER_ID is not null and "+
+	                                              "  (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
+	                    	           		      "  and b.mk_prv_code=c.code  "+
+	                    	           		   "  UNION Select a.title || ' ' || a.initials  || ' ' ||  a.surname as coordName," +
+	                    	           		      "  a.novell_user_id  networkcode,a.persno as personnelNumber,b.sadec_int_ind as sadecIndicator," +
+	                    	           		      "  c.eng_description workstationDescr,c.code as workstationCode,b.email_Address,b.telephone_number as contactNumber"+
+	                    	           		      "  from STAFF a,TPUWSC b,TpuSubPrv  c"+
+	                    	           		      "  where   a.NOVELL_USER_ID is not null and "+
+	                                              "  (a.resign_date is null or a.resign_date>sysdate)  and a.persno = b.mk_persno"+
 	                    	           		      "  and b.mk_prv_code=c.code order by workstationDescr,networkcode";
 	    	                           List coordinatorList  = new ArrayList<Coordinator>();
 	    	                           String errorMsg="CoordinatorDAO:Error reading STAFF ,TPUWSC , prv ,subPrv";

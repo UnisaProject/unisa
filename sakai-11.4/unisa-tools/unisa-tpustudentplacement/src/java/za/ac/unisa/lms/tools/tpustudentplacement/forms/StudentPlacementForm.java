@@ -149,6 +149,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String staffInfoStatus="";
 	private String coordinatorForProv;
 	private Coordinator coordinator;
+	private boolean editMode=true;
 	
 	//Placement Log
 	private StudentPlacementLog studentPlacementLog; 
@@ -1041,6 +1042,12 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	}
 	public void setSubProvince(SubProvince subProvince) {
 		this.subProvince = subProvince;
+	}
+	public boolean isEditMode() {
+		return editMode;
+	}
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
 	}
 	
 	

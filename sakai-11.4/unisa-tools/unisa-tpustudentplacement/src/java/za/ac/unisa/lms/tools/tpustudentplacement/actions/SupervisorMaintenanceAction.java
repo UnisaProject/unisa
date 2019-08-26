@@ -1,6 +1,4 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.actions;
-
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -229,12 +227,9 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		  		int index = studentPlacementForm.getSupervisorFilterDistrictValue().indexOf("-");
 		  		String district = studentPlacementForm.getSupervisorFilterDistrictValue().trim().substring(0, index);
 		  		province = Short.parseShort(studentPlacementForm.getSupervisorFilterDistrictValue().trim().substring(index+1));
-		  		if (studentPlacementForm.getSupervisorFilterProvince().compareTo(province)!=0 &&
+		  		/*if (studentPlacementForm.getSupervisorFilterProvince().compareTo(province)!=0 &&
 		  				studentPlacementForm.getSupervisorFilterProvince().compareTo(Short.parseShort("0"))!=0){
-		  			studentPlacementForm.setSupervisorFilterDistrict(Short.parseShort("0"));
-		  			studentPlacementForm.setSupervisorFilterDistrictValue("");
-		  			studentPlacementForm.setListFilterSupervisorDistrict(new ArrayList());
-		   		}else{
+		  				}else{
 		  			studentPlacementForm.setSupervisorFilterDistrict(Short.parseShort(district));
 		  			List listDistrict = new ArrayList();
 		  			DistrictDAO districtDAO = new DistrictDAO();
@@ -244,7 +239,7 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 					listDistrict.add(0,new LabelValueBean(label, value));
 					studentPlacementForm.setListFilterSupervisorDistrict(listDistrict);
 			  		//studentPlacementForm.setSupervisorFilterProvince(Short.parseShort(province));
-		  		}		  		
+		  		}		*/  		
 		}
 		if(studentPlacementForm.getCurrentPage().equals("inputSupervisor")||
 				studentPlacementForm.getCurrentPage().equals("listSupervisor")){
@@ -701,18 +696,7 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		studentPlacementForm.setCurrentPage("editSupervisor");
 		return mapping.findForward("editSupervisor");	
 	}
-	
-	public ActionForward xxsearchDistrict(
-			ActionMapping mapping,
-			ActionForm form,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
 		
-		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		
-		return mapping.findForward("searchDistrict");	
-	}
-	
 	public ActionForward searchDistrict(
 			ActionMapping mapping,
 			ActionForm form,
@@ -811,6 +795,20 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		        studentPlacementForm.setSchoolFilter("");
 		         studentPlacementForm.setSupervisorFilter("");
 		    	return mapping.findForward("inputSupervisor");
+	}
+	
+	public ActionForward supervProvOnchangeAction(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		        StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+		                     studentPlacementForm.setSupervisorFilterCountry(studentPlacementForm.getSupervisorFilterCountry().trim());
+		                    studentPlacementForm.setSupervisorFilterDistrict(Short.parseShort("0"));
+				            studentPlacementForm.setSupervisorFilterDistrictValue("");
+				            studentPlacementForm.setSchoolFilterProvince(Short.parseShort("0"));
+		          	       studentPlacementForm.setListFilterSupervisorDistrict(new ArrayList());
+  	return mapping.findForward("inputSupervisor");
 	}
 	
 }

@@ -35,7 +35,7 @@ public class DistrictDAO extends StudentSystemDAO {
 		                                                      }
                        }
 	                   public void unlinkToSubProv(Short districtCode) throws Exception {
-                                                          String sql = "update ldd set  fk_TpuSubPrv_code=0  where code=" + districtCode;
+                                                          String sql = "update ldd set  fk_TpuSubPrv_code=null  where code=" + districtCode;
                                                           String errorMsg="StudentPlacementDao : Error updating ldd / ";
                                                          dbutil.update(sql,errorMsg);	
                       }
@@ -67,22 +67,22 @@ public class DistrictDAO extends StudentSystemDAO {
 				                                           district.setProvince(province);		
 	                                                       district.setInUse(dbutil.replaceNull(data.get("in_use_flag")));
 	                                                       String subProvCodeStr=dbutil.replaceNull(data.get("fk_TpuSubPrv_code"));
-				                                           if(subProvCodeStr.equals("")){
+				                                           if(subProvCodeStr.trim().equals("")){
 				                                	                         subProvCodeStr="0";
 				                                           }
 				                                          district.setSubProvCode(Short.parseShort(subProvCodeStr));
-	                                                       break;
+				                                          break;
 			                             }
                		   		             return district;		
 	                 }
 	                  
 	                  public List<District> getDistrictList(Short provinceCode) throws Exception {
-                                                                    String sql = "select a.code as districtCode,a.eng_description  as districtDescr,a.fk_prvcode  a provCode,b.eng_description as provinceDescr, "+
-                                                                       " (decode (a.fk_TpuSubPrv_code ,0,'  ',(select  description as subprovDescr from  TpuSubPrv where  TpuSubPrv.code=a.fk_TpuSubPrv_code) ) "+
-                                                                       " as subProvinceCode ,a.in_use_flag  as in_use_flag,a.fk_TpuSubPrv_code  as  fk_TpuSubPrv_code from ldd a,prv b"+
+                                                                    String sql = "select a.code as districtCode,a.eng_description  as districtDescr,a.fk_prvcode  as provCode,b.eng_description as provinceDescr, "+
+                                                                       " (decode (a.fk_TpuSubPrv_code ,null,' ',(select  eng_description as subprovDescr from  TpuSubPrv where  TpuSubPrv.code=a.fk_TpuSubPrv_code) )) "+
+                                                                       " as subProvinceDescr ,a.in_use_flag  as in_use_flag,a.fk_TpuSubPrv_code  as  fk_TpuSubPrv_code from ldd a,prv b"+
                                                                        "  where a.fk_prvcode=b.code";
   		                                              if (provinceCode!=null && provinceCode!=0){
-                                                                         sql = sql + " where b.code=" +  provinceCode;
+                                                                         sql = sql + " and  b.code=" +  provinceCode;
                                                        }  
   		                                               String errorMsg="DistrictDao : Error reading table ldd / "; 
   		                                                List queryList = dbutil.queryForList(sql,errorMsg);
@@ -98,11 +98,12 @@ public class DistrictDAO extends StudentSystemDAO {
                                                                           province.setCode(provinceCode);
                                                                          district.setInUse(dbutil.replaceNull(data.get("in_use_flag")));
                                                                           district.setProvinceName(dbutil.replaceNull(data.get("provinceDescr")));		
-                                                                          String subProvCodeStr=dbutil.replaceNull(data.get("subProvinceCode"));
-               				                                             if(subProvCodeStr.equals("")){
+                                                                          String subProvCodeStr=dbutil.replaceNull(data.get("fk_TpuSubPrv_code"));
+               				                                             if(subProvCodeStr.trim().equals("")){
                				                                	                         subProvCodeStr="0";
                				                                             }
                				                                             district.setSubProvCode(Short.parseShort(subProvCodeStr));
+               				                                            district.setSubProvince(data.get("subProvinceDescr").toString());
                	                                                         districtList.add(district);
                                                         }
 		   		                             return districtList;		
@@ -119,46 +120,12 @@ public class DistrictDAO extends StudentSystemDAO {
                                                           }
                                                           return true;
      }
-	public District xxgetDistrict(Integer code, String description) throws Exception {
-		
-		District district = new District();
-		
-		String sql = "select code,description,mk_prv_code,in_use_flag from tpudis";
-		
-		if (code!=null && code!=0){
-			sql = sql + " where code=" + code;
-		}else if (description!=null && !description.equalsIgnoreCase("")){
-			sql = sql + " where description ='" + description.toUpperCase().trim() + "'";
-		}		
-		
-		try{ 
-			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List queryList = jdt.queryForList(sql);
-		
-			Iterator i = queryList.iterator();
-			while (i.hasNext()) {
-				ListOrderedMap data = (ListOrderedMap) i.next();
-				Province province = new Province();
-				
-				district.setCode(Short.parseShort(data.get("code").toString()));
-				district.setDescription(dbutil.replaceNull(data.get("description")));
-				province.setCode(Short.parseShort(data.get("mk_prv_code").toString()));
-				district.setInUse(dbutil.replaceNull(data.get("in_use_flag")));
-				district.setProvince(province);		
-				break;
-			}
-		}
-		catch (Exception ex) {
-			throw new Exception("StudentPlacementDao : Error reading table TPUDIS / " + ex,ex);						
-		}		
-		return district;		
-	}
-	private   static final String districtListForProvSql= "select a.code as districtCode, a.eng_description as districtDesc," +
-		                                                                           	" a.fk_prvcode as provCode,a.in_use_flag as districtInUse, b.eng_description as provDesc" +
-		                                                                       	   "  from ldd a,prv b  where a.fk_prvcode = b.code";
-	private   static final String districtListForSubProvSql = "select a.code as districtCode, a.eng_description as districtDesc," +
-                                                                                             " b.code as provCode,a.in_use_flag as districtInUse, b.description as provDesc" +
-                                                                                             "  from ldd a,subPrv b  where a.fk_TpuSubPrv_code = b.code";
+		private   static final String districtListForProvSql= "select a.code as districtCode, a.eng_description as districtDesc," +
+		                                                                           	"  a.fk_prvcode as provCode,a.in_use_flag as districtInUse, b.eng_description as provDesc" +
+		                                                                       	   "  from ldd a,prv b  where a.fk_prvcode = b.code  and   a.fk_TpuSubPrv_code is null";
+	private   static final String districtListForSubProvSql = "  union  select a.code as districtCode, a.eng_description as districtDesc," +
+                                                                                             " b.code  as provCode,a.in_use_flag as districtInUse, b.eng_description as provDesc" +
+                                                                                             "  from ldd a,tpusubPrv b  where a.fk_TpuSubPrv_code = b.code";
 	public String lastpartOfdistrictListSql(String inUseFlag, Short provCode, String filter) throws Exception {
                                                          String sql="";
                                                          if (inUseFlag != null && inUseFlag.equalsIgnoreCase("Y")){
@@ -171,28 +138,27 @@ public class DistrictDAO extends StudentSystemDAO {
                                                                            filter = filter.replaceAll("'", "''");
                                                                             sql = sql + " and a.eng_description like '" + filter.trim().toUpperCase() + "'";
                                                          }
-                                                         sql = sql + " order by a.eng_description";
-                                                         return sql;
+                                                            return sql;
   }
 	private List getResultSetOfDitricts(String inUseFlag, Short provCode, String filter) throws Exception {
-		                                        String sql = "";
-		                                        String errorMsg="Database error, error accesing ldd,prv,TpuSubPrv  tables in DitrictDAO";
-                                  	            if(Province.isProvince(provCode)||(provCode==0)){
-                                                                    sql=  districtListForProvSql;
-                                                }else{
-                                                                  sql=districtListForSubProvSql;
-                                               }
-                                  	           sql+=lastpartOfdistrictListSql(inUseFlag,provCode,filter);
-                                               return  dbutil.queryForList(sql,errorMsg);
+		                                                            String sql = "";
+		                                                            String errorMsg="Database error, error accesing ldd,prv,TpuSubPrv  tables in DitrictDAO";
+                                  	                                sql+= districtListForProvSql;
+                                  	                                sql+=lastpartOfdistrictListSql(inUseFlag,provCode,filter);
+                                                                    sql+=districtListForSubProvSql;
+                                                                   sql+=lastpartOfdistrictListSql(inUseFlag,provCode,filter);
+                                                                   sql += "  order by districtDesc";
+                                                         return  dbutil.queryForList(sql,errorMsg);
    	}
 	public List getDistrictList(String inUseFlag, Short provCode, String filter) throws Exception {
 		                          List listDistrict  = new ArrayList<District>();
 		                          District district = new District();	
 		                          List  districtResultSet=getResultSetOfDitricts(inUseFlag,provCode,  filter);
-		                          for (int i=0; i< districtResultSet.size();i++){
+		                         Iterator iter=districtResultSet.iterator();
+		                         while(iter.hasNext()){
 			                                 district = new District();	
 		                                   	Province province = new Province();	
-			                                ListOrderedMap data = (ListOrderedMap)  districtResultSet.get(i);
+			                                ListOrderedMap data = (ListOrderedMap)  iter.next();
 			                                district.setCode(Short.parseShort(data.get("districtCode").toString()));
 			                                district.setDescription(data.get("districtDesc").toString());
 			                                district.setInUse(data.get("districtInUse").toString());
@@ -205,7 +171,6 @@ public class DistrictDAO extends StudentSystemDAO {
 	}
 		public List getDistrictList2(String inUseFlag, Short provCode, String filter) throws Exception {
 	                                            	List listDistrict  = new ArrayList<District>();
-		                                            List queryList = new ArrayList();
 		                                            List  districtResultSet=getResultSetOfDitricts(inUseFlag,provCode,  filter);
 		                                            String value="";
 		                                            String label="";
@@ -213,8 +178,10 @@ public class DistrictDAO extends StudentSystemDAO {
 		                                            String districtDesc="";
 	                                            	String provinceCode="";
 	                                            	String provinceDesc="";
-		                                             for (int i=0; i<queryList.size();i++){			
-		                                                               	ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+	                                            	  Iterator iter=districtResultSet.iterator();
+	                 		                         while(iter.hasNext()){
+	                 			                   	
+		                                                               	ListOrderedMap data = (ListOrderedMap)   iter.next();
 		                                                            	districtCode = data.get("districtCode").toString();
 			                                                            districtDesc = data.get("districtDesc").toString();
 			                                                            provinceCode = data.get("provCode").toString();
@@ -223,51 +190,12 @@ public class DistrictDAO extends StudentSystemDAO {
 			                                                            if(provCode==null || provCode==0){
 				                                                                          label = label + "---" + provinceDesc;
 			                                                            }			
-		                                                            	value = districtCode;
-			                                                            value=value + "-" + provinceCode;
+		                                                               value=districtCode + "-" + provinceCode;
 			                                                           listDistrict.add(new LabelValueBean(label, value));
 			                                       }                   
 		                                           return listDistrict;			
 	}
-	
-	public List getDistrictListxx(String inUseFlag, Short provCode) throws Exception {
-		List listDistrict  = new ArrayList<District>();
-		List queryList = new ArrayList();
 		
-		District district = new District();	
-		
-		String sql = "select a.code as districtCode, a.description as districtDesc," +
-		" a.mk_prv_code as provCode,a.in_use_flag as districtInUse, b.eng_description as provDesc" +
-		" from tpudis a,prv b" +
-		" where a.mk_prv_code = b.code";
-		
-		if (inUseFlag != null && inUseFlag.equalsIgnoreCase("Y")){
-			sql = sql + " and a.in_use_flag='Y'";
-		}
-		
-		if(provCode!=null && provCode!=0){
-			sql = sql + " and a.mk_prv_code=" + provCode;					
-		}
-		
-		sql = sql + " order by a.description";
-			
-		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-		queryList = jdt.queryForList(sql);
-		for (int i=0; i<queryList.size();i++){
-			
-			district = new District();	
-			Province province = new Province();	
-			ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-			district.setCode(Short.parseShort(data.get("districtCode").toString()));
-			district.setDescription(data.get("districtDesc").toString());
-			district.setInUse(data.get("districtInUse").toString());
-			province.setCode(Short.parseShort(data.get("provCode").toString()));
-			province.setDescription(data.get("provDesc").toString());
-			district.setProvince(province);
-			listDistrict.add(district);						
-			}
-		return listDistrict;			
-	}
 	
 	public void insertDistrict(District district) throws Exception {
 		

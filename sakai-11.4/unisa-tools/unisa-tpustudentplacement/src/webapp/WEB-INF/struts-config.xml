@@ -443,24 +443,28 @@
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
 			parameter="action"
-			path="/SupProvinceMaintenance"
-			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.SupProvinceMaintenanceAction"
+			path="/subProvinceMaintenance"
+			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.SubProvinceMaintenanceAction"
 			validate="false">
 			<forward
 				name="listSubProvinces"
-				path="/WEB-INF/jsp/listSubProvinces.jsp"
+				path="/WEB-INF/jsp/listSubProvince.jsp"
 				contextRelative="true" />
 			<forward
 				name="editSubProv"
-				path="/WEB-INF/jsp/editSubProvince.jsp"
+				path="/WEB-INF/jsp/editSupProvince.jsp"
 				contextRelative="true" />
+				<forward
+				name="inputStudentPlacement"
+				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
+				contextRelative="true" />	
 		</action> 
 		
 		<action
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
 			parameter="action"
-			path="/District"
+			path="/district"
 			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.DistrictAction"
 			validate="false">
 			<forward
@@ -471,6 +475,10 @@
 				name="linkDistToSubProv"
 				path="/WEB-INF/jsp/linkDistToSubProv.jsp"
 				contextRelative="true" />
+				<forward
+				name="inputStudentPlacement"
+				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
+				contextRelative="true" />	
 		</action> 
 		
 	</action-mappings>

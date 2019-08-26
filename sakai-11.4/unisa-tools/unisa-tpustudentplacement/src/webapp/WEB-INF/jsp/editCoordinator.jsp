@@ -11,8 +11,8 @@
 	<html:form action="/coordinatorMaintenance">
 			<sakai:messages/>
 		    <sakai:messages message="true"/>
-            <sakai:heading>
-			     <fmt:message key="heading.deletewscoordinator"/> 
+		       <sakai:heading>
+			     <fmt:message key="heading.editwscoordinator"/> 
 		    </sakai:heading>
 		    <sakai:group_table>	
 			<tr>
@@ -55,5 +55,6 @@
 					<fmt:message key="button.cancel"/>
 			</html:submit>			
 		</sakai:actions>	
+		<html:hidden property="action" value="subProvFilterProvOnchangeAction"/>		
    </html:form>
 </sakai:html>

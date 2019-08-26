@@ -41,6 +41,7 @@
 				      <fmt:message key="link.district"/>
 		     </html:link>
 		</sakai:tool_bar>
+		
 		<sakai:messages/>
 		<sakai:messages message="true"/>			
 		<sakai:instruction>

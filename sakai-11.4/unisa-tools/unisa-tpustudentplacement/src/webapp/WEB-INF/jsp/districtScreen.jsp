@@ -55,10 +55,7 @@
 				<html:submit property="action">
 					<fmt:message key="button.link"/>
 			</html:submit>		
-			<html:submit property="action">
-					<fmt:message key="button.delete"/>
-			</html:submit>
-			<html:submit property="action">
+				<html:submit property="action">
 					<fmt:message key="button.back"/>
 			</html:submit>			
 		</sakai:actions>		

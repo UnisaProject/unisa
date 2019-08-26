@@ -86,9 +86,9 @@ public class databaseUtils extends StudentSystemDAO {
                                                         String errorMsg="Database error   when reading from   table:"+table;
    	                                                   String trackerString=querySingleValue(query,column,errorMsg);
                                                        if(trackerString.equals("")){
-                                                              	 return false;
+                                                              	 return true;
                                                        }else{
-                                                            	 return true;
+                                                            	 return false;
                                                        }
                 }
 	

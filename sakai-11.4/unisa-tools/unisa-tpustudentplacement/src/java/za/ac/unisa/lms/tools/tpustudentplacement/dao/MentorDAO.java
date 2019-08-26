@@ -100,12 +100,8 @@ return mentorList;
 		                     " occupation, a.in_use_flag as in_use_flag,email_address,cell_number,work_number,fax_number " ;
           
            		 if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){
-           		                    if(Province.isProvince(prov) ||(prov==0)){
-           			            	                sql+=(" ,d.eng_description as provinceName ");
-           			                }else{
-        	                                     sql+=(" ,d.description as provinceName ");
-           			                }
-      	              	            sql+=(", e.eng_description as districtName ");
+           		                                   sql+=(" ,d.eng_description as provinceName ");
+           			                               sql+=(", e.eng_description as districtName ");
         	    }
            		sql+=(" from tpumen a,adrph b,tpusch f ");
               if(countrycode.equalsIgnoreCase(PlacementUtilities.getSaCode())){

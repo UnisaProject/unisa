@@ -2,6 +2,8 @@ package za.ac.unisa.lms.tools.tpustudentplacement.forms;
 
 import java.util.List;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.SupervisorImpl;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
+
 import org.apache.struts.util.LabelValueBean;
 
 public class Supervisor {
@@ -84,7 +86,7 @@ public class Supervisor {
 			 return supervisorImpl.getStudentsAllocated(supervisorCode, year);
 		 }
 		 public String supervisorProvListAsStr(List provincesCodeList)throws Exception {
-			             Province prov=new Province();
+			             ProvinceUI prov=new ProvinceUI();
 			             return prov.provinceListAsString(provincesCodeList);
 			             
 		 }

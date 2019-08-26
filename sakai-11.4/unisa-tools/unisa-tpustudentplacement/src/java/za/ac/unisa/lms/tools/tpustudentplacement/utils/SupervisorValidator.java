@@ -42,6 +42,12 @@ public class SupervisorValidator {
 	       private void validateAllocatedStudentTotals(SupervisorListRecord supervisor,
 	                             StudentPlacementForm studentPlacementForm,
 	                             ActionMessages messages)throws Exception{
+	    	   if(supervisor.getStudentsAllowed()==null||(supervisor.getStudentsAllowed().trim().equals(""))){
+	    		   supervisor.setStudentsAllowed("100");
+	    	   }
+	    	   if(supervisor.getStudentsAllocated()==null||(supervisor.getStudentsAllocated().trim().equals(""))){
+	    		   supervisor.setStudentsAllocated("0");
+	    	   }
 		                              int allowedStuNum=Integer.parseInt(supervisor.getStudentsAllowed());
 	                                  int allocatedStuNum=Integer.parseInt(supervisor.getStudentsAllocated());
 	                                  if((supervisor.getCode()!=283)
