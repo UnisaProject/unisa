@@ -15,6 +15,8 @@ import org.apache.struts.actions.LookupDispatchAction;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.DistrictUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.SubProvinceUI;
 
 public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 	private class operListener implements java.awt.event.ActionListener {
@@ -50,9 +52,15 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-
-			return mapping.findForward(studentPlacementForm.getPreviousPage());	
+	                	StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+	                	if( studentPlacementForm.getCurrentPage().equals("listSubProvinces")){
+	                	   	           studentPlacementForm.setPreviousPage("inputStudentPlacement");
+	                	 }
+	                	 if(  studentPlacementForm.getCurrentPage().equals("editSubProv")){
+               	   	                studentPlacementForm.setPreviousPage("listSubProvinces");
+               	          }
+	                	 studentPlacementForm.setCurrentPage( studentPlacementForm.getPreviousPage());
+                 	return mapping.findForward(studentPlacementForm.getPreviousPage());	
 		}
 	public ActionForward editSubProv(
 			                                           ActionMapping mapping,
@@ -97,12 +105,14 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
                                                      StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-                                	                 ActionMessages messages = new ActionMessages();	
-                         				             SubProvince subProvince = new SubProvince ();
+                                	               SubProvince subProvince =  studentPlacementForm.getSubProvince();
                          				             subProvince.setProvinceCode(studentPlacementForm.getDistrictFilterProvince());
                          				             subProvince.setCode(0);
-                          		                     studentPlacementForm.setSubProvince(subProvince );
-                          		                      studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
+                          		                      ProvinceUI provUI=new ProvinceUI();
+                                                   subProvince.setProvinceDescription(provUI.getProvinceDescription(studentPlacementForm.getDistrictFilterProvince()));
+                                                   subProvince.setProvinceCode(studentPlacementForm.getDistrictFilterProvince());
+                                                   studentPlacementForm.setSubProvince(subProvince );
+                            		                  studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
                                                       studentPlacementForm.setCurrentPage("editSubProv");
                                               return mapping.findForward( studentPlacementForm.getCurrentPage());	
 }
@@ -111,15 +121,10 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 			                        ActionForm form,
 			                        HttpServletRequest request,
 			                        HttpServletResponse response) throws Exception {
-		
-		                                                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		                                                         studentPlacementForm.setPreviousPage("inputStudentPlacement");
-		                                                     	List list = new ArrayList<Province>();
-		                                                		ProvinceDAO dao = new ProvinceDAO();
-		                                                		         	list = dao.getProvinceExSubPrvLabelValueList();
-		                                                			studentPlacementForm.setListSubProvincesOfProvince(list);
-		                                                			 studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
-		                                                			  studentPlacementForm.setCurrentPage("listSubProvinces");
+		                                                             StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+		                                                             SubProvince subProvince=new SubProvince();
+		                                                             studentPlacementForm.setSubProvince(subProvince);
+		                                                                         studentPlacementForm.setCurrentPage("listSubProvinces");
 		              		                              return mapping.findForward( studentPlacementForm.getCurrentPage());
 	}
 	public ActionForward display(
@@ -128,15 +133,10 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		ActionMessages messages = new ActionMessages();	
-		
-		List list = new ArrayList<SubProvince>();
-		SubProvinceDAO dao = new SubProvinceDAO();
-		         	list = dao.getSubProvinceList(studentPlacementForm.getDistrictFilterProvince());
-			studentPlacementForm.setListSubProvincesOfProvince(list);
-			 studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
-			  studentPlacementForm.setCurrentPage("listSubProvinces");
+		                             StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+		                             SubProvinceUI  subProvinceUI  = new SubProvinceUI();
+		                             subProvinceUI.setSubProvinceListToFrom(studentPlacementForm);
+		                             studentPlacementForm.setCurrentPage("listSubProvinces");
               return mapping.findForward( studentPlacementForm.getCurrentPage());
 	}
 	

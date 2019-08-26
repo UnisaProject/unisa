@@ -94,10 +94,22 @@ public class CoordinatorMaintenanceAction extends LookupDispatchAction{
 				ActionForm form,
 				HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
-			
-			       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;		
-			  	   Coordinator coordinator=studentPlacementForm.getCoordinator();
-			  	   CoordinatorDAO cdao = new CoordinatorDAO();
+			 CoordinatorValidation  coordinatorValidation=new CoordinatorValidation();
+			 StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;		
+		  	   ActionMessages messages = new ActionMessages();	
+		  	   coordinatorValidation.validateSelection(messages,studentPlacementForm.getIndexNrSelected());
+		       if (!messages.isEmpty()) {
+			          addErrors(request,messages);
+			          studentPlacementForm.setCurrentPage("listCoordinator");
+			          return mapping.findForward("listCoordinator");				
+		       }
+		       Coordinator coordinator = new Coordinator();
+		       for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {			
+			           String array[] = studentPlacementForm.getIndexNrSelected();
+			           coordinator = (Coordinator)studentPlacementForm.getListCoordinator().get(Integer.parseInt(array[i]));			
+			           i=studentPlacementForm.getIndexNrSelected().length;
+		       }
+		        	   CoordinatorDAO cdao = new CoordinatorDAO();
 			  	   cdao.deleteCoordinator(coordinator.getPersonnelNumber().trim(),coordinator.getWorkStationCode().trim());
 			  	   setCoordinatorsList(studentPlacementForm);
 				   studentPlacementForm.setCurrentPage("listCoordinator");

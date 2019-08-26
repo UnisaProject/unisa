@@ -11,10 +11,7 @@
 	<html:form action="/subProvinceMaintenance">
 		        <sakai:messages/>
 		        <sakai:messages message="true"/>
-				<sakai:group_heading>
-		                  	<fmt:message key="heading.linksubprovtoditrict"/>
-		        </sakai:group_heading>
-		        <sakai:heading>
+			    <sakai:heading>
 			<fmt:message key="heading.subprovinces"/>
 		</sakai:heading>	
 		<sakai:group_heading>
@@ -23,16 +20,19 @@
 			<sakai:group_table>	
 					<tr>
 				            <td><fmt:message key="prompt.column.supprovince"/></td>
-					        <td><html:text name="studentPlacementForm" property="supProvince.description" size="12" /></td>
+					        <td><html:text name="studentPlacementForm" property="subProvince.description" size="12" /></td>
 				</tr>
 				<tr>
 				         <td><fmt:message key="prompt.column.province"/></td>
-				        <td><bean:write name="studentPlacementForm" property="supProvince.provinceDescription"/></td>	
+				        <td><bean:write name="studentPlacementForm" property="subProvince.provinceDescription"/></td>	
 				</tr>
 			</sakai:group_table>
 		<sakai:actions>
 			<html:submit property="action">
 					<fmt:message key="button.save"/>
+			</html:submit>
+			<html:submit property="action">
+					<fmt:message key="button.back"/>
 			</html:submit>
 			</sakai:actions>						
 	</html:form>

@@ -8,7 +8,7 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources"/>
 
 <sakai:html>	
-	<html:form action="/subProvince">
+	<html:form action="/subProvinceMaintenance">
 		<!--<html:hidden property="currentPage" value="displayDistrictList"/>-->
 		<sakai:messages/>
 		<sakai:messages message="true"/>
@@ -27,7 +27,10 @@
 				</td>
 			</tr>		
 			</sakai:group_table>
-			<sakai:actions>
+				<sakai:actions>
+				<html:submit property="action">
+					<fmt:message key="button.add"/>
+			</html:submit>	
 			<html:submit property="action">
 					<fmt:message key="button.display"/>
 			</html:submit>
