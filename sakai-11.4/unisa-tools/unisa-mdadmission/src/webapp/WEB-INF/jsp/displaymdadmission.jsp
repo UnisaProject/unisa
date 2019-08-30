@@ -45,8 +45,7 @@
 				<td><bean:write name="mdAdmissionForm" property="application.lecturerConsulted"/></td>
 			</tr>
 		</sakai:group_table>
-		
-		
+		<hr>		
 		<sakai:group_heading><fmt:message key="page.heading.supportdocs"/></sakai:group_heading>
 		<sakai:group_table>
 		  	<logic:notEmpty name="mdAdmissionForm" property="documentList">
@@ -69,9 +68,9 @@
 				</logic:iterate>
 			</logic:notEmpty>
 		</sakai:group_table>
-		
-     <sakai:group_heading><fmt:message key="page.heading.prev"/></sakai:group_heading>
-		<sakai:group_table>
+		<hr>	
+    <sakai:group_heading><fmt:message key="page.heading.prev"/></sakai:group_heading>     
+	<sakai:group_table>
 		<tr>
 			<th align="left"><fmt:message key="table.heading.qualification"/>&nbsp;</th>
 			<th align="left"><fmt:message key="table.heading.institution"/>&nbsp;</th>
@@ -88,42 +87,49 @@
 			</tr>
 			</logic:iterate>
 		</logic:notEmpty>
-		</sakai:group_table>
-
+	</sakai:group_table>
+	<hr>
 	<sakai:group_heading><fmt:message key="page.heading.interest"/></sakai:group_heading>
-		<sakai:group_table>
+	<sakai:group_table>
 		 <tr>
 		   <td><bean:write name="mdAdmissionForm" property="application.areaOfInterest"/></td>
 		 </tr>
 	</sakai:group_table>
-	
-	<sakai:group_heading><fmt:message key="page.heading.title"/></sakai:group_heading>
+	<hr>
+	<sakai:group_heading><fmt:message key="page.heading.title"/></sakai:group_heading>	
 		<sakai:group_table>
 		 <tr>
 		   <td><bean:write name="mdAdmissionForm" property="application.title"/></td>
 		 </tr>
 	</sakai:group_table>
-	
-	<sakai:group_heading><fmt:message key="page.heading.comment"/></sakai:group_heading>
+	<hr>
+	<sakai:group_heading><fmt:message key="page.heading.comment"/></sakai:group_heading>	
 		<sakai:group_table>
 		 <tr>
 		   <td><bean:write name="mdAdmissionForm" property="application.advisorComment"/></td>
 		 </tr>
 	</sakai:group_table>
+	<hr>
 	<logic:equal name="mdAdmissionForm" property="haveToSetRecommendation" value="true">
 		<logic:equal name="mdAdmissionForm" property="application.status" value="A">
 			<sakai:group_heading><fmt:message key="page.heading.appeal"/></sakai:group_heading>
 			<sakai:group_table>
 				<tr><td><bean:write name="mdAdmissionForm" property="application.previousRecommendation"/></td></tr>
 				<tr><td><bean:write name="mdAdmissionForm" property="application.previousRecommendationComment"/></td></tr>
-			</sakai:group_table>			
+			</sakai:group_table>
+			<hr>			
 		</logic:equal>
 	</logic:equal>		
 	<sakai:group_heading><fmt:message key="table.heading.recom"/></sakai:group_heading>
 	<sakai:group_table>
-	<logic:equal name="mdAdmissionForm" property="haveToSetRecommendation" value="true">	
+	<logic:equal name="mdAdmissionForm" property="haveToSetRecommendation" value="true">
 	<tr>
-		<td><html:radio property="application.recommendation" value="yes"/><fmt:message key="radio1"/></td>
+		<th colspan="4"><fmt:message key="page.heading.recommendation.yes"/></th>
+	</tr>	
+	<tr>
+		<td colspan="4"><html:radio property="application.recommendation" value="yes"/><fmt:message key="radio1"/></td>
+	</tr><tr>
+		<td colspan="4"><fmt:message key="page.note.recommendation.yes"/></td>
 	</tr><tr>
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="table.contact.person"/>&nbsp;<bean:write name="mdAdmissionForm" property="application.contactPerson.name"/></td>
 		<td><fmt:message key="table.telno"/> &nbsp;<bean:write name="mdAdmissionForm" property="application.contactPerson.telephone"/></td>
@@ -142,18 +148,24 @@
 	</tr>
 	<!-- <th align="left" colspan="4"><fmt:message key="table.heading.struct"/>&nbsp;</th> -->
 	<tr>
+		<th colspan="4"><fmt:message key="page.heading.recommendation.struct"/></th>
+	</tr>
+	<tr>
 		<td colspan="4"><html:radio property="application.recommendation" value="struct"/><fmt:message key="radio2"/></td>				
 	</tr><tr>
 		<td colspan="4"><html:textarea name="mdAdmissionForm" property="application.structuredComment" rows="3" cols="100"/></td>
-	</tr><tr>
+	</tr><!-- <tr>
 		<td colspan="4"><html:radio property="application.recommendation" value="addreq"/><fmt:message key="radio3"/></td>
 	</tr><tr>
 		<td colspan="4"><html:textarea name="mdAdmissionForm" property="application.requirementComment" rows="3" cols="100"/></td>
+	</tr> -->
+	<tr>
+		<th colspan="4"><fmt:message key="page.heading.recommendation.no"/></th>
 	</tr><tr>
 		<td colspan="4"><html:radio property="application.recommendation" value="no"/><fmt:message key="radio4"/></td>
 	</tr><tr>
 		<td colspan="4"><html:textarea name="mdAdmissionForm" property="application.notAdmittedComment" rows="3" cols="100"/></td>
-	</tr>
+	</tr>	
 	</logic:equal>
 	<logic:equal name="mdAdmissionForm" property="haveToSetRecommendation" value="false">
 		<logic:equal name="mdAdmissionForm" property="application.recommendation" value="yes">
