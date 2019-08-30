@@ -176,6 +176,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							<html:radio property="student.appliedqual" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<html:radio property="student.appliedqual" value="N"/><fmt:message key="page.no"/>
 						</td>
+					</tr><tr>
+						<td><fmt:message key="md.page4.q8"/>&nbsp;<sakai:required/><br><fmt:message key="md.page4.q8b"/></td>
+						<!-- <td><html:text name="mdApplicationsForm" property="student.appliedqual" maxlength="1" size="1"/></td>  -->
+						<td style="white-space: nowrap">
+							<html:radio property="student.appliedrpl" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<html:radio property="student.appliedrpl" value="N"/><fmt:message key="page.no"/>
+						</td>
 					</tr>
 					</sakai:group_table>
 				</div>
