@@ -408,7 +408,8 @@ public class DisplayMdAdmissionAction  extends LookupDispatchAction{
 					readOnlyNewUniflow = true;
 				}
 			}					
-			
+
+		
 			newDoclist = dao.getNewDocsList(mdForm.getStudent().getStudentNumber());  		                           
 			mdForm.getDocumentList().addAll(newDoclist); 
 			

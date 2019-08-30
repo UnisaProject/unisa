@@ -798,7 +798,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 					"MdApplicationsQueryDAO : Error updating student application for student nr / "+stu.getNumber() + ex, ex);
 		}
 		return ;
-	}
+	}		
 
 	public List getMDhistory(String studentNr, String seqnr) throws Exception{
 		String sql;
@@ -894,6 +894,22 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
         	ps.executeUpdate();
         	//conn.close();
 	}
+	
+	public void updateStudentStudiesApproveFlag(int studentNr)throws Exception {	
+		
+		String query="update stu set post_graduate_stud = 'N' where nr = ?";
+		
+		try {
+    	  	//log.debug("ApplyForStudentNumberQueryDAO - updStudentContact - query: " + query);
+
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			int result = jdt.update(query, new Object []{studentNr});
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdApplicationsQueryDAO : Error updating student studies approved flag / "+studentNr + "  / " + ex);
+		}
+		return ;
+	}
 
 	public void insertMDrecord(Student student, Qualification qualification) throws Exception {
 
@@ -915,8 +931,8 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
               "refer_status, interest_area, proposed_title, comments, contact_person, supervisor, " +
               "joint_supervisor, struct_degree, additional_requirements, reason_not_admit, advisor_comment, " +
               "recommend_status, " +
-              "lecturer_name, passed_ndp, prev_apply_md, prev_apply_qual) " +
-              "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+              "lecturer_name, passed_ndp, prev_apply_md, prev_apply_qual,applied_rpl) " +
+              "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		jdt.update( new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
@@ -975,6 +991,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 				ps.setString(22,stu.getPassedndp().toUpperCase());
 				ps.setString(23,stu.getAppliedmd().toUpperCase());
 				ps.setString(24,stu.getAppliedqual().toUpperCase());
+				ps.setString(25,stu.getAppliedrpl().toUpperCase());
 				return ps;
 			}
 		});
