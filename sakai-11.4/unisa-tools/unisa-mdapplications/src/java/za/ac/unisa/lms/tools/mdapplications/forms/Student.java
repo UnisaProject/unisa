@@ -89,8 +89,15 @@ public class Student {
 	private String passedndp;
 	private String appliedmd;
 	private String appliedqual;
+	private String appliedrpl;
 	private String lecturer;
-
+	
+	public String getAppliedrpl() {
+		return appliedrpl;
+	}
+	public void setAppliedrpl(String appliedrpl) {
+		this.appliedrpl = appliedrpl;
+	}
 	public String getNumber() {
 		return number;
 	}

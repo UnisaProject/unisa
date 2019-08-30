@@ -1515,6 +1515,15 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		}else{
 			mdForm.getStudent().setAppliedqual(mdForm.getStudent().getAppliedqual().toUpperCase());
 		}
+		if(mdForm.getStudent().getAppliedrpl()==null || "".equalsIgnoreCase(mdForm.getStudent().getAppliedrpl())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Please answer Y/N to question if you are admitted via RPL route."));
+					addErrors(request, messages);
+					setDropdownListsStep4(request, qualCode, specCode);
+					return "histforward";
+		}else{
+			mdForm.getStudent().setAppliedrpl(mdForm.getStudent().getAppliedrpl().toUpperCase());
+		}
 
 		//setUpSpesList(request, qualif, mdForm); Moved to Page 2
 		setDropdownListsStep3(request);
@@ -1835,8 +1844,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		String displayDate = (new java.text.SimpleDateFormat("EEEEE dd MMMMM yyyy hh:mm:ss").format(date).toString());
 		request.setAttribute("apptime",displayDate);
 		request.setAttribute("email",mdForm.getStudent().getEmailAddress());
-
-		//Do execute F126; recreate drop down lists for return page
+		
 		String errorMsg="";
 		errorMsg = updateStudentNr(mdForm);
 		if(!"".equals(errorMsg)){
@@ -1861,7 +1869,12 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				setDropdownListsStep1(request,mdForm.getApplyType());
 				return mapping.findForward("step1forward");
 			}else{
-				dao.insertMDhistory(mdForm.getStudent().getNumber(), mdForm.getStudent().getSeqnr(), mdForm.getMdprevList());
+				dao.insertMDhistory(mdForm.getStudent().getNumber(), mdForm.getStudent().getSeqnr(), mdForm.getMdprevList());	
+				try {
+				dao.updateStudentStudiesApproveFlag(Integer.parseInt(mdForm.getStudent().getNumber()));
+				}catch(Exception e){
+					log.warn("MdApplicationAction - " + e);					
+				}
 			}
 			writeWorkflow(mdForm,date);
 		}
@@ -2313,7 +2326,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		  }
 		  else {
 			  op2.setInStudentAnnualRecordMkPrevEducationalInstitCode("9997");
-		  }
+		  }		  
 		  op2.setInStudentAnnualRecordRegistrationMethodCode("P");
 		  op2.setInStudentAnnualRecordDespatchMethodCode("P");
 		  op2.setInStudentAnnualRecordMkOccupationCode(mdForm.getStudent().getOccupation().getCode());//from screen
@@ -3145,6 +3158,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		form.getStudent().setPassedndp("");
 		form.getStudent().setAppliedmd("");
 		form.getStudent().setAppliedqual("");
+		form.getStudent().setAppliedrpl("");
 		form.setAgree(null);
 		form.setAgreeQualInfo(null);
 		form.setFromPage(null);
