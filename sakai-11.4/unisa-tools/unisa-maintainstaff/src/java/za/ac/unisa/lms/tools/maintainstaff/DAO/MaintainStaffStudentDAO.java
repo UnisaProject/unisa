@@ -214,12 +214,7 @@ private SessionManager sessionManager;
 				}			
 			}
 		}else{
-		/* Course types:
-		 * all except 12 and 15 = year course = allow period 0 and 6
-		 * 12 = semester course = allow period 1 and 2
-		 * 15 = both (year + semester) = allow all periods
-		 */
-	
+ 
 		if (courseType.equals("15")) {
 			courseValid = true;
 		} else if (courseType.equals("12")) {
@@ -377,11 +372,14 @@ public String findDuplStaffEmail(String novellUserId) throws Exception {
     		while (j.hasNext()) {
     			ListOrderedMap data = (ListOrderedMap) j.next();
     			email = data.get("EMAIL").toString();
-    			if( null != email || email.length() > 0) {    				
+    			if( null != email || email.length() > 5) {    				
     				break;
-    			}      			
+    			}else {
+    				email = null;
+    			}
     		}
     		
+
     		return email;
 
 		} catch (Exception ex) {
@@ -460,18 +458,18 @@ public String findStaffRecord(String novellUserId) throws Exception {
 
 public String findStaffEmail(String novellUserId) throws Exception {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(super.getDataSource());
-	String name = null;
+	String emailAddress = null;
 	
 	 String findPersonInStaff = "SELECT NVL(EMAIL_ADDRESS,' ') AS  EMAIL FROM   STAFF WHERE NOVELL_USER_ID =?";
 
 	try{
 		String email =(String) jdbcTemplate.queryForObject(findPersonInStaff.toString(), new Object[]{novellUserId.toUpperCase()}, String.class);
-		if ((null == email)||(email.length()==0)) {
-			name = null;
+		if ((null == email)||(email.length() < 5)) {
+			emailAddress = null;
 		} else {
-			name = email;
+			emailAddress = email;
 		}	
-		return email;
+		return emailAddress;
 	} catch (Exception ex) {
         return null;
 	}
