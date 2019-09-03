@@ -100,6 +100,7 @@ public class ManagementInfoAction extends LookupDispatchAction{
 				  }catch (Exception e) {e.printStackTrace();}	
 				  return null;
 			}
+		
 		    public ActionForward displayPrelimPlacements(
 				                   ActionMapping mapping,
 				                   ActionForm form,

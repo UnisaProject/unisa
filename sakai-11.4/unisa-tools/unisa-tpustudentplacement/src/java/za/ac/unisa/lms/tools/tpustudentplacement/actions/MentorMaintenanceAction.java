@@ -49,6 +49,7 @@ public class MentorMaintenanceAction  extends LookupDispatchAction{
 		map.put("inputCorrespondence","inputCorrespondence");
 				return map;
 	}
+	
 	public ActionForward initial(
 			ActionMapping mapping,
 			ActionForm form,

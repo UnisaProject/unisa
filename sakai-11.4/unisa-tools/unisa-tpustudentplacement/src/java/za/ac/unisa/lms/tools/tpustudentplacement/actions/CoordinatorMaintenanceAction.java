@@ -37,6 +37,8 @@ public class CoordinatorMaintenanceAction extends LookupDispatchAction{
 			map.put("staffInfoBtnOnClickAction","staffInfoBtnOnClickAction");
 			return map;
 		}
+		
+		
 		public ActionForward  selectCoordinator(//selected coordinator is displayed  for confirmation of delete
 				ActionMapping mapping,
 				ActionForm form,

@@ -191,6 +191,7 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 			addErrors(request,messages);
 				return mapping.findForward( studentPlacementForm.getCurrentPage());				
 		}
+		
 		SubProvinceDAO dao = new SubProvinceDAO();
 		if(studentPlacementForm.getSubProvince().getCode()==0){
 		            dao.insert(studentPlacementForm.getSubProvince());

@@ -14,7 +14,8 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 
 public class DistrictDAO extends StudentSystemDAO {
 	                  
-	                   databaseUtils dbutil;
+	                  
+	     databaseUtils dbutil;
   	                   public DistrictDAO(){
                                   dbutil=new databaseUtils();
                        }   

@@ -52,6 +52,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String managementCalledFrom;
 	private String mentorCalledFrom;
 	
+	
 	private int selectedDistrictIndex;
 	
 	private Integer communicationSchool;

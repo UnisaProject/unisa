@@ -10,6 +10,7 @@ import za.ac.unisa.lms.db.StudentSystemDAO;
 
 public class databaseUtils extends StudentSystemDAO {
 	
+	
 	      public  static final String saCode="1015";
 	      public databaseUtils(){
 	    	       jdt = new JdbcTemplate(getDataSource());

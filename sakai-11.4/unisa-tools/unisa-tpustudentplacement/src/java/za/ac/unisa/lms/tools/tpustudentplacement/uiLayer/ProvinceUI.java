@@ -11,6 +11,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SubProvince;
 
 public class ProvinceUI extends ProvinceDAO{
+	
 		          public void setProvinceListToForm(StudentPlacementForm studentPlacementForm) throws Exception{
 	        	                                              studentPlacementForm.setListRSAProvinces(getProvinceListExSubPrv());
                                                              setProvAndSubProvListToForm(studentPlacementForm) ;

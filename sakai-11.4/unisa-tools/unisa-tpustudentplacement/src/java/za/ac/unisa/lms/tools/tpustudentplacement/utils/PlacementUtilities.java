@@ -62,6 +62,5 @@ public class PlacementUtilities {
 	 public static String getSaCode(){
 		 return saCode;
 	 }
-
-
+	 
 }

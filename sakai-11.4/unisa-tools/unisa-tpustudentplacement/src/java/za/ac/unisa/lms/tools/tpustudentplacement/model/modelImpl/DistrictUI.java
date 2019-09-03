@@ -40,6 +40,7 @@ public class DistrictUI extends DistrictImpl{
                                             	DistrictDAO districtDAO =new DistrictDAO();
                                             	districtDAO.unlinkAllDistrictsLinkedToSubProv(subProvCode);
   }
+    
     public void setNamesOfSelectedDitrictsToForm(StudentPlacementForm studentPlacementForm) throws Exception {
                                                                String array[] = studentPlacementForm.getIndexNrSelected();
 	                                                           String districtNames="";

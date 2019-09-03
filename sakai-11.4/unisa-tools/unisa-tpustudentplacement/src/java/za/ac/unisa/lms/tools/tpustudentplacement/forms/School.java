@@ -34,6 +34,8 @@ public class School {
    	public String getPhysicalAddress4() {
 		return physicalAddress4;
 	}
+   	
+   	
 	public void setPhysicalAddress4(String physicalAddress4) {
 		this.physicalAddress4 = physicalAddress4;
 	}
