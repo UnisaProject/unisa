@@ -37,8 +37,13 @@ public class DistrictDAO extends StudentSystemDAO {
 	                   public void unlinkToSubProv(Short districtCode) throws Exception {
                                                           String sql = "update ldd set  fk_TpuSubPrv_code=null  where code=" + districtCode;
                                                           String errorMsg="StudentPlacementDao : Error updating ldd / ";
-                                                         dbutil.update(sql,errorMsg);	
+                                                          dbutil.update(sql,errorMsg);	
                       }
+	                   public void unlinkAllDistrictsLinkedToSubProv(int subProvCode) throws Exception {
+                                                         String sql = "update ldd set  fk_TpuSubPrv_code=null  where fk_TpuSubPrv_code=" + subProvCode;
+                                                         String errorMsg="StudentPlacementDao : Error updating ldd / ";
+                                                         dbutil.update(sql,errorMsg);	
+                     }
 	                   public void linkToSubProv(List<District> districtList,Short subProvCode) throws Exception {
 	                	                               Iterator iter=districtList.iterator();
 	                	                                while(iter.hasNext()){

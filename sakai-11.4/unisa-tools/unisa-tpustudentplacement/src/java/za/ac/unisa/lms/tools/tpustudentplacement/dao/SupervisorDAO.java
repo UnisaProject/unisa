@@ -43,9 +43,9 @@ public class SupervisorDAO extends StudentSystemDAO {
             	    	                        supervisorFileWriter.writeFile(records,fileName,countryCode);
             	    }
             	    public void  extractFile(HttpServletRequest request,
-    			                     HttpServletResponse response,String fileToRead,
-    			                     String outputFileName){
-            	    	                   fileExtractorClass.extractFile(request,response,fileToRead,outputFileName);
+    			                                      HttpServletResponse response,String fileToRead,
+    			                                      String outputFileName){
+            	    	                              fileExtractorClass.extractFile(request,response,fileToRead,outputFileName);
     	            }
             	    public String saveAllocationAllowed(int supervisorCode,int studentsAllowed,int year,int semester)throws Exception {
             	    	              String sql = "select count(*) as total   from tpusuptot  where" +
@@ -348,40 +348,24 @@ public class SupervisorDAO extends StudentSystemDAO {
                    }
                    return  district;
           }
-		private int  getSupervisorProv(int superviorCode) throws Exception{
-			                                int provCode=getSupervisorSubProv(superviorCode);
-			                                if( provCode==0){
-			                            	   	              String  sql="select  tpusar.mk_prv_code a provCode   from tpusar a, ldd" +
-			                                                                " where tpusar.mk_superv_code=" +superviorCode +
-			                                                                " and tpusar.mk_district_code = ldd.code" +
-			                                                                "  and tpusar.mk_prv_code= ldd.fk_prvcode" ;     
-			                                                   provCode=getProvCode( superviorCode,sql) ;
-			                                 }
-			                                return  provCode;
-	   }
-		private int  getSupervisorSubProv(int superviorCode) throws Exception{
-                                                   String  sql="select  c.code as provCode   from tpusar a, ldd b,tpusubprv c" +
-                                                                      " where tpusar.mk_superv_code=" +superviorCode +
-                                                                      " and a.mk_district_code = b.code" +
-                                                                     "  and  b.fk_tpusubprv_code=c.code" ;
-         	                                                           return getProvCode(superviorCode, sql) ;
-       }
-		private int  getProvCode(int superviorCode,String sql) throws Exception{
-                                             List queryListDistrict = dbutil.queryForList(sql,"Database error  when whenjoining the tables,tpusar,ldd");
-                                             Iterator j = queryListDistrict.iterator();
-                                             int provCode=0;
-                                             while (j.hasNext()) {
-                                                          ListOrderedMap dataDistrict = (ListOrderedMap) j.next();
-                                                         String provCodeStr=dbutil.replaceNull(dataDistrict.get("provCode"));
-                                                         if(provCodeStr.equals("")){
-                                                 	                provCodeStr="0";
-                                                         }
-                                                         provCode= Integer.parseInt( provCodeStr);
-                                                         break;
-                                            }		
-                                            return provCode;
-     }
-	  private void initialiseContactData(Supervisor supervisor){
+		
+public String getSupervProvDesc(int supervisorCode) throws Exception{
+                                     String sql= "select  Decode(d.fk_tpusubprv_code,null, c.eng_description,(select eng_description  from tpusubprv where  code=d.fk_tpusubprv_code )) as"+
+                                                      "  supProvDesc  from tpusup a,tpusar b,prv c, ldd d" +
+                                                      "  where a.code = b.mk_superv_code" + 
+                                                      "  and b.mk_prv_code = c.code"+
+			                                          "  and b.mk_district_code=d.code"+
+                                                      "  and b.mk_superv_code="+supervisorCode;
+                                     String errorMessage="SupervisorDAO:Error getting province description: tables tpusup,tpusar,prv";
+                                     List queryList = dbutil.queryForList(sql,errorMessage);
+                                     String provinceCode="";
+                                     Iterator i=queryList.iterator();
+                                     while(i.hasNext()){
+                                                     ListOrderedMap data = (ListOrderedMap) i.next();
+                                                      provinceCode=dbutil.replaceNull(data.get("supProvDesc").toString());
+                                   }
+                   return provinceCode;
+}	  private void initialiseContactData(Supervisor supervisor){
 		                                    supervisor.setPostalAddress1("");
                                             supervisor.setPostalAddress2("");
                                             supervisor.setPostalAddress3("");
@@ -702,7 +686,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
                	                                     sql = sql  + " and b.mk_prv_code = " + province; 
                	              }
-               if (district!=null && district!=0){
+               if (district!=null && province.compareTo(Short.parseShort("0"))!=0){
                                sql = sql + " and b.mk_district_code = " + district;
                 }
                 if (filter!=null && !filter.trim().equalsIgnoreCase("")){
@@ -797,25 +781,22 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                          addSupervToList(listSupervisor,supervisor,contractStatus,timeLimit);
                        }
                     return listSupervisor;
-
-     }
-    public List getSupervProvList(int supervisorCode){
-    	                                String sql= "select  b.mk_prv_code as supProvCode" +
-                                                         " from tpusup a,tpusar b, lns c" +
-                              " where a.code = b.mk_superv_code" + 
-                              " and a.mk_country_code = c.code"+
-                              " and b.mk_superv_code="+supervisorCode;
-    	           List queryList = new ArrayList();
-    	           List provList = new ArrayList();
-                   JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-                   queryList = jdt.queryForList(sql);
-                   for (int i=0; i<queryList.size();i++){
-	                      ListOrderedMap data = (ListOrderedMap) queryList.get(i);
-           	              String provinceCode=dbutil.replaceNull(data.get("supProvCode").toString());
-           	              provList.add(provinceCode);
-                   }
-                   return provList;
-    	 
+    }
+     public List getSupervProvList(int supervisorCode)throws Exception {
+                                                 String sql= "select  Decode(d.fk_tpusubprv_code,null,b.mk_prv_code,d.fk_tpusubprv_code) as supProvCode"+
+                                                          "  from tpusup a,tpusar b,prv c, ldd d" +
+                                                          "  where a.code = b.mk_superv_code" + 
+                                                          "  and b.mk_prv_code = c.code"+
+		                                                  "  and b.mk_district_code=d.code"+
+                                                          "  and b.mk_superv_code="+supervisorCode;
+                                                   List provList = new ArrayList();
+                                                   List queryList = dbutil.queryForList(sql,"Error gettng supervior prov list:SupervisorDAO ");
+                                                   for (int i=0; i<queryList.size();i++){
+                                                                        ListOrderedMap data = (ListOrderedMap) queryList.get(i);
+                                                                        String provinceCode=dbutil.replaceNull(data.get("supProvCode").toString());
+                                                                        provList.add(provinceCode);
+                                                  }
+                                                  return provList;
      }
      private void addSupervToList(List listSupervisor,SupervisorListRecord supervisor,String contractStatus,int timeLimit){
     	                if(contractStatus.equals("All")){

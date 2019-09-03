@@ -15,7 +15,7 @@ public class SupervisorImpl {
 	 public Supervisor getSupervisor(Integer code) throws Exception {
 		              return dao.getSupervisor(code);
 	 }
-	 public List getSupervProvList(int supervisorCode){
+	 public List getSupervProvList(int supervisorCode)throws Exception {
 		  	        return dao.getSupervProvList(supervisorCode);
 	 }
 	 public   String getStudentsAllocated(int supervisorCode,int year)throws Exception {

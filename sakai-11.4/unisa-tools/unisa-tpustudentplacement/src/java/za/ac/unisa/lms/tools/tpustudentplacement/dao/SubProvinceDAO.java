@@ -66,8 +66,8 @@ public class SubProvinceDAO {
                                                    
         	}
 			public void  delete(int code)throws Exception{
-	                                                      String sql=" update  tpusubprv   set  in_use_flag='N'  where    code="+code;
-                                                          String  errorMsg="database error  when accessing table subProv";
+	                                                      String sql=" delete from   tpusubprv     where    code="+code;
+                                                          String  errorMsg="database error  when accessing table tpuSubProv";
                                                          dbutil.update(sql, errorMsg);
           }
 			public void update(int code,String name)throws Exception{

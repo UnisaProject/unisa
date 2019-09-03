@@ -175,9 +175,11 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String addMentorScreen="N";
 	private MentorFilteringData mentorFilterData;
 	
-	//ub Provinces
+	//sub Provinces
 	private List listSubProvincesOfProvince;
 	private SubProvince subProvince;
+	
+	private String provinceName;
 
 	public void setCurrProv(String currProv){
 		                    this.currProv=currProv;
@@ -1048,6 +1050,12 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	}
 	public void setEditMode(boolean editMode) {
 		this.editMode = editMode;
+	}
+	public String getProvinceName() {
+		return provinceName;
+	}
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
 	
 	

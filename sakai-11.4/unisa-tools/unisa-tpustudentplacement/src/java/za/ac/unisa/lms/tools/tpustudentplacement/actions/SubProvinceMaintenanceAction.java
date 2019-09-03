@@ -44,6 +44,7 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 		map.put("button.edit", "editSubProv");
 		map.put("button.save", "saveSubProv");	
 		map.put("button.add", "addSubProv");	
+		map.put("button.delete", "delete");	
 		return map;
 	}
 		public ActionForward prevPage(
@@ -99,17 +100,44 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 		                                                                    studentPlacementForm.setCurrentPage("editSubProv");
 		                                                                 	return mapping.findForward( studentPlacementForm.getCurrentPage());	
 	}
+	public ActionForward delete(
+                                                    ActionMapping mapping,
+ 	                                                ActionForm form,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) throws Exception {
+                                                                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+                                                                    	ActionMessages messages = new ActionMessages();	
+                         		 if (studentPlacementForm.getIndexNrSelected()==null ||
+                          				studentPlacementForm.getIndexNrSelected().length==0){
+                          				messages.add(ActionMessages.GLOBAL_MESSAGE,
+                          						new ActionMessage("message.generalmessage",
+                          									"Please select a sub province"));
+                          			}
+                          		if (!messages.isEmpty()) {
+                          			addErrors(request,messages);
+                          					return mapping.findForward("listSubProvinces");				
+                          		}
+                          	 SubProvinceDAO  subProvinceDAO =new SubProvinceDAO();
+ 			                  DistrictUI      districtUI   =new    DistrictUI();
+                          		for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
+                          			                    String array[] = studentPlacementForm.getIndexNrSelected();
+                          			                    SubProvince  subProvince = (SubProvince)studentPlacementForm.getListSubProvincesOfProvince().get(Integer.parseInt(array[i]));		
+                          			                    subProvinceDAO.delete(subProvince.getCode());
+                          			                    districtUI.unlinkAllDistrictsLinkedToSubProv(subProvince.getCode());
+                          		}
+                          	               	return display(mapping,form,request,response);	
+	}
 	public ActionForward addSubProv(
             ActionMapping mapping,
  	       ActionForm form,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
                                                      StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-                                	               SubProvince subProvince =  studentPlacementForm.getSubProvince();
+                                	                SubProvince subProvince =  studentPlacementForm.getSubProvince();
                          				             subProvince.setProvinceCode(studentPlacementForm.getDistrictFilterProvince());
                          				             subProvince.setCode(0);
                           		                      ProvinceUI provUI=new ProvinceUI();
-                                                   subProvince.setProvinceDescription(provUI.getProvinceDescription(studentPlacementForm.getDistrictFilterProvince()));
+                                                    subProvince.setProvinceDescription(provUI.getProvinceDescription(studentPlacementForm.getDistrictFilterProvince()));
                                                    subProvince.setProvinceCode(studentPlacementForm.getDistrictFilterProvince());
                                                    studentPlacementForm.setSubProvince(subProvince );
                             		                  studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
@@ -171,43 +199,4 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 		}
 		return display(mapping,form,request,response);	
 	}
-	public ActionForward deleteSubProv(
-			                                  ActionMapping mapping,
-			                                  ActionForm form,
-			                                  HttpServletRequest request,
-			                                  HttpServletResponse response) throws Exception {
-		                                        StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-			        	ActionMessages messages = new ActionMessages();	
-           		 if (studentPlacementForm.getIndexNrSelected()==null ||
-            				studentPlacementForm.getIndexNrSelected().length==0){
-            				messages.add(ActionMessages.GLOBAL_MESSAGE,
-            						new ActionMessage("message.generalmessage",
-            									"Please select a sub province"));
-            			}
-            		if (studentPlacementForm.getIndexNrSelected()!=null &&
-            				studentPlacementForm.getIndexNrSelected().length>1){
-            				messages.add(ActionMessages.GLOBAL_MESSAGE,
-            						new ActionMessage("message.generalmessage",
-            									"Please select only one sub province"));
-            			}
-            		if (!messages.isEmpty()) {
-            			addErrors(request,messages);
-            					return mapping.findForward("listSubProvinces");				
-            		}
-            		SubProvince subProvince = new SubProvince ();
-            		Province province = new Province();
-            		
-            		for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
-            			String array[] = studentPlacementForm.getIndexNrSelected();
-            			subProvince = (SubProvince)studentPlacementForm.getListSubProvincesOfProvince().get(Integer.parseInt(array[i]));			
-            			studentPlacementForm.setSelectedDistrictIndex(i);
-            			i=studentPlacementForm.getIndexNrSelected().length;
-            		}
-            		studentPlacementForm.setSubProvince(subProvince );
-            		SubProvinceDAO dao = new SubProvinceDAO();
-		            dao.delete(studentPlacementForm.getSubProvince().getCode());
-		           return display(mapping,form,request,response);	
-		           
 	}
-
-}

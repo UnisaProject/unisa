@@ -1,6 +1,4 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.forms;
-import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.ProvinceImpl;
-import java.util.List;
 public class Province {
 	private Short code;
 	private String description;
@@ -30,7 +28,7 @@ public class Province {
          return false;
 }
 	 public static boolean isProvince(Short code){
-                                             if((code!=null)&&(code.toString().equals("0"))&&(code>0)&&(code <10)){
+                                             if((code!=null)&&(!code.toString().equals("0"))&&(code>0)&&(code <10)){
               	                                            return true;
                                              }
                                              return false;
