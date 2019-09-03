@@ -860,6 +860,7 @@ private RetrievalResult getFileFromNewUniflow(DocumentID docId) throws RemoteExc
 							"and qsprout.MK_QUAL_CODE = ? " + 
 							"and qsprout.MK_SPES_CODE = ? " +  
 							"and qsprout.STAFF_NUMBER = ? " + 
+							"and qsprout.TYPE = 'ADM' " +
 							"and mdappl.MK_STUDENT_NR = stu.NR " +
 							"and not exists (select mk_student_nr from mdtrac where mk_student_nr = mdappl.mk_student_nr " +  
 								"and mdappl.APP_SEQUENCE_NR = mdtrac.APP_SEQUENCE_NR " +
@@ -1402,7 +1403,7 @@ public void writeFinalSignOff(MdAdmissionApplication app, String studentNr, Staf
 							"staff.title || ' ' || staff.initials ||' ' || staff.surname as name, " +
 							"qsprout.final_flag , qsprout.MK_QUAL_CODE, qsprout.MK_SPES_CODE " +
 						"FROM staff, qsprout " +
-						"WHERE staff.novell_user_id = ? and staff.PERSNO = qsprout.STAFF_NUMBER " +
+						"WHERE staff.novell_user_id = ? and staff.PERSNO = qsprout.STAFF_NUMBER and qsprout.TYPE = 'ADM' " +
 						"order by qsprout.MK_QUAL_CODE, qsprout.MK_SPES_CODE";
 		log.debug(query);
 
@@ -1556,7 +1557,7 @@ public void writeFinalSignOff(MdAdmissionApplication app, String studentNr, Staf
 
 		String query = "SELECT * FROM qsprout, staff " +
 					   "WHERE qsprout.STAFF_NUMBER = staff.PERSNO and " +
-					   "qsprout.MK_QUAL_CODE = ? and qsprout.MK_SPES_CODE = ? ";
+					   "qsprout.MK_QUAL_CODE = ? and qsprout.MK_SPES_CODE = ? and qsprout.TYPE = 'ADM'";
 		
 		ArrayList<Staff> routingList = new ArrayList<Staff>();
 		Staff staff = null;
