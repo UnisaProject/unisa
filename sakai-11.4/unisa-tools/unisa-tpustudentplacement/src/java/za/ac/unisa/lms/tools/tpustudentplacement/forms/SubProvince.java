@@ -41,6 +41,7 @@ public class SubProvince  extends SubProvinceDAO{
 	}
 	public void setProvinceDescription(String provinceDescription) {
 		this.provinceDescription = provinceDescription;
+
 	}
 }
 /*

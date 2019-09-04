@@ -17,17 +17,17 @@
 				<sakai:group_table>	
 					<tr>
 				         <td><fmt:message key="prompt.column.district"/></td>
-				        <td><bean:write name="studentPlacementForm" property="district.description"/></td>	
+				        <td><bean:write name="studentPlacementForm" property="districtName"/></td>	
 				</tr>
 				<tr>
 				         <td><fmt:message key="prompt.column.province"/></td>
-				        <td><bean:write name="studentPlacementForm" property="district.provinceName"/></td>	
+				        <td><bean:write name="studentPlacementForm" property="provinceName"/></td>	
 				</tr>
 				<tr>
-							<td style="white-space:nowrap;align:top"><fmt:message key="prompt.column.subprovince"/></td>
-						    <td><html:select name="studentPlacementForm" property="district.subProvCode"  >
+				           <td style="white-space:nowrap;align:top"><fmt:message key="prompt.column.subprovince"/></td>
+						   <td><html:select name="studentPlacementForm" property="subProvince.code"  >
 							              <html:optionsCollection name="studentPlacementForm" property="listSubProvincesOfProvince" value="code" label="description"/>
-					               	</html:select>
+					               </html:select>
 						</td>
 				</tr>				
 			</sakai:group_table>
@@ -40,4 +40,5 @@
 			</html:submit>	
 			 </sakai:actions>						
 	</html:form>
+	
 </sakai:html>

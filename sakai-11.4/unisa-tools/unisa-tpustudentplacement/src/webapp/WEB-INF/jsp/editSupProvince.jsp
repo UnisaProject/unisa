@@ -36,4 +36,5 @@
 			</html:submit>
 			</sakai:actions>						
 	</html:form>
+	
 </sakai:html>

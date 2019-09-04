@@ -18,4 +18,5 @@ public class SubProvinceUI {
                              	list = dao.getSubProvinceList(studentPlacementForm.getDistrictFilterProvince());
                                 studentPlacementForm.setListSubProvincesOfProvince(list);
   }
+  
 }

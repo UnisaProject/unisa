@@ -48,6 +48,7 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		return map;
 	}
 	
+	
 	public ActionForward initial(
 			ActionMapping mapping,
 			ActionForm form,
