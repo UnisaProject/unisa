@@ -23,6 +23,7 @@ public class SchoolUI extends SchoolDAO {
 	                           schoolValidator=new SchoolValidator();
 	                 }
 	                 
+	                 
 	                 public School getSchool(StudentPlacementForm studentPlacementForm) throws Exception{
 		                               int schoolCode=studentPlacementForm.getCommunicationSchool();
 		                               String countryCode=studentPlacementForm.getSchoolFilterCountry();
@@ -44,6 +45,7 @@ public class SchoolUI extends SchoolDAO {
 	                                    String email=getEmailAddress(studentPlacementForm.getCommunicationSchool());
  	                                    studentPlacementForm.setCommunicationEmailAddress(email.trim());
                      }
+	                 
 	                 public void validateSchoolSelection(String[] indexArr,ActionMessages messages){ 
 	          	    	               schoolValidator.validateSelection(indexArr, messages);
 	          	     }

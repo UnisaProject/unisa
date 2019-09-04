@@ -14,6 +14,7 @@ public class SchoolEmailData {
 	                          message+=writeEpilogue(user);
 	                      return message;
 	}
+	
 	private String getSalutation(School school){
 		              DateUtil  dateutil=new DateUtil();
                       String message="";

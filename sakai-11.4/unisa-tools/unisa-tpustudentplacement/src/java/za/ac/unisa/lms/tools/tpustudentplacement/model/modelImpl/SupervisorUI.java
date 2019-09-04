@@ -44,6 +44,7 @@ public class SupervisorUI  extends  SupervisorImpl{
                                    }
                               return nextPage;
     }
+	
 	public String setSupForEditPlacement(StudentPlacementForm studentPlacementForm,
                     SupervisorListRecord supervisor,String fromPage,String returnStr)throws Exception{
                     String nextPage=returnStr;

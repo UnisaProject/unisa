@@ -69,4 +69,5 @@
 			</sakai:actions>		
 		</logic:notEmpty>
 	</html:form>
+	
 </sakai:html>

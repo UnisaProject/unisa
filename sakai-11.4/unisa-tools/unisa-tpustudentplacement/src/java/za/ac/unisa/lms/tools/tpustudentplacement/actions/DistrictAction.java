@@ -15,6 +15,7 @@ import org.apache.struts.actions.LookupDispatchAction;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.DistrictUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.SubProvinceUI;
 
 public class DistrictAction extends LookupDispatchAction{
@@ -34,6 +35,7 @@ public class DistrictAction extends LookupDispatchAction{
 		}
 	}
 	
+	
 	protected Map getKeyMethodMap() {
 		// TODO Auto-generated method stub
 		Map map = new HashMap();
@@ -41,11 +43,12 @@ public class DistrictAction extends LookupDispatchAction{
 		map.put("button.display", "display");
 		map.put("button.back", "prevPage");
 		map.put("button.link", "linkDistrictToSubProv");
+		map.put("button.unlink", "unlink");
+		map.put("unlink", "unlink");
 		map.put("button.save", "saveDistrictSubProvLink");	
-		map.put("button.remove", "removeDistrictFromSubProv");	
 		return map;
 	}
-	public ActionForward prevPage(
+		public ActionForward prevPage(
 			ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,
@@ -74,29 +77,13 @@ public ActionForward linkDistrictToSubProv(
 		                                                             						new ActionMessage("message.generalmessage",
 		                                                             									"Please select a district"));
 		                                                             			}
-		                                                             		if (studentPlacementForm.getIndexNrSelected()!=null &&
-		                                                             				studentPlacementForm.getIndexNrSelected().length>1){
-		                                                             				messages.add(ActionMessages.GLOBAL_MESSAGE,
-		                                                             						new ActionMessage("message.generalmessage",
-		                                                             									"Please select only one district"));
-		                                                             			}
 		                                                             		if (!messages.isEmpty()) {
 		                                                             			addErrors(request,messages);
 		                                                             					return mapping.findForward("districtScreen");				
 		                                                             		}
-		                                                             		District district = new District();
-		                                                             		for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
-		                                                             			String array[] = studentPlacementForm.getIndexNrSelected();
-		                                                             			district = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));			
-		                                                             			studentPlacementForm.setSelectedDistrictIndex(i);
-		                                                             			i=studentPlacementForm.getIndexNrSelected().length;
-		                                                             		}
-		                                                             		studentPlacementForm.setDistrict(district);
-		                                                             		 SubProvinceUI  subProvinceUI  = new SubProvinceUI();
-		                                		                             subProvinceUI.setSubProvinceListToFrom(studentPlacementForm);
-		                                			                         studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
-		                                                                    studentPlacementForm.setCurrentPage("linkDistToSubProv");
-		                                                                 	return mapping.findForward( studentPlacementForm.getCurrentPage());	
+		                                                             		DistrictUI  	districtUI =new 	DistrictUI();
+		                                                             		districtUI .setDataPartOfTheLinkDistToSubscreen(studentPlacementForm) ;
+		                                                             		 return mapping.findForward( studentPlacementForm.getCurrentPage());	
 	}
 		public ActionForward initial(
 			                                           ActionMapping mapping,
@@ -128,63 +115,52 @@ public ActionForward linkDistrictToSubProv(
 	}
 	
 	public ActionForward saveDistrictSubProvLink(
-			ActionMapping mapping,
-			ActionForm form,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			                                         ActionMapping mapping,
+			                                         ActionForm form,
+			                                         HttpServletRequest request,
+			                                         HttpServletResponse response) throws Exception {
 		
-		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-		ActionMessages messages = new ActionMessages();	
-		
-		if (studentPlacementForm.getDistrict().getSubProvCode()==null || studentPlacementForm.getDistrict().getSubProvCode()==0){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-					new ActionMessage("message.generalmessage",
-								"Please select a sub province"));
-		}
-		if (!messages.isEmpty()) {
-			addErrors(request,messages);
-				return mapping.findForward( studentPlacementForm.getCurrentPage());				
-		}
-		DistrictUI district = new DistrictUI();
-		district.linkToSubProv(studentPlacementForm.getDistrict().getCode(),studentPlacementForm.getDistrict().getSubProvCode());
-		return display(mapping,form,request,response);	
+		                                                                        StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+		                                                                        ActionMessages messages = new ActionMessages();	
+		                                                                        if (studentPlacementForm.getSubProvince().getCode()==0){
+		                                                                                            	messages.add(ActionMessages.GLOBAL_MESSAGE,
+					                                                                                                                new ActionMessage("message.generalmessage",
+							                                                                                                         	"Please select a sub province"));
+		                                                                        }
+		                                                                        if (!messages.isEmpty()) {
+			                                                                                             addErrors(request,messages);
+				                                                                                         return mapping.findForward( studentPlacementForm.getCurrentPage());				
+	                                                                           	}
+	                                                                        	for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
+ 		                                                                                                    	String array[] = studentPlacementForm.getIndexNrSelected();
+ 			                                                                                                    District district = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));		
+ 			                                                                                                    DistrictUI districtUI= new DistrictUI();
+ 			                                                                                                    districtUI.linkToSubProv(district.getCode(),(short)studentPlacementForm.getSubProvince().getCode());
+ 					                                                                }
+ 	                                                                               return display(mapping,form,request,response);	
 	}
-	public ActionForward removeDistrictFromSubProv(
-            ActionMapping mapping,
-            ActionForm form,
-            HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-              StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-              
-ActionMessages messages = new ActionMessages();	
-if (studentPlacementForm.getIndexNrSelected()==null ||
-studentPlacementForm.getIndexNrSelected().length==0){
-messages.add(ActionMessages.GLOBAL_MESSAGE,
-	new ActionMessage("message.generalmessage",
-				"Please select a district"));
-}
-if (studentPlacementForm.getIndexNrSelected()!=null &&
-studentPlacementForm.getIndexNrSelected().length>1){
-messages.add(ActionMessages.GLOBAL_MESSAGE,
-	new ActionMessage("message.generalmessage",
-				"Please select only one district"));
-}
-if (!messages.isEmpty()) {
-addErrors(request,messages);
-return mapping.findForward("districtScreen");				
-}
-District district = new District();
-for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
-		String array[] = studentPlacementForm.getIndexNrSelected();
-		district = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));			
-		studentPlacementForm.setSelectedDistrictIndex(i);
-		i=studentPlacementForm.getIndexNrSelected().length;
-	}
-
-studentPlacementForm.setDistrict(district);
-
-DistrictDAO dao = new DistrictDAO();
-dao.unlinkToSubProv(district.getCode());
-return display(mapping,form,request,response);	
-}
+	public ActionForward  unlink(
+                                                  ActionMapping mapping,
+                                                  ActionForm form,
+                                                  HttpServletRequest request,
+                                                                     HttpServletResponse response) throws Exception {
+                                                                                       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+                                                                                       ActionMessages messages = new ActionMessages();	
+                                                                                       if (studentPlacementForm.getIndexNrSelected()==null ||
+                                                                                                                  studentPlacementForm.getIndexNrSelected().length==0){
+                                                                                                                                   messages.add(ActionMessages.GLOBAL_MESSAGE,
+	                                                                                                                               new ActionMessage("message.generalmessage",  	"Please select a district"));
+                                                                                     }
+                                                                                     if (!messages.isEmpty()) {
+                                                                                                      addErrors(request,messages);
+                                                                                                      return mapping.findForward("districtScreen");				
+                                                                                    }
+                                                                                    String array[] = studentPlacementForm.getIndexNrSelected();
+                                                                           	        for (int i=0; i <studentPlacementForm.getIndexNrSelected().length; i++) {
+	                                                                                            	        District district  = (District)studentPlacementForm.getListDistrictsOfProvince().get(Integer.parseInt(array[i]));		
+	                                                                                            	        DistrictDAO dao = new DistrictDAO();
+	                                                                                            	        dao.unlinkToSubProv(district.getCode());
+	                                                                                 }
+                                                          return display(mapping,form,request,response);	
+    }
 }

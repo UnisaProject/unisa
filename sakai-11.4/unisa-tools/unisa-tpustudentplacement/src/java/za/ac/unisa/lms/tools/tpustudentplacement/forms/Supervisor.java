@@ -44,6 +44,7 @@ public class Supervisor {
 	private List provCodesList;
 	
 	
+	
 	public List getProvCodesList(){
 		 return provCodesList;
 	}
@@ -73,7 +74,7 @@ public class Supervisor {
 	     public Supervisor(){
 	    	     supervisorImpl=new SupervisorImpl();
 	     }
-	     public List getSupervProvList(int supervisorCode){
+	     public List getSupervProvList(int supervisorCode)throws Exception{
 			        return supervisorImpl.getSupervProvList(supervisorCode);
 		 }
 		 public Supervisor getSupervisor(Integer code) throws Exception {

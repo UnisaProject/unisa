@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.Coordinator;
 public class CoordinatorDAO {
                         
+	
 	                    databaseUtils dbutil;
                         public CoordinatorDAO(){
                                           dbutil=new databaseUtils();

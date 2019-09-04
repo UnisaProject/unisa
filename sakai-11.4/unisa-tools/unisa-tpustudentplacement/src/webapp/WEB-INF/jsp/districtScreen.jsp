@@ -54,11 +54,15 @@
 			<sakai:actions>
 				<html:submit property="action">
 					<fmt:message key="button.link"/>
-			</html:submit>		
+			   </html:submit>	
+				<html:submit property="action">
+					<fmt:message key="button.unlink"/>
+			 </html:submit>		
 				<html:submit property="action">
 					<fmt:message key="button.back"/>
 			</html:submit>			
 		</sakai:actions>		
 				</logic:notEmpty>
+				
 	</html:form>
 </sakai:html>
