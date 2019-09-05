@@ -552,7 +552,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 
 		sql = "select mk_student_nr, app_sequence_nr, mk_qualification_c, speciality_code, " +
 			  "admission_status, interest_area, proposed_title , to_char(application_date,'YYYYMMDD') as apppyr, " +
-			  "lecturer_name, passed_ndp, prev_apply_md, prev_apply_qual " +
+			  "lecturer_name, passed_ndp, prev_apply_md, prev_apply_qual, applied_rpl " +
 			  "from mdappl where mk_student_nr = " + studentNr +
 			  " order by app_sequence_nr";
 		try {
@@ -597,6 +597,11 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 					stu.setAppliedqual(data.get("prev_apply_qual").toString());
 				}else{
 					stu.setAppliedqual("");
+				}
+				if(data.get("applied_rpl") !=null){
+					stu.setAppliedrpl(data.get("applied_rpl").toString());
+				}else{
+					stu.setAppliedrpl("");
 				}
 			}
 		} catch (Exception ex) {
@@ -876,7 +881,8 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
         		" lecturer_name = ?, " +
         		" passed_ndp = ?, " +
         		" prev_apply_md = ?, " +
-        		" prev_apply_qual = ? " +
+        		" prev_apply_qual = ?, " +
+        		" applied_rpl = ? " +
         		" where mk_student_nr = " + stu.getNumber() +
         		" and app_sequence_nr = " + stu.getSeqnr();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -891,6 +897,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
         	ps.setString(8,stu.getPassedndp().toUpperCase());
         	ps.setString(9,stu.getAppliedmd().toUpperCase());
         	ps.setString(10,stu.getAppliedqual().toUpperCase());
+        	ps.setString(11,stu.getAppliedrpl().trim());
         	ps.executeUpdate();
         	//conn.close();
 	}
