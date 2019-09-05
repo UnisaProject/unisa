@@ -758,6 +758,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 						mdForm.getStudent().setApplYear(teststu.getApplYear());
 						mdForm.getStudent().setAppliedmd(teststu.getAppliedmd());
 						mdForm.getStudent().setAppliedqual(teststu.getAppliedqual());
+						mdForm.getStudent().setAppliedrpl(teststu.getAppliedrpl());
 						mdForm.getStudent().setPassedndp(teststu.getPassedndp());
 						mdForm.getStudent().setLecturer(teststu.getLecturer());
 						testYr=teststu.getApplYear().substring(0,4);
