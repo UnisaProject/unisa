@@ -31,7 +31,7 @@
 		<fmt:message key="mylife.claim.info2"/>		
 		 <b><bean:write name="myUnisaMylifeForm" property="email"/></b><br> <br>
 		
-		<fmt:message key="mylife.claim.info3"/>	 <b><bean:write name="myUnisaMylifeForm" property="cellNr"/></b>
+		<fmt:message key="mylife.claim.info3"/>	 <b><bean:write name="myUnisaMylifeForm" property="displayCellNr"/></b>
 		<br><br><br>		
 			
 			

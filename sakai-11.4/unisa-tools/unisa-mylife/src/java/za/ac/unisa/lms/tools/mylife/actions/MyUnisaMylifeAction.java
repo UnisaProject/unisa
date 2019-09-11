@@ -575,7 +575,8 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 		if (myUnisaMylifeForm.isAgreeCheck1()&&myUnisaMylifeForm.isAgreeCheck2()&&
 				myUnisaMylifeForm.isAgreeCheck3()&&myUnisaMylifeForm.isAgreeCheck4()){
 			
-			myUnisaMylifeForm.setCellNr(dao.getCellNr(myUnisaMylifeForm));			
+			myUnisaMylifeForm.setCellNr(dao.getCellNr(myUnisaMylifeForm));	
+			myUnisaMylifeForm.setDisplayCellNr(diplayCellNumber(myUnisaMylifeForm.getCellNr().trim()));
 			myUnisaMylifeForm.setMylifePath(ServerConfigurationService.getString("mylife.path")); 
 			myUnisaMylifeForm.setMyUnisaPath(ServerConfigurationService.getString("serverUrl"));
 			
@@ -860,12 +861,16 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 			emailService.sendMail(iaReplyTo[0],iaTo,subject,body,iaHeaderTo,iaReplyTo,contentList);		
 			log.info("sending mail from "+iaReplyTo[0]+" to "+toEmail.toString());
 		} // end of sendEmail
-	    
-	   /* 
-	    * to go the URL and to go the method
-	    * <sakai:actions>
-		<html:submit property="action" onclick="windowOpen	();">
-			<fmt:message key="button.claim"/>
-		</html:submit>
-		</sakai:actions>*/
+	 
+	    public String diplayCellNumber(String cellNr) {
+			String displayCellNr = "";
+			String tempCell = "";
+
+			for (int i = 0; i < cellNr.length() - 4; i++) {
+				tempCell = tempCell + "*";
+			}
+			displayCellNr = tempCell + (cellNr.substring(cellNr.length() - 4, cellNr.length()));
+
+			return displayCellNr;
+		}
 }

@@ -29,9 +29,18 @@ public class MyUnisaMylifeForm extends ValidatorForm{
 	private String cellNr;
 	private String mylifePath;
 	private String myUnisaPath;
+	private String displayCellNr;
 	
 	
 	
+	public String getDisplayCellNr() {
+		return displayCellNr;
+	}
+
+	public void setDisplayCellNr(String displayCellNr) {
+		this.displayCellNr = displayCellNr;
+	}
+
 	public String getMyUnisaPath() {
 		return myUnisaPath;
 	}
