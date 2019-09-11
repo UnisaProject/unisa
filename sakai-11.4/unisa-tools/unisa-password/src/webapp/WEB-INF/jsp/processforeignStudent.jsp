@@ -27,7 +27,7 @@ function setAction() {
      </tr>
      <tr>
      <td><html:radio property="foreignChoiceDelivery" value="SMS"> <fmt:message key="sms.label"/></html:radio> &nbsp; 
-     <b><bean:write name="forgetPasswordForm" property="cellNum"/></b></td>
+     <b><bean:write name="forgetPasswordForm" property="displayCellNumber"/></b></td>
      </tr>
       <tr>
      <td>

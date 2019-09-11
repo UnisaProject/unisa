@@ -19,7 +19,7 @@ function setAction() {
 	<sakai:messages message="true"/>
 	
 	<fmt:message key="forgot.deliverymethod.info1"/> <br> <br> 
-	<fmt:message key="forgot.deliverymethod.info2"/> <bean:write name="forgetPasswordForm" property="cellNum"/> <fmt:message key="forgot.deliverymethod.info3"/> <br> <br>
+	<fmt:message key="forgot.deliverymethod.info2"/> <bean:write name="forgetPasswordForm" property="displayCellNumber"/> <fmt:message key="forgot.deliverymethod.info3"/> <br> <br>
 	<fmt:message key="forgot.deliverymethod.info4"/>
 	
 		
