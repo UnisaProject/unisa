@@ -53,8 +53,15 @@ public class ForgetPasswordForm extends ValidatorForm {
 	private boolean passwordChnaged;
 	private boolean isEmail;//jeremia
 	private boolean foreign;
+	private String displayCellNumber;
 	
 	
+	public String getDisplayCellNumber() {
+		return displayCellNumber;
+	}
+	public void setDisplayCellNumber(String displayCellNumber) {
+		this.displayCellNumber = displayCellNumber;
+	}
 	public boolean isPasswordChnaged() {
 		return passwordChnaged;
 	}

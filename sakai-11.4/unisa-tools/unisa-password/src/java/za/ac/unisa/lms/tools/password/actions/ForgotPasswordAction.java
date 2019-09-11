@@ -270,6 +270,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 
 		forgetPasswordForm.setPassword(studentDetails.getPassword());
 		forgetPasswordForm.setCellNum(studentDetails.getCellNumber());
+		forgetPasswordForm.setDisplayCellNumber(diplayCellNumber(studentDetails.getCellNumber().trim()));
 		forgetPasswordForm.setEmail(studentDetails.getEmailaddress());// this is ADRPH email address
 
 		return ("personneldetailstep");
@@ -684,7 +685,7 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 	}
 
 	private String forceNewPassword(ForgetPasswordForm forgetPasswordForm, String stuNum) throws Exception {
-		forgetPasswordForm.getCellNum();
+		String cellNr = forgetPasswordForm.getCellNum();
 		forgetPasswordForm.setMyLifemail(forgetPasswordForm.getEmail());
 
 		if (forgetPasswordForm.getIsForeign()) {
@@ -1074,6 +1075,18 @@ public class ForgotPasswordAction extends LookupDispatchAction {
 			}
 		}
 		return lessthanhour;
+	}
+	
+	public String diplayCellNumber(String cellNr) {
+		String displayCellNr = "";
+		String tempCell = "";
+
+		for (int i = 0; i < cellNr.length() - 4; i++) {
+			tempCell = tempCell + "*";
+		}
+		displayCellNr = tempCell + (cellNr.substring(cellNr.length() - 4, cellNr.length()));
+
+		return displayCellNr;
 	}
 
 	public String randomPassword() throws AddressException {
