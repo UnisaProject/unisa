@@ -242,6 +242,7 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
                        " and a.mk_student_nr=d.nr";
                return sqlStr;
     }
+     
     private String  getPlacementListSql(Short acadYear, Short semester, Short province, Short district, 
                       Integer supervisor, Integer school, String module, String sortOn,String country){
 	     

@@ -31,6 +31,7 @@ public class SubProvinceDAO {
                                                                           }
                                                                          return subProvList;
 		           }
+	                    
 	               public List<SubProvince>getSubProvinceList() throws Exception{
 	           		                                                   String sql=" select   *  from tpusubprv  ";
                                                                        String  errorMsg="database error  when accssing table subProv";

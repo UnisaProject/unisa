@@ -31,6 +31,7 @@ public class MentorDAO extends MentorModel{
                 fileExtractorClass=new FileExtractorClass();
      } 
 	  
+	    
 	   databaseUtils dbutil;
 	   public boolean mentorExists(int mentorcode)throws Exception{
 		                   String query="select count(*) from tpumen where code="+mentorcode; 

@@ -55,6 +55,7 @@ public class PrelimStudentPlacementUI{
 	                      PrelimPlacementScreenBuilder screenBuilder=new PrelimPlacementScreenBuilder(this);
 	                      return screenBuilder.setListPrelimPlacementScreen(studentPlacementForm);
      }
+     
      public void setPlacementList(StudentPlacementForm studentPlacementForm,Short province) throws Exception {     
                        StudentPlacementUI stuPlacementUI = new StudentPlacementUI();
                        stuPlacementUI .setPlacementList(studentPlacementForm, province);

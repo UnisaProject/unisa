@@ -31,17 +31,7 @@
     </resources>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-struts-tool</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-struts-taglibs</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
+     <dependency>
       <groupId>struts</groupId>
       <artifactId>struts</artifactId>
       <version>1.2.9</version>

@@ -61,6 +61,7 @@ public class SupervisorDAO extends StudentSystemDAO {
             	    	            	  return "The record   has been updated successfully";
             	    	              }
             	 	}
+            	    
             	    private void insertAllocationAllowed(int supervisorCode,int studentsAllowed,int year,int semester)throws Exception {
             	    	            String sql="Insert into tpusuptot(mk_academic_year,mk_supervisor_code,semester_period,tot_stud_alloc)values("+
             	    	                       year+","+supervisorCode+","+semester+","+studentsAllowed+")";
@@ -686,7 +687,7 @@ public List getNationalSupervisorList(String country,Short province,Short distri
                if (province!=null && province.compareTo(Short.parseShort("0"))!=0){
                	                                     sql = sql  + " and b.mk_prv_code = " + province; 
                	              }
-               if (district!=null && province.compareTo(Short.parseShort("0"))!=0){
+               if (district!=null && district.compareTo(Short.parseShort("0"))!=0){
                                sql = sql + " and b.mk_district_code = " + district;
                 }
                 if (filter!=null && !filter.trim().equalsIgnoreCase("")){
@@ -1075,26 +1076,43 @@ public void removeSupervisorArea(Supervisor supervisor , SupervisorAreaRecord ar
 	}	
 }
 
-  public Supervisor getSup(int code) throws Exception {
+  
+public Supervisor getSup(int code) throws Exception {
 
-      Supervisor supervisor = new Supervisor();
-      String sql = "select b.code,b.mk_title,b.initials,b.surname,a.email_address,d.eng_description as supProvDesc,d.code as supProvCode"+
-                 " from adrph a,tpusup b,tpusar c,prv d " +
-                 " where  reference_no=b.code and  b.code= c.mk_superv_code and  c.mk_prv_code=d.code"+
-                 " and b.code=" + code;
-      String errorMsg="SupervisorDAO : Error getting supervisor details from tables: adrph ,tpusup ,tpusar ,prv ";         
-      List queryList = dbutil.queryForList(sql,errorMsg);
-      Iterator i = queryList.iterator();
-      while (i.hasNext()) {
-            ListOrderedMap data = (ListOrderedMap) i.next();
-            supervisor.setCode(Integer.parseInt(data.get("code").toString()));
-            supervisor.setTitle(dbutil.replaceNull(data.get("mk_title")));
-            supervisor.setInitials(dbutil.replaceNull(data.get("initials")));
-            supervisor.setSurname(dbutil.replaceNull(data.get("surname")));
-            supervisor.setEmailAddress(dbutil.replaceNull(data.get("email_Address")));
-            break;
-      }
-      return supervisor;
-   }
+    Supervisor supervisor = new Supervisor();
+    String sql= " select   b.code as code,b.mk_title as title,b.initials as  initials,b.surname as surname,a.email_address as emailAddress, "+
+    "  ( Decode(d.fk_tpusubprv_code,null,(select eng_description  from prv where  code=d.fk_prvcode ),"+
+    "  (select eng_description  from tpusubprv where  code=d.fk_tpusubprv_code )) ) as   supProvDesc,"+
+   "  (Decode(d.fk_tpusubprv_code,null,(select code  from prv where  code=d.fk_prvcode ),d.fk_tpusubprv_code )) as   supProvCode "+
+     "   from adrph a,tpusup b,tpusar c, ldd d,prv e"+
+     "   where  a.reference_no=b.code  and  b.code = c.mk_superv_code"+
+     "    and c.mk_district_code=d.code and d.fk_prvcode=e.code"+
+      		   "  and b.code=" + code+" and a.fk_adrcatcode=231" +
+          "   select   b.code as code,b.mk_title as title,b.initials as  initials,b.surname as surname,a.email_address as emailAddress,"+
+         "     (Decode((select count(code) from  prv where c.mk_prv_code=code ),0, (select eng_description  from tpusubprv where  code=c.mk_prv_code ),"+
+          "      (select eng_description from  prv where c.mk_prv_code=code ))) as   supProvDesc,"+
+            "     (Decode((select count(code) from  prv where c.mk_prv_code=code ),0, (select code  from tpusubprv where  code=c.mk_prv_code ),"+
+             "      (select code from  prv where c.mk_prv_code=code ))) as   supProvCode"+
+              "          from adrph a,tpusup b,tpusar c, prv d"+
+               "        where  a.reference_no=b.code  and b.code = c.mk_superv_code"+
+                "        and c.mk_prv_code = d.code"+
+                "   and b.code=" + code+" and a.fk_adrcatcode=231" ;
+
+          String errorMsg="SupervisorDAO : Error getting supervisor details from tables: adrph ,tpusup ,tpusar ,prv ";         
+          List queryList = dbutil.queryForList(sql,errorMsg);
+          Iterator i = queryList.iterator();
+          while (i.hasNext()) {
+                  ListOrderedMap data = (ListOrderedMap) i.next();
+                  supervisor.setCode(Integer.parseInt(data.get("code").toString()));
+                  supervisor.setTitle(dbutil.replaceNull(data.get("title")));
+                  supervisor.setInitials(dbutil.replaceNull(data.get("initials")));
+                  supervisor.setSurname(dbutil.replaceNull(data.get("surname")));
+                  supervisor.setEmailAddress("emailAddress");
+                  supervisor.setProviceDescr(dbutil.replaceNull(data.get("supProvDesc")));
+                  supervisor.setProvinceCode(Short.parseShort(dbutil.replaceNull(data.get("supProvCode"))));
+                  break;
+          }
+       return supervisor;
+}
    
 }
