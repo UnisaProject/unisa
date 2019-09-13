@@ -180,18 +180,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private SubProvince subProvince;
 	
 	private String provinceName;
-	
-	//practical
-	private PracticeBatchDate practiceBatchDate;
-	private List practiceBatchDateList;
-	private List listPracticalPeriods;
-	private List  listLevels;
-	private List  listLevelsforview;
-	private List listProvincesforview;
-	private List listPracticalPeriodsforview;
-	 private boolean   addPracActive;
-	 private Short practicalsProvince;
-    
+
 	public void setCurrProv(String currProv){
 		                    this.currProv=currProv;
 	}
@@ -1067,66 +1056,6 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	}
 	public void setProvinceName(String provinceName) {
 		this.provinceName = provinceName;
-	}
-	public PracticeBatchDate getPracticeBatchDate() {
-		return practiceBatchDate;
-	}
-	public void setPracticeBatchDate(PracticeBatchDate practiceBatchDate) {
-		this.practiceBatchDate = practiceBatchDate;
-	}
-	public List getPracticeBatchDateList() {
-		return practiceBatchDateList;
-	}
-	public void setPracticeBatchDateList(List practiceBatchDateList) {
-		this.practiceBatchDateList = practiceBatchDateList;
-	}
-	public List getListPracticalPeriods() {
-		return listPracticalPeriods;
-	}
-	public void setListPracticalPeriods(List listPracticalPeriods) {
-		this.listPracticalPeriods = listPracticalPeriods;
-	}
-		public boolean isAddPracActive() {
-		return addPracActive;
-	}
-	public void setAddPracActive(boolean addPracActive) {
-		this.addPracActive = addPracActive;
-	}
-		public List getListLevels() {
-		return listLevels;
-	}
-	public void setListLevels(List listLevels) {
-		this.listLevels = listLevels;
-	}
-	public List getListAllProvinces() {
-		return listAllProvinces;
-	}
-	public void setListAllProvinces(List listAllProvinces) {
-		this.listAllProvinces = listAllProvinces;
-	}
-	public List getListProvincesforview() {
-		return listProvincesforview;
-	}
-	public void setListProvincesforview(List listProvincesforview) {
-		this.listProvincesforview = listProvincesforview;
-	}
-	public List getListLevelsforview() {
-		return listLevelsforview;
-	}
-	public void setListLevelsforview(List listLevelsforview) {
-		this.listLevelsforview = listLevelsforview;
-	}
-	public List getListPracticalPeriodsforview() {
-		return listPracticalPeriodsforview;
-	}
-	public void setListPracticalPeriodsforview(List listPracticalPeriodsforview) {
-		this.listPracticalPeriodsforview = listPracticalPeriodsforview;
-	}
-	public Short getPracticalsProvince() {
-		return practicalsProvince;
-	}
-	public void setPracticalsProvince(Short practicalsProvince) {
-		this.practicalsProvince = practicalsProvince;
 	}
 	
 	
