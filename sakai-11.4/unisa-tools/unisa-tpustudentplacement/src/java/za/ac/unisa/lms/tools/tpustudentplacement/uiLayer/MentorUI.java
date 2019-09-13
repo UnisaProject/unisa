@@ -11,6 +11,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.CommValidator;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.InfoMessagesUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.SelectionValidator;
 
+
 public class MentorUI extends MentorModel{
 	public  void validateMentor(MentorModel mentor,ActionMessages messages){
         InfoMessagesUtil  infoMessagesUtil =new InfoMessagesUtil();
@@ -45,6 +46,7 @@ public class MentorUI extends MentorModel{
                           String tooManySelectionsMessage="Please select only one mentor";
                           selectionValidator.validateIndexArrForSelection(indexArr, messages,noSelectionMessage,tooManySelectionsMessage);
        }
+	   
        public void validateIndexArrForAddOrView(String[] indexArr,ActionMessages messages){ 
                          SelectionValidator selectionValidator=new SelectionValidator();
                          String messageForAddView= "Please select a mentor to view or edit";

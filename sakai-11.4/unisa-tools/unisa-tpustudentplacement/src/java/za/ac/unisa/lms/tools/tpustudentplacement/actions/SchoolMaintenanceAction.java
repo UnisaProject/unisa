@@ -47,9 +47,7 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		map.put("button.select","selectSchool");
 		return map;
 	}
-	
-	
-	public ActionForward initial(
+		public ActionForward initial(
 			ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,

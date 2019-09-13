@@ -19,8 +19,7 @@ public class databaseUtils extends StudentSystemDAO {
 	      public String querySingleValue(String query, String field,String errorMsg) throws Exception{
 	    	         String result = "";
 	    	         try{
-                          jdt = new JdbcTemplate(getDataSource());
-                          List queryList;
+                           List queryList;
                       
                           queryList = jdt.queryForList(query);
                       Iterator i = queryList.iterator();
@@ -52,8 +51,7 @@ public class databaseUtils extends StudentSystemDAO {
 			
 			public void update(String sql,String errorMsg) throws Exception{
 				          try{    
-			                 jdt = new JdbcTemplate(getDataSource());
-                              jdt.update(sql);
+			                   jdt.update(sql);
 	                      }catch(Exception ex){
 	                    	  throw new Exception(errorMsg + ex,ex);
 	                      }
@@ -61,8 +59,7 @@ public class databaseUtils extends StudentSystemDAO {
 			public List queryForList(String sql,String errorMsg)throws Exception{
 				             List queryList= new ArrayList();
 				             try{
-				                  jdt = new JdbcTemplate(getDataSource());
-                                  queryList = jdt.queryForList(sql);
+				                  queryList = jdt.queryForList(sql);
                                   if(queryList==null){
                                 	  queryList= new ArrayList();
                                   }
@@ -74,8 +71,7 @@ public class databaseUtils extends StudentSystemDAO {
 			public int queryInt(String sql,String errorMsg)throws Exception{
 				         int totRows=0;
 	                     try{
-	                          jdt = new JdbcTemplate(getDataSource());
-	                           totRows = jdt.queryForInt(sql);
+	                          totRows = jdt.queryForInt(sql);
                            
 	                      }catch(Exception ex){
                    	                throw new Exception(errorMsg + ex,ex);
