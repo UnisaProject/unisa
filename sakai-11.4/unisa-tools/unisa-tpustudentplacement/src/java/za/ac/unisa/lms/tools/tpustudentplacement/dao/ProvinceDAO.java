@@ -24,6 +24,7 @@ public class ProvinceDAO extends StudentSystemDAO {
                 dbutil=new databaseUtils();
      }   
        
+       
 	public List getProvinceList() throws Exception {
 		                    	return getProvinceListFromDatabase(sqlForProvList,"Error reading prv  and  tpusubprv, ProvinceDAO") ;
 	}

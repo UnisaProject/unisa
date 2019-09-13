@@ -101,6 +101,7 @@ public class StudentEmailData {
                                   }
                                return message;
              }
+             
              private String writePlacementRequirements(){
             	        String message= "<table><b>2.  TEACHING PRACTICE REQUIREMENTS</b><br/><br/>" +
          				"The College of Education&#39s Teaching Practice Unit requires all students to comply with the under-mentioned requirements:<br/><br/>" +

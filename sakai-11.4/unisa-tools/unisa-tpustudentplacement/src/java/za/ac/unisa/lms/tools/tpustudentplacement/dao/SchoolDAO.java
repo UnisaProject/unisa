@@ -36,7 +36,8 @@ public class SchoolDAO extends StudentSystemDAO {
                              countryDAO=new CountryDAO();
                              
                         } 
-                      
+            
+                      	
              private String getSqlForSelectingnSchools(String strForColumnsToBeSelected,String strForColumnsToBeSelectedSubProv,String type,String category,String country,Short province,Short district,
                                               String filter){
                       		                                          String  sql ,lastPartOfSql="";

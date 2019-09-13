@@ -62,5 +62,16 @@ public class PlacementUtilities {
 	 public static String getSaCode(){
 		 return saCode;
 	 }
+	 public static boolean isInt(String stringValue) {
+			try
+			{
+				Integer i = Integer.parseInt(stringValue);
+				return true;
+			}	
+			catch(NumberFormatException e)
+			{}
+			return false;
+		}
+	 
 	 
 }

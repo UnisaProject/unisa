@@ -19,6 +19,7 @@ public class StudentDAO {
 	       public StudentDAO(){
                     
            } 
+	       
 	       public Student getStudent(int studentNr) throws Exception {
 		
 		                     Student student = new Student();

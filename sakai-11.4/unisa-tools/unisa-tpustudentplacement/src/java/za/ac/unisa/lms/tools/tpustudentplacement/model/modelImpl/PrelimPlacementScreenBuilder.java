@@ -44,6 +44,7 @@ public class PrelimPlacementScreenBuilder {
 	                             }
 	                              return;
 	       }
+	       
 	       private void setVariablesForIntCountry(StudentPlacementForm studentPlacementForm){
                              if(!studentPlacementForm.getPlacementFilterCountry().equals(PlacementUtilities.getSaCode())){
                             	    short  province=Short.parseShort("0");
