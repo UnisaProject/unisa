@@ -37,7 +37,8 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 			throws Exception {
 		ArrayList list = new ArrayList();
 		String query = "";
-		String formalUnisa = "select code,eng_description from grd where"
+		/*Johanet 20190913 - read long description instead of eng_description*/
+		String formalUnisa = "select code,long_eng_descripti from grd where"
 				+ " (type <> 'S' or code='00051')"
 				+ " and in_use_flag = 'Y' "
 				+ " and (to_year=0 or to_year>=" + sYear + ") "
@@ -56,7 +57,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 			while (i.hasNext()) {
 				ListOrderedMap data = (ListOrderedMap) i.next();
 				String code = data.get("CODE").toString();
-				String desc = data.get("ENG_DESCRIPTION").toString();
+				String desc = data.get("long_eng_descripti").toString();
 				list.add(new org.apache.struts.util.LabelValueBean(code + " - "	+ desc, code + desc));
 			}
 		} catch (Exception ex) {

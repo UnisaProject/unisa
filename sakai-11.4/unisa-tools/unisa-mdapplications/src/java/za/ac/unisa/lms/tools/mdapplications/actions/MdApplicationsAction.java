@@ -956,7 +956,21 @@ public class MdApplicationsAction extends LookupDispatchAction {
 
 		String qcode=mdForm.getQual().getQualCode();
 		//testing SBL and other special qualifications
-		if ("98439".equalsIgnoreCase(qcode) || "98511".equalsIgnoreCase(qcode) ||"98561".equalsIgnoreCase(qcode) ||"98570".equalsIgnoreCase(qcode) ||"98594".equalsIgnoreCase(qcode)){
+//		if ("98439".equalsIgnoreCase(qcode) || "98511".equalsIgnoreCase(qcode) ||"98561".equalsIgnoreCase(qcode) ||"98570".equalsIgnoreCase(qcode) ||"98594".equalsIgnoreCase(qcode)){
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//					new ActionMessage("message.generalmessage", "This is a pre-selection qualification. To apply for admission to this qualification, please contact the relevant academic department."));
+//			addErrors(request, messages);
+//			return "step1forward";
+//		}else{
+//			if ("98990".equalsIgnoreCase(qcode) || "98991".equalsIgnoreCase(qcode) ||"98992".equalsIgnoreCase(qcode) ||"98993".equalsIgnoreCase(qcode) ||"98994".equalsIgnoreCase(qcode)){
+//				messages.add(ActionMessages.GLOBAL_MESSAGE,
+//						new ActionMessage("message.generalmessage", "This is a pre-selection qualification. To apply for admission to this qualification, please contact the relevant academic department."));
+//				addErrors(request, messages);
+//				return "step1forward";
+//			}
+//		}
+		//Johanet 20190913 - remove 98594 from test student may apply online for specialization OP2 but not OP1, automatically controlled by quaspc specialization list
+		if ("98439".equalsIgnoreCase(qcode) || "98511".equalsIgnoreCase(qcode) ||"98561".equalsIgnoreCase(qcode) ||"98570".equalsIgnoreCase(qcode)){
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "This is a pre-selection qualification. To apply for admission to this qualification, please contact the relevant academic department."));
 			addErrors(request, messages);
@@ -1176,9 +1190,9 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			}
-		}
+		}		
 
-		setUpSpesList(request, qualif, mdForm);
+		//setUpSpesList(request, qualif, mdForm);
 		// ---------- Check input
 
 		//remove spaces
@@ -1191,6 +1205,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
         			new ActionMessage("message.generalmessage", "Your home phone number is required."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}
 		if (mdForm.getStudent().getHomePhone()!= null){
@@ -1201,6 +1216,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
         			new ActionMessage("message.generalmessage", "Your home phone number may consist of a dash or +, the rest must be numeric."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}
 
@@ -1212,6 +1228,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
         			new ActionMessage("message.generalmessage", "Your work phone number may consist of a dash or +, the rest must be numeric."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}
 		if (mdForm.getStudent().getFaxNr()!= null){
@@ -1222,6 +1239,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
   			new ActionMessage("message.generalmessage", "Your fax number may consist of a dash or +, the rest must be numeric."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}
 
@@ -1230,6 +1248,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
   			new ActionMessage("message.generalmessage", "Your cell number may consist of a dash or +, the rest must be numeric."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}
 
@@ -1238,6 +1257,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
   			new ActionMessage("message.generalmessage", "Please select your country."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}else{
 			mdForm.getStudent().getCountry().setCode(mdForm.getSelectedCountry().substring(0,4));
@@ -1249,6 +1269,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Please enter your e-mail address."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}else{
 			// test for valid email address format
@@ -1264,6 +1285,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 					messages.add(ActionMessages.GLOBAL_MESSAGE,
 							new ActionMessage("message.generalmessage", "Please ensure you typed your e-mail address correctly."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 				}
 				String checkMail = mdForm.getStudent().getEmailAddress().trim();
@@ -1273,6 +1295,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 					messages.add(ActionMessages.GLOBAL_MESSAGE,
 							new ActionMessage("message.generalmessage", "Please enter a valid E-mail address other than mylife.unisa."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 					
 				}
@@ -1283,6 +1306,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Enter your postal address."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}else{
 			// Remove spaces
@@ -1292,6 +1316,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Please enter P O Box with a space between the P and O. " ));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			}
 			}
@@ -1303,11 +1328,13 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Enter your postal code."));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			} else if(! gen.isNumeric(mdForm.getStudent().getPostalAddress().getAreaCode()) || mdForm.getStudent().getPostalAddress().getAreaCode().trim().length()!=4){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Postal address error - Postal code must consist of 4 numerical characters."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 			}
 		}
@@ -1317,6 +1344,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Postal address error - Postal code for South African address only. Foreign address postal/area code must be part of address lines."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 			}
 		}
@@ -1326,6 +1354,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Enter your physical address."));
 			addErrors(request, messages);
+			setUpSpesList(request, qualif, mdForm);
 			return "step2forward";
 		}else{
 			// Remove spaces
@@ -1338,11 +1367,13 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Physical address error - Enter your postal code."));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			} else if(! gen.isNumeric(mdForm.getStudent().getPhysicalAddress().getAreaCode()) || mdForm.getStudent().getPhysicalAddress().getAreaCode().trim().length()!=4){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Physical address error - Postal code must consist of 4 numerical characters."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 			}
 		}
@@ -1352,6 +1383,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Physical address error - Postal code for South African address only. Foreign address postal/area code must be part of address lines."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 			}
 		}
@@ -1364,11 +1396,13 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Please enter your courier postal code."));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 				} else if(! gen.isNumeric(mdForm.getStudent().getCourierAddress().getAreaCode()) || mdForm.getStudent().getCourierAddress().getAreaCode().trim().length()!=4){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Courier postal code must consist of 4 numerical characters."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 				}
 			}
@@ -1377,6 +1411,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Please enter a courier contact number."));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			}
 		}else{
@@ -1389,6 +1424,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "Courier address error - Postal code for South African address only. Foreign address postal/area code must be part of address lines."));
 					addErrors(request, messages);
+					setUpSpesList(request, qualif, mdForm);
 					return "step2forward";
 			}
 		}
@@ -1398,6 +1434,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 	        			new ActionMessage("message.generalmessage", "Your home phone number may consist of a dash or +, the rest must be numeric."));
 				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
 				return "step2forward";
 			}
 		}
