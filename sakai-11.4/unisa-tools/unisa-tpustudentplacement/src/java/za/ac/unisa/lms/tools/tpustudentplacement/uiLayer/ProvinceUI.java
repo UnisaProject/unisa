@@ -19,6 +19,7 @@ public class ProvinceUI extends ProvinceDAO{
 	        	                                              prov.setDescription("All");
 	        	                                             // studentPlacementForm.getListProvincesforview().add(0,prov);
                                                              setProvAndSubProvListToForm(studentPlacementForm) ;
+                                                             
 	          }
 	           public void setProvAndSubProvListToForm(StudentPlacementForm studentPlacementForm) throws Exception{
 	        	                                             Province  province=new Province();
