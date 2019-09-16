@@ -85,6 +85,10 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			width: 100%;
 			padding: 0 5px;
 		}
+		.qualListSize  {
+		  width: 400px;
+		  max-width: 100%;		 
+		}		
 	</style>
 </head>
 <!-- Form -->
@@ -92,7 +96,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	<html:hidden property="page" value="step1"/>
 
 	<BR/>
-	<div class="container">
+	 <div class="container"> 
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<sakai:messages/>
 			<sakai:messages message="true"/>
@@ -114,9 +118,11 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					</tr><tr>
 						<td><fmt:message key="md.page1.proqual"/>&nbsp;<sakai:required/></td>
 						<td colspan="2">
-							<html:select property="selectedQual">
-			 					<html:options collection="quallist" property="value" labelProperty="label"/>
-							</html:select>
+							<div class="qualListSize">
+								<html:select property="selectedQual">
+				 					<html:options collection="quallist" property="value" labelProperty="label"/>
+								</html:select>
+							</div>	
 						</td>
 					</tr><tr>
 						<td><fmt:message key="md.page1.acadyear"/>&nbsp;</td>
@@ -189,6 +195,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				</div>
 			</div>
 		</div>
-	</div>
+	 </div>
 </html:form>
 </sakai:html>
