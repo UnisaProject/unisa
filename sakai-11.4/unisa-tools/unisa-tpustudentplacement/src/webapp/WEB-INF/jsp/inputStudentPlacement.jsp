@@ -40,8 +40,10 @@
 		     <html:link href="district.do?action=initial">
 				      <fmt:message key="link.district"/>
 		     </html:link>
+		       <html:link href="practicalMaintenance.do?action=initial">
+				      <fmt:message key="link.practicalperiodmaintenance"/>
+		     </html:link>
 		</sakai:tool_bar>
-		
 		<sakai:messages/>
 		<sakai:messages message="true"/>			
 		<sakai:instruction>
