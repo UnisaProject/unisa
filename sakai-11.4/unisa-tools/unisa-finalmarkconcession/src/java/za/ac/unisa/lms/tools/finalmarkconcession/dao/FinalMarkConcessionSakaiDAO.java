@@ -8,11 +8,11 @@ import java.sql.Connection;
 
 import org.springframework.jdbc.core.JdbcTemplate;	
 
-import za.ac.unisa.lms.db.SakaiDAO;
+import za.ac.unisa.lms.db.SakaiMySqlDAO;
 import za.ac.unisa.lms.tools.finalmarkconcession.forms.GradeBookObjectRecord;
 import za.ac.unisa.lms.tools.finalmarkconcession.forms.GradeBookGradeRecord;
 
-public class FinalMarkConcessionSakaiDAO extends SakaiDAO {	
+public class FinalMarkConcessionSakaiDAO extends SakaiMySqlDAO {	
 	
 	public List<String> getUserFiSites(String userId) throws Exception {	
 		
