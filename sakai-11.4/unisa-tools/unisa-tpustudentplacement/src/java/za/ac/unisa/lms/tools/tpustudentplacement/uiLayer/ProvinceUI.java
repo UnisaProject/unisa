@@ -13,13 +13,12 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.SubProvince;
 public class ProvinceUI extends ProvinceDAO{
 		          public void setProvinceListToForm(StudentPlacementForm studentPlacementForm) throws Exception{
 	        	                                              studentPlacementForm.setListRSAProvinces(getProvinceListExSubPrv());
-	        	                                             // studentPlacementForm.setListProvincesforview(getProvinceListExSubPrv());
+	        	                                              studentPlacementForm.setListProvincesforview(getProvinceListExSubPrv());
 	        	                                              Province prov=new Province();
 	        	                                              prov.setCode(new Short("-1"));
 	        	                                              prov.setDescription("All");
-	        	                                             // studentPlacementForm.getListProvincesforview().add(0,prov);
+	        	                                              studentPlacementForm.getListProvincesforview().add(0,prov);
                                                              setProvAndSubProvListToForm(studentPlacementForm) ;
-                                                             
 	          }
 	           public void setProvAndSubProvListToForm(StudentPlacementForm studentPlacementForm) throws Exception{
 	        	                                             Province  province=new Province();

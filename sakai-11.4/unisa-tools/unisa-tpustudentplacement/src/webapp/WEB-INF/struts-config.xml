@@ -124,7 +124,6 @@
 				name="listPrelimPlacement"
 				path="/WEB-INF/jsp/listPlacement.jsp"
 				contextRelative="true" />
-											
 		</action>  
 		<action
 			name="studentPlacementForm"
@@ -197,8 +196,7 @@
 				name="listMentor"
 				path="/WEB-INF/jsp/listMentor.jsp"
 				contextRelative="true" />		
-									
-		</action>  
+			</action>  
 		<action
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
@@ -270,7 +268,6 @@
 				name="listPrelimPlacement"
 				path="/WEB-INF/jsp/listPlacement.jsp"
 				contextRelative="true" />	
-												
 		</action>  
 		<action
 			name="studentPlacementForm"
@@ -403,8 +400,7 @@
 				name="inputStudentPlacement"
 				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
 				contextRelative="true" />	
-						
-		</action> 
+			</action> 
 		<action
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
@@ -420,8 +416,7 @@
 				name="listMentor"
 				path="/WEB-INF/jsp/listMentor.jsp"
 				contextRelative="true" />
-			
-			<forward
+				<forward
 				name="searchSchool"
 				path="/schoolMaintenance.do?action=initial"
 				contextRelative="true" />	
@@ -437,8 +432,6 @@
 				path="/WEB-INF/jsp/editStudentPlacement.jsp"
 				contextRelative="true" />		
 		</action> 
-		
-		
 		<action
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
@@ -459,8 +452,7 @@
 				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
 				contextRelative="true" />	
 		</action> 
-		
-		<action
+			<action
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
 			parameter="action"
@@ -480,8 +472,26 @@
 				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
 				contextRelative="true" />	
 		</action> 
+		<action
+			name="studentPlacementForm"
+			attribute="studentPlacementForm"
+			parameter="action"
+			path="/practicalMaintenance"
+			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.PracticalPeriodMaintenanceAction"
+			validate="false">
+			<forward
+				name="listPracBatches"
+				path="/WEB-INF/jsp/listPracticalBatches.jsp"
+				contextRelative="true" />
+			<forward
+				name="inputPrac"
+				path="/WEB-INF/jsp/inputPractical.jsp"
+				contextRelative="true" />
+			<forward
+				name="inputStuPlacement"
+				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
+				contextRelative="true" />	
+			</action> 
 	</action-mappings>
-
-	<message-resources
-		parameter="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources" />	
+	<message-resources 		parameter="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources" />	
 </struts-config>
