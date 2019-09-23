@@ -25,14 +25,14 @@ public class Level {
 	}
 	public List getLevelsList(int totalLevels) {
                                     List  listLevels=new ArrayList();
-                                    for(int x=0;x<totalLevels;x++){
+                                    for(int x=1;x<=totalLevels;x++){
                                     	listLevels.add(new Level(x,""+x));
                                      }
                                      return   listLevels;
   }
   public List getLevelsList(int totalLevels,String defaultString,int  defaultValue)  {
                                        List  listLevels=new ArrayList();
-                                       for(int x=0;x<totalLevels;x++){
+                                       for(int x=1;x<=totalLevels;x++){
                                     	    	listLevels.add(new Level(x,""+x));
                                        }
                                         listLevels.add(0,new Level(defaultValue,defaultString));

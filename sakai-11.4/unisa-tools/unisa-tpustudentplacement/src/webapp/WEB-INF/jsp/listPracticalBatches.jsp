@@ -8,7 +8,7 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources"/>
 
 <sakai:html>	
-	<html:form action="/practicalMaintenance">
+	<html:form action="/practicalPeriodMaintenance">
 		<!--<html:hidden property="currentPage" value="displayDistrictList"/>-->
 		<sakai:messages/>
 		<sakai:messages message="true"/>
@@ -28,19 +28,21 @@
 				</td>
 				<td><fmt:message key="prompt.level"/>&nbsp;</td>
 				<td><html:select name="studentPlacementForm" property="practiceBatchDate.level">
-						<html:optionsCollection name="studentPlacementForm" property="listLevelsforview"  value="code" label="description"/>
+						<html:optionsCollection name="studentPlacementForm" property="listLevelsforview"  value="level" label="levelDescription"/>
 					</html:select>                                           
 				</td>
 			</tr>		
 			<tr>
 				<td ><fmt:message key="prompt.practicalperiod"/>&nbsp;</td>
 				<td><html:select name="studentPlacementForm" property="practiceBatchDate.practicalPeriod">
-						<html:optionsCollection name="studentPlacementForm"   property="listPracticalPeriodsforview"  value="code" label="description"/>
+						<html:optionsCollection name="studentPlacementForm"   property="listPracticalPeriodsforview"  value="period" label="periodDescription"/>
 					</html:select>                                           
 				</td>
 				<td  ><fmt:message key="prompt.academicyear"/>&nbsp;</td>
-				<td><html:text name="studentPlacementForm" property="practiceBatchDate.academicYear"  size="4" maxlength="4"/>                                     
-				</td>
+				<td><html:select name="studentPlacementForm" property="practiceBatchDate.academicYear" >
+						<html:optionsCollection name="studentPlacementForm"   property="listPracticalYearforview"  value="year" label="yearDescription"/>
+					</html:select>                                           
+				</td>                        
 			</tr>		
 			</sakai:group_table>
 			<sakai:actions>
@@ -75,7 +77,7 @@
 					<td><bean:write name="rec" property="toDate"/></td>
 					<td><bean:write name="rec" property="level"/></td>
 					<td><bean:write name="rec" property="practicalPeriod"/></td>
-					<td><bean:write name="rec" property="numOfDays"/></td>
+					<td><bean:write name="rec" property="practicalDays"/></td>
 					<td><bean:write name="rec" property="provDescr"/></td>
 					<td><bean:write name="rec" property="academicYear"/></td>
 						</tr>
@@ -89,7 +91,7 @@
 					<fmt:message key="button.delete"/>
 			 </html:submit>		
 				<html:submit property="action">
-					<fmt:message key="button.back"/>
+					<fmt:message key="button.copy"/>
 			</html:submit>			
 		</sakai:actions>		
 				</logic:notEmpty>

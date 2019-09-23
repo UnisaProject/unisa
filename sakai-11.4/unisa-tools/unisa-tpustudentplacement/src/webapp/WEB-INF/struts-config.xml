@@ -476,15 +476,15 @@
 			name="studentPlacementForm"
 			attribute="studentPlacementForm"
 			parameter="action"
-			path="/practicalMaintenance"
+			path="/practicalPeriodMaintenance"
 			type="za.ac.unisa.lms.tools.tpustudentplacement.actions.PracticalPeriodMaintenanceAction"
 			validate="false">
 			<forward
-				name="listPracBatches"
+				name="listPracticalBatches"
 				path="/WEB-INF/jsp/listPracticalBatches.jsp"
 				contextRelative="true" />
 			<forward
-				name="inputPrac"
+				name="inputPractical"
 				path="/WEB-INF/jsp/inputPractical.jsp"
 				contextRelative="true" />
 			<forward
