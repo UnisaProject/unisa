@@ -30,14 +30,14 @@ public class PracticePeriod {
 	
 	public List getPracticePeriodList(int totalPeriods){
 		                            List  listPracticePeriod=new ArrayList();
-                                     for(int x=0;x<totalPeriods;x++){
+                                     for(int x=1;x<=totalPeriods;x++){
                                               listPracticePeriod.add(new  PracticePeriod(x,""+x));
                                      }
 	                                  return   listPracticePeriod;
     }
 	public List getPracticePeriodList(int totalPeriods,String defaultString,int defaultValue)  {
 		                          List  listPracticePeriod=new ArrayList();
-                                   for(int x=0;x<totalPeriods;x++){
+                                   for(int x=1;x<=totalPeriods;x++){
                                 	               listPracticePeriod.add(new  PracticePeriod(x,""+x));
                                    }
                                    listPracticePeriod.add(0,new  PracticePeriod(defaultValue,defaultString));
@@ -45,7 +45,7 @@ public class PracticePeriod {
     }
 	public void setPracticePeriods(StudentPlacementForm studentPlacementForm)  {
                                      	  studentPlacementForm.setListPracticalPeriods(getPracticePeriodList(2));
-     	                                  studentPlacementForm.setListPracticalPeriods(getPracticePeriodList(2,"All",-1));
+     	                                  studentPlacementForm.setListPracticalPeriodsforview(getPracticePeriodList(2,"All",-1));
     }
 
 }

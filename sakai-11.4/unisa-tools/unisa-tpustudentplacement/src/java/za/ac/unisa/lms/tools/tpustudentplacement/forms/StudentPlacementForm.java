@@ -183,12 +183,15 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	
 	//practical
 	private PracticeBatchDate practiceBatchDate;
+	private PracticeBatchDate originalPracticeBatchDate;
 	private List practiceBatchDateList;
 	private List listPracticalPeriods;
 	private List  listLevels;
 	private List  listLevelsforview;
 	private List listProvincesforview;
 	private List listPracticalPeriodsforview;
+	private List  listPracticalYear;
+	private List  listPracticalYearforview;
 	 private boolean   addPracActive;
 	 private Short practicalsProvince;
     
@@ -1121,6 +1124,24 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	}
 	public void setPracticalsProvince(Short practicalsProvince) {
 		this.practicalsProvince = practicalsProvince;
+	}
+	public List getListPracticalYear() {
+		return listPracticalYear;
+	}
+	public void setListPracticalYear(List listPracticalYear) {
+		this.listPracticalYear = listPracticalYear;
+	}
+	public List getListPracticalYearforview() {
+		return listPracticalYearforview;
+	}
+	public void setListPracticalYearforview(List listPracticalYearforview) {
+		this.listPracticalYearforview = listPracticalYearforview;
+	}
+	public PracticeBatchDate getOriginalPracticeBatchDate() {
+		return originalPracticeBatchDate;
+	}
+	public void setOriginalPracticeBatchDate(PracticeBatchDate originalPracticeBatchDate) {
+		this.originalPracticeBatchDate = originalPracticeBatchDate;
 	}
 	
 	
