@@ -9,7 +9,6 @@ public class PracticeBatchDate {
 	private int practicalPeriod;
 	private String fromDate;
 	private String toDate;
-	private int numOfDays;
 	private int academicYear;
 	private int practicalDays;
 	public int getProvCode() {
@@ -48,13 +47,7 @@ public class PracticeBatchDate {
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
-	public int getNumOfDays() {
-		return numOfDays;
-	}
-	public void setNumOfDays(int numOfDays) {
-		this.numOfDays = numOfDays;
-	}
-	public int getAcademicYear() {
+    public int getAcademicYear() {
 		return academicYear;
 	}
 	public void setAcademicYear(int academicYear) {
@@ -66,11 +59,11 @@ public class PracticeBatchDate {
 	public void setPracticalDays(int practicalDays) {
 		this.practicalDays = practicalDays;
 	}
+   	DateUtil dateUtil;
 	public  PracticeBatchDate(PracticeBatchDate practiceBatchDate){
 		                 this.academicYear=practiceBatchDate.getAcademicYear();
 		                 this.fromDate=practiceBatchDate.getFromDate();
 		                 this.level=practiceBatchDate.getLevel();
-		                  this.numOfDays=practiceBatchDate.getNumOfDays();
 		                 this.practicalDays=practiceBatchDate.getPracticalDays();
 		                 this.practicalPeriod=practiceBatchDate.getPracticalPeriod();
 		                 this.provCode=practiceBatchDate.getProvCode();
@@ -78,13 +71,15 @@ public class PracticeBatchDate {
 		                 this.toDate=practiceBatchDate.getToDate();
 		}
 	public  PracticeBatchDate(){
-		              this.academicYear=0;
+		              dateUtil=new DateUtil();
+		              setAcademicYear(dateUtil.getYearInt());
 		              this.level=1;
 		              this.practicalPeriod=1;
+		              this.fromDate=dateUtil.todayDateOnly();
+		              this.toDate=dateUtil.todayDateOnly();
 	   }
 	public void resetToDisplayAllDateBatches(){
-	                               	DateUtil dateUtil=new DateUtil();
-                                     setAcademicYear(dateUtil.getYearInt());
+	                                setAcademicYear(dateUtil.getYearInt());
  	                                 setFromDate(null);
  	                                 setToDate(null);
  	                                 setLevel(-1);
