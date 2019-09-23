@@ -214,7 +214,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 			                                                                        if (selectedProv==-1){
                                                                                                   	messages.add(ActionMessages.GLOBAL_MESSAGE,
                                                                                                 	new ActionMessage("message.generalmessage",
-                         	                                                                            "Please select a province  to copy  Practical  date batches "));
+                         	                                                                            "Please select a province  to copy  whose Practical  date batches "));
                                                                                      }
                                                                                  	if (!messages.isEmpty()) {
 				                                                                                   addErrors(request,messages);
