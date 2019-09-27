@@ -184,16 +184,29 @@ public class StudentUploadDAO extends StudentSystemDAO {
 		
 		String newApplicantNr = "";	
 		
-		String query  = "select a.DETAIL as studentNr from stuxml a where  a.mk_academic_year=? and a.mk_academic_period=? and a.reference_type=?" +
-				" and exists (select * from stuxml b where B.MK_ACADEMIC_YEAR=A.MK_ACADEMIC_YEAR" + 
-				" and B.MK_ACADEMIC_PERIOD=A.MK_ACADEMIC_PERIOD" + 
-				" and B.REFERENCE_TYPE=?" + 
-				" and B.MK_STUDENT_NR=A.MK_STUDENT_NR" +
-				" and b.detail=?)";
+//		String query  = "select a.DETAIL as studentNr from stuxml a where  a.mk_academic_year=? and a.mk_academic_period=? and a.reference_type=?" +
+//				" and exists (select * from stuxml b where B.MK_ACADEMIC_YEAR=A.MK_ACADEMIC_YEAR" + 
+//				" and B.MK_ACADEMIC_PERIOD=A.MK_ACADEMIC_PERIOD" + 
+//				" and B.REFERENCE_TYPE=?" + 
+//				" and B.MK_STUDENT_NR=A.MK_STUDENT_NR" +
+//				" and b.detail=?)";
+		
+//Johanet 20100927 - change query to make it more effective		
+		String query  = "select stuxml.detail as studentNr " + 
+				"from stuxml, " + 
+				"(select mk_student_nr from stuxml " + 
+				"where MK_ACADEMIC_YEAR=? " + 
+				"and MK_ACADEMIC_PERIOD=? " + 
+				"and REFERENCE_TYPE=? " + 
+				"and detail=?) t " + 
+				"where stuxml.mk_academic_year=? " + 
+				"and stuxml.mk_academic_period=? " + 
+				"and stuxml.reference_type=? " + 
+				"and stuxml.mk_student_nr=t.mk_student_nr";
 		try {
 			//log.debug("StudentUploadDAO - validateSTUAPQ - query="+query+", surname="+surname.toUpperCase()+", firstNames="+firstNames.toUpperCase()+", bDay="+bDay+", acaYear="+acaYear);
 			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-			List queryList = jdt.queryForList(query, new Object []{acaYear, acaPeriod, referenceType1, referenceType2, referenceValue.toUpperCase()});
+			List queryList = jdt.queryForList(query, new Object []{acaYear, acaPeriod, referenceType2, referenceValue.toUpperCase(), acaYear, acaPeriod, referenceType1});
 			
 			Iterator i = queryList.iterator();
 			if (i.hasNext()) {
