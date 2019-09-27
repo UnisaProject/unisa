@@ -486,7 +486,7 @@ public class StudentUploadAction extends LookupDispatchAction {
 			String newApplicantNumber = dao.validateNewApplicant(stuUpForm.getStudent().getAcademicYear(), stuUpForm.getStudent().getAcademicPeriod(), "TempStu" ,"StuInfo", referenceData);
 			
 			if (newApplicantNumber.equalsIgnoreCase("")) {
-				errorMsg="No application was submitted for the student details below, either verify that the detial is correct or enter a valid student number if your are not a new applicant.";			
+				errorMsg="No application was submitted for the student details below, either verify that the detail is correct or enter a valid student number if you are not a new applicant.";			
 			}else {
 				stuUpForm.getStudent().setNumber(newApplicantNumber);	
 			}
