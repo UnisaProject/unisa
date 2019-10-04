@@ -105,6 +105,7 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 		
 		MyUnisaMylifeForm myUnisaMylifeForm = (MyUnisaMylifeForm) form;
 		log.info(this+": "+myUnisaMylifeForm.getStudentNr()+" student nr step");	
+		
 		eventTrackingService.post(
 				eventTrackingService.newEvent(EventTrackingTypes.EVENT_UNISALOGIN_VIEW, toolManager.getCurrentPlacement().getContext(), false));
  
@@ -576,7 +577,12 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 				myUnisaMylifeForm.isAgreeCheck3()&&myUnisaMylifeForm.isAgreeCheck4()){
 			
 			myUnisaMylifeForm.setCellNr(dao.getCellNr(myUnisaMylifeForm));	
-			myUnisaMylifeForm.setDisplayCellNr(diplayCellNumber(myUnisaMylifeForm.getCellNr().trim()));
+			if(myUnisaMylifeForm.getCellNr().trim().length() > 5) {
+				myUnisaMylifeForm.setDisplayCellNr(diplayCellNumber(myUnisaMylifeForm.getCellNr().trim()));
+			}else {
+				myUnisaMylifeForm.setDisplayCellNr("");
+			}
+			
 			myUnisaMylifeForm.setMylifePath(ServerConfigurationService.getString("mylife.path")); 
 			myUnisaMylifeForm.setMyUnisaPath(ServerConfigurationService.getString("serverUrl"));
 			
