@@ -52,6 +52,7 @@ import za.ac.unisa.lms.ad.SaveStudentToAD;
 import za.ac.unisa.lms.ad.IdVaultUser;
 import za.ac.unisa.lms.tools.join.dao.MyUnisaJoinQueryDAO;
 import za.ac.unisa.lms.tools.mylife.dao.MyLifesakaiDAO;
+import za.ac.unisa.lms.tools.mylife.dao.MySqlDAO;
 import za.ac.unisa.lms.tools.mylife.dao.MyUnisaMylifeStudentDAO;
 import za.ac.unisa.lms.tools.mylife.forms.MyUnisaMylifeForm;
 
@@ -105,6 +106,14 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 		
 		MyUnisaMylifeForm myUnisaMylifeForm = (MyUnisaMylifeForm) form;
 		log.info(this+": "+myUnisaMylifeForm.getStudentNr()+" student nr step");	
+		
+		MySqlDAO dao = new MySqlDAO();
+		try {
+			dao.testConnectionMysql();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		eventTrackingService.post(
 				eventTrackingService.newEvent(EventTrackingTypes.EVENT_UNISALOGIN_VIEW, toolManager.getCurrentPlacement().getContext(), false));
  
@@ -576,7 +585,12 @@ public class MyUnisaMylifeAction extends LookupDispatchAction {
 				myUnisaMylifeForm.isAgreeCheck3()&&myUnisaMylifeForm.isAgreeCheck4()){
 			
 			myUnisaMylifeForm.setCellNr(dao.getCellNr(myUnisaMylifeForm));	
-			myUnisaMylifeForm.setDisplayCellNr(diplayCellNumber(myUnisaMylifeForm.getCellNr().trim()));
+			if(myUnisaMylifeForm.getCellNr().trim().length() > 5) {
+				myUnisaMylifeForm.setDisplayCellNr(diplayCellNumber(myUnisaMylifeForm.getCellNr().trim()));
+			}else {
+				myUnisaMylifeForm.setDisplayCellNr("");
+			}
+			
 			myUnisaMylifeForm.setMylifePath(ServerConfigurationService.getString("mylife.path")); 
 			myUnisaMylifeForm.setMyUnisaPath(ServerConfigurationService.getString("serverUrl"));
 			
