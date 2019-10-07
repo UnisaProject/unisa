@@ -168,9 +168,14 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			autoOpen: true,
 		  	title: errorTitle,
 		  	modal: true,
+		  	close: function(event, ui)  {
+   		 		$(this).dialog("close");
+	   	 		$(this).dialog("destroy");
+       		  },
 		  	buttons: {
 		  		"Ok": function() {
 		  			$(this).dialog("close");
+		   	 		$(this).dialog("destroy");
 		  		}
 		  	}
 		});

@@ -177,6 +177,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="">
 											<fmt:message key="page.accpeted.none"/>
 										</logic:equal>
+										<!-- If only one qual outstanding  -->
+										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="N">
+											<fmt:message key="page.declined"/>
+										</logic:equal>
+										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="Y">
+											<fmt:message key="page.accepted"/>
+										</logic:equal>
 									<td>
 								</tr>
 							</logic:notEqual>
@@ -201,9 +208,16 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 										</logic:equal>
 										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="1">
 											<fmt:message key="page.declined"/>
-										</logic:equal>
+										</logic:equal>										
 										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="">
 											<fmt:message key="page.accpeted.none"/>
+										</logic:equal>
+										<!-- If only one qual outstanding  -->
+										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="N">
+											<fmt:message key="page.declined"/>
+										</logic:equal>
+										<logic:equal name="studentOfferForm" property="studentApplication.radioOfferAccept" value="Y">
+											<fmt:message key="page.accepted"/>
 										</logic:equal>
 									<td>
 								</tr>

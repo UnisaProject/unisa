@@ -187,7 +187,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	
 		function doSubmit(button){
 			if (button === "Continue"){
-				document.studentOfferForm.action='studentOffer.do?act=applyOffer';
+				document.studentOfferForm.action='studentOffer.do?act=applyOfferTwo';
 			}else if (button === "Back"){
 				document.studentOfferForm.action='studentOffer.do?act=back';
 			}else if (button === "TrackStatus"){
@@ -200,7 +200,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			document.studentOfferForm.submit();
 		}
 			
-		function showModal(errorTitle, errorText) {
+		function xxshowModal(errorTitle, errorText) {
 	   	    // show the actual error modal
 	   	    $.unblockUI();		    
 	   	    $('#dialogContent').html(errorText);
@@ -220,6 +220,32 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	   		});
 	   	}
 		
+		function showModal(errorTitle, errorText) {
+	   	    // show the actual error modal
+	   	    $.unblockUI();	
+	   	  
+	   	    $('#dialogContent').html(errorText);
+	   		$('#dialogHolder').dialog({
+	   			autoOpen: true,
+	   		  	title: errorTitle,
+	   		  	modal: true,
+	   		 	width: "auto",
+	   		 	close: function(event, ui)  {
+	   		 		$(this).dialog("close");
+		   	 		$(this).dialog("destroy");
+	       		  },
+	   		  	buttons: {
+	   		    	"Ok": function() {
+	   		   	  		doSubmit("Continue");
+	   		   	  	},
+	   		   	  	"Cancel": function(){
+	   		   	   		$(this).dialog("close");
+	   		   	 		$(this).dialog("destroy");
+	   		    	}
+	   		  	}  	
+	   		});
+	   	}
+		
 		function showPending(errorTitle, errorText) {
 	   	    // show the actual error modal
 	   	    $.unblockUI();		    
@@ -229,12 +255,17 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	   		  	title: errorTitle,
 	   		  	modal: true,
 	   		 	width: "auto",
+	   			close: function(event, ui)  {
+	   		 		$(this).dialog("close");
+		   	 		$(this).dialog("destroy");
+	       		  },
 	   		  	buttons: {
 	   		    	"Yes": function() {
 	   		   	  		doSubmit("Continue");
 	   		   	  	},
 	   		   	  	"No": function(){
-	   		   	   		$(this).dialog("close");
+	   		   	 		$(this).dialog("close");
+ 		   	 			$(this).dialog("destroy");
 	   		    	}
 	   		  	}
 	   		});
@@ -250,9 +281,14 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	   		  	modal: true,
 	   		 	width: "auto",
 	   		 	position:['middle',20],
+	   		 	close: function(event, ui)  {
+	   		 		$(this).dialog("close");
+		   	 		$(this).dialog("destroy");
+	       		  },
 	   		  	buttons: {
 	   		    	"Ok": function() {
 	   		   	   		$(this).dialog("close");
+	   		   	 		$(this).dialog("destroy");
 	   		    	}
 	   		  	}
 	   		});
