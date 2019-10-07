@@ -47,9 +47,13 @@
        	 		path="/WEB-INF/jsp/applyLogin.jsp"
         		contextRelative="true" />
        	 	<forward
-       	 		name="applyOffer"
-        		path="/WEB-INF/jsp/applyOffer.jsp"
+       	 		name="applyOfferTwo"
+        		path="/WEB-INF/jsp/applyOfferTwo.jsp"
        	 		contextRelative="true" />
+       	 	<forward
+       	 		name="applyOfferOne"
+        		path="/WEB-INF/jsp/applyOfferOne.jsp"
+       	 		contextRelative="true" />	
 			<forward
        	 		name="applyOfferConfirm"
         		path="/WEB-INF/jsp/applyOfferConfirm.jsp"

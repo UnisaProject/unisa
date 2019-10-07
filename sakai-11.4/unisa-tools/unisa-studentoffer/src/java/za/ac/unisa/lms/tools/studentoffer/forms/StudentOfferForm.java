@@ -80,7 +80,16 @@ public class StudentOfferForm extends ValidatorActionForm {
 	
 	//Johanet add variable pendingApp
 	boolean pendingApp = false;
+	boolean offerApp = false;	
 	
+	public boolean isOfferApp() {
+		return offerApp;
+	}
+
+	public void setOfferApp(boolean offerApp) {
+		this.offerApp = offerApp;
+	}
+
 	public boolean isPendingApp() {
 		return pendingApp;
 	}
