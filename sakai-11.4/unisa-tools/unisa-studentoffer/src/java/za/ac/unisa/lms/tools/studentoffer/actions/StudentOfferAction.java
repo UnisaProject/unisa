@@ -81,7 +81,8 @@ public class StudentOfferAction extends LookupDispatchAction {
 	    map.put("walkthrough", "walkthrough");
 	    
 	    map.put("applyLogin", "applyLogin");
-	    map.put("applyOffer", "applyOffer");
+	    map.put("applyOfferTwo", "applyOfferTwo");
+	    map.put("applyOfferOne", "applyOfferOne");
 	    map.put("applyOfferConfirm", "applyOfferConfirm");
 	    map.put("trackStatus", "trackStatus");
     
@@ -152,7 +153,25 @@ public class StudentOfferAction extends LookupDispatchAction {
 			}
 			
 			applyOfferStatus(request, stuStatForm);
-			return mapping.findForward("applyOffer");
+			int countQualAppNotFinalized = 0;
+			
+			if (stuStatForm.getOfferQual1()!=null && !stuStatForm.getOfferQual1().equalsIgnoreCase("")) {
+				countQualAppNotFinalized = countQualAppNotFinalized + 1;
+				if (stuStatForm.getPendingQual2()!=null && !stuStatForm.getPendingQual2().equalsIgnoreCase("")) {
+					countQualAppNotFinalized = countQualAppNotFinalized + 1;
+				}
+			}
+			if (stuStatForm.getOfferQual2()!=null && !stuStatForm.getOfferQual2().equalsIgnoreCase("")) {
+				countQualAppNotFinalized = countQualAppNotFinalized + 1;
+				if (stuStatForm.getPendingQual1()!=null  && !stuStatForm.getPendingQual1().equalsIgnoreCase("")) {
+					countQualAppNotFinalized = countQualAppNotFinalized + 1;
+				}
+			}
+			
+			if (countQualAppNotFinalized > 1) {
+				return mapping.findForward("applyOfferTwo");
+			}
+			return mapping.findForward("applyOfferOne");
 		}
 		
 		//Write version number to log to check all servers
@@ -604,7 +623,25 @@ public class StudentOfferAction extends LookupDispatchAction {
 				/** Flow Check: (4) **/
 				//log.debug("StudentOfferAction - applyLogin - (4) - Redirect to Offer page");
 				applyOfferStatus(request, stuStatForm);
-				return mapping.findForward("applyOffer");
+				int countQualAppNotFinalized = 0;
+				
+				if (stuStatForm.getOfferQual1()!=null && !stuStatForm.getOfferQual1().equalsIgnoreCase("")) {
+					countQualAppNotFinalized = countQualAppNotFinalized + 1;
+					if (stuStatForm.getPendingQual2()!=null && !stuStatForm.getPendingQual2().equalsIgnoreCase("")) {
+						countQualAppNotFinalized = countQualAppNotFinalized + 1;
+					}
+				}
+				if (stuStatForm.getOfferQual2()!=null && !stuStatForm.getOfferQual2().equalsIgnoreCase("")) {
+					countQualAppNotFinalized = countQualAppNotFinalized + 1;
+					if (stuStatForm.getPendingQual1()!=null  && !stuStatForm.getPendingQual1().equalsIgnoreCase("")) {
+						countQualAppNotFinalized = countQualAppNotFinalized + 1;
+					}
+				}
+				
+				if (countQualAppNotFinalized > 1) {
+					return mapping.findForward("applyOfferTwo");
+				}
+				return mapping.findForward("applyOfferOne");
 			} else{ //Student thus doesn't have a STUAPQ record for this Academic Year
 				/** Flow Check: (5) **/
 				//log.debug("StudentOfferAction - applyLogin - (5) - Student thus doesn't have a STUAPQ record for this Academic Year & Period yet");
@@ -1305,31 +1342,35 @@ public class StudentOfferAction extends LookupDispatchAction {
 
 		//log.debug("StudentOfferAction - applyOfferStatus - Start");
 		
-		stuRegForm.setWebLoginMsg("");
+		stuRegForm.setWebLoginMsg("");		
 		
 		try{
 			boolean isQualOffer1 = false;
-			boolean isQualOffer2 = false;			
+			boolean isQualOffer2 = false;	
+			
 			isQualOffer1 = dao.getOfferStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1", "applyOfferStatus");
 			isQualOffer2 = dao.getOfferStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "2", "applyOfferStatus");
 			//Johanet 20181010 - 2019 BRD offer making change
 			boolean isQaulPending1 = false;
 			boolean isQualPending2 = false;
-			if (isQualOffer1) {
+			stuRegForm.setOfferApp(false); 
+			if (isQualOffer1) {	
+				stuRegForm.setOfferApp(true); 
 				isQualPending2 = dao.getPendingStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "2", "applyOfferStatus");
 			}
-			if (isQualOffer2) {
+			if (isQualOffer2) {		
+				stuRegForm.setOfferApp(true); 
 				isQaulPending1 = dao.getPendingStatus(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "1", "applyOfferStatus");
 			}	
 			
 			stuRegForm.setPendingApp(false);
 			if (isQaulPending1) {			
-				stuRegForm.setPendingApp(true);
+				stuRegForm.setPendingApp(true);				
 				stuRegForm.setPendingQual1(dao.getStatusQual("Qual", "1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
 				stuRegForm.setPendingSpec1(dao.getStatusQual("Spec", "1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
 			}
 			if (isQualPending2) {	
-				stuRegForm.setPendingApp(true);
+				stuRegForm.setPendingApp(true);				
 				stuRegForm.setPendingQual2(dao.getStatusQual("Qual", "1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
 				stuRegForm.setPendingSpec2(dao.getStatusQual("Spec", "1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
 			}
@@ -1413,7 +1454,7 @@ public class StudentOfferAction extends LookupDispatchAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 	*/
-	public ActionForward applyOffer(ActionMapping mapping,ActionForm form,
+	public ActionForward applyOfferTwo(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,	HttpServletResponse response)
 			throws Exception {
 		
@@ -1467,7 +1508,7 @@ public class StudentOfferAction extends LookupDispatchAction {
 //						new ActionMessage("message.generalmessage", "Please select an offer of enrolment to accept or decline or cancel to exit"));
 				addErrors(request, messages);
 				//return "applyOffer";
-				return mapping.findForward("applyOffer");
+				return mapping.findForward("applyOfferTwo");
 			}
 			
 			//int updResult = dao.updateOffer(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getOfferRadio());
@@ -1525,15 +1566,14 @@ public class StudentOfferAction extends LookupDispatchAction {
 								new ActionMessage("message.generalmessage", stuRegForm.getOfferQual1()+" - "+ opResult1));
 						addErrors(request, messages);
 						applyOfferStatus(request, stuRegForm);
-						
-						if ((stuRegForm.getOfferQual1() == null || "".equalsIgnoreCase(stuRegForm.getOfferQual1())) && (stuRegForm.getOfferQual2() == null || "".equalsIgnoreCase(stuRegForm.getOfferQual2()))){
-							//log.debug("StudentOfferAction - applyOffer - Qual1 Done - Goto applyOfferConfirm");
+						if (stuRegForm.isOfferApp()) {
+							//log.debug("StudentOfferAction - applyOffer - Qual2 Still has offer - Goto applyOffer");
+							//return "applyOffer";
+							return mapping.findForward("applyOfferTwo");							
+						}else{		
+							//log.debug("StudentOfferAction - applyOffer - Qual2 Done - Goto applyOfferConfirm");
 							//return "applyOfferConfirm";
 							return mapping.findForward("applyOfferConfirm");
-						}else{
-							//return "applyOffer";
-							//log.debug("StudentOfferAction - applyOffer - Qual1 Still has offer - Goto applyOffer");
-							return mapping.findForward("applyOffer");
 						}
 					}
 					
@@ -1580,14 +1620,14 @@ public class StudentOfferAction extends LookupDispatchAction {
 								new ActionMessage("message.generalmessage", stuRegForm.getOfferQual2()+" - "+ opResult2));
 						addErrors(request, messages);
 						applyOfferStatus(request, stuRegForm);
-						if ((stuRegForm.getOfferQual1() == null || "".equalsIgnoreCase(stuRegForm.getOfferQual1())) && (stuRegForm.getOfferQual2() == null || "".equalsIgnoreCase(stuRegForm.getOfferQual2()))){
+						if (stuRegForm.isOfferApp()) {
+							//log.debug("StudentOfferAction - applyOffer - Qual2 Still has offer - Goto applyOffer");
+							//return "applyOffer";
+							return mapping.findForward("applyOfferTwo");							
+						}else{		
 							//log.debug("StudentOfferAction - applyOffer - Qual2 Done - Goto applyOfferConfirm");
 							//return "applyOfferConfirm";
 							return mapping.findForward("applyOfferConfirm");
-						}else{
-							//return "applyOffer";
-							//log.debug("StudentOfferAction - applyOffer - Qual2 Still has offer - Goto applyOffer");
-							return mapping.findForward("applyOffer");
 						}
 					}
 				}
@@ -1597,9 +1637,185 @@ public class StudentOfferAction extends LookupDispatchAction {
 			}
 		
 		}catch(Exception e){
-			log.warn("StudentOfferAction - applyOffer - crashed / " + e);
+			log.warn("StudentOfferAction - applyOfferTwo - crashed / " + e);
 			throw e;
 		}
+		/* Set submission time stamp */
+		Date date = new java.util.Date();
+		String displayDate = (new java.text.SimpleDateFormat("EEEEE dd MMMMM yyyy hh:mm:ss").format(date).toString());
+		stuRegForm.getStudent().setAppTime(displayDate);
+		
+		//log.debug("StudentOfferAction - applyOffer - End - Goto applyOfferConfirm");
+		//return "applyOfferConfirm";
+		return mapping.findForward("applyOfferConfirm");
+	}
+	
+	public ActionForward applyOfferOne(ActionMapping mapping,ActionForm form,
+			HttpServletRequest request,	HttpServletResponse response)
+			throws Exception {
+		
+		StudentOfferForm stuRegForm = (StudentOfferForm)form;
+		StudentOfferDAO dao = new StudentOfferDAO();
+		ActionMessages messages = new ActionMessages();		
+		
+		//log.debug("StudentOfferAction - applyOffer - Start");	
+		
+		stuRegForm.getStudent().setQual1(dao.vrfyNewQualShort("Qual","1",stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
+		stuRegForm.getStudent().setQual2(dao.vrfyNewQualShort("Qual","2",stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod()));
+		
+		//log.debug("StudentOfferAction - applyOffer check - Qual1="+stuRegForm.getStudent().getQual1());
+		//log.debug("StudentOfferAction - applyOffer check - Qual2="+stuRegForm.getStudent().getQual2());
+
+		try{
+			stuRegForm.getStudentApplication().setRadioOfferQual1(stripXSS(stuRegForm.getStudentApplication().getRadioOfferQual1()));
+			stuRegForm.getStudentApplication().setRadioOfferQual2(stripXSS(stuRegForm.getStudentApplication().getRadioOfferQual2()));
+//			stuRegForm.getStudentApplication().setRadioOfferAccept(stripXSS(stuRegForm.getStudentApplication().getRadioOfferAccept()));
+			
+			//log.debug("StudentOfferAction - applyOffer check - Qual1 Radio="+stuRegForm.getStudentApplication().getRadioOfferQual1());
+			//log.debug("StudentOfferAction - applyOffer check - Qual2 Radio="+stuRegForm.getStudentApplication().getRadioOfferQual2());
+
+			if (stuRegForm.getOfferQual1() !=null && !stuRegForm.getOfferQual1().equalsIgnoreCase("")) {
+				if (stuRegForm.getStudentApplication().getRadioOfferQual1() == null || stuRegForm.getStudentApplication().getRadioOfferQual1().equalsIgnoreCase("")){	
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please accept or decline the offer of enrolment or cancel to exit"));
+					addErrors(request, messages);
+					return mapping.findForward("applyOfferOne");
+				}else {
+					stuRegForm.getStudentApplication().setRadioOfferAccept(stuRegForm.getStudentApplication().getRadioOfferQual1());
+				}
+			}
+			
+			if (stuRegForm.getOfferQual2() !=null && !stuRegForm.getOfferQual2().equalsIgnoreCase("")) {
+				if (stuRegForm.getStudentApplication().getRadioOfferQual2() == null || stuRegForm.getStudentApplication().getRadioOfferQual2().equalsIgnoreCase("")){	
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please accept or decline the offer of enrolment or cancel to exit"));
+					addErrors(request, messages);
+					return mapping.findForward("applyOfferOne");
+				}else {
+					stuRegForm.getStudentApplication().setRadioOfferAccept(stuRegForm.getStudentApplication().getRadioOfferQual2());
+				}
+			}
+				
+
+			Staae05sAppAdmissionEvaluator op = new Staae05sAppAdmissionEvaluator();
+			operListener opl = new operListener();
+			op.addExceptionListener(opl);
+			op.clear();
+				
+			if (stuRegForm.getStudentApplication().getRadioOfferQual1()!=null && 
+					(stuRegForm.getStudentApplication().getRadioOfferQual1().equalsIgnoreCase("Y") || stuRegForm.getStudentApplication().getRadioOfferQual1().equalsIgnoreCase("N"))){
+				//log.debug("StudentOfferAction - applyOffer - Qual1="+stuRegForm.getOfferQual1()+", Qual1 Radio="+stuRegForm.getStudentApplication().getRadioOfferQual1());
+				//Student Input fields
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Student Number         ="+stuRegForm.getStudent().getNumber());
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Academic Year          ="+stuRegForm.getStudent().getAcademicYear());
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Academic Period        ="+stuRegForm.getStudent().getAcademicPeriod());
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Qualification Accepted ="+stuRegForm.getOfferQual1());
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Qualification Period   ="+stuRegForm.getQualPeriodCode1());
+				//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 1 - Qualification Radio    ="+stuRegForm.getStudentApplication().getRadioOfferQual1());
+				op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
+				op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
+				op.setInCsfClientServerCommunicationsAction("OU"); //Offer Update
+				op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
+				op.setInWsUserNumber(99998);
+				op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
+				op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
+				//Johanet 20190517 - Only one period valid at a time
+				//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode1()));
+				op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
+				op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual1());
+				op.setInWebStuApplicationQualChoiceNr((short) 1);
+				op.setInWebStuApplicationQualOfferAccepted(stuRegForm.getStudentApplication().getRadioOfferQual1());
+			
+				op.execute();
+		
+				if (opl.getException() != null) throw opl.getException();
+				if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+	
+				//log.debug("StudentOfferAction - applyOffer - 1 - After Execute");
+				String opResult1 = op.getOutCsfStringsString500();
+				//log.debug("StudentOfferAction - applyOffer - 1 - opResult: " + opResult1);
+				op.clear();
+			
+				if (!opResult1.contains("generated") && !opResult1.contains("successful")){
+					if ("".equals(opResult1)){
+						opResult1 = "Process Failed, please try again or contact Unisa via email at <a href='mailto:applications@unisa.ac.za'>applications@unisa.ac.za</a>";
+					}
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", stuRegForm.getOfferQual1()+" - "+ opResult1));
+					addErrors(request, messages);
+					applyOfferStatus(request, stuRegForm);						
+						if (stuRegForm.isOfferApp()){
+							//return "applyOffer";
+							//log.debug("StudentOfferAction - applyOffer - Qual1 Still has offer - Goto applyOffer");
+							return mapping.findForward("applyOfferOne");
+						}else{
+							//log.debug("StudentOfferAction - applyOffer - Qual1 Done - Goto applyOfferConfirm");
+							//return "applyOfferConfirm";
+							return mapping.findForward("applyOfferConfirm");
+							
+						}
+					}
+					
+				}
+								
+				if (stuRegForm.getStudentApplication().getRadioOfferQual2()!=null && 
+						(stuRegForm.getStudentApplication().getRadioOfferQual2().equalsIgnoreCase("Y") || stuRegForm.getStudentApplication().getRadioOfferQual2().equalsIgnoreCase("N"))){
+					//log.debug("StudentOfferAction - applyOffer - Qual2="+stuRegForm.getOfferQual2()+", Qual2 Radio="+stuRegForm.getStudentApplication().getRadioOfferQual2());
+					//Student Input fields
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Student Number         ="+stuRegForm.getStudent().getNumber());
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Academic Year          ="+stuRegForm.getStudent().getAcademicYear());
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Academic Period        ="+stuRegForm.getStudent().getAcademicPeriod());
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Qualification Accepted ="+stuRegForm.getOfferQual2());
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Qualification Period   ="+stuRegForm.getQualPeriodCode2());
+					//log.debug("StudentOfferAction - applyOffer - (Staae05sAppAdmissionEvaluator) - 2 - Qualification Radio    ="+stuRegForm.getStudentApplication().getRadioOfferQual2());
+
+					op.setInCsfClientServerCommunicationsClientVersionNumber((short) 3);
+					op.setInCsfClientServerCommunicationsClientRevisionNumber((short) 1);
+					op.setInCsfClientServerCommunicationsAction("OU"); //Offer Update
+					op.setInCsfClientServerCommunicationsClientDevelopmentPhase("C");
+					op.setInWsUserNumber(99998);
+					op.setInWebStuApplicationQualMkStudentNr(Integer.parseInt(stuRegForm.getStudent().getNumber()));
+					op.setInWebStuApplicationQualAcademicYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));					
+					//Johanet 20190517 - Only one period valid at a time
+					//op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getQualPeriodCode2()));
+					op.setInWebStuApplicationQualApplicationPeriod((short) Integer.parseInt(stuRegForm.getStudent().getAcademicPeriod()));
+					op.setInWebStuApplicationQualNewQual(stuRegForm.getStudent().getQual2());
+					op.setInWebStuApplicationQualChoiceNr((short) 2);
+					op.setInWebStuApplicationQualOfferAccepted(stuRegForm.getStudentApplication().getRadioOfferQual2());
+														
+					op.execute();
+		
+					if (opl.getException() != null) throw opl.getException();
+					if (op.getExitStateType() < 3) throw new Exception(op.getExitStateMsg());
+		
+					//log.debug("StudentOfferAction - applyOffer - 2 - After Execute");
+					String opResult2 = op.getOutCsfStringsString500();
+					//log.debug("StudentOfferAction - applyOffer - 2 - opResult: " + opResult2);
+					op.clear();
+					if (!opResult2.contains("generated") && !opResult2.contains("successful")){
+						if ("".equals(opResult2)){
+							opResult2 = "Process Failed, please try again or contact Unisa via email at <a href='mailto:applications@unisa.ac.za'>applications@unisa.ac.za</a>";
+						}
+						messages.add(ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage", stuRegForm.getOfferQual2()+" - "+ opResult2));
+						addErrors(request, messages);
+						applyOfferStatus(request, stuRegForm);
+						if (stuRegForm.isOfferApp()){
+							//return "applyOffer";
+							//log.debug("StudentOfferAction - applyOffer - Qual1 Still has offer - Goto applyOffer");
+							return mapping.findForward("applyOfferOne");
+						}else{
+							//log.debug("StudentOfferAction - applyOffer - Qual1 Done - Goto applyOfferConfirm");
+							//return "applyOfferConfirm";
+							return mapping.findForward("applyOfferConfirm");							
+						}
+					}
+				}
+		
+		}catch(Exception e){
+			log.warn("StudentOfferAction - applyOfferOne - crashed / " + e);
+			throw e;
+		}		
 		/* Set submission time stamp */
 		Date date = new java.util.Date();
 		String displayDate = (new java.text.SimpleDateFormat("EEEEE dd MMMMM yyyy hh:mm:ss").format(date).toString());
