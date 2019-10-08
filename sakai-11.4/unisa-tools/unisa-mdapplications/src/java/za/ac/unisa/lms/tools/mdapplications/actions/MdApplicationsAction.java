@@ -42,6 +42,7 @@ import za.ac.unisa.lms.tools.mdapplications.forms.StudentFile;
 import za.ac.unisa.lms.tools.mdapplications.forms.GeneralItem;
 import za.ac.unisa.lms.tools.mdapplications.forms.Qualification;
 import za.ac.unisa.lms.tools.mdapplications.actions.GeneralMethods;
+import za.ac.unisa.utils.CellPhoneVerification;
 import za.ac.unisa.utils.WorkflowFile;
 import Srrsa01h.Abean.Srrsa01sRegStudentPersDetail;
 import Menu95h.Abean.Menu95S;
@@ -1244,13 +1245,26 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		}
 
 		//cell number
-		if(!isPhoneNumber(mdForm.getStudent().getCellNr())){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-  			new ActionMessage("message.generalmessage", "Your cell number may consist of a dash or +, the rest must be numeric."));
-			addErrors(request, messages);
-			setUpSpesList(request, qualif, mdForm);
-			return "step2forward";
+		if (mdForm.getStudent().getCellNr()!=null && !mdForm.getStudent().getCellNr().trim().equalsIgnoreCase("")) {
+			mdForm.getStudent().setCellNr(mdForm.getStudent().getCellNr().trim());
+			String errorMsg = verifyCellNr(mdForm.getStudent().getCellNr());
+			
+			if (errorMsg!="") {
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+			  		new ActionMessage("message.generalmessage", errorMsg));
+				addErrors(request, messages);
+				setUpSpesList(request, qualif, mdForm);
+				return "step2forward";
+			}
 		}
+		
+//		if(!isPhoneNumber(mdForm.getStudent().getCellNr())){
+//			messages.add(ActionMessages.GLOBAL_MESSAGE,
+//  			new ActionMessage("message.generalmessage", "Your cell number may consist of a dash or +, the rest must be numeric."));
+//			addErrors(request, messages);
+//			setUpSpesList(request, qualif, mdForm);
+//			return "step2forward";
+//		}
 
 		// Set country
 		if(mdForm.getSelectedCountry() == null || "-1".equals(mdForm.getSelectedCountry()) || mdForm.getSelectedCountry().length() <4){
@@ -3294,6 +3308,26 @@ public class MdApplicationsAction extends LookupDispatchAction {
         } 
         return value; 
     } 
+    
+    //Johanet - Add cellular number verification 20191008
+    private String verifyCellNr(String cellNumber){
+		String error = "";
+		CellPhoneVerification verify = new CellPhoneVerification();		
+		
+		if(!verify.isCellNumber(cellNumber)){
+			error="Invalid cellular number. A cellular number must include the country dial code. A cellular number must be at least 12 characters long, may not be more than 20 characters long and may only consist of numbers after the + of the dial code.";
+			return error;			
+		}
+		
+		if (verify.isSaCellNumber(cellNumber)) {
+			if(!verify.validSaCellNumber(cellNumber)) {
+				error="Invalid South Africa cellular number. Either you used an invalid cell phone range or the cell phone number is not 12 characters long.";
+			    return error;
+			}
+		}		
+		
+		return error;	
+	}
     
 	public void getAllRequestParamaters(HttpServletRequest req, HttpServletResponse res) throws Exception { 
 
