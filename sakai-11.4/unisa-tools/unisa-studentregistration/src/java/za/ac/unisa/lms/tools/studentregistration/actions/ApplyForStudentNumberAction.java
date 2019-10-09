@@ -2125,6 +2125,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "Student " + stuRegForm.getStudent().getNumber() + " has been blocked."));
 			addErrors(request, messages);
+			setDropdownListsLogin(request,stuRegForm);
 			return mapping.findForward("applyLogin");
 		}
 		
