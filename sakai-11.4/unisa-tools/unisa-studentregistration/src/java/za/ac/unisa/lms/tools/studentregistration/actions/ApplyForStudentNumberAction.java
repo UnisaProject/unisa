@@ -2105,6 +2105,30 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			stuRegForm.getStudent().setBirthDay("0" + stuRegForm.getStudent().getBirthDay());
 		}
 		
+		//Johanet 20191009 - add block for certain students on gencod 352
+		List<Gencod> listStuBlock = new ArrayList<Gencod>();
+		StudentSystemGeneralDAO daoGen = new StudentSystemGeneralDAO();
+				
+		listStuBlock=daoGen.getGenCodes((short)352,0);
+		boolean blockStu = false;
+				
+		for (int i=0; i < listStuBlock.size(); i++) {
+		      Gencod  gencod=(Gencod)(listStuBlock.get(i));
+		      int blockStuNr = Integer.parseInt(gencod.getCode().trim());
+		         if(blockStuNr==Integer.parseInt(stuRegForm.getStudent().getNumber())){		        	
+		       	  blockStu = true;	        	  
+		       	  i = listStuBlock.size();
+		         }
+		}	
+				
+		if (blockStu) {
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Student " + stuRegForm.getStudent().getNumber() + " has been blocked."));
+			addErrors(request, messages);
+			setDropdownListsLogin(request,stuRegForm);
+			return mapping.findForward("applyLogin");
+		}
+		
 		String errorMsg="";
 		errorMsg = displayPersonal(stuRegForm, request);
 
@@ -11661,14 +11685,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		CellPhoneVerification verify = new CellPhoneVerification();		
 		
 		if(!verify.isCellNumber(cellNumber)){
-			error="Invalid cellular number. A cellular number must include the country dail code, must be at least 12 characthers long and may only consist of numbers after the + of the dail code.";
+			error="Invalid cellular number. A cellular number must include the country dial code. A cellular number must be at least 12 characters long, may not be more than 20 characters long and may only consist of numbers after the + of the dial code.";
 			return error;
 			
 		}
 		
 		if (verify.isSaCellNumber(cellNumber)) {
 			if(!verify.validSaCellNumber(cellNumber)) {
-				error="Invalid South Africa cellular number. Either you used an invalid cell phone range or the cell phone number is not 12 characters long.";
+				error="Invalid South Africa cellular number. Either you used an invalid cell phone range, or the cell phone number is not 12 characters long.";
 			}
 		}
 		return error;	
