@@ -44,8 +44,11 @@ import za.ac.unisa.lms.tools.mdapplications.forms.Qualification;
 import za.ac.unisa.lms.tools.mdapplications.actions.GeneralMethods;
 import za.ac.unisa.utils.CellPhoneVerification;
 import za.ac.unisa.utils.WorkflowFile;
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import Srrsa01h.Abean.Srrsa01sRegStudentPersDetail;
 import Menu95h.Abean.Menu95S;
+
 
 @SuppressWarnings("unchecked")
 public class MdApplicationsAction extends LookupDispatchAction {
@@ -429,6 +432,28 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			addErrors(request, messages);
 			return mapping.findForward("login");
 		}
+		//Johanet 20191009 - add block for certain students on gencod 352
+		List<Gencod> listStuBlock = new ArrayList<Gencod>();
+		StudentSystemGeneralDAO daoGen = new StudentSystemGeneralDAO();
+		
+		listStuBlock=daoGen.getGenCodes((short)352,0);
+		boolean blockStu = false;
+		
+		for (int i=0; i < listStuBlock.size(); i++) {
+		      Gencod  gencod=(Gencod)(listStuBlock.get(i));
+		      int blockStuNr = Integer.parseInt(gencod.getCode().trim());
+	          if(blockStuNr==Integer.parseInt(mdForm.getStudent().getNumber())){		        	
+	        	  blockStu = true;	        	  
+	        	  i = listStuBlock.size();
+	          }
+		}	
+		
+		if (blockStu) {
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Student " + mdForm.getStudent().getNumber() + " has been blocked."));
+			addErrors(request, messages);
+			return mapping.findForward("login");
+		}		
 
 		String errorMsg="";
 		errorMsg = displayPersonal(mdForm);
