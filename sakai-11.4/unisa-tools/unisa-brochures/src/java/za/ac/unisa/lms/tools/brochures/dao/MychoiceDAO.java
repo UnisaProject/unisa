@@ -1626,7 +1626,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 						boolean temp1 = false;
 
 						if (!(qualname.equals(data.get("QUALDESC").toString()))
-								|| !(spesCode.equals(data.get("SPES")
+								|| !(qualcode.equals(data.get("QUAL")
 										.toString()))) {
 
 							qualification = document
