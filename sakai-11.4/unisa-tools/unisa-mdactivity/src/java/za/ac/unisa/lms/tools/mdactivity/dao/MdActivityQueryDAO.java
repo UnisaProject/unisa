@@ -161,15 +161,15 @@ public class MdActivityQueryDAO extends StudentSystemDAO {
 				 		" where STUSUN.FK_STUDENT_NR=DISPRO.FK_STUDENT_NR" + 
 				 		" and STUSUN.MK_STUDY_UNIT_CODE=DISPRO.FK_STUDY_UNIT_CODE" + 
 				 		" and STUSUN.STATUS_CODE in ('RG','FC')" + 
-				 		" and STUSUN.FK_ACADEMIC_YEAR=?" + 
+				 		/*" and STUSUN.FK_ACADEMIC_YEAR=?" + */ 
 				 		" and DISPRO.MK_PROMOTOR_NR=?" + 
 				 		" and STUSUN.MK_QUALIFICATION_C=grd.code" + 
 				 		" and STU.NR = STUSUN.FK_STUDENT_NR" + 
 				 		" order by STUSUN.MK_QUALIFICATION_C,STU.SURNAME,STU.FIRST_NAMES";			
 				 
 					ps = connection.prepareStatement(sql);
-					ps.setInt(1, getCurrentYear());
-					ps.setInt(2, Integer.parseInt(personnelNumber));
+					/*ps.setInt(1, getCurrentYear());*/
+					ps.setInt(1, Integer.parseInt(personnelNumber));
 					
 					rs = ps.executeQuery();	
 					
