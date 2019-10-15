@@ -110,7 +110,7 @@ public class DisplayMdActivityAction  extends LookupDispatchAction{
 
 		MdActivityForm activityForm = (MdActivityForm) form;
 		
-		try {
+		try {		
 		
 		sessionManager = (SessionManager) ComponentManager.get(SessionManager.class);
 		userDirectoryService = (UserDirectoryService) ComponentManager.get(UserDirectoryService.class);
