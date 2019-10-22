@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.io.*;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -1897,6 +1898,8 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		//log.debug("AdditionsAction - Save - Start");
 		
 		RegDetailsForm regDetailsForm = (RegDetailsForm) form;
+		ActionMessages messages = new ActionMessages();	
+		
 		AdditionQueryDAO dao = new AdditionQueryDAO();
 		RegQueryDAO db = new RegQueryDAO();
 		eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
@@ -1956,7 +1959,17 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		updateWorkflowQueue(regDetailsForm);
 		
 		/* Write workflow */
-		writeWorkflow(regDetailsForm, request);
+		String strFileContent = writeWorkflow(regDetailsForm, request);
+		
+		/*Johanet SR313283 - Write workflow to STUFRM*/
+		try {
+			dao.createSTUFRM(regDetailsForm.getAcadYear(),regDetailsForm.getAcadPeriod(),regDetailsForm.getStudentNr(), strFileContent);
+		}catch(Exception e){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "An error occurred while writing the workflow file to the database. Please try again later or contact Unisa at bugmaster@unisa.ac.za should the problem persist."));
+			addErrors(request, messages);
+			return mapping.findForward("home");			
+		}
 		
 		/* Write sakai event */
 		eventTrackingService.post(
@@ -2132,10 +2145,11 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 	 * This method writes the addition workflow file to the path specified
 	 * in the following file:
 	 * sakai/jakarta-tomcat-5.5.9/sakai/sakai.properties
+	 * and return the filecontent
 	 *
 	 * @param regDetailsForm       The form associated with the action
 	*/
-	private void writeWorkflow(RegDetailsForm regDetailsForm, HttpServletRequest request) throws Exception{
+	private String writeWorkflow(RegDetailsForm regDetailsForm, HttpServletRequest request) throws Exception{
 
 		String time = (new java.text.SimpleDateFormat("hhmmss").format(new java.util.Date()).toString());
 		/* add date and time to request to display on page */
@@ -2173,9 +2187,9 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		if ("true".equalsIgnoreCase(regDetailsForm.getPhasedOutDeclare())){
 			file.add(" -------------------------------------------------------------------- \r\n");
 			file.add(" Phased Out declared     = Please note that you are registering for a qualification that is phasing out. \r\n");
-			file.add(" 							 Ensure that you will be able to complete this qualification before the phase-out date. \r\n");
-			file.add(" 							 If not, take note that you could forfeit credits if you change to another qualification. \r\n");
-			file.add(" 							 Unisa will not grant any extension on phased-out qualifications. \r\n");
+			file.add("                           Ensure that you will be able to complete this qualification before the phase-out date. \r\n");
+			file.add("                           If not, take note that you could forfeit credits if you change to another qualification. \r\n");
+			file.add("                           Unisa will not grant any extension on phased-out qualifications. \r\n");
 		}
 	
 		//Address Details
@@ -2309,8 +2323,10 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
         	file.add(" Study material delivery = Counter @ Pietermaritzburg\r\n");
         }
         file.add(" ==================================================================== \r\n");
+        String strFileContent = file.getFileContent();
 		file.close();
-
+		
+		return strFileContent;	
 	}
 
 	/**
@@ -2537,6 +2553,16 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			log.error("ADDITION submit error, no s-units for studnr="+regDetailsForm.getStudentNr());
 			return (mapping.findForward("step1"));
 		}
+		
+		//Johanet - Get Ip Address of UsersMachine
+		//Start
+		//Get Browser Details
+		//Is client behind something like a Proxy Server?
+		String ipAddress = request.getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			   ipAddress = request.getRemoteAddr();
+		}
+		//End
 		
 		Sruaf01sStudyUnitAddition op = new Sruaf01sStudyUnitAddition();
         operListener opl = new operListener();
