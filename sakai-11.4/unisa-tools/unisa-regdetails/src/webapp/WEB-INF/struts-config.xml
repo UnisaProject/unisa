@@ -158,7 +158,7 @@
         contextRelative="true" />
       <forward
         name="cancel"
-        path="/WEB-INF/jsp/displayRegDetails.jsp"
+        path="/displayRegDetails.do?action=display"
         contextRelative="true" />
       <forward
         name="step1"
@@ -183,7 +183,7 @@
         contextRelative="true" />
       <forward
         name="cancel"
-        path="/WEB-INF/jsp/displayRegDetails.jsp"
+        path="/displayRegDetails.do?action=display"
         contextRelative="true" />
       <forward
         name="step1"
@@ -209,7 +209,7 @@
         contextRelative="true" />
       <forward
         name="cancel"
-        path="/WEB-INF/jsp/displayRegDetails.jsp"
+        path="/displayRegDetails.do?action=display"
         contextRelative="true" />
       <forward
         name="step1"
