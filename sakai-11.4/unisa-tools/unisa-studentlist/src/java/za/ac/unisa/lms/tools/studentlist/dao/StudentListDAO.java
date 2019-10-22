@@ -260,7 +260,7 @@ public class StudentListDAO extends StudentSystemDAO {
 		   "and adr.fk_adrcatypfk_adrt = 1 "+
 		   "and adrph.fk_adrcatcode(+) = 1 " +
 		    "and distype.code=stuann.MK_DISABILITY_TYPE "+
-		   "and stusun.status_code = 'RG' and ";
+		   "and stusun.status_code in ('RG','FC') and ";
 		   
 		where += "(";
 
@@ -498,7 +498,7 @@ public class StudentListDAO extends StudentSystemDAO {
 		   "and adr.fk_adrcatypfk_adrc = 1 "+
 		   "and adr.fk_adrcatypfk_adrt = 1 "+
 		   "and adrph.fk_adrcatcode(+) = 1 " +
-		   "and stusun.status_code = 'RG' and ";
+		   "and stusun.status_code in ('RG','FC') and ";
 
 		where += "(";
         
@@ -1146,7 +1146,7 @@ public class StudentListDAO extends StudentSystemDAO {
 		   "and adr.fk_adrcatypfk_adrc = 1 "+
 		   "and adr.fk_adrcatypfk_adrt = 1 "+
 		   "and adrph.fk_adrcatcode(+) = 1 " +
-		   "and stusun.status_code = 'RG'  " +
+		   "and stusun.status_code in  ('RG','FC')  " +
 		   "and stusun.fk_academic_period = 1 " +
 		   "and stusun.semester_period ='"+semister+"'" +
 		   "and stusun.mk_study_unit_code = '" + course + "' " +

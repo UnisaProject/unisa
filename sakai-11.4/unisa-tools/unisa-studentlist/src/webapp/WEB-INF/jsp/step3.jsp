@@ -22,67 +22,60 @@
 			<tr>
 				<td><html:checkbox property="studentNumber"/></td>
 				<td><fmt:message key="page.step3.details.studentnumber"/></td>
-				<td><html:checkbox property="emailAddress"/></td>
-				<td><fmt:message key="page.step3.details.emailaddress"/></td>
-				<!--td><html:checkbox property="homePhoneNumber"/></td>
-				<td><fmt:message key="page.step3.details.homephone"/></td-->
+				<%-- <td><html:checkbox property="emailAddress"/></td>
+				<td><fmt:message key="page.step3.details.emailaddress"/></td> --%>
+				  <td><html:checkbox property="gender"/></td>
+				<td><fmt:message key="page.step3.details.gender"/></td>
 			</tr>
 			<tr>
 				<td><html:checkbox property="title"/></td>
 				<td><fmt:message key="page.step3.details.title"/></td>
-				 <td><html:checkbox property="gender"/></td>
-				<td><fmt:message key="page.step3.details.gender"/></td>
-				<!--td><html:checkbox property="workPhoneNumber"/></td>
-				<td><fmt:message key="page.step3.details.workphone"/></td-->
+				<td><html:checkbox property="disabilityType"/></td>
+				<td><fmt:message key="page.step3.details.disabilitytype"/></td>	
+				 
 			</tr>
 			<tr>
 				<td><html:checkbox property="initials"/></td>
 				<td><fmt:message key="page.step3.details.initials"/></td>
-				<td><html:checkbox property="disabilityType"/></td>
-				<td><fmt:message key="page.step3.details.disabilitytype"/></td>	
-				<!--td><html:checkbox property="cellularNumber"/></td>
-				<td><fmt:message key="page.step3.details.cellularnumber"/></td-->
+			 	<td><html:checkbox property="correspondenceLanguage"/></td>
+				<td><fmt:message key="page.step3.details.correspondencelanguage"/></td>
 			</tr>
 			<tr>
 				<td><html:checkbox property="firstNames"/></td>
 				<td><fmt:message key="page.step3.details.firstnames"/></td>
-				<td><html:checkbox property="correspondenceLanguage"/></td>
-				<td><fmt:message key="page.step3.details.correspondencelanguage"/></td>
-				<!--td><html:checkbox property="faxNumber"/></td>
-				<td><fmt:message key="page.step3.details.faxnumber"/></td-->
+				<td><html:checkbox property="homeLanguage"/></td>
+				<td><fmt:message key="page.step3.details.homelanguage"/></td>
+	 
 			</tr>
 			<tr>
 				<td><html:checkbox property="lastName"/></td>
 				<td><fmt:message key="page.step3.details.lastname"/></td>
-				<td><html:checkbox property="homeLanguage"/></td>
-				<td><fmt:message key="page.step3.details.homelanguage"/></td>
+			    <td><html:checkbox property="registrationStatus"/></td>
+				<td><fmt:message key="page.step3.details.registrationstatus"/></td>	
 			</tr>
 			<tr>
 				<td><html:checkbox property="postalAddress"/></td>
 				<td><fmt:message key="page.step3.details.postaladdress"/></td>
-				<td><html:checkbox property="registrationStatus"/></td>
-				<td><fmt:message key="page.step3.details.registrationstatus"/></td>	
+				<logic:equal name="studentlistform"  property = "groupOption" value="groupOption">
+				<td><html:checkbox property="moduleRegDate"/></td>
+				<td><fmt:message key="page.step3.details.moduleRegDate"/></td>	
+			</logic:equal>
 			</tr>
 			<tr>
 				<td><html:checkbox property="postalCode"/></td>
 				<td><fmt:message key="page.step3.details.postalcode"/></td>
 			    <logic:equal name="studentlistform"  property = "groupOption" value="groupOption">
-				<td><html:checkbox property="moduleRegDate"/></td>
-				<td><fmt:message key="page.step3.details.moduleRegDate"/></td>	
+				<td><html:checkbox property="tutGroupNr"/></td>
+				<td><fmt:message key="page.step3.details.tutGroupNr"/></td>
 			</logic:equal>
 			</tr>		
 			<tr>
 				<td><html:checkbox property="region"/></td>
 				<td><fmt:message key="page.step3.details.region"/></td>
-			    <logic:equal name="studentlistform"  property = "groupOption" value="groupOption">
-				<td><html:checkbox property="tutGroupNr"/></td>
-				<td><fmt:message key="page.step3.details.tutGroupNr"/></td>
-			</logic:equal>
-			</tr>			
-			<tr>
-				<td><html:checkbox property="resRegion"/></td>
+			    <td><html:checkbox property="resRegion"/></td>
 				<td><fmt:message key="page.step3.details.resregion"/></td>	
-			</tr>
+			</tr>			
+			 
 			<tr>
 				<sakai:actions>
 					<td colspan="3">
