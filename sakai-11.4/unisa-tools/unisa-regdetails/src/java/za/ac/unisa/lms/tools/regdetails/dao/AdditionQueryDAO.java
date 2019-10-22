@@ -787,7 +787,7 @@ public class AdditionQueryDAO extends StudentSystemDAO {
 		RegQueryDAO db = new RegQueryDAO();
 		ArrayList list = new ArrayList();
 		String sql = "";
-		String type = "HA"; /* undergrad */
+		String type = "HA"; /* honours */
 		String regPeriods = " and SUNPDT.SEMESTER_PERIOD in (";
 		String orderByClause = "";
 		StudyUnit su = new StudyUnit();
