@@ -787,7 +787,7 @@ public class AdditionQueryDAO extends StudentSystemDAO {
 		RegQueryDAO db = new RegQueryDAO();
 		ArrayList list = new ArrayList();
 		String sql = "";
-		String type = "IA"; /* undergrad */
+		String type = "HA"; /* undergrad */
 		String regPeriods = " and SUNPDT.SEMESTER_PERIOD in (";
 		String orderByClause = "";
 		StudyUnit su = new StudyUnit();
@@ -855,7 +855,7 @@ public class AdditionQueryDAO extends StudentSystemDAO {
 
 		} catch (Exception ex) {
 			throw new Exception(
-					"AdditionsQueryDao : Error reading getAllUnderRegSUList"
+					"AdditionsQueryDao : Error reading getAllHonsRegSUList"
 							+ ex);
 		}
 		return list;
@@ -1503,6 +1503,47 @@ public class AdditionQueryDAO extends StudentSystemDAO {
 
 		if (recordsAffected == 0) {
 			log.debug("AdditionsQueryDAO - writeQueue failed for " + studentNr);
+		}
+	}
+	
+	public void createSTUFRM(String acadYear, String acadPeriod, String studentNr, String strFileContent) throws Exception {		 
+		
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		
+		try {
+		
+				/*Get latest sequence number*/	 	   
+				String sql = "SELECT nvl(max(SEQ_NO),0) "
+						+ " FROM STUFRM "
+						+ " WHERE MK_STUDENT_NR = ? "
+						+ " AND YEAR = ? "
+						+ " AND PERIOD = ? "
+						+ " AND TYPE_GC237 = ?"
+						+ " AND SOURCE_GC236 = ?";
+				
+				
+				int seqNr = jdt.queryForInt(sql, 
+						new Object[] {Integer.parseInt(studentNr), Integer.parseInt(acadYear), Integer.parseInt(acadPeriod), "ADD","WEB"});
+		        
+			    seqNr = seqNr + 1;
+			    
+				String sqlInsert = "INSERT INTO STUFRM "
+							+ " (YEAR, PERIOD, MK_STUDENT_NR, TYPE_GC237, SOURCE_GC236, SEQ_NO,BODY_SEQ_NO,MK_QUALIFICATION_C,CREATED_ON,BODY0) "
+							+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?) ";
+		
+				//log.debug("AdditionsQueryDAO - writeQueue - SQL: " + sql);
+		
+				jdt = new JdbcTemplate(getDataSource());
+				int recordsAffected = jdt.update(sqlInsert, new Object[] { Integer.parseInt(acadYear), Integer.parseInt(acadPeriod), Integer.parseInt(studentNr), "ADD", "WEB", 
+																    seqNr, 0, " ", strFileContent });
+
+				if (recordsAffected == 0) {
+					log.debug("AdditionsQueryDAO - createSTUFRM failed for " + studentNr);
+				}
+		}
+		catch (Exception e) {
+			log.debug("AdditionsQueryDAO - createSTUFRM failed for " + studentNr);
+			throw new Exception("AdditionsQueryDAO - createSTUFRM failed / "+ e , e);		
 		}
 	}
     
