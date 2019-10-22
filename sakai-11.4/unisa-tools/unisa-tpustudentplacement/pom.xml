@@ -6,9 +6,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sakaiproject</groupId>
-  <artifactId>unisa-tutorstudentgrouping</artifactId>
+  <artifactId>unisa-tpustudentplacement</artifactId>
   <packaging>war</packaging>
-  <name>Tutor-Student grouping management</name>
+  <name>Teaching Practice Placement  Tool</name>
   <inceptionYear>2003</inceptionYear>
   <organization>
     <name>University of South Africa</name>
