@@ -114,6 +114,20 @@ public class WorkflowFile {
 			log.error(filePath+"/"+fileName+": exception "+e+" "+e.getMessage());
 			throw new Exception("WorkflowFile : Error creating file "+ filePath + "/" + fileName +": "+ e.getMessage(), e);
 		}
+	}	
+		
+	public String getFileContent()throws Exception{		
+
+		String strFileContent="";
+		// Return File Content in Long String to write to STUFRM table lines seperated with ~ ~ 
+		try {
+			strFileContent = this.fileContent.toString();			
+		} catch (Exception e) {
+			log.error(filePath+"/"+fileName+": exception "+e+" "+e.getMessage());
+			throw new Exception("WorkflowFile : Converting File content to LONG string to write to STUFRM "+ filePath + "/" + fileName +": "+ e.getMessage(), e);
+		}	
+		
+		return strFileContent;
 
 	}
 
