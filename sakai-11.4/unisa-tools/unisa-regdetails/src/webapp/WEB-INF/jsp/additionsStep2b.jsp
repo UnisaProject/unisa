@@ -53,9 +53,9 @@
 		</tr>		
 		<tr>
 			<td colspan="2"><html:radio property="listType" value="A"/><fmt:message key="page.step2b.radio3"/></td>
-		</tr><tr>
+		</tr><!-- <tr>
 			<td colspan="2"><html:radio property="listType" value="T"/><fmt:message key="page.step2b.radio4"/></td>
-		</tr><tr>
+		</tr> --><tr>
 			<td colspan="2"><fmt:message key="page.order"/></td>
 		</tr><tr>
 			<td colspan="2"><html:radio property="orderType" value="C"/><fmt:message key="page.order.code"/></td>
