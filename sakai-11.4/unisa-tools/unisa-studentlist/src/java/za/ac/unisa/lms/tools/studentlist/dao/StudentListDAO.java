@@ -239,7 +239,7 @@ public class StudentListDAO extends StudentSystemDAO {
 		String select = "select stuann.mk_student_nr student_number, stuann.mk_regional_office regional_office, stu.fk_lddcode fk_lddcode, " +
 						"stu.mk_title, stu.first_names, stu.surname, address_line_1," +
 						"address_line_2, address_line_3, address_line_4, address_line_5, address_line_6," +
-						"home_number, work_number, fax_number, email_address, cell_number, gender, mk_correspondence, mk_home_language, " +
+						"home_number, work_number, fax_number, cell_number, gender, mk_correspondence, mk_home_language, " +
 						"stusun.status_code status_code, postal_code,  initials,stusun.REGISTRATION_DATE reg_date," +
 						" nvl(TRIM(tustgr.GROUP_NR),' ')  groupnr, distype.code,distype.ENG_DESCRIPTION";
 
@@ -386,11 +386,11 @@ public class StudentListDAO extends StudentSystemDAO {
 				
 				//System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++: "+studentDetails.getDisability());
 				
-				if(data.get("EMAIL_ADDRESS") == null)  {
+			/*	if(data.get("EMAIL_ADDRESS") == null)  {
 					studentDetails.setEmailAddress("");
 				}else {
 					studentDetails.setEmailAddress(data.get("EMAIL_ADDRESS").toString());
-				}
+				}*/
 				String al = "ADDRESS_LINE_";
 				String completeAddress = "";
 				int k = 1;
@@ -580,7 +580,7 @@ public class StudentListDAO extends StudentSystemDAO {
 		String select = "SELECT distinct acasun.fk_student_nr student_number,acasun.mk_academic_year acadyear, acasun.mk_study_unit_code module,"+
                       "acasun.mk_academic_period Sem,stuann.mk_regional_office regional_office, stu.fk_lddcode fk_lddcode,"+
             "stu.mk_title, stu.first_names, stu.surname, address_line_1,address_line_2, address_line_3, address_line_4, address_line_5,"+
-            "address_line_6, home_number, work_number, fax_number, email_address,cell_number, gender, mk_correspondence, mk_home_language,"+
+            "address_line_6, home_number, work_number, fax_number, cell_number, gender, mk_correspondence, mk_home_language,"+
              "DECODE (cancellation_code, 'NC', 'RG', cancellation_code) status_code,postal_code, initials, distype.code,distype.ENG_DESCRIPTION ";
 
 		String from = "from acasun, stuann, stu, adr, adrph, distype ";
@@ -740,11 +740,11 @@ public class StudentListDAO extends StudentSystemDAO {
 				studentDetails.setLastName(data.get("SURNAME").toString());
 				studentDetails.setFirstNames(data.get("FIRST_NAMES").toString());
 				studentDetails.setInitials(data.get("INITIALS").toString());
-				if(data.get("EMAIL_ADDRESS") == null)  {
+				/*if(data.get("EMAIL_ADDRESS") == null)  {
 					studentDetails.setEmailAddress("");
 				}else {
 					studentDetails.setEmailAddress(data.get("EMAIL_ADDRESS").toString());
-				}
+				}*/
 				String al = "ADDRESS_LINE_";
 				String completeAddress = "";
 				int k = 1;
