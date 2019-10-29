@@ -153,12 +153,12 @@
 					</c_rt:if>
 					<c_rt:if test="${studentlistform.homeLanguage == 'true'}">
 						<td><bean:write name="studentDetails" property="homeLanguage"/></td>
-					</c_rt:if>				
-					<c_rt:if test="${studentlistform.region == 'true'}">
-						<td><bean:write name="studentDetails" property="region"/></td>
-					</c_rt:if>
+					</c_rt:if>						
 					<c_rt:if test="${studentlistform.disabilityType == 'true'}">
 						<td><bean:write name="studentDetails" property="disability"/></td>
+					</c_rt:if>
+					<c_rt:if test="${studentlistform.region == 'true'}">
+						<td><bean:write name="studentDetails" property="region"/></td>
 					</c_rt:if>
 					<c_rt:if test="${studentlistform.resRegion == 'true'}">
 						<td><bean:write name="studentDetails" property="resRegion"/></td>
