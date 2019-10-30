@@ -724,6 +724,7 @@ public class StudentListAction extends DispatchAction {
 		studentlistform.setRegistrationStatus(false);
 		studentlistform.setModuleRegDate(false);
 		studentlistform.setTutGroupNr(false);
+		studentlistform.setDisabilityType(false);
 	}
 
 
@@ -740,6 +741,7 @@ public class StudentListAction extends DispatchAction {
 		studentlistform.setConfineProvince("");
 		studentlistform.setConfineCorrespondenceLanguage("");
 		studentlistform.setConfineGroupedStudent("");
+		studentlistform.setDisability("");
 	}
 
 
