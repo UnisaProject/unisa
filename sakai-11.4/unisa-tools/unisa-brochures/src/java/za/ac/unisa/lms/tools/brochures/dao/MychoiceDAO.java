@@ -1066,7 +1066,10 @@ public class MychoiceDAO extends StudentSystemDAO {
 					boolean temp1 = false;
 
 					if (!(qualname.equals(data.get("QUALDESC").toString()))
-							|| !(spesCode.equals(data.get("SPES").toString()))) {
+							|| !(spesCode.equals(data.get("SPES").toString()))
+								|| !(qualcode.equals(data.get("QUAL").toString()))
+						) {
+								
 
 						qualification = document.createElement("qualification");
 						qualificationcategory.appendChild(qualification);
@@ -1626,8 +1629,8 @@ public class MychoiceDAO extends StudentSystemDAO {
 						boolean temp1 = false;
 
 						if (!(qualname.equals(data.get("QUALDESC").toString()))
-								|| !(qualcode.equals(data.get("QUAL")
-										.toString()))) {
+								|| !(qualcode.equals(data.get("QUAL").toString()))
+										|| !(spesCode.equals(data.get("SPES").toString()))) {
 
 							qualification = document
 									.createElement("qualification");
