@@ -1,6 +1,7 @@
 
 <%@ taglib uri="http://sakaiproject.org/struts/sakai" prefix="sakai" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <fmt:setBundle basename="za.ac.unisa.lms.tools.regdetails.ApplicationResources"/>
 

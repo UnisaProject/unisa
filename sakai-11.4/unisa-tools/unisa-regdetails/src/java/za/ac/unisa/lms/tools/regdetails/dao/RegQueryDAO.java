@@ -729,8 +729,8 @@ public class RegQueryDAO extends StudentSystemDAO {
 		}
 		//log.debug("Returning "+currentYear+" as the current year for registration");
 
-		return currentYear;		
-
+//		return currentYear;		
+		return 2019;
 	}
 
 	/**
