@@ -4,11 +4,14 @@
 package za.ac.unisa.lms.tools.regdetails.forms;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+
+import za.ac.unisa.lms.dao.Gencod;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
@@ -61,6 +64,7 @@ public class RegDetailsForm extends ValidatorActionForm {
 	private ArrayList cancelStudyUnits;
 	private ArrayList exchangeStudyUnits;
 	private ArrayList pickList;
+	private List<Gencod> listDeliveryCounter;
 	private String paymentType;
 	private String[] selectedItems;
 	private String exSem1;
@@ -79,6 +83,7 @@ public class RegDetailsForm extends ValidatorActionForm {
 	private boolean selfhelp=true; //selfhelp to F139 always possible by default
 	private String selfHelpReason = "";
 	private String deliveryType;
+	private String counterOption;
 	private String qualStatus;
     private String selfhelpErrorMsg="";
     // used to indicate that these questions has to be asked
@@ -133,11 +138,28 @@ public class RegDetailsForm extends ValidatorActionForm {
 	private boolean crocLetterRequest = false;
 	
 	// --------------------------------------------------------- Methods
-
+	
 	public String getVersion() {
 		return version;
-	}
+	}	
 	
+	public List<Gencod> getListDeliveryCounter() {
+		return listDeliveryCounter;
+	}
+
+
+	public void setListDeliveryCounter(List<Gencod> listDeliveryCounter) {
+		this.listDeliveryCounter = listDeliveryCounter;
+	}
+
+	public String getCounterOption() {
+		return counterOption;
+	}
+
+	public void setCounterOption(String counterOption) {
+		this.counterOption = counterOption;
+	}
+
 	public String getModuleCount() {
 		return moduleCount;
 	}

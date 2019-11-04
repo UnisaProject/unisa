@@ -43,6 +43,8 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import Srcds01h.Abean.Srcds01sMntStudContactDetail;
 import Sruaf01h.Abean.Sruaf01sStudyUnitAddition;
 import za.ac.unisa.lms.constants.EventTrackingTypes;
+import za.ac.unisa.lms.dao.Gencod;
+import za.ac.unisa.lms.dao.StudentSystemGeneralDAO;
 import za.ac.unisa.lms.studyquotation.StudyQuotation;
 import za.ac.unisa.lms.studyquotation.StudyQuotationService;
 import za.ac.unisa.lms.tools.regdetails.dao.AdditionQueryDAO;
@@ -890,8 +892,10 @@ public class AdditionsAction extends LookupDispatchAction {
 				} else {
 					return step2b(mapping,form,request, response);
 				}
-			}
-			return "step2a";
+			}	
+			
+			return "step2a";		
+			
 
 		} catch(Exception e){
 			throw e;
@@ -969,7 +973,9 @@ public class AdditionsAction extends LookupDispatchAction {
 			  		
 			}else{
 				regDetailsForm.getNewQual().setQualCode(regDetailsForm.getQual().getQualCode());
+				regDetailsForm.getNewQual().setQualDesc(regDetailsForm.getQual().getQualDesc());
 				regDetailsForm.getNewQual().setSpecCode(regDetailsForm.getQual().getSpecCode());
+				regDetailsForm.getNewQual().setSpecDesc(regDetailsForm.getQual().getSpecDesc());
 				//log.info("ADDITION - step2b - ELSE");
 				//log.info("ADDITION - step2b - oldQual="+regDetailsForm.getNewQual().getQualCode() + ", oldSpec="+regDetailsForm.getNewQual().getSpecCode());
 			}
@@ -1349,6 +1355,18 @@ public class AdditionsAction extends LookupDispatchAction {
 		try{
 			//log.info("ADDITION step4 for studnr="+regDetailsForm.getStudentNr());
 			String fromPage = request.getParameter("goto");
+			
+			//Johanet 20191029
+			//Get
+			//get Zero Mark reason list
+			StudentSystemGeneralDAO dao = new StudentSystemGeneralDAO();
+			List<Gencod> counterOptionList = new ArrayList<Gencod>();
+			counterOptionList=dao.getGenCodes((short)354,3);
+			regDetailsForm.setListDeliveryCounter(counterOptionList);
+			Gencod gencod = new Gencod();
+			gencod.setCode("-1");
+			gencod.setEngDescription("Select a counter");
+			counterOptionList.add(0,gencod);
 
 			if ("5".equals(fromPage)){
 				// attempted to go to confirmation screen
@@ -1825,6 +1843,16 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 					return "step4";
 				}
 			}
+		}else if  ("C".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+			if (regDetailsForm.getCounterOption()==null ||
+					"".equals(regDetailsForm.getCounterOption()) ||
+							"-1".equals(regDetailsForm.getCounterOption())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Please select a counter where you would like your study material delivered."));
+				addErrors(request, messages);
+				return "step4";
+			}	
+			
 		}
 
 		/*
@@ -2106,6 +2134,7 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		regDetailsForm.setSelfhelp(true);
 		regDetailsForm.setSelfHelpReason("");
 		regDetailsForm.setDeliveryType("");
+		regDetailsForm.setCounterOption("");
 		regDetailsForm.setQualStatus("");
 		regDetailsForm.setSelfhelpErrorMsg("");
 		regDetailsForm.setOdl(false);
@@ -2309,19 +2338,41 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			file.add("\r\n Can complete            = No\r\n");
 		}
 		file.add(" -------------------------------------------------------------------- \r\n");
+//        if ("O".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Courier\r\n");            
+//        }else if ("P".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Postal\r\n");
+//        }else if ("C".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Counter @ Sunnyside\r\n");
+//        }else if ("N".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Counter @ Florida\r\n");
+//        }else if ("D".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Counter @ Durban\r\n");
+//        }else if ("M".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
+//        	file.add(" Study material delivery = Counter @ Pietermaritzburg\r\n");
+//        }
         if ("O".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
         	file.add(" Study material delivery = Courier\r\n");            
         }else if ("P".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
         	file.add(" Study material delivery = Postal\r\n");
         }else if ("C".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
-        	file.add(" Study material delivery = Counter @ Sunnyside\r\n");
-        }else if ("N".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
-        	file.add(" Study material delivery = Counter @ Florida\r\n");
-        }else if ("D".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
-        	file.add(" Study material delivery = Counter @ Durban\r\n");
-        }else if ("M".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
-        	file.add(" Study material delivery = Counter @ Pietermaritzburg\r\n");
-        }
+ //       	file.add(" Study material delivery = Counter\r\n");    
+        	String counter = "";
+        	for (int i = 0; i < regDetailsForm.getListDeliveryCounter().size(); i++) {
+        		Gencod gencod = (Gencod)regDetailsForm.getListDeliveryCounter().get(i);
+        		if (gencod.getCode().equalsIgnoreCase(regDetailsForm.getCounterOption())) {
+        			counter = gencod.getEngDescription();
+        			i = regDetailsForm.getListDeliveryCounter().size();
+        		}
+        	}
+        	if (counter.equalsIgnoreCase("")) {
+        		StudentSystemGeneralDAO dao = new StudentSystemGeneralDAO();
+        		Gencod gencod = dao.getGenCode("354", regDetailsForm.getCounterOption());
+        		counter = gencod.getEngDescription();
+        	}        	
+        	
+        	file.add(" Study material delivery = Counter @ " + counter + "\r\n");
+        }       
         file.add(" ==================================================================== \r\n");
         String strFileContent = file.getFileContent();
 		file.close();
@@ -2594,7 +2645,12 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
         	op.setInStudentAcademicRecordStatusCode(regDetailsForm.getQualStatus());
         }
         op.setInFinalYearIefSuppliedFlag(regDetailsForm.getCompleteQual());// from screen
-        op.setInStudentAnnualRecordDespatchMethodCode(regDetailsForm.getDeliveryType());//from screen
+        //Johanet changes to DeliveryType 
+        if (regDetailsForm.getDeliveryType().equalsIgnoreCase("C")) {
+        	op.setInStudentAnnualRecordDespatchMethodCode(regDetailsForm.getCounterOption());
+        }else {
+        	op.setInStudentAnnualRecordDespatchMethodCode(regDetailsForm.getDeliveryType());//from screen
+        }        
         op.setInStudentAnnualRecordRegistrationMethodCode("P");
         /* ----------------------------------------------------
          * start populating final study unit list

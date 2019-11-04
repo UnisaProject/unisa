@@ -3,6 +3,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://sakaiproject.org/struts/sakai" prefix="sakai" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <fmt:setBundle basename="za.ac.unisa.lms.tools.regdetails.ApplicationResources"/>
 
 <sakai:html>
@@ -20,31 +21,31 @@
 			<fmt:message key="page.step2b.instruction2"/>
 		</sakai:instruction>
 		<sakai:group_heading><fmt:message key="page.heading.step2b"/></sakai:group_heading>
-		<sakai:group_table>
-		<logic:equal name="regDetailsForm" property="newQual.qualCode" value="">
-			<tr>
-			    <td><fmt:message key="page.spec"/></td>
-				<td><fmt:message key="page.additions.noqual"/></td>
-			</tr>
-		</logic:equal>
-		<logic:notEqual name="regDetailsForm" property="newQual.qualCode" value="">
-			<tr>
-				<td><fmt:message key="page.qual"/></td>
-				<td><bean:write name="regDetailsForm" property="newQual.qualCode"/>&nbsp;-&nbsp;<bean:write name="regDetailsForm" property="newQual.qualDesc"/></td>
-			</tr>
-		</logic:notEqual>
-		<logic:equal name="regDetailsForm" property="newQual.specCode" value="">
-			<tr>
-			    <td><fmt:message key="page.spec"/></td>
-				<td><fmt:message key="page.additions.nospec"/></td>
-			</tr>
-		</logic:equal>
-		<logic:notEqual name="regDetailsForm" property="newQual.specCode" value="">
-			<tr>
-			    <td><fmt:message key="page.spec"/></td>
-				<td><bean:write name="regDetailsForm" property="newQual.specCode"/>&nbsp;-&nbsp;<bean:write name="regDetailsForm" property="newQual.specDesc"/></td>
-			</tr>
-		</logic:notEqual>
+		<sakai:group_table>			
+			<logic:equal name="regDetailsForm" property="newQual.qualCode" value="">
+				<tr>
+				    <td><fmt:message key="page.spec"/></td>
+					<td><fmt:message key="page.additions.noqual"/></td>
+				</tr>
+			</logic:equal>
+			<logic:notEqual name="regDetailsForm" property="newQual.qualCode" value="">
+				<tr>
+					<td><fmt:message key="page.qual"/></td>
+					<td><bean:write name="regDetailsForm" property="newQual.qualCode"/>&nbsp;-&nbsp;<bean:write name="regDetailsForm" property="newQual.qualDesc"/></td>
+				</tr>
+			</logic:notEqual>
+			<logic:equal name="regDetailsForm" property="newQual.specCode" value="">
+				<tr>
+				    <td><fmt:message key="page.spec"/></td>
+					<td><fmt:message key="page.additions.nospec"/></td>
+				</tr>
+			</logic:equal>
+			<logic:notEqual name="regDetailsForm" property="newQual.specCode" value="">
+				<tr>
+				    <td><fmt:message key="page.spec"/></td>
+					<td><bean:write name="regDetailsForm" property="newQual.specCode"/>&nbsp;-&nbsp;<bean:write name="regDetailsForm" property="newQual.specDesc"/></td>
+				</tr>
+			</logic:notEqual>
 		<tr>
 			<td colspan="2"><fmt:message key="page.displayMethod"/></td>
 		</tr>
