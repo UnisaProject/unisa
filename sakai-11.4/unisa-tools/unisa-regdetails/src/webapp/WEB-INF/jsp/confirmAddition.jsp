@@ -3,9 +3,32 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://sakaiproject.org/struts/sakai" prefix="sakai" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <fmt:setBundle basename="za.ac.unisa.lms.tools.regdetails.ApplicationResources"/>
 
 <sakai:html>
+<head>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js" />"></script>
+
+	<script type="text/javascript">		
+	        
+	$(document).ready(function() {
+		alert('in document ready');	
+		var ip;
+		
+		$.getJSON('https://api.ipify.org?format=json', function(data){
+			    alert(data.ip);
+			    ip = data.ip;
+			    var url = "https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/" + ip;			   
+			  });	
+		
+		$.getJSON('https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/163.200.59.1?format=json', function(data){
+		    alert(data.code);		    	   
+		  });		
+	});
+	
+  	</script>  
+</head>
 
 <!-- Form -->
 <html:form action="/additions" >

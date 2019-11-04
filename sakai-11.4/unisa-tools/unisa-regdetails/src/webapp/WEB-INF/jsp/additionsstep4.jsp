@@ -1,4 +1,3 @@
-<%@ page import="za.ac.unisa.lms.tools.regdetails.forms.RegDetailsForm"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
@@ -30,17 +29,10 @@
 		});
 	
   	</script>  
-</head>
-	        
-<%
-RegDetailsForm stuRegForm = (RegDetailsForm)session.getAttribute("regDetailsForm");
-String hidStuNo = stuRegForm.getStudentNr();
-%>
+</head>  
 
 <html:form action="/additions" >
-	<html:hidden property="goto" value="5"/>
-	<input type="hidden" name="stuNo" id="stuNo" value="<%=hidStuNo%>"/>
-
+	<html:hidden property="goto" value="5"/>	
 		<sakai:messages/>
 		<sakai:messages message="true"/>
 		<sakai:heading><fmt:message key="page.heading.additions"/></sakai:heading>
@@ -170,17 +162,39 @@ String hidStuNo = stuRegForm.getStudentNr();
 	</tr><tr>
 		<td colspan="5"><fmt:message key="page.step4.delivery"/></td>
 	</tr>
-	<tr>
+	<!-- <tr>
 		<td colspan="5">
+			<html:radio property="deliveryType" value="D"/><fmt:message key="page.counterDurban"/><br/>
+			<html:radio property="deliveryType" value="E"/><fmt:message key="page.counterEastLondon"/><br/>
 			<html:radio property="deliveryType" value="C"/><fmt:message key="page.counterSunnyside"/><br/>
 	   		<html:radio property="deliveryType" value="N"/><fmt:message key="page.counterFlorida"/><br/>
-	   		<html:radio property="deliveryType" value="D"/><fmt:message key="page.counterDurban"/><br/>
+	   		
 	   		<html:radio property="deliveryType" value="M"/><fmt:message key="page.counterPietermaritzburg"/><br/>
 			<html:radio property="deliveryType" value="P" /><fmt:message key="page.postal"/><br/>
 	   		<html:radio property="deliveryType" value="O"/><fmt:message key="page.courier"/><br/>
 	   	</td>
-	</tr>
-
+	</tr> -->
+	<!-- <tr>
+		<td colspan="5">
+			<html:radio property="deliveryType" value="C" /><fmt:message key="page.counter"/>&nbsp;&nbsp;&nbsp;
+				<html:select name="regDetailsForm" property="counterOption">
+					<html:optionsCollection name="regDetailsForm" property="listDeliveryCounter" value="code" label="engDescription"/>					
+				</html:select><br/>             
+			<html:radio property="deliveryType" value="P" /><fmt:message key="page.postal"/><br/>
+	   		<html:radio property="deliveryType" value="O"/><fmt:message key="page.courier"/><br/>
+	   	</td>
+	</tr> -->
+	<tr><td colspan="5"><html:radio property="deliveryType" value="P" /><fmt:message key="page.postal"/></td><tr>
+	<tr><td colspan="5"><html:radio property="deliveryType" value="O"/><fmt:message key="page.courier"/></td><tr>
+	<tr>
+		<td colspan="5">
+			<html:radio property="deliveryType" value="C" /><fmt:message key="page.counter"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<html:select name="regDetailsForm" property="counterOption">
+				<html:optionsCollection name="regDetailsForm" property="listDeliveryCounter" value="code" label="engDescription"/>					
+			</html:select>         
+		</td>	
+	</tr>	
+	
  
 </sakai:group_table>
 
