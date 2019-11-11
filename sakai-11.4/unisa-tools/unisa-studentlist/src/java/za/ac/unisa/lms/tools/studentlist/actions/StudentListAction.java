@@ -648,14 +648,17 @@ public class StudentListAction extends DispatchAction {
 			if(studentlistform.isPostalAddress()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getPostalAddress() + seperatewith);
 			}
+			if(studentlistform.isDisabilityType()) {
+				fw.write(((StudentDetail)studentlist.get(i)).getDisability() + seperatewith);
+			}
 
 			if(studentlistform.isPostalCode()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getPostalCode() + seperatewith);
 			}
 
-			if(studentlistform.isEmailAddress()) {
+/*			if(studentlistform.isEmailAddress()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getEmailAddress() + seperatewith);
-			}
+			}*/
 
 			if(studentlistform.isHomePhoneNumber()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getHomePhoneNumber() + seperatewith);
@@ -676,7 +679,9 @@ public class StudentListAction extends DispatchAction {
 			if(studentlistform.isCorrespondenceLanguage()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getCorrespondenceLanguage() + seperatewith);
 			}
-
+			if(studentlistform.isHomeLanguage()) {
+				fw.write(((StudentDetail)studentlist.get(i)).getHomeLanguage() + seperatewith);
+			}
 			if(studentlistform.isRegion()) {
 				fw.write(((StudentDetail)studentlist.get(i)).getRegion() + seperatewith);
 			}
