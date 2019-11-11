@@ -424,8 +424,13 @@ public class StudentListDAO extends StudentSystemDAO {
 				else {
 					studentDetails.setCellularNumber(data.get("CELL_NUMBER").toString());
 				}
-				studentDetails.setHomeLanguage(data.get("MK_HOME_LANGUAGE").toString());
-				studentDetails.setCorrespondenceLanguage(data.get("MK_CORRESPONDENCE").toString());
+				//get eng_derscription for MK_HOME_LANGUAGE
+				studentDetails.setHomeLanguage(getEngDescriptionForLanguage(data.get("MK_HOME_LANGUAGE").toString()));
+
+				
+				//get eng_derscription for MK_CORRESPONDENCE
+				studentDetails.setCorrespondenceLanguage(getEngDescriptionForLanguage(data.get("MK_CORRESPONDENCE").toString()));
+				
 				studentDetails.setRegistrationStatus(data.get("STATUS_CODE").toString());
 				//studentDetails.setPostalCode(data.get("POSTAL_CODE").toString());
 				String postalCode = data.get("POSTAL_CODE").toString();
@@ -476,6 +481,26 @@ public class StudentListDAO extends StudentSystemDAO {
 		return list;
 	}
 
+	public String getEngDescriptionForLanguage(String languageCode) throws Exception{
+
+		String language;
+		String sql = "   select distinct(ENG_DESCRIPTION) ENG_DESCRIPTION from tal where code ="+"'"+languageCode+"'"+"";
+
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(super.getDataSource());
+			language = this.querySingleValue(sql,"ENG_DESCRIPTION");
+		
+			
+			if ((language == null)||(language.length() == 0)||(language.equals(""))||(language.equals("0"))) {
+				language = "";
+			}
+
+		} catch (Exception ex) {
+            throw new Exception("StudentListDAO: getEngDescriptionForLanguage: (language code : "+languageCode+") Error occurred / "+ ex,ex);
+		}
+       return language;
+	}
+	
 	public int getAllRegisteredStudents(Vector sites)throws Exception {
 
 		ArrayList list = new ArrayList();
@@ -778,9 +803,15 @@ public class StudentListDAO extends StudentSystemDAO {
 				else {
 					studentDetails.setCellularNumber(data.get("CELL_NUMBER").toString());
 				}
-				studentDetails.setHomeLanguage(data.get("MK_HOME_LANGUAGE").toString());
-				studentDetails.setCorrespondenceLanguage(data.get("MK_CORRESPONDENCE").toString());
-				studentDetails.setRegistrationStatus(data.get("STATUS_CODE").toString());
+				 
+				//get eng_derscription for MK_HOME_LANGUAGE
+				studentDetails.setHomeLanguage(getEngDescriptionForLanguage(data.get("MK_HOME_LANGUAGE").toString()));
+
+				
+				//get eng_derscription for MK_CORRESPONDENCE
+				studentDetails.setCorrespondenceLanguage(getEngDescriptionForLanguage(data.get("MK_CORRESPONDENCE").toString()));
+				
+		 		studentDetails.setRegistrationStatus(data.get("STATUS_CODE").toString());
 				//studentDetails.setPostalCode(data.get("POSTAL_CODE").toString());
 				String postalCode = data.get("POSTAL_CODE").toString();
 				studentDetails.setDisability(data.get("ENG_DESCRIPTION").toString());
