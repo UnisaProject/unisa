@@ -7,7 +7,6 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.regdetails.ApplicationResources"/>
 
 <sakai:html>
-
 <%-- Toolbar --%>
 <logic:equal name="regDetailsForm" property="nonFormal" value="false">
 	<logic:notEqual name="showLinks" value="false">
