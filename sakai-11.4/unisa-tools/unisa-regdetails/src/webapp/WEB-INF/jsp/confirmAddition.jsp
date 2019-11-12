@@ -13,19 +13,23 @@
 	<script type="text/javascript">		
 	        
 	$(document).ready(function() {
-		alert('in document ready');	
-		var ip;
+<%-- 		alert('<%=(String)request.getAttribute("userIp")%>'); --%>
+		detectRegion('<%=(String)request.getAttribute("userIp")%>') ;
 		
-		$.getJSON('https://api.ipify.org?format=json', function(data){
-			    alert(data.ip);
-			    ip = data.ip;
-			    var url = "https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/" + ip;			   
-			  });	
-		
-		$.getJSON('https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/163.200.59.1?format=json', function(data){
-		    alert(data.code);		    	   
-		  });		
 	});
+	
+	function detectRegion(myip) {
+	     var xhttp = new XMLHttpRequest();
+	     xhttp.onreadystatechange = function() {
+	       if (this.readyState == 4 && this.status == 200) {
+// 	           document.getElementById('regionalOffice').value=JSON.parse(this.responseText).code;
+	           $('input[id=regionalOffice]').val(JSON.parse(this.responseText).code);
+	       }
+	     };
+	     xhttp.open("GET", "https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/"+myip, true);
+	     xhttp.setRequestHeader("Content-Type","application/json");
+	     xhttp.send();
+	    }
 	
   	</script>  
 </head>
@@ -33,6 +37,7 @@
 <!-- Form -->
 <html:form action="/additions" >
 	<html:hidden property="goto" value="6"/>
+	<input type="hidden" id="regionalOffice" name="regionalOffice" value="" />	
 
 		<sakai:messages/>
 		<sakai:messages message="true"/>

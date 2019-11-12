@@ -1356,9 +1356,7 @@ public class AdditionsAction extends LookupDispatchAction {
 			//log.info("ADDITION step4 for studnr="+regDetailsForm.getStudentNr());
 			String fromPage = request.getParameter("goto");
 			
-			//Johanet 20191029
-			//Get
-			//get Zero Mark reason list
+			//Johanet 20191029		
 			StudentSystemGeneralDAO dao = new StudentSystemGeneralDAO();
 			List<Gencod> counterOptionList = new ArrayList<Gencod>();
 			counterOptionList=dao.getGenCodes((short)354,3);
@@ -1682,11 +1680,22 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			prevPage = "step4";
 		}else if ("home".equalsIgnoreCase(request.getParameter("goto"))){
 			prevPage = "home";
-		}else if ("save".equalsIgnoreCase(request.getParameter("goto"))){
+		}else if ("save".equalsIgnoreCase(request.getParameter("goto"))){			
 			prevPage = "confirm";
 		}
 		else if ("1".equalsIgnoreCase(request.getParameter("goto"))){
 			prevPage = "displayContactDetails";
+		}		
+		if (prevPage.equalsIgnoreCase("confirm")) {
+			String remoteAddr = "";
+
+		    if (request != null) {
+		        remoteAddr = request.getHeader("X-FORWARDED-FOR");
+		        if (remoteAddr == null || "".equals(remoteAddr)) {
+		            remoteAddr = request.getRemoteAddr();
+		        }
+		    }
+		    request.setAttribute("userIp", remoteAddr);
 		}
 		return mapping.findForward(prevPage);
 	}
@@ -1723,7 +1732,19 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		}else if ("step1".equalsIgnoreCase(request.getParameter("goto"))){
 			 return step1(mapping,form,request, response);
 		}
+ 		if (nextPage.equalsIgnoreCase("confirm")) {
+			String remoteAddr = "";
 
+		    if (request != null) {
+		        remoteAddr = request.getHeader("X-FORWARDED-FOR");
+		        if (remoteAddr == null || "".equals(remoteAddr)) {
+		            remoteAddr = request.getRemoteAddr();
+		        }
+		    }
+		   
+		    request.setAttribute("userIp", remoteAddr);
+		}
+ 		 
 		return mapping.findForward(nextPage);
 		}
 	
@@ -1899,7 +1920,7 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 		//log.info("ADDITION confirm for studnr="+regDetailsForm.getStudentNr() + ", deliveryType=" + regDetailsForm.getDeliveryType());
 		if ("P".equalsIgnoreCase(regDetailsForm.getDeliveryType())){
 			return "step4a";
-		}else{
+		}else{			
 			return "confirm";
 		}
 	}
@@ -2605,15 +2626,7 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			return (mapping.findForward("step1"));
 		}
 		
-		//Johanet - Get Ip Address of UsersMachine
-		//Start
-		//Get Browser Details
-		//Is client behind something like a Proxy Server?
-		String ipAddress = request.getHeader("X-FORWARDED-FOR");
-		if (ipAddress == null) {
-			   ipAddress = request.getRemoteAddr();
-		}
-		//End
+		//Johanet - Get Ip Address of UsersMachine		
 		
 		Sruaf01sStudyUnitAddition op = new Sruaf01sStudyUnitAddition();
         operListener opl = new operListener();
@@ -2652,6 +2665,11 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
         	op.setInStudentAnnualRecordDespatchMethodCode(regDetailsForm.getDeliveryType());//from screen
         }        
         op.setInStudentAnnualRecordRegistrationMethodCode("P");
+        //Johanet set regionalOffice
+        String strRegionalOffice = request.getParameter("regionalOffice");
+        Short shortReginalOffice = Short.parseShort(strRegionalOffice);
+        
+        op.setInStudentAnnualRecordMkRegionalOfficeCode(shortReginalOffice);
         /* ----------------------------------------------------
          * start populating final study unit list
          * -----------------------------------------------------*/
