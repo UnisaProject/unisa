@@ -11,7 +11,10 @@ import za.ac.unisa.lms.tools.tracking.forms.TrackingForm;
 
 public class TrackingDAO {
 
-	WebServiceGateWay pGateWay = new WebServiceGateWay();
+	WebServiceGateWay pGateWay;
+	public TrackingDAO(WebServiceGateWay pgWay) {
+		this.pGateWay = pgWay;
+	}
 	private Log log = LogFactory.getLog(TrackingDAO.class.getName());
 	
 	 public ArrayList<Object> getSearch(String webServiceURL,String searchString) throws Exception {

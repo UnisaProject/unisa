@@ -122,7 +122,7 @@ public class TrackingAction extends LookupDispatchAction{
     public TrackingAction(){ 
 
     	pGateWay = new WebServiceGateWay();
-        pTrackingDAO = new TrackingDAO();
+        pTrackingDAO = new TrackingDAO(pGateWay);
         displayDockets = new ArrayList();
         displayDctAssignments = new ArrayList();
         displayUniqueNumbers = new ArrayList();
@@ -151,6 +151,7 @@ public class TrackingAction extends LookupDispatchAction{
     	sessionManager = (SessionManager) ComponentManager.get(SessionManager.class);
         Session currentSession = sessionManager.getCurrentSession();
     	pGateWay.setBackEndSessionCookieValue(currentSession.getAttribute("backEndSessionCookieValue").toString());
+    	//pGateWay.setBackEndSessionCookieName(currentSession.getAttribute("backEndSessionCookieName").toString());
     	log.debug("pGateWay.setBackEndSessionCookieValue from currentSession value to "+currentSession.getAttribute("backEndSessionCookieValue").toString());
     	return currentSession.getAttribute("backEndSessionCookieValue").toString();
     }
@@ -2978,7 +2979,7 @@ public ActionForward displayProvinceInformation(ActionMapping mapping, ActionFor
     	
     	boolean errorStatus = false;
     	TrackingForm pTrackingForm = (TrackingForm)form;
-        TrackingDAO pTrackingDAO = new TrackingDAO();
+        //TrackingDAO pTrackingDAO = new TrackingDAO();
 //        WebServiceGateWay pGateWay = new WebServiceGateWay();
 
     	String processType =  pTrackingForm.getUserSelection().toUpperCase();
