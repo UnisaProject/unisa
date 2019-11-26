@@ -1690,11 +1690,18 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			String remoteAddr = "";
 
 		    if (request != null) {
-		        remoteAddr = request.getHeader("X-FORWARDED-FOR");
-		        if (remoteAddr == null || "".equals(remoteAddr)) {
-		            remoteAddr = request.getRemoteAddr();
-		        }
-		    }
+				remoteAddr = request.getHeader("HTTP_X_FORWARDED_FOR");
+				if (remoteAddr == null || "".equals(remoteAddr)) {
+					remoteAddr = request.getHeader("X_FORWARDED_FOR");
+					if (remoteAddr == null || "".equals(remoteAddr)) {
+						remoteAddr = request.getRemoteAddr();
+					} else {
+						remoteAddr = remoteAddr.split(",")[0].trim();
+					}
+				} else {
+						remoteAddr = remoteAddr.split(",")[0].trim();
+				}
+			}
 		    request.setAttribute("userIp", remoteAddr);
 		}
 		return mapping.findForward(prevPage);
@@ -1736,10 +1743,17 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 			String remoteAddr = "";
 
 		    if (request != null) {
-		        remoteAddr = request.getHeader("X-FORWARDED-FOR");
-		        if (remoteAddr == null || "".equals(remoteAddr)) {
-		            remoteAddr = request.getRemoteAddr();
-		        }
+				remoteAddr = request.getHeader("HTTP_X_FORWARDED_FOR");
+				if (remoteAddr == null || "".equals(remoteAddr)) {
+					remoteAddr = request.getHeader("X_FORWARDED_FOR");
+					if (remoteAddr == null || "".equals(remoteAddr)) {
+						remoteAddr = request.getRemoteAddr();
+					} else {
+						remoteAddr = remoteAddr.split(",")[0].trim();
+					}
+				} else {
+						remoteAddr = remoteAddr.split(",")[0].trim();
+				}
 		    }
 		   
 		    request.setAttribute("userIp", remoteAddr);
