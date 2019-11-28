@@ -56,6 +56,17 @@
 					</logic:notEmpty>
 				</td>					
 			   </tr>
+			   	<tr>
+			   	        <td><fmt:message key="prompt.town"/>&nbsp;</td>
+			        	<td>
+			        	            <html:select name="studentPlacementForm" property="town">
+						     	                           <html:optionsCollection name="studentPlacementForm" property="listTown" value="code" label="name"/>
+						           </html:select> 
+						           <html:submit property="action">                      
+						                               <fmt:message key="button.searchTown"/>
+					               </html:submit>
+					     </td>	
+					</tr>
 			<tr>
 				<td><fmt:message key="prompt.module"/>&nbsp;</td>
 				<td><html:select name="studentPlacementForm" property="placementFilterModule">
@@ -93,6 +104,7 @@
 					<html:radio name="studentPlacementForm" property="placementSortOn" value="School"><fmt:message key="prompt.school"/></html:radio>
 					<html:radio name="studentPlacementForm" property="placementSortOn" value="Student"><fmt:message key="prompt.student"/></html:radio>
 					<html:radio name="studentPlacementForm" property="placementSortOn" value="Supervisor"><fmt:message key="prompt.supervisor"/></html:radio>
+					<html:radio name="studentPlacementForm" property="placementSortOn" value="Town"><fmt:message key="prompt.town"/></html:radio>
 				</td>	
 			</tr>
 		</sakai:group_table>
@@ -123,7 +135,7 @@
 			   <tr>
 				<th style="white-space:nowrap;align:left" colspan="3"><fmt:message key="prompt.column.student"/></th>	
 				<th style="white-space:nowrap;align:left" rowspan="2"><fmt:message key="prompt.column.module"/></th>	
-				<th style="white-space:nowrap;align:left" rowspan="2"><fmt:message key="prompt.column.period"/></th>	
+				<th style="white-space:nowrap;align:left" rowspan="2"><fmt:message key="prompt.column.duration"/></th>	
 				<th style="white-space:nowrap;align:left" rowspan="2"><fmt:message key="prompt.column.evalMark"/></th>
 				<logic:equal name="studentPlacementForm"  property="placementFilterCountry"  value="1015">
 				    <th style="white-space:nowrap;align:left" rowspan="2"><fmt:message key="prompt.column.district"/></th>
@@ -176,8 +188,7 @@
 					<td width="1%"><bean:write name="rec" property="town"/></td>		
 					<td width="1%"><bean:write name="rec" property="schoolDesc"/></td>									
 					<td><bean:write name="rec" property="schoolContactNumber"/></td>	
-												
-				</tr>
+		    	</tr>
 			</logic:iterate>
 		</sakai:flat_list>	
 		<sakai:actions>

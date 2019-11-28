@@ -21,13 +21,22 @@ public class StudentPlacementListRecordImpl {
          stuPlacement.setSchoolCode(stuPlacementRec.getSchoolCode());
          stuPlacement.setEndDate(stuPlacementRec.getEndDate());
          stuPlacement.setStartDate(stuPlacementRec.getStartDate());
-         stuPlacement.setSupervisorName(stuPlacementRec.getSupervisorName());
+         stuPlacement.setEndDateSecPracPeriod(stuPlacementRec.getEndDateSecPracPeriod());
+         stuPlacement.setStartDateSecPracPeriod(stuPlacementRec.getStartDateSecPracPeriod());
+         stuPlacement.setEndDateView(stuPlacementRec.getEndDate());
+         stuPlacement.setStartDateView(stuPlacementRec.getStartDate());
+         stuPlacement.setEndDateSecPracPeriodView(stuPlacementRec.getEndDateSecPracPeriod());
+         stuPlacement.setStartDateSecPracPeriodView(stuPlacementRec.getStartDateSecPracPeriod());
+        stuPlacement.setSupervisorName(stuPlacementRec.getSupervisorName());
          stuPlacement.setSupervisorCode(stuPlacementRec.getSupervisorCode());
          stuPlacement.setEvaluationMark(stuPlacementRec.getEvaluationMark());
          stuPlacement.setNumberOfWeeks(stuPlacementRec.getNumberOfWeeks());
+         stuPlacement.setNumberOfWeeks(stuPlacementRec.getNumberOfWeeksSecPracPrd());
          stuPlacement.setTown(stuPlacementRec.getTown());
          stuPlacement.setMentorCode(stuPlacementRec.getMentorCode());
          stuPlacement.setMentorName(stuPlacementRec.getMentorName());
+         stuPlacement.setPlacementPrd(stuPlacementRec.getPlacementPrd());
+         stuPlacement.setTwoPlacements(stuPlacementRec.isTwoPlacements());
     }
 	public StudentPlacementListRecord getStuPlacementListRecord(StudentPlacementForm studentPlacementForm){
 		         StudentPlacementListRecord studentPlacementListRecord=new StudentPlacementListRecord();

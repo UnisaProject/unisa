@@ -12,7 +12,7 @@ package za.ac.unisa.lms.tools.tpustudentplacement.actions;
 	import org.apache.struts.action.ActionMessage;
 	import org.apache.struts.action.ActionMessages;
 	import org.apache.struts.actions.LookupDispatchAction;
-	import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
+    import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
 	import za.ac.unisa.lms.tools.tpustudentplacement.forms.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
@@ -44,27 +44,42 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 			map.put("button.save", "savePracPeriodBatchDate");	
 			map.put("button.add", "addPracPeriodBatchDate");	
 			map.put("button.delete", "delete");	
-			map.put("button.copy", "copyPracPeriodBatchDate");	
+			map.put("button.copy", "confirmDateBlockDeleteForCopyDates");	
 			map.put("editPracPeriodBatchDate", "editPracPeriodBatchDate");
+			map.put("addPracPeriodBatchDate", "addPracPeriodBatchDate");
+			map.put("acadYearChangeAction","acadYearChangeAction");
+			map.put("button.confirmDelete","confirmDelete");
+			map.put("button.cancel","cancel");
 			return map;
 		}
 			public ActionForward prevPage(
-				ActionMapping mapping,
-				ActionForm form,
-				HttpServletRequest request,
-				HttpServletResponse response) throws Exception {
-			
-		                	StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		                	if( studentPlacementForm.getCurrentPage().equals("listPracticalBatches")){
-		                	   	           studentPlacementForm.setPreviousPage("inputStuPlacement");
-		                	 }
-		                	 if(  studentPlacementForm.getCurrentPage().equals("inputPractical")){
-	               	   	                studentPlacementForm.setPreviousPage("listPracticalBatches");
-	               	          }
-		                	 studentPlacementForm.setCurrentPage( studentPlacementForm.getPreviousPage());
-	                 	return mapping.findForward(studentPlacementForm.getPreviousPage());	
+				                                    ActionMapping mapping,
+				                                    ActionForm form,
+				                                    HttpServletRequest request,
+				                                    HttpServletResponse response) throws Exception {
+			                                                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+		                	                                         if( studentPlacementForm.getCurrentPage().equals("listPracticalBatches")){
+		                	   	                                                          studentPlacementForm.setPreviousPage("inputStuPlacement");
+		                	   	                                                          
+		                	                                          }
+		                	                                          if(studentPlacementForm.getCurrentPage().equals("inputPractical")){
+	               	   	                                                                studentPlacementForm.setPreviousPage("listPracticalBatches");
+	               	   	                                                          return display(mapping,form,request,response);	
+	               	                                                  }
+		                	                                           studentPlacementForm.setCurrentPage( studentPlacementForm.getPreviousPage());
+	                 	                                              return mapping.findForward(studentPlacementForm.getPreviousPage());	
 			}
-		public ActionForward editPracPeriodBatchDate(
+			public ActionForward cancel(
+					                                  ActionMapping mapping,
+				                                      ActionForm form,
+					                                  HttpServletRequest request,
+					                                  HttpServletResponse response) throws Exception {
+				                                                                           StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+			                	                                                           studentPlacementForm.setCurrentPage("listPracticalBatches");
+			                	                                                           studentPlacementForm.setIndexNrSelected(null);
+			                   	                                     return mapping.findForward(studentPlacementForm.getCurrentPage());	
+			}
+		    public ActionForward editPracPeriodBatchDate(
 				                                           ActionMapping mapping,
 			                                    	       ActionForm form,
 				                                           HttpServletRequest request,
@@ -84,25 +99,21 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 			                                                             									"Please select only one practice date batch"));
 			                                                             			}
 			                                                             		if (!messages.isEmpty()) {
-			                                                             			addErrors(request,messages);
-			                                                             					return mapping.findForward("listPracticalBatches");				
+			                                                             			          addErrors(request,messages);
+			                                                             					  return mapping.findForward("listPracticalBatches");				
 			                                                             		}
-			                                                             		PracticeBatchDate practiceBatchDate=new PracticeBatchDate();
-			                                                             		String array[] = studentPlacementForm.getIndexNrSelected();
-                                                      			               for (int i=0; i <array.length; i++) {
-			                                                             			                 practiceBatchDate = (PracticeBatchDate)studentPlacementForm.getPracticeBatchDateList().get(Integer.parseInt(array[i]));			
-			                                                             			                break;
-			                                                             		}
+			                                                                	String array[] = studentPlacementForm.getIndexNrSelected();
+			                                                             		PracticeBatchDate practiceBatchDate=(PracticeBatchDate)studentPlacementForm.getPracticeBatchDateList().get(Integer.parseInt(array[0]));			
 			                                                             		studentPlacementForm.setPracticeBatchDate(practiceBatchDate);
 			                                                             		PracticeBatchDate originalPracticeBatchDate=new PracticeBatchDate(practiceBatchDate);
 			                                                             		studentPlacementForm.setOriginalPracticeBatchDate(originalPracticeBatchDate);
-			                                                             		 request.setAttribute("startDate",practiceBatchDate.getFromDate());
-			                               	                                     request.setAttribute("endDate",practiceBatchDate.getToDate());
-			                                                             		 studentPlacementForm.setCurrentPage("inputPractical");
-			                                                             		 studentPlacementForm.setAddPracActive(false);
-			                                                                 	return mapping.findForward( studentPlacementForm.getCurrentPage());	
+			                                                             		studentPlacementForm.setAddPracActive(false);
+			                                                                    request.setAttribute("startDate", DateUtil.dateFormatChange(practiceBatchDate.getStartDate(),"/"));
+			                                                                    request.setAttribute("endDate", DateUtil.dateFormatChange(practiceBatchDate.getEndDate(),"/"));
+			                                                                    studentPlacementForm.setCurrentPage("inputPractical");
+			                                                             		 return mapping.findForward(studentPlacementForm.getCurrentPage());	
 		}
-		public ActionForward delete(
+		public ActionForward confirmDelete(
 	                                                    ActionMapping mapping,
 	 	                                                ActionForm form,
 	                                                    HttpServletRequest request,
@@ -113,46 +124,97 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 		                                                             				studentPlacementForm.getIndexNrSelected().length==0){
 		                                                             				messages.add(ActionMessages.GLOBAL_MESSAGE,
 		                                                             						new ActionMessage("message.generalmessage",
-		                                                             									"Please select a practice date batch"));
+		                                                             									"Please select a date block to delete"));
 		                                                             			}
 		                                                             			if (!messages.isEmpty()) {
 		                                                             		         	addErrors(request,messages);
 		                                                             					return mapping.findForward("listPracticalBatches");				
-		                                                             		}
+		                                                             		    }
 		                                                             			PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
-		                                                             		 String array[] = studentPlacementForm.getIndexNrSelected();
-                                                     			             for (int i=0; i <array.length; i++) {
-                                                     			            	                 PracticeBatchDate practiceBatchDate =
-                                                     			            	                		                                   (PracticeBatchDate)studentPlacementForm.getPracticeBatchDateList().get(Integer.parseInt(array[i]));			
-		                                                             			                 practiceDatesMaintenance.deletePracticalDateBatch( practiceBatchDate);
-		                    			                                   	}
-		                                                             		
-	                          	               	return display(mapping,form,request,response);	
+		                                                      		            studentPlacementForm.setCurrentPage("confirmDateBlockDelete");
+		                                                             			if(practiceDatesMaintenance.checkDateBlockAssigned(studentPlacementForm)){
+		                                                             				           studentPlacementForm.setDateBlockAssigned("Y");
+		                                                             		    }else{
+		                                                             			             	studentPlacementForm.setDateBlockAssigned("N");
+		                                                             			}
+		                                                             			return mapping.findForward(studentPlacementForm.getCurrentPage());
 		}
+		public ActionForward confirmDateBlockDeleteForCopyDates(
+                                                                 ActionMapping mapping,
+                                                                 ActionForm form,
+                                                                 HttpServletRequest request,
+                                                                 HttpServletResponse response) throws Exception {
+                                                                                    StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+                                	                                                ActionMessages messages = new ActionMessages();	
+                                	                                                int selectedProv=studentPlacementForm.getPracticeBatchDate().getProvCode();
+                                                                                     if (selectedProv==-1){
+                                                                                                    	messages.add(ActionMessages.GLOBAL_MESSAGE,
+                                                                                                  	new ActionMessage("message.generalmessage",
+                           	                                                                            "Please select a province  to copy  its  date Blocks"));
+                                                                                       }
+                                                                                   	if (!messages.isEmpty()) {
+  				                                                                                   addErrors(request,messages);
+  				                                                                                	return mapping.findForward( "listPracticalBatches");				
+  		                                                                         	}
+                                                                                   	studentPlacementForm.setCurrentPage("confirmDateBlockDeleteForCopyDates");
+                                                                     return mapping.findForward("confirmDateBlockDelete");
+      }
+	  public ActionForward delete(
+                                                ActionMapping mapping,
+                                                ActionForm form,
+                                                HttpServletRequest request,
+                                                HttpServletResponse response) throws Exception {
+                                                              StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+                                	                           PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+                                	                           if(studentPlacementForm.getCurrentPage().equals("confirmDateBlockDelete")){
+                             		                                     String array[] = studentPlacementForm.getIndexNrSelected();
+             			                                                 for (int i=0; i <array.length; i++) {
+             			            	                                    PracticeBatchDate practiceBatchDate =
+             			            	                		              (PracticeBatchDate)studentPlacementForm.getPracticeBatchDateList().get(Integer.parseInt(array[i]));			
+                             			                                             practiceDatesMaintenance.deletePracticalDateBatch( practiceBatchDate);
+                                                                   	       }
+                                	                               }
+                                	                                if(studentPlacementForm.getCurrentPage().equals("confirmDateBlockDeleteForCopyDates")){
+                                	                                          	    List<Province> provList=studentPlacementForm.getListRSAProvinces();
+                                	                                	            int selectedProv=studentPlacementForm.getPracticeBatchDate().getProvCode();
+                                                                                	practiceDatesMaintenance.saveCopyOfProvDateBatches(selectedProv, provList);
+                                                                      	            PracticeBatchDate practiceBatchDate=studentPlacementForm.getPracticeBatchDate();
+                                                                                	practiceBatchDate.resetToDisplayAllDateBatches();
+                                	                                }
+                                       	return display(mapping,form,request,response);	
+       }
 		public ActionForward addPracPeriodBatchDate(
-	                                                                                      ActionMapping mapping,
-	 	                                                                                  ActionForm form,
-	                                                                                       HttpServletRequest request,
-	                                                                                       HttpServletResponse response) throws Exception {
-	                                                                                                                                      StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-	                                                                                                                                      PracticeBatchDate  practiceBatchDate=new PracticeBatchDate();
-	                                	                                                                                                 studentPlacementForm.setPracticeBatchDate(practiceBatchDate);
-	                                	                                                                                                  request.setAttribute("startDate",practiceBatchDate.getFromDate());
-	                       	                                                                                                              request.setAttribute("endDate",practiceBatchDate.getToDate());
-	                                	                                                                                                 studentPlacementForm.setCurrentPage("inputPractical");
-	                                	                                                                                      	         studentPlacementForm.setAddPracActive(true);
-	                                                                                                                 return mapping.findForward( studentPlacementForm.getCurrentPage());	
+	                                                         ActionMapping mapping,
+	 	                                                     ActionForm form,
+	                                                         HttpServletRequest request,
+	                                                         HttpServletResponse response) throws Exception {
+	                                                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+	                                                                        ActionMessages messages = new ActionMessages();	
+	                                                                       PracticeBatchDate  practiceBatchDate= studentPlacementForm.getPracticeBatchDate();
+	                                                                        if (practiceBatchDate.isAllSelected()){
+	                                                                        	  studentPlacementForm.setCurrentPage("listPracticalBatches");
+	      			                                                    		         messages.add(ActionMessages.GLOBAL_MESSAGE,
+	      					                                                              new ActionMessage("message.generalmessage",
+	      								                                          "To add you need to select a specific province, study level, practical period and academic year"));
+	      			                                                    		            if (!messages.isEmpty()) {
+	      			                                                              	                  addErrors(request,messages);
+	      			                                                    		                	return mapping.findForward( studentPlacementForm.getCurrentPage());	  
+	      			                                                    		            }
+	                                                                        }
+	                                                                        studentPlacementForm.setCurrentPage("inputPractical");
+	                                	                           	        studentPlacementForm.setAddPracActive(true);
+	                                	                                    PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+	                                	                                    practiceDatesMaintenance.setDateBlockDefaults(request, studentPlacementForm);
+	                                                         return mapping.findForward( studentPlacementForm.getCurrentPage());	
 	       }
-		
 		public ActionForward initial(
 				                                            ActionMapping mapping,
 				                                            ActionForm form,
 				                                            HttpServletRequest request,
 				                                            HttpServletResponse response) throws Exception {
-			                                                                                                StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-			                                                                                               PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
-			                                                                                               studentPlacementForm.setPracticeBatchDate(new PracticeBatchDate());
-			           	                            		                                                practiceDatesMaintenance.initialiseDataForMaintenanceFunction(studentPlacementForm,request);
+			                                                              StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
+			                                                              PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+			                                                              practiceDatesMaintenance.initialiseDataForMaintenanceFunction(studentPlacementForm,request);
 			                                                                                               studentPlacementForm.setCurrentPage("listPracticalBatches");
 			              		                              return mapping.findForward( studentPlacementForm.getCurrentPage());
 		}
@@ -164,6 +226,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 			                                                                          List practicalDAteBatchList=practiceDatesMaintenance.getPracticePeriodList(studentPlacementForm.getPracticeBatchDate());
 			                                                                          studentPlacementForm.setPracticeBatchDateList(practicalDAteBatchList);
 			                                                                          studentPlacementForm.setCurrentPage("listPracticalBatches");
+			                                                                          studentPlacementForm.setIndexNrSelected(new String[practicalDAteBatchList.size()]);
 	                                                            return mapping.findForward( studentPlacementForm.getCurrentPage());
 		}
 		public ActionForward savePracPeriodBatchDate(
@@ -171,9 +234,12 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 				                                    ActionForm form,
 				                                    HttpServletRequest request,
 				                                    HttpServletResponse response) throws Exception {
-			
 			                                                       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
 			                                                       ActionMessages messages = new ActionMessages();	
+			                                                       PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+			                                                       studentPlacementForm.getPracticeBatchDate().seStartDate(request.getParameter("startDate").toString());
+			                                                       studentPlacementForm.getPracticeBatchDate().setEndDate(request.getParameter("endDate").toString());
+			                                                       
 			                                                       if (!PlacementUtilities.isInt(""+studentPlacementForm.getPracticeBatchDate().getPracticalDays())){
 			                                                    		                	messages.add(ActionMessages.GLOBAL_MESSAGE,
 					                                                                    	new ActionMessage("message.generalmessage",
@@ -184,47 +250,41 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 					                                                                             	new ActionMessage("message.generalmessage",
 								                                                                                                                         "Practical  days  must be greater than zero "));
 			                                                        }
-			                                                         if (!messages.isEmpty()) {
-			                                                          	                addErrors(request,messages);
-					                                                                    if( studentPlacementForm.isAddPracActive()){
-					                                                            	                 return addPracPeriodBatchDate(mapping,form,request,response);	
-		                                                                                }else{
-		                                                                                        	return editPracPeriodBatchDate(mapping,form,request,response);	
-		                                              	                                }
-			                                                          }
-			                                                         studentPlacementForm.getPracticeBatchDate().setFromDate(request.getParameter("startDate").toString());
-			                                                         studentPlacementForm.getPracticeBatchDate().setToDate(request.getParameter("endDate").toString());
-			                                                         PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
-			                                                          if( studentPlacementForm.isAddPracActive()){
-			                                            	                               practiceDatesMaintenance.savePracticePeriod(studentPlacementForm.getPracticeBatchDate());
+			                                                        if (studentPlacementForm.getPracticeBatchDate().getPracticalDays()>=100){
+                                                                    	messages.add(ActionMessages.GLOBAL_MESSAGE,
+                                                                     	new ActionMessage("message.generalmessage",
+	                                                                                                                         "Practical  days  must less than 100 "));
+                                                                   }
+			                                                        String startDateStr=studentPlacementForm.getPracticeBatchDate().getStartDate();
+			                                                        String  endDateStr=studentPlacementForm.getPracticeBatchDate().getEndDate();
+			                                                         int  selectedAcadYear=studentPlacementForm.getPracticeBatchDate().getAcademicYear();
+			                                                         String dateValidationReturnMsg=practiceDatesMaintenance.validateDates(selectedAcadYear, startDateStr, endDateStr);
+			                                                         if (!dateValidationReturnMsg.isEmpty()){
+                                                                                              	messages.add(ActionMessages.GLOBAL_MESSAGE,
+                                                                      	                               new ActionMessage("message.generalmessage",dateValidationReturnMsg));
+                                                                    }
+			                                                        request.setAttribute("startDate",startDateStr);
+			                                                        request.setAttribute("endDate",endDateStr);
+			                                                          if (!messages.isEmpty()) {
+                                                     	                        addErrors(request,messages);
+	                                                                          return mapping.findForward("inputPractical");
+                                                                       }
+                                                                      if(studentPlacementForm.isAddPracActive()){
+			                                            	                      practiceDatesMaintenance.savePracticePeriod(studentPlacementForm.getPracticeBatchDate());
 			                                                          }else{
-			                                                	                               practiceDatesMaintenance.updatePracticePeriod(studentPlacementForm.getPracticeBatchDate(),
-			                                                	                            		                                                                                                              studentPlacementForm.getOriginalPracticeBatchDate());
+			                                                	                   practiceDatesMaintenance.updatePracticePeriod(studentPlacementForm.getPracticeBatchDate(),
+			                                                	                            		                                               studentPlacementForm.getOriginalPracticeBatchDate());
 			                                              	          }
 			                                                         return display(mapping,form,request,response);	
 		}
-		public ActionForward copyPracPeriodBatchDate(
-			                                                           	ActionMapping mapping,
-			                                                           	ActionForm form,
-			                                                         	HttpServletRequest request,
-				                                                        HttpServletResponse response) throws Exception {
-			                                                                       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-			                                                                     	int selectedProv=studentPlacementForm.getPracticeBatchDate().getProvCode();
-                                                                                  ActionMessages messages = new ActionMessages();	
-			                                                                        if (selectedProv==-1){
-                                                                                                  	messages.add(ActionMessages.GLOBAL_MESSAGE,
-                                                                                                	new ActionMessage("message.generalmessage",
-                         	                                                                            "Please select a province  to copy  whose Practical  date batches "));
-                                                                                     }
-                                                                                 	if (!messages.isEmpty()) {
-				                                                                                   addErrors(request,messages);
-				                                                                                	return mapping.findForward( studentPlacementForm.getCurrentPage());				
-		                                                                         	}
-                                                                                 	 PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
-                                                                                 	List<Province> provList=studentPlacementForm.getListRSAProvinces();
-                                                                                 	practiceDatesMaintenance.saveCopyOfProvDateBatches(selectedProv, provList);
-                                                                                 	PracticeBatchDate practiceBatchDate=studentPlacementForm.getPracticeBatchDate();
-                                                                                 	practiceBatchDate.resetToDisplayAllDateBatches();
-                                                          return display(mapping,form,request,response);	
-		}
+		 public ActionForward acadYearChangeAction(
+                                                               ActionMapping mapping,
+                                                               ActionForm form,
+                                                               HttpServletRequest request,
+                                                               HttpServletResponse response) throws Exception {
+                                                                                      StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+                                                                                      PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+                                                                                      practiceDatesMaintenance.setDateBlockDefaults(request, studentPlacementForm);
+                                                                   return mapping.findForward("inputPractical");
+      }
 }

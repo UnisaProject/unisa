@@ -59,7 +59,7 @@ public class StuPlacementAdder {
                                    int schoolCode=placement.getSchoolCode();
                                    String module=placement.getModule();
                                    stuPlacementRemover.removeStudentPlacement(acadYear, semester, studentNr, 
-                   		            module,schoolCode);
+                   		            module,schoolCode,placement.getPlacementPrd());
                              }catch(Exception err){}
          }
          public void insertPlacement(StudentPlacementForm studentPlacementForm)throws Exception{
@@ -85,7 +85,13 @@ public class StuPlacementAdder {
        	                                      if (messages.isEmpty()){
                                            	        insertPlacement(studentPlacementForm); 
                                                     if (messages.isEmpty()){
-                                                          setPlacementLogForAddition(studentPlacementForm, messages);
+                                                    	 if(studentPlacementForm.getStudentPlacement().isTwoPlacements()){
+                                                    		           if(!studentPlacementForm.getStudentPlacement().isSecPrelimPlacement()){
+                                                    		        	   setPlacementLogForAddition(studentPlacementForm, messages);
+                                                    	              	}
+                                                    	 }else{
+                                                                   setPlacementLogForAddition(studentPlacementForm, messages);
+                                                    	 }
                                                     }
        	                                      }
                                       }catch(Exception err){}

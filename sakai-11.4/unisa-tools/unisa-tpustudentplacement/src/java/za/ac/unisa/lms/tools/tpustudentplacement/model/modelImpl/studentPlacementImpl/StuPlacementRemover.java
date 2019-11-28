@@ -23,8 +23,8 @@ public class StuPlacementRemover {
                        stuPlacementReader=new StuPlacementReader();
              }
 	  	     public void removeStudentPlacement(Short acadYear,Short semester,Integer studentNr,
-                               String module,int schoolCode) throws Exception {
-                               dao.removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode);
+                               String module,int schoolCode,int  pracprd) throws Exception {
+                               dao.removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode, pracprd);
              }
 	  	     private void removeStudentPlacement(StudentPlacementListRecord placementListRecord,
 	  			                StudentPlacementForm studentPlacementForm,
@@ -35,7 +35,8 @@ public class StuPlacementRemover {
 	  		                                short semester=Short.parseShort(studentPlacementForm.getSemester());
 	  		                                short acadYear=Short.parseShort(studentPlacementForm.getAcadYear());
 	  		                                int studentNr=Integer.parseInt(studentPlacementForm.getStudentNr());
-	  		                                removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode);
+	  		                                int pracprd=placementListRecord.getPlacementPrd();
+	  		                                removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode, pracprd);
 	  	    	                    }catch(Exception ex){
 	  	    	                    	InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
 	  	    	                    	String message="There was an error removing a placement: eror is +ex.message";

@@ -11,6 +11,7 @@ public class PlacementListRecordDataCopier{
 	            studentPlacementLog.setNumberOfWeeks(placementListRecord.getNumberOfWeeks());
 	            studentPlacementLog.setSchoolCode(placementListRecord.getSchoolCode());
 	            studentPlacementLog.setSupervisorCode(placementListRecord.getSupervisorCode());
+	            
 	}
  
 }

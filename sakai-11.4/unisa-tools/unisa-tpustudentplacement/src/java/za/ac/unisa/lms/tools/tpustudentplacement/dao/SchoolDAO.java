@@ -214,16 +214,16 @@ public class SchoolDAO extends StudentSystemDAO {
 			                   }
 		                       return listSchool; 
 	                    }
-                        public   int  getSchCountryCode(int schoolCode) throws Exception {
+                        public   String  getSchCountryCode(int schoolCode) throws Exception {
                         	                String sql ="select mk_country_code from tpusch  where code="+schoolCode;
                         	                JdbcTemplate jdt = new JdbcTemplate(getDataSource());
                         	    			List queryList = jdt.queryForList(sql);
                         	    			
                         	    			Iterator i = queryList.iterator();
-                        	    			int countryCode=-1;
+                        	    			String countryCode="-1";
                         	    			while (i.hasNext()) {
                         	    				   ListOrderedMap data = (ListOrderedMap) i.next();
-                        	    				   countryCode=Integer.parseInt(dbutil.replaceNull(data.get("mk_country_code")));
+                        	    				  countryCode=dbutil.replaceNull(data.get("mk_country_code"));
                         	    				   break;
                         	    			}
                         	    			return countryCode;

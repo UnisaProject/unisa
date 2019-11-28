@@ -4,6 +4,10 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import javax.servlet.http.HttpServletRequest;
+
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
+
 public class PlacementUtilities {
 	 public boolean isValidDate(String inDate, String format) {
 
@@ -72,6 +76,32 @@ public class PlacementUtilities {
 			{}
 			return false;
 		}
+	 public void setPlacementDateToRequestObject( HttpServletRequest request,StudentPlacement placement){
+	                                                DateUtil dateUtil=new DateUtil();
+	                                                request.setAttribute("startDate",placement.getStartDate());
+	                                                setPracDateToRequestObject("startDate",placement.getStartDate(),request);
+	                                                setPracDateToRequestObject("endDate",placement.getEndDate(),request);
+	                                                setPracDateToRequestObject("startDateSecPrd",placement.getStartDateSecPracPeriod(),request);
+	                                                setPracDateToRequestObject("endDateSecPrd",placement.getEndDateSecPracPeriod(),request);
+
+     }
+	 public void setSecPrdPlacementDateToRequestObject( HttpServletRequest request,StudentPlacement placement){
+                                                DateUtil dateUtil=new DateUtil();
+                                                setPracDateToRequestObject("startDateSecPrd",placement.getStartDateSecPracPeriod(),request);
+                                                setPracDateToRequestObject("endDateSecPrd",placement.getEndDateSecPracPeriod(),request);
+     }
+	 public void setPrdPlacementDateToRequestObject( HttpServletRequest request,StudentPlacement placement){
+		                                        setPracDateToRequestObject("startDate",placement.getStartDate(),request);
+	                                            setPracDateToRequestObject("endDate",placement.getEndDate(),request);
+	 }
 	 
-	 
+	  
+     public void setPracDateToRequestObject(String  requestVar,String value ,HttpServletRequest request){
+                                                      DateUtil dateUtil=new DateUtil();
+                                                      if(value==null){
+                                                                     value=dateUtil.dateOnly();
+                                                       }
+                                                       request.setAttribute(requestVar,value);
+     }
+ 	 
 }

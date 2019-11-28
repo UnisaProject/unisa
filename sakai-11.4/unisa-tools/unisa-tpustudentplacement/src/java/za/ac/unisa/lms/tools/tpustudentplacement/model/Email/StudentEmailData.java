@@ -80,7 +80,7 @@ public class StudentEmailData {
             	                             StudentPlacement stuPlacement=new StudentPlacement();
             	                             stuPlacement.replaceDummySupervWithCoordForProv(placement);
             	                             String message= "<tr><td>" + placement.getModule() + "</td>" +
-                                                "<td>" + placement.getNumberOfWeeks() + " weeks</td>" +
+                                                "<td>" + placement.getNumberOfWeeks() + " days</td>" +
                                                 "<td>From:&nbsp;&nbsp;" + placement.getStartDate() +
                                                 "&nbsp;&nbsp;To:&nbsp;&nbsp;" + placement.getEndDate() + "</td>" +
                                                 "<td>" +placement.getSupervisorName();

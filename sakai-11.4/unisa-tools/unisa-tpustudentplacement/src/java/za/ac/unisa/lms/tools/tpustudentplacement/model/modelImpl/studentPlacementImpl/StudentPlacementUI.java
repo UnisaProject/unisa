@@ -43,10 +43,10 @@ public class StudentPlacementUI  extends StudentPlacementImpl{
 	        }
 	        public void setStuPlacementList(StudentPlacementForm studentPlacementForm){
 	                                        try{
-	                                             StudentPlacementDAO dao = new StudentPlacementDAO();
-                                                 List studentPlacementList = dao.getStudentPlacementList(Short.parseShort(studentPlacementForm.getAcadYear()),
-				                                              Short.parseShort(studentPlacementForm.getSemester()),Integer.parseInt(studentPlacementForm.getStudentNr().trim()));
-                                                         studentPlacementForm.setListStudentPlacement(studentPlacementList);
+	                                                             StudentPlacementDAO dao = new StudentPlacementDAO();
+                                                                 List studentPlacementList = dao.getStudentPlacementList(Short.parseShort(studentPlacementForm.getAcadYear()),
+				                                                 Short.parseShort(studentPlacementForm.getSemester()),Integer.parseInt(studentPlacementForm.getStudentNr().trim()));
+                                                               studentPlacementForm.setListStudentPlacement(studentPlacementList);
 	                                       }catch(Exception ex){}
             }
 	        private boolean checkForDuplicatePlacement(StudentPlacementForm studentPlacementForm)throws Exception {  
@@ -65,9 +65,23 @@ public class StudentPlacementUI  extends StudentPlacementImpl{
                                   studentPlacementForm.getPlacementFilterSchool(), 
                                   studentPlacementForm.getPlacementFilterModule(), 
                                   studentPlacementForm.getPlacementSortOn(),
-                                  studentPlacementForm.getPlacementFilterCountry());
+                                  studentPlacementForm.getPlacementFilterCountry(),studentPlacementForm.getTown());
                                   studentPlacementForm.setListPlacement(list);
           }
+	        public void setPrelimPlacementList(StudentPlacementForm studentPlacementForm,Short province) throws Exception {     
+                StudentPlacement stuPlacement = new StudentPlacement();
+                List list = new ArrayList<PlacementListRecord>();
+                list = stuPlacement.getPrelimPlacementList(Short.parseShort(studentPlacementForm.getAcadYear()), 
+                  Short.parseShort(studentPlacementForm.getSemester()), 
+                  province, 
+                  studentPlacementForm.getPlacementFilterDistrict(), 
+                  studentPlacementForm.getPlacementFilterSupervisor(), 
+                  studentPlacementForm.getPlacementFilterSchool(), 
+                  studentPlacementForm.getPlacementFilterModule(), 
+                  studentPlacementForm.getPlacementSortOn(),
+                  studentPlacementForm.getPlacementFilterCountry(),studentPlacementForm.getTown());
+                  studentPlacementForm.setListPlacement(list);
+}
 	      public void initForIntCountry(StudentPlacementForm studentPlacementForm){
 		                    if(!studentPlacementForm.getPlacementFilterCountry().equals(PlacementUtilities.getSaCode())){
      	                         studentPlacementForm.setSchoolFilterProvince(Short.parseShort("0"));

@@ -23,12 +23,10 @@ import org.apache.struts.actions.LookupDispatchAction;
 import org.apache.struts.util.LabelValueBean;
 
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
-import za.ac.unisa.lms.tools.tpustudentplacement.forms.Country;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
-import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
-import za.ac.unisa.lms.tools.tpustudentplacement.model.Mentor;
+import za.ac.unisa.lms.tools.tpustudentplacement.model.Town;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.DistrictUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.PrelimStudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
@@ -61,6 +59,7 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			map.put("button.searchPostalCode","displayPostalCodeSearch");
 			map.put("button.searchDistrict","searchDistrict");
 			map.put("button.searchSchool","searchSchool");
+			map.put("button.searchTown","searchTown");
 			map.put("button.searchSupervisor","searchSupervisor");
 			map.put("button.clearSchool","clearSchool");
 			map.put("button.clearSupervisor","clearSupervisor");
@@ -69,7 +68,22 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			map.put("button.prelimPlacements","displayPrelimPlacements");
 			return map;
 		}
-	   
+		public ActionForward searchTown(ActionMapping mapping, ActionForm form,
+				                                     HttpServletRequest request, HttpServletResponse response)
+			                                        	throws Exception {
+			                                                          StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+			                                                         TownDAO  townDAO=new  TownDAO();
+			                                                         String country=studentPlacementForm.getPlacementFilterCountry();
+			                                                         Short province=studentPlacementForm.getPlacementFilterProvince();
+			                                                         Short district=studentPlacementForm.getPlacementFilterDistrict();
+			                                                          List townList=townDAO.getTownList(country, province,district);
+			                                                          Town town =new Town();
+			                                                          town.setCode("-1");
+			                                                          town.setName("ALL");
+			                                                          townList.add(0,town);
+			                                                          studentPlacementForm.setListTown(townList);
+			                                                         return mapping.findForward(studentPlacementForm.getCurrentPage());
+		}
 		public ActionForward extractFile(ActionMapping mapping, ActionForm form,
 				HttpServletRequest request, HttpServletResponse response)
 				throws Exception {
@@ -114,6 +128,12 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			                        	   writeDelimitedFile(studentPlacementForm);
 			                           }
 			                           addErrors(request,messages);
+			                       	if (studentPlacementForm.getPlacementFilterCountry().trim().equals((PlacementUtilities.getSaCode()))){
+							               studentPlacementForm.setLocalSchool("Y");
+						}else{
+							               studentPlacementForm.setLocalSchool("N");
+						}
+					
 			          		      return mapping.findForward("listPlacement");
 		  }
 		
@@ -132,7 +152,13 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			if (studentPlacementForm.getPlacementFilterCountry()==null || studentPlacementForm.getPlacementFilterCountry().trim().equalsIgnoreCase("")){
 				//default country to south africa
 				   studentPlacementForm.setSchoolFilterCountry(PlacementUtilities.getSaCode());
-				   studentPlacementForm.setPlacementFilterCountry(PlacementUtilities.getSaCode());
+				      studentPlacementForm.setPlacementFilterCountry(PlacementUtilities.getSaCode());
+				      studentPlacementForm.setLocalSchool("Y");
+			}
+			if (studentPlacementForm.getPlacementFilterCountry().trim().equals((PlacementUtilities.getSaCode()))){
+				               studentPlacementForm.setLocalSchool("Y");
+			}else{
+				               studentPlacementForm.setLocalSchool("N");
 			}
 			studentPlacementForm.setPlacementFilterProvince(Short.parseShort("0"));
 			studentPlacementForm.setPlacementFilterDistrict(Short.parseShort("0"));
@@ -203,6 +229,12 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			    writeDelimitedFile(studentPlacementForm);
 			    studentPlacementForm.setCurrentPage("listPlacement");
 			    studentPlacementUI.initForIntCountry(studentPlacementForm);
+				if (studentPlacementForm.getPlacementFilterCountry().trim().equals((PlacementUtilities.getSaCode()))){
+		               studentPlacementForm.setLocalSchool("Y");
+	}else{
+		               studentPlacementForm.setLocalSchool("N");
+	}
+
 			return mapping.findForward("listPlacement");
 		}
 		public void writeDelimitedFile(StudentPlacementForm studentPlacementForm){
@@ -234,11 +266,13 @@ public class ManagementInfoAction extends LookupDispatchAction{
              		   studentPlacementForm.getPlacementFilterSchool()==0) &&
                 (studentPlacementForm.getPlacementFilterSupervisor()==null ||
              		   studentPlacementForm.getPlacementFilterSupervisor()==0) &&
+                (studentPlacementForm.getTown()==null ||
+      		   studentPlacementForm.getTown()=="-1") &&
                 (studentPlacementForm.getPlacementFilterModule()==null || 
              		   studentPlacementForm.getPlacementFilterModule().equalsIgnoreCase("ALL"))){
 	                  messages.add(ActionMessages.GLOBAL_MESSAGE,
 			                        new ActionMessage("message.generalmessage",
-						            "Filter on at least one of the following: District, Module, School or Supervisor."));
+						            "Filter on at least one of the following: District, Module, School , Supervisor or Town."));
         	 }
         }
         
@@ -305,7 +339,6 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			         studentPlacementForm.setSupervisorFilter("");
 				return mapping.findForward("searchSupervisor");	
 		}
-		
 		public ActionForward clearSchool(
 				ActionMapping mapping,
 				ActionForm form,
@@ -341,6 +374,12 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			                   	       studentPlacementUI.initForIntCountry(studentPlacementForm);
 				                       studentPlacementForm.setSchoolFilter("");
 				                       studentPlacementForm.setSupervisorFilter("");
+				                       if(studentPlacementForm.getPlacementFilterCountry().trim().equals(PlacementUtilities.getSaCode())||
+				                    		   (studentPlacementForm.getPlacementFilterCountry().trim().equals(""))){
+				                    	                      studentPlacementForm.setLocalSchool("Y");
+				                       }else{
+				                    	            studentPlacementForm.setLocalSchool("N");
+				                       }
 			                           if(studentPlacementForm.getCurrentPage().equals("listPrelimPlacement")){
 			        	                   return mapping.findForward("listPrelimPlacement");  
 			                           }else{

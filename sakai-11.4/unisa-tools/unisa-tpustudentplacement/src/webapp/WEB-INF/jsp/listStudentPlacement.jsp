@@ -60,7 +60,7 @@
 				<th style="white-space:nowrap;align:left"><fmt:message key="prompt.column.contactNumber"/></th>	
 				<th style="white-space:nowrap;align:left"><fmt:message key="prompt.column.startDate"/></th>
 				<th style="white-space:nowrap;align:left"><fmt:message key="prompt.column.endDate"/></th>	
-			</tr>
+					</tr>
 			<logic:iterate name="studentPlacementForm" property="listStudentPlacement" id="rec" indexId="index">
 				<tr>
 					<td>	
@@ -75,7 +75,7 @@
 					<td><bean:write name="rec" property="stuFullTime"/>
 					<td><bean:write name="rec" property="mentorName"/></td>
 					<td><bean:write name="rec" property="numberOfWeeks"/></td>
-					<td><bean:write name="rec" property="evaluationMark"/></td>						
+						<td><bean:write name="rec" property="evaluationMark"/></td>						
 				</tr>
 			</logic:iterate>
 		</sakai:flat_list>	

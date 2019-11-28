@@ -20,20 +20,24 @@ public class Student {
 	private Contact contactInfo;
 	private List listPracticalModules;
 	private String practicalModules;
+	private String countryCode;
+	private short provinceCode;
+	private short districtCode;
 	
 	StudentImp  studentImp;
 	StudentImplHelper studentImplHelper;
+	Qualification qualification;
 	public Student(){
 		        studentImp=new StudentImp();
 		        studentImplHelper=new  StudentImplHelper();
+		        qualification=new Qualification();
 	}
 	public String getStudentEmail(String stuNum) throws Exception{
 		return  studentImp.getStudentEmail(stuNum);
 	}
 	public  List getStudentModuleList(int studentNr, Short acadYear, Short semester)throws Exception{
 		return  studentImp.getStudentModuleList(studentNr, acadYear, semester);
-	
-	}
+    }
 	public  String getStudentCell(String studentNr) throws Exception{
 		return  studentImp.getStudentCell(studentNr);
 	}
@@ -48,7 +52,7 @@ public class Student {
                           return studentImplHelper.getStudentData(student,acadYear,semester);
     }
 	 public Qualification getStudentQual(int studentNr, Short acadYear) throws Exception {
-		 return studentImp.getStudentQualification(studentNr, acadYear);
+		                            return qualification.getStudentQual(studentNr, acadYear);
 	 }
 	public String getPracticalModules() {
 		return practicalModules;
@@ -127,6 +131,24 @@ public class Student {
             	                studentImp.setStudentData(student,stuNum,acadYear,semester);
             	                  
              }
+			public String getCountryCode() {
+				return countryCode;
+			}
+			public void setCountryCode(String countryCode) {
+				this.countryCode = countryCode;
+			}
+			public short getProvinceCode() {
+				return provinceCode;
+			}
+			public void setProvinceCode(short provinceCode) {
+				this.provinceCode = provinceCode;
+			}
+			public short getDistrictCode() {
+				return districtCode;
+			}
+			public void setDistrictCode(short districtCode) {
+				this.districtCode = districtCode;
+			}
              
 	      
 }

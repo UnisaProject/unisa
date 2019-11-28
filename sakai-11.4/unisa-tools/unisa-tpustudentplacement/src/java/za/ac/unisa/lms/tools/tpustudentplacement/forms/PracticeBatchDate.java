@@ -7,10 +7,12 @@ public class PracticeBatchDate {
 	  private String provDescr;
 	private int level;
 	private int practicalPeriod;
-	private String fromDate;
-	private String toDate;
+	private String startDate;
+	private String endDate;
 	private int academicYear;
 	private int practicalDays;
+	private String practicalDateRange;
+	private int index;
 	public int getProvCode() {
 		return provCode;
 	}
@@ -35,17 +37,17 @@ public class PracticeBatchDate {
 	public void setPracticalPeriod(int practicalPeriod) {
 		this.practicalPeriod = practicalPeriod;
 	}
-	public String getFromDate() {
-		return fromDate;
+	public String getStartDate() {
+		return startDate;
 	}
-	public void setFromDate(String fromDate) {
-		this.fromDate = fromDate;
+	public void seStartDate(String startDate) {
+		this.startDate = startDate;
 	}
-	public String getToDate() {
-		return toDate;
+	public String getEndDate() {
+		return endDate;
 	}
-	public void setToDate(String toDate) {
-		this.toDate = toDate;
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
     public int getAcademicYear() {
 		return academicYear;
@@ -62,31 +64,64 @@ public class PracticeBatchDate {
    	DateUtil dateUtil;
 	public  PracticeBatchDate(PracticeBatchDate practiceBatchDate){
 		                 this.academicYear=practiceBatchDate.getAcademicYear();
-		                 this.fromDate=practiceBatchDate.getFromDate();
+		                 this.startDate=practiceBatchDate.getStartDate();
 		                 this.level=practiceBatchDate.getLevel();
 		                 this.practicalDays=practiceBatchDate.getPracticalDays();
 		                 this.practicalPeriod=practiceBatchDate.getPracticalPeriod();
 		                 this.provCode=practiceBatchDate.getProvCode();
 		                 this.provDescr=practiceBatchDate.getProvDescr();
-		                 this.toDate=practiceBatchDate.getToDate();
+		                 this.endDate=practiceBatchDate.getEndDate();
 		}
 	public  PracticeBatchDate(){
 		              dateUtil=new DateUtil();
 		              setAcademicYear(dateUtil.getYearInt());
 		              this.level=1;
 		              this.practicalPeriod=1;
-		              this.fromDate=dateUtil.todayDateOnly();
-		              this.toDate=dateUtil.todayDateOnly();
+		              this.startDate=dateUtil.todayDateOnly();
+		              this.endDate=dateUtil.todayDateOnly();
 	   }
 	public void resetToDisplayAllDateBatches(){
 	                                setAcademicYear(dateUtil.getYearInt());
- 	                                 setFromDate(null);
- 	                                 setToDate(null);
+ 	                                 seStartDate(null);
+ 	                                 setEndDate(null);
  	                                 setLevel(-1);
                                      setPracticalPeriod(-1);
  	                                 setProvCode(-1);
 	}
+	public String  getPracticalDateRange() {
+		return practicalDateRange;
+	}
+	public void setPracticalDateRange(String practicalDateRange) {
+		this.practicalDateRange = practicalDateRange;
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
 	
+	public static boolean batchesHasSameKey(PracticeBatchDate storedPracticePeriod,PracticeBatchDate practicePeriod){
+		     if(storedPracticePeriod.academicYear==practicePeriod.getAcademicYear()&&
+		           storedPracticePeriod.startDate==practicePeriod.getStartDate()&&
+		           storedPracticePeriod.level==practicePeriod.getLevel()&&
+		          storedPracticePeriod.practicalPeriod==practicePeriod.getPracticalPeriod()&&
+		          storedPracticePeriod.provCode==practicePeriod.getProvCode()){
+		    	 return  true;
+		     }else{ 
+		    	       return false;
+		     }
+   	}
+	public  boolean isAllSelected(){
+		 if((academicYear==-1)||(level==-1)||
+		          (practicalPeriod==-1)||
+		             (provCode==-1)){
+		    	 return  true;
+		     }else{ 
+		    	       return false;
+		     }
+		
+	}
 }
 	  
 

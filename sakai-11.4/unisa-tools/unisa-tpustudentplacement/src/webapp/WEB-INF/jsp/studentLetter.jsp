@@ -181,7 +181,7 @@
 					%>
 					<tr>
 						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="module"/></td>
-						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="numberOfWeeks"/>&nbsp;weeks</td>
+						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="numberOfWeeks"/>&nbsp;days</td>
 						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="startDate"/>&nbsp;-&nbsp;<bean:write name="rec" property="endDate"/></td>									
 						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="supervisorName"/></td>
 						<td style="white-space:nowrap;align:left"><bean:write name="rec" property="supervisorContactNumber"/></td>		
