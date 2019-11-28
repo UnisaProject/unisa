@@ -171,7 +171,7 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 				return display(mapping, studentPlacementForm, request, response);
 			}
 		}else{
-			studentPlacementForm.setListFilterSupervisorDistrict(new ArrayList());
+		              	studentPlacementForm.setListFilterSupervisorDistrict(new ArrayList());
 		}
 		studentPlacementForm.setContractStatus("All");
 		studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());

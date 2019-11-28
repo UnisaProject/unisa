@@ -14,7 +14,10 @@ public class PlacementListRecord {
 	private String supervisorContactNumber;
 	private String startDate;
 	private String endDate;
+	private String startDateSecPracPeriod;
+	private String endDateSecPracPeriod;
 	private String numberOfWeeks;
+	protected String numberOfWeeksSecPracPrd;
 	private String evaluationMark;
 	private Short districtCode;
 	private String districtDesc;
@@ -23,14 +26,21 @@ public class PlacementListRecord {
 	private String provinceDescr;
 	private String countryDescr;
 	private Short provinceCode;
-	private Short countryCode;
+	private String countryCode;
 	private int indexInList;
 	private PlacementListRecComparator placementListRecComparator;
 	private String stuFullTime;
 	private String mentorName;
 	private Integer mentorCode;
-	
-	
+	private int placementPrd;
+	  private boolean twoPlacements;
+	//99516506
+	public String getNumberOfWeeksSecPracPrd() {
+		return numberOfWeeksSecPracPrd;
+	}
+	public void setNumberOfWeeksSecPracPrd(String numberOfWeeksSecPracPrd) {
+		this.numberOfWeeksSecPracPrd = numberOfWeeksSecPracPrd;
+	}
 	public  PlacementListRecord(){
 		          placementListRecComparator=new PlacementListRecComparator(); 
 	}
@@ -46,10 +56,10 @@ public class PlacementListRecord {
 	public void setIndexInList(int indexInList){
 		      this.indexInList=indexInList;
 	}
-	public Short getCountryCode(){
+	public String getCountryCode(){
 	    return countryCode;
     }
-    public void setCountryCode(Short countryCode){
+    public void setCountryCode(String countryCode){
 	    this.countryCode=countryCode;
     }
 	public Short getProvinceCode(){
@@ -166,6 +176,18 @@ public class PlacementListRecord {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
+	public String getStartDateSecPracPeriod() {
+		return startDateSecPracPeriod;
+	}
+	public void setStartDateSecPracPeriod(String startDateSecPracPeriod) {
+		this.startDateSecPracPeriod = startDateSecPracPeriod;
+	}
+	public String getEndDateSecPracPeriod() {
+		return endDateSecPracPeriod;
+	}
+	public void setEndDateSecPracPeriod(String endDateSecPracPeriod) {
+		this.endDateSecPracPeriod = endDateSecPracPeriod;
+	}
 	public String getNumberOfWeeks() {
 		return numberOfWeeks;
 	}
@@ -190,11 +212,22 @@ public class PlacementListRecord {
 	public void setMentorName(String mentorName) {
 		this.mentorName = mentorName;
 	}
-	
-        public void setMentorCode(Integer mentorCode) {
+      public void setMentorCode(Integer mentorCode) {
 	             this.mentorCode=mentorCode;
        }
         public Integer getMentorCode() {
             return mentorCode;
          }
+		public int getPlacementPrd() {
+			return placementPrd;
+		}
+		public void setPlacementPrd(int placementPrd) {
+			this.placementPrd = placementPrd;
+		}
+		public boolean isTwoPlacements() {
+			return twoPlacements;
+		}
+		public void setTwoPlacements(boolean twoPlacements) {
+			this.twoPlacements = twoPlacements;
+		}
 	}

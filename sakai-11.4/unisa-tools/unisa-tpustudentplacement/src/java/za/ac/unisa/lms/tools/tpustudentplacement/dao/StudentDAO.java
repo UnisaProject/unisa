@@ -24,8 +24,9 @@ public class StudentDAO {
 		
 		                     Student student = new Student();
 		
-		                     String sql = "select mk_title,surname,initials" + 
-		                                  " from stu" +
+		                     String sql = "select mk_title,surname,initials,mk_country_code,fk_lddcode as districtCode," + 
+		                    		  "  decode(mk_country_code,'1015',(select fk_prvcode from ldd where ldd.code=fk_lddcode),null) as prov"+
+		                                  "  from stu" +
 		                                  " where nr=" + studentNr;
 		                  		      String errorMsg="Error reading Student / ";
 		                  		      databaseUtils dbutil=new databaseUtils();
@@ -42,12 +43,22 @@ public class StudentDAO {
 				                             student.setNumber(studentNr);
 				                             student.setName(surname + ' ' + initials + ' ' + title);
 				                             student.setPrintName(title + ' ' + initials + ' ' + surname);
+				                             student.setCountryCode( dbutil.replaceNull(data.get("mk_country_code")));
+				                             String provStr=dbutil.replaceNull(data.get("prov"));
+				                             if(provStr.isEmpty())
+				                            	 provStr="0'";
+				                             student.setProvinceCode(Short.parseShort(provStr));
+				                             String districtStr=dbutil.replaceNull(data.get("districtCode"));
+				                             if(districtStr.isEmpty())
+				                            	    districtStr="0'";
+				                             student.setDistrictCode(Short.parseShort(districtStr));
 			                          }
 		                    return student;
  	     }
 	       public void getStudent(Student student,int studentNr) throws Exception {
 	   		
-                              String sql = "select mk_title,surname,initials" + 
+                              String sql = "select mk_title,surname,initials,fk_lddcode as districtCode, mk_country_code,fk_lddcode as districtCode," + 
+                            		  " decode(mk_country_code,'1015',(select fk_prvcode from ldd where ldd.code=fk_lddcode),null) as prov"+
                                            " from stu" +
                                            " where nr=" + studentNr;
             		           String errorMsg="Error reading Student / ";
@@ -64,8 +75,17 @@ public class StudentDAO {
 	                                   initials= dbutil.replaceNull(data.get("initials"));
 	                                   student.setNumber(studentNr);
 	                                   student.setName(surname + ' ' + initials + ' ' + title);
-	                                   student.setPrintName(title + ' ' + initials + ' ' + surname);
-                               }
+	                                   student.setPrintName(title + ' ' + initials + ' ' + surname); 
+	                                   student.setCountryCode( dbutil.replaceNull(data.get("mk_country_code")));
+	                                   String provStr=dbutil.replaceNull(data.get("prov"));
+			                             if(provStr.isEmpty())
+			                            	 provStr="0'";
+			                             student.setProvinceCode(Short.parseShort(provStr));
+			                             String districtStr=dbutil.replaceNull(data.get("districtCode"));
+			                             if(districtStr.isEmpty())
+			                            	    districtStr="0'";
+			                             student.setDistrictCode(Short.parseShort(districtStr));
+		                     }
 	       }
 	       public String getCountryCode(int studentNr) throws Exception {
 		   		

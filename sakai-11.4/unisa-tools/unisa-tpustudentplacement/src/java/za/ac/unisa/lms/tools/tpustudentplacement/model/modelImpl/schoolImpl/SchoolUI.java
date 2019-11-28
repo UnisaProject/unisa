@@ -10,6 +10,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.dao.SchoolDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SchoolListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
+import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.SchoolValidator;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
@@ -181,7 +182,7 @@ public class SchoolUI extends SchoolDAO {
 		                       return getSchool(code,name, getSchoolCountryCode(code));
 		     }
 				 public   boolean   isSchoolLocal(int schoolCode) throws Exception {
-		                            if(getSchCountryCode(schoolCode)==1015){
+		                            if(getSchCountryCode(schoolCode).equals(PlacementUtilities.getSaCode())){
 		        	                       return true;
 		                            }else{
 		        	                       return false;

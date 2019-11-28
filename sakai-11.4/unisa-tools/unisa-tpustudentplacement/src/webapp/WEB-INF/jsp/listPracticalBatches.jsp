@@ -14,12 +14,11 @@
 		<sakai:messages message="true"/>
 		<sakai:heading>
 			<fmt:message key="heading.practicalperiodmaintenance"/>
-			<sakai:group_heading>
-			<fmt:message key="heading.practicalperiodmaintenanceInfo"/> 
-		</sakai:group_heading>		
-	
-		</sakai:heading>	
-			<sakai:group_table>				
+	   	</sakai:heading>	
+	   	<sakai:instruction>
+			<fmt:message key="heading.practicalnfo"/>
+		</sakai:instruction>
+	<sakai:group_table>				
 			<tr>
 				<td><fmt:message key="prompt.province"/>&nbsp;</td>
 				<td><html:select name="studentPlacementForm" property="practiceBatchDate.provCode">
@@ -72,9 +71,9 @@
 				<tr>
 					<td style="white-space:nowrap;align:left">	
 						<html:multibox property="indexNrSelected"><bean:write name="index"/></html:multibox>				
-						<bean:write name="rec" property="fromDate"/>
+						<bean:write name="rec" property="startDate"/>
 					</td>
-					<td><bean:write name="rec" property="toDate"/></td>
+					<td><bean:write name="rec" property="endDate"/></td>
 					<td><bean:write name="rec" property="level"/></td>
 					<td><bean:write name="rec" property="practicalPeriod"/></td>
 					<td><bean:write name="rec" property="practicalDays"/></td>
@@ -88,7 +87,7 @@
 					<fmt:message key="button.edit"/>
 			   </html:submit>	
 				<html:submit property="action">
-					<fmt:message key="button.delete"/>
+					<fmt:message key="button.confirmDelete"/>
 			 </html:submit>		
 				<html:submit property="action">
 					<fmt:message key="button.copy"/>

@@ -2,15 +2,17 @@ package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Module;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.PracticeDatesMaintenance;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Qualification;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentPlacementListRecordUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
-
 import org.apache.struts.action.ActionMessages;
 public class PrelimStudentPlacementUI{
 
@@ -19,7 +21,7 @@ public class PrelimStudentPlacementUI{
 		                        PrelimStudentPlacementImpl  prelimPlacementImpl=new  PrelimStudentPlacementImpl();
 		                        List   listOfPlacements=studentPlacementForm.getListPlacement();
 		                        int pos=prelimPlacementImpl.getPosOfSelectedPlacement(listOfPlacements,request);
-		                        setPrelimPlacementScreen(studentPlacementForm,pos);
+		                        setPrelimPlacementScreen(studentPlacementForm,pos, request);
                                 setNavigationBtnsTrackingValues(studentPlacementForm,pos,listOfPlacements);
                                 studentPlacementForm.setPosOfCurrPrelimPlacement(pos);
                                 studentPlacementForm.setStudentPlacementAction("editPrelimPlacement");	
@@ -27,38 +29,68 @@ public class PrelimStudentPlacementUI{
     }
 	
     public void setNavigationBtnsTrackingValues(StudentPlacementForm studentPlacementForm,int pos,List listOfPlacements){
-	                     PrelimStudentPlacementImpl  prelimPlacementImpl=new  PrelimStudentPlacementImpl();
-	                     String prevBtnBoundryReached=prelimPlacementImpl.prevBtnBoundryReached(pos);
-	                     String nextBtnBoundryReached=prelimPlacementImpl.nextBtnBoundryReached(pos,listOfPlacements);
-                         studentPlacementForm.setFirstPlacementReached(prevBtnBoundryReached);
-                            studentPlacementForm.setLastPlacementReached(nextBtnBoundryReached);
+	                                               PrelimStudentPlacementImpl  prelimPlacementImpl=new  PrelimStudentPlacementImpl();
+	                                               String prevBtnBoundryReached=prelimPlacementImpl.prevBtnBoundryReached(pos);
+	                                               String nextBtnBoundryReached=prelimPlacementImpl.nextBtnBoundryReached(pos,listOfPlacements);
+                                                   studentPlacementForm.setFirstPlacementReached(prevBtnBoundryReached);
+                                                   studentPlacementForm.setLastPlacementReached(nextBtnBoundryReached);
     }
-    public boolean setPrelimPlacementScreen(StudentPlacementForm studentPlacementForm,
-                          int pos) throws Exception {//pos is position of current placemnt
-                             boolean endReached=false;
-                             StudentPlacement stuPlacement=new StudentPlacement();
-                             List   listOfPlacements=studentPlacementForm.getListPlacement();
-                             if((pos!=-1)&&(pos!=listOfPlacements.size())){
-                            	      PlacementListRecord stuPlacementListRec=(PlacementListRecord)listOfPlacements.get(pos);
-                            	      StudentPlacementListRecordUI splr=new StudentPlacementListRecordUI();
-                                      splr.getStuPlacementFromPlacementListRec(stuPlacement,stuPlacementListRec);
-                                      studentPlacementForm.setStudentNr(stuPlacement.getStuNum());
-                                      StudentUI studentUI=new StudentUI();
-                                      studentUI.setStudent(studentPlacementForm);
-                                      studentPlacementForm.setStudentPlacement(stuPlacement);
-                                      studentPlacementForm.setOriginalPrelimPlacement(stuPlacementListRec);
-                                      endReached=true;
-                             }
-                             return endReached;
+    public boolean setPrelimPlacementScreen(StudentPlacementForm studentPlacementForm,int pos,HttpServletRequest request) throws Exception {//pos is position of current placemnt
+                                                          boolean endReached=false;
+                                                          StudentPlacement stuPlacement=new StudentPlacement();
+                                                          List   listOfPlacements=studentPlacementForm.getListPlacement();
+                                                          if((pos!=-1)&&(pos!=listOfPlacements.size())){
+                            	                                                          PlacementListRecord stuPlacementListRec=(PlacementListRecord)listOfPlacements.get(pos);
+                            	                                                          StudentPlacementListRecordUI splr=new StudentPlacementListRecordUI();
+                                                                                          splr.getStuPlacementFromPlacementListRec(stuPlacement,stuPlacementListRec);
+                                                                                          studentPlacementForm.setStudentPlacement(stuPlacement);
+                                                                                          PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+                                                                                          	stuPlacement.setCountryCode(studentPlacementForm.getPlacementFilterCountry());
+                                                                                	     if(studentPlacementForm.getPlacementFilterCountry().equals(PlacementUtilities.getSaCode())){
+                                                                          		                               studentPlacementForm.setLocalSchool("Y");
+                                                                          		           }else{
+                                                                          			                            studentPlacementForm.setLocalSchool("N");
+                                                                          	            	}
+                                                                                	     	Module module=new Module();
+                                                                                	     	module=module.getModule(stuPlacement.getModule());
+                                                                                	     	  if(module.getLevel()==1){
+                                                                        		       	    	           studentPlacementForm.setDisplaySecDatesBatch("N");
+                                                                        		       	       }else{
+                                                                        		       	    	           studentPlacementForm.setDisplaySecDatesBatch("Y");
+                                                                        		       	       }
+                                                                                          studentPlacementForm.setPracticeBatchDateListsIndex(0);
+                                                        			                     studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(0);
+                                                        			                    practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
+                                                                                          studentPlacementForm.setStudentNr(stuPlacement.getStuNum());
+                                                                                          StudentUI studentUI=new StudentUI();
+                                                                                          studentUI.setStudent(studentPlacementForm);
+                                                                                           studentPlacementForm.setOriginalPrelimPlacement(stuPlacementListRec);
+                                                                                          endReached=true;
+                                                                                          PlacementUtilities placementUtilities=new PlacementUtilities();
+                                                                                          placementUtilities.setPlacementDateToRequestObject(request, stuPlacement);
+                                                                                          stuPlacement.setTotPracDays();
+                                                                                          stuPlacement.setPacementDatesForView();
+                                                                                           studentPlacementForm.setStudentPlacementAction("editPrelimPlacement");	
+                                                                                          Qualification qualification=new Qualification();
+                                                                                          String qualCode=studentPlacementForm.getStudent().getQual().getCode();
+                                                                                          if(qualification.isPGCE(qualCode)){
+                                                                                        	                studentPlacementForm.setIsPGCE("Y");
+                                                                                          }else{
+                                                                                        	             studentPlacementForm.setIsPGCE("N");
+                                                                                          }
+                                                                                          StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
+                                                                                          
+                                                       }
+                                                     return endReached;
      }
      public ActionMessages setListPrelimPlacementScreen(StudentPlacementForm studentPlacementForm)throws Exception{
-	                      PrelimPlacementScreenBuilder screenBuilder=new PrelimPlacementScreenBuilder(this);
-	                      return screenBuilder.setListPrelimPlacementScreen(studentPlacementForm);
+	                                                             PrelimPlacementScreenBuilder screenBuilder=new PrelimPlacementScreenBuilder(this);
+	                                                             return screenBuilder.setListPrelimPlacementScreen(studentPlacementForm);
      }
      
      public void setPlacementList(StudentPlacementForm studentPlacementForm,Short province) throws Exception {     
                        StudentPlacementUI stuPlacementUI = new StudentPlacementUI();
-                       stuPlacementUI .setPlacementList(studentPlacementForm, province);
+                       stuPlacementUI .setPrelimPlacementList(studentPlacementForm, province);
      }
      public void initForIntCountry(StudentPlacementForm studentPlacementForm){
     	                 StudentPlacementUI stuPlacementUI = new StudentPlacementUI();
@@ -75,4 +107,6 @@ public class PrelimStudentPlacementUI{
                        ActionMessages messages =setListPrelimPlacementScreen(studentPlacementForm);
                        return messages;
      }
+     
+    
 }

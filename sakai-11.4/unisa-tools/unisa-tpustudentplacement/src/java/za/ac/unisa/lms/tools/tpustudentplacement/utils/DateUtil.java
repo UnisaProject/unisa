@@ -134,7 +134,57 @@ public class DateUtil{
 		Calendar cal = Calendar.getInstance();
         return cal.getTime();
 	}
-	
+	public int dayOfWeek(String dateStr){
+        Date date= getDateFromStr(dateStr);
+        GregorianCalendar calCurrent = new GregorianCalendar();
+         calCurrent.setTime(date);
+         int dayOfWeek=calCurrent.get(Calendar.DAY_OF_WEEK);
+          return dayOfWeek;
+}
+public int dayOfWeek(Date date){
+              GregorianCalendar calCurrent = new GregorianCalendar();
+              calCurrent.setTime(date);
+              int dayOfWeek=calCurrent.get(Calendar.DAY_OF_WEEK);
+               return dayOfWeek;
+}
+public boolean isWeekDay(Date date){
+                   int dayOfWeek=dayOfWeek(date);
+                   if((dayOfWeek!=1)&&(dayOfWeek!=7)){
+        	              return true;
+                   }
+                   return false;
+}
+public boolean isWeekDay(String dateStr){
+    int dayOfWeek=dayOfWeek(dateStr);
+    if((dayOfWeek!=1)&&(dayOfWeek!=7)){
+           return true;
+    }
+    return false;
+}
+public int totWeekDaysBetweenDates(String fromDateStr,String  toDateStr){
+                      	Date fromDate= getDateFromStr(fromDateStr);
+                        Date toDate= getDateFromStr(toDateStr);
+                        return totWeekDaysBetweenDates(fromDate,toDate);
+}
+public int totWeekDaysBetweenDates(Date fromDate,Date  toDate){
+	 int  totWeekDays=0;
+     while(fromDate.before(toDate) ||fromDate.equals(toDate)){
+               	Calendar cal = Calendar.getInstance();
+     	        cal.setTime(fromDate);
+     	        System.out.println("new from date :"+ fromDate.toString());
+     	        System.out.println("day number "+dayOfWeek( fromDate));
+     	        cal.add(Calendar.HOUR, 24);
+     	        Date nextDate = cal.getTime();
+     	         if(isWeekDay(fromDate)){
+     		                 totWeekDays++;
+     		                 System.out.println("weekday");
+     	        }else{
+     	                 	System.out.println("weekend");
+     	        }
+     	        fromDate=nextDate;
+     }
+     return totWeekDays;
+}
 	public  boolean validateDateStr(String dateStr){
 	  if((dateStr==null)||(dateStr.length()!=10)){
 		   return false;
@@ -368,7 +418,34 @@ public class DateUtil{
         	                 return false;
                        }
    }
-	public boolean cmpYear(int year,String cmpDateStr){
+	public boolean  isAfterSecDate(String firstDateStr,String secDateStr){//yyyy/mm/dd  or yyyy-mm-dd
+                                          Date firstDate=getDateFromStr(firstDateStr);
+                                          Date secDate=getDateFromStr(secDateStr);
+                                          if(firstDate.after(secDate)){
+                                                         return true;
+                                          }else{
+                                                          return false;
+                                         }
+  }
+	public boolean  isBeforeSecDate(String firstDateStr,String secDatedateStr){//yyyy/mm/dd  or yyyy-mm-dd
+                                         Date firstDate=getDateFromStr(firstDateStr);
+                                         Date secDatedate=getDateFromStr(secDatedateStr);
+                                         if(firstDate.before(secDatedate)){
+                                                        return true;
+                                          }else{
+                                                       return false;
+                                         }
+  } 
+	public boolean  isDateEqual(String firstDateStr,String secDatedateStr){//yyyy/mm/dd  or yyyy-mm-dd
+                                           Date firstDate=getDateFromStr(firstDateStr);
+                                           Date secDatedate=getDateFromStr(secDatedateStr);
+                                           if(firstDate.equals(secDatedate)){
+                                                        return true;
+                                           }else{
+                                                        return false;
+                                          }
+   } 
+		public boolean cmpYear(int year,String cmpDateStr){
 		          String firstSub=cmpDateStr.trim().substring(0,4);
 		          if(firstSub.equals(""+year)){
 		        	   return true;
@@ -450,6 +527,12 @@ public String dateDDMMMMYYYY(){
 	   String date= formatter.format(currentDate.getTime());
 	   return date;	
 }
+public static String dateFormatChange(String dateStr,String separator){
+	                         String    yearStr= dateStr.substring(0,4);
+	                         String    monthStr= dateStr.substring(5,7);
+	                         String    dayStr= dateStr.substring(8);
+	                         return yearStr+ separator+ monthStr+separator+ dayStr;
+	}
  public String getTimeStampOfCurrTime(){
         DateFormat dateFormat3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	    return dateFormat3.format(new Date());
@@ -654,4 +737,10 @@ public String getDateYYYYMMDD(){
     String tempDate= dateFormat4.format(date);
     return tempDate.substring(0,4)+tempDate.substring(5,7)+tempDate.substring(8);
 }
+ public boolean datesOfSameYear(String startDateStr,String secDateStr){
+	                             if(startDateStr.substring(0, 4).equals(secDateStr.substring(0, 4))){
+		                                  return true;
+	                            }
+	                            return false;
+ }
 }

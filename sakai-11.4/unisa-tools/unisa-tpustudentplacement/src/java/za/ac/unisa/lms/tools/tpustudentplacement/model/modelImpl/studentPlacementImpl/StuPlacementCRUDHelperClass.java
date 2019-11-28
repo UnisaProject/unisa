@@ -39,8 +39,8 @@ public  class StuPlacementCRUDHelperClass extends StuPlacementAdder{
                                  
                     }
                     public void removeStudentPlacement(Short acadYear,Short semester,Integer studentNr,
-                                          String module,int schoolCode) throws Exception {
-                    	                     stuPlacementRemover.removeStudentPlacement(acadYear, semester, studentNr, module,schoolCode);
+                                          String module,int schoolCode,int pracprd) throws Exception {
+                    	                     stuPlacementRemover.removeStudentPlacement(acadYear, semester, studentNr, module,schoolCode, pracprd);
                     }
                     public String removeStudentPlacement(ActionMapping mapping,
                     		          HttpServletRequest request,
