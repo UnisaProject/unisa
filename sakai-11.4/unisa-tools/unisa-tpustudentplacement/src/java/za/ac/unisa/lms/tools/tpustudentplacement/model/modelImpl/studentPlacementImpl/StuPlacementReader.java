@@ -25,7 +25,7 @@ public class StuPlacementReader {
 	                                            StudentPlacement existingPlacement = new StudentPlacement();
 	                                            existingPlacement = existingPlacement.getStudentPlacement(acadYear,
                                                                            semester,stuNum,newPlacement.getModule(),
-                                                                           newPlacement.getSchoolCode());
+                                                                           newPlacement.getSchoolCode(),newPlacement.getPlacementPrd());
                                       return existingPlacement ;
 	        }
 	        public StudentPlacement getStoredStuPlacement(StudentPlacementForm studentPlacementForm)throws Exception {
@@ -34,7 +34,8 @@ public class StuPlacementReader {
                                                                    Short.parseShort(studentPlacementForm.getSemester()),
                                                                    Integer.parseInt(studentPlacementForm.getStudentNr()),
                                                                    studentPlacementForm.getStudentPlacement().getModule(),
-                                                                   studentPlacementForm.getStudentPlacement().getSchoolCode());
+                                                                   studentPlacementForm.getStudentPlacement().getSchoolCode(),
+                                                                   studentPlacementForm.getStudentPlacement().getPlacementPrd());
             }
 	        public StudentPlacement getStudentPlacement(StudentPlacementForm studentPlacementForm,
 	                 StudentPlacementListRecord placementListRec){
@@ -45,7 +46,7 @@ public class StuPlacementReader {
                                int  studentNr=Integer.parseInt(studentPlacementForm.getStudentNr());
                                String module =placementListRec.getModule();
                                int schoolCode=placementListRec.getSchoolCode();
-                                  sp=sp.getStudentPlacement(acadYear,semester,studentNr,module,schoolCode);
+                                  sp=sp.getStudentPlacement(acadYear,semester,studentNr,module,schoolCode,placementListRec.getPlacementPrd());
                                   return sp;
                       }catch(Exception ex){
                    	     return sp;  
@@ -77,7 +78,7 @@ public class StuPlacementReader {
 			                                return studentPlacementForm.getCurrentPage();
 			                            }catch(Exception ex){
 			                    	                  InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
-  	    	                    	                  String message="There was an error listing  a placements: eror is +ex.message";
+  	    	                    	                  String message="There was an error listing  a placements: eror is "+ex.getMessage();
   	    	                    	                  infoMessagesUtil.addMessages(messages, message);
   	    	                    	                  studentPlacementForm.setCurrentPage("inputStudentPlacement");
   	    	                    	                return studentPlacementForm.getCurrentPage();

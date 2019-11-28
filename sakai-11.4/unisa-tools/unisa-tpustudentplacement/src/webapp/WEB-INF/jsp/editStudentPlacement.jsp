@@ -32,6 +32,22 @@
                 dateFormat: 'yy/mm/dd',
                 beforeShowDay: $.datepicker.noWeekends
              });
+        	 $( "#startDateSecPrd" ).datepicker({
+                 showOn:"button",
+                 buttonImage:"https://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+                 buttonImageOnly: true,
+                 altField: '#startDateSecPrd',
+                 dateFormat: 'yy/mm/dd',
+                 beforeShowDay: $.datepicker.noWeekends
+              });
+        	 $( "#endDateSecPrd" ).datepicker({
+                showOn:"button",
+                buttonImage: "https://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+                buttonImageOnly: true,
+                altField: '#endDateSecPrd',
+                dateFormat: 'yy/mm/dd',
+                beforeShowDay: $.datepicker.noWeekends
+             });
         	 });
          
       </script> 
@@ -79,13 +95,13 @@
 		<sakai:group_table>
 			<tr>
 				<td><fmt:message key="prompt.module"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				<td><html:select name="studentPlacementForm" property="studentPlacement.module">
+				<td><html:select name="studentPlacementForm" property="studentPlacement.module"  onchange="submit();">
 						<html:options name="studentPlacementForm" property="student.listPracticalModules"/>
 					</html:select>                                           
 				</td>
 			</tr>	
 			<tr>
-				<td><fmt:message key="prompt.school"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
+				 			<td><fmt:message key="prompt.school"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
 				<td><html:text name="studentPlacementForm" property="studentPlacement.schoolDesc" size="40" maxlength="60" readonly="true"/>
 				<html:submit property="action">                      
 					<fmt:message key="button.searchSchool"/>
@@ -112,18 +128,19 @@
 			</tr>
 			<logic:notEqual name="studentPlacementForm" property="currentPage"   value="editPrelimPlacement">
 			    <tr>
-				   <td><fmt:message key="prompt.supervisor"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				    <td><html:text name="studentPlacementForm" property="studentPlacement.supervisorName" size="30" maxlength="28" readonly="true"/>
-				    <html:submit property="action">                      
-					    <fmt:message key="button.searchSupervisor"/>
-				    </html:submit>				
+				          <td><fmt:message key="prompt.supervisor"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
+				          <td>
+				                       <html:text name="studentPlacementForm" property="studentPlacement.supervisorName" size="30" maxlength="28" readonly="true"/>
+				                      <html:submit property="action">                      
+					                       <fmt:message key="button.searchSupervisor"/>
+				                        </html:submit>				
 			     </tr>
 			</logic:notEqual>
 			<logic:equal name="studentPlacementForm" property="currentPage"   value="editPrelimPlacement">
 			     <tr>
 				     <td><fmt:message key="prompt.supervisor"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
 				     <td><html:text name="studentPlacementForm" property="studentPlacement.supervisorName" size="30" maxlength="28" readonly="true"/>
-				         <html:select name="studentPlacementForm" property="studentPlacement.supervisorCode"  onchange="submit();">
+				         <html:select name="studentPlacementForm" property="studentPlacement.supervisorCode"  >
 						      <html:optionsCollection name="studentPlacementForm" property="listProvSupervisor"    value="value"  label="label"/>
 					     </html:select>    
 				         <html:submit property="action">                      
@@ -132,22 +149,220 @@
 				    </td>			
 			      </tr>
 			</logic:equal>     
-			<tr>
-				<td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				<td><input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
-			</tr>
-			<tr>
-				<td><fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				<td><input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
-			</tr>	
-			<tr>
-				<td><fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				<td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/></td>
-			</tr>	
-			<tr>
-				<td><fmt:message key="prompt.evaluationMark"/>&nbsp;</td>
-				<td><html:text name="studentPlacementForm" property="studentPlacement.evaluationMark" size="4" maxlength="3"/></td>
-			</tr>	
+			<logic:equal name="studentPlacementForm" property="localSchool"   value="Y">
+			                               	<logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
+			                               	          <logic:equal name="studentPlacementForm" property="isPGCE"   value="Y">
+			                               	                    <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
+				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
+				                                                       <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                <input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                 <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                       <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/></td>
+			                                                     </tr>	
+			                                       </logic:equal>
+			                               	         <logic:equal name="studentPlacementForm" property="isPGCE"   value="N">
+			                                 	             <tr><td align="left"  colspan=2><fmt:message key="prompt.pracprds"/></td></tr> 
+			                                 	              <tr>
+			                                 	                <tr>
+			                                                   <td  colspan="2"><fmt:message key="prompt.pracprd"/></td>
+			                                                   </tr>
+			                                                             <tr>
+			                                                                          <td >  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.firstperiodselectedblock"/></td>
+				                                                                       <td>
+			                                 	                                                        <bean:write name="studentPlacementForm"  property="studentPlacement.startDateView"/>
+			                                 	                                                          <logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDate" >
+			                                 	                                                                  <fmt:message key="prompt.dash"/>
+			                                 	                                                             </logic:notEmpty>
+			                                 	                                                   <bean:write name="studentPlacementForm"  property="studentPlacement.endDateView"/>
+			                                 	                                        </td>
+			                                 	                         </tr> 
+			                                 	                <tr>
+				                                                         <td>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+				                                                                    <fmt:message key="prompt.selectpracprd"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                         </td>
+				                                                         <td>
+				                                                                <html:select name="studentPlacementForm" property="practiceBatchDateListsIndex"  onchange="submit();">
+						                                                                 <html:optionsCollection name="studentPlacementForm" property="practiceBatchDateList"    value="index"  label="practicalDateRange"/>
+					                                                            </html:select>
+					                                                     </td>
+				                                                 </tr>
+				                                                  <tr>
+			                                                          <td>
+				                                                       &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/></td>
+				                                                             <td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/>
+				                                                        </td>
+				                                                     </tr>
+			                                               	<logic:notEqual name="studentPlacementForm" property="studyLevel"   value="1">
+			                                                	<logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDateSecPracPeriodView" >
+			                                                    <tr>
+			                                                      <td  colspan="2"><fmt:message key="prompt.secpracprd"/></td>
+			                                                    </tr>
+			                                                            <tr><td > &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.secperiodselectedblock"/>  
+			                                 	                              </td> 
+			                                 	                              <td > 
+			                                 	                                      <bean:write name="studentPlacementForm"  property="studentPlacement.startDateSecPracPeriodView"/>
+			                                 	                                         <logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDateSecPracPeriodView" >
+			                                 	                                                       <fmt:message key="prompt.dash"/>
+			                                 	                                         </logic:notEmpty>
+			                                 	                                     <bean:write name="studentPlacementForm"  property="studentPlacement.endDateSecPracPeriodView"/>
+			                                 	                               </td> 
+			                                 	                        </tr> 
+			                                                              <tr>
+			                                                                      <td> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+			                                                                              <fmt:message key="prompt.selectpracprd"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                   </td>
+			                                                                       <td>
+			                                                                            <html:select name="studentPlacementForm" property="practiceBatchDateSecPracPrdListsIndex"  onchange="submit();">
+						                                                                      <html:optionsCollection name="studentPlacementForm" property="practiceBatchDateSecPracPrdList"    value="index"  label="practicalDateRange"/>
+					                                                                   </html:select>    
+				                                                                </td>
+			                                                         </tr>	
+			                                                          <tr>
+			                                                          <td>
+				                                                           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/></td>
+				                                                             <td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeksSecPracPrd" size="4" maxlength="2"/>
+				                                                        </td>
+				                                                     </tr>
+				                                                     </logic:notEmpty>
+			                                                   </logic:notEqual>
+			                                      </logic:equal>
+			                            </logic:equal>
+			                           	<logic:notEqual name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
+			                           	<logic:equal name="studentPlacementForm" property="isPGCE"   value="Y">
+			                                                          <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
+				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
+				                                                       <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                <input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                 <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                       <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/></td>
+			                                                    
+			                                      </logic:equal>
+			                                         <logic:equal name="studentPlacementForm" property="isPGCE"   value="N">
+			                                                   <tr><td align="left"  colspan=2><fmt:message key="prompt.pracprds"/></td></tr> 
+			                                 	              <tr>
+			                                 	                <tr>
+			                                                   <td  colspan="2"><fmt:message key="prompt.pracprd"/></td>
+			                                                   </tr>
+			                                                   <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="edit">
+			                                                             <tr>
+			                                                                          <td >  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.firstperiodselectedblock"/></td>
+				                                                                       <td>
+			                                 	                                                        <bean:write name="studentPlacementForm"  property="studentPlacement.startDateView"/>
+			                                 	                                                          <logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDate" >
+			                                 	                                                                  <fmt:message key="prompt.dash"/>
+			                                 	                                                             </logic:notEmpty>
+			                                 	                                                   <bean:write name="studentPlacementForm"  property="studentPlacement.endDateView"/>
+			                                 	                                        </td>
+			                                 	                         </tr> 
+			                                 	               </logic:equal>
+			                                 	                <tr>
+				                                                         <td>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+				                                                                    <fmt:message key="prompt.selectpracprd"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                         </td>
+				                                                         <td>
+				                                                                <html:select name="studentPlacementForm" property="practiceBatchDateListsIndex"  onchange="submit();">
+						                                                                 <html:optionsCollection name="studentPlacementForm" property="practiceBatchDateList"    value="index"  label="practicalDateRange"/>
+					                                                            </html:select>
+					                                                     </td>
+				                                                 </tr>
+				                                                  <tr>
+			                                                          <td>
+				                                                       &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/></td>
+				                                                             <td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/>
+				                                                        </td>
+				                                                     </tr>
+				                                        <logic:notEqual name="studentPlacementForm" property="studentPlacementAction"   value="edit">
+			                                               	<logic:notEqual name="studentPlacementForm" property="studyLevel"   value="1">
+			                                                	  <tr>
+			                                                      <td  colspan="2"><fmt:message key="prompt.secpracprd"/></td>
+			                                                    </tr>
+			                                                     <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="edit">
+			                                                            <tr><td > &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.secperiodselectedblock"/>  
+			                                 	                              </td> 
+			                                 	                              <td > 
+			                                 	                                      <bean:write name="studentPlacementForm"  property="studentPlacement.startDateSecPracPeriodView"/>
+			                                 	                                         <logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDateSecPracPeriodView" >
+			                                 	                                                       <fmt:message key="prompt.dash"/>
+			                                 	                                         </logic:notEmpty>
+			                                 	                                     <bean:write name="studentPlacementForm"  property="studentPlacement.endDateSecPracPeriodView"/>
+			                                 	                               </td> 
+			                                 	                        </tr> 
+			                                 	                        </logic:equal>
+			                                                              <tr>
+			                                                                      <td> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+			                                                                              <fmt:message key="prompt.selectpracprd"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                   </td>
+			                                                                       <td>
+			                                                                            <html:select name="studentPlacementForm" property="practiceBatchDateSecPracPrdListsIndex"  onchange="submit();">
+						                                                                      <html:optionsCollection name="studentPlacementForm" property="practiceBatchDateSecPracPrdList"    value="index"  label="practicalDateRange"/>
+					                                                                   </html:select>    
+				                                                                </td>
+			                                                         </tr>	
+			                                                          <tr>
+			                                                          <td>
+				                                                           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/></td>
+				                                                                <td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeksSecPracPrd" size="4" maxlength="2"/>
+				                                                        </td>
+				                                                     </tr>
+				                                                     </logic:notEqual>
+				                                                  </logic:notEqual>
+			                                         </logic:equal>
+			                            </logic:notEqual>
+				    </logic:equal>
+					 <logic:equal name="studentPlacementForm" property="localSchool"   value="N">
+					                            	<logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
+					                                                     <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
+				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
+				                                                       <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                <input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                 <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
+				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                 <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/></td>
+			                                                          </tr>	
+			                                                          	<logic:notEqual name="studentPlacementForm" property="studyLevel"   value="1">
+			                                                                     <tr>     
+			                                                                          <td ><fmt:message key="prompt.secpracprd"/></td>
+				                                                                     <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                                          <input type="text" name="startDateSecPrd" size="14" maxlength="10" id="startDateSecPrd"   value='<%=request.getAttribute("startDateSecPrd")%>'/>
+				                                                                          &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+			                                                                              <input type="text"  name="endDateSecPrd" size="14" maxlength="10"  id="endDateSecPrd"  value='<%=request.getAttribute("endDateSecPrd")%>'/>
+			                                                                              &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+			                                                                              <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/>
+			                                                                         </td>
+			                                                         </tr>	
+			                                                         	</logic:notEqual>
+			                                  </logic:equal>
+			                              <logic:notEqual name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
+			                                         <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="edit">
+			                                                 <tr>
+			                                                              <td colspan="2"><fmt:message key="prompt.pracprdval"/> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+			                                                                      <bean:write name="studentPlacementForm" property="studentPlacement.placementprd"/></td>
+			                                                </tr>
+			                                    </logic:equal>
+			                                    <logic:notEqual name="studentPlacementForm" property="studentPlacementAction"   value="edit">
+			                                                <tr>
+			                                                              <td colspan="2"><fmt:message key="prompt.addpracprdval"/> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+			                                                                       <html:text name="studentPlacementForm" property="studentPlacement.placementprd" size="2" maxlength="2"/></td>
+			                                                </tr>
+			                                    </logic:notEqual>
+			                                                 <tr>  <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                          <input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
+				                                                           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                             <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
+				                                                                 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
+				                                                            <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/></td>
+			                                               </tr>
+			                              </logic:notEqual>
+			       </logic:equal>
+			       <tr>
+				                         <td><fmt:message key="prompt.evaluationMark"/>&nbsp;</td>
+				                         <td><html:text name="studentPlacementForm" property="studentPlacement.evaluationMark" size="4" maxlength="3"/></td>
+			       </tr>	
 		</sakai:group_table>	
 		<sakai:actions>
 		    <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="add">

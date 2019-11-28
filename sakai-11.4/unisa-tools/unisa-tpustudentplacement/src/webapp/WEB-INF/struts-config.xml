@@ -491,6 +491,10 @@
 				name="inputStuPlacement"
 				path="/WEB-INF/jsp/inputStudentPlacement.jsp"
 				contextRelative="true" />	
+		<forward
+				name="confirmDateBlockDelete"
+				path="/WEB-INF/jsp/confirmDateBlockDelete.jsp"
+				contextRelative="true" />	
 			</action> 
 	</action-mappings>
 	<message-resources 		parameter="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources" />	

@@ -19,6 +19,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.dao.*;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.PracticeDatesMaintenance;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.SchoolListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
@@ -75,18 +76,21 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		studentPlacementForm.setSchoolFilterDistrictValue("");
 		studentPlacementForm.setDistrictFilter("");
 		studentPlacementForm.setSchoolFilter("");
-		if (studentPlacementForm.getSchoolCalledFrom().equalsIgnoreCase("editStudentPlacement")){	
-			StudentPlacementUI studentPlacement=new StudentPlacementUI();
+		if (studentPlacementForm.getSchoolCalledFrom().equals("editStudentPlacement")){	
 			   if((studentPlacementForm.getListStudentPlacement()==null)||
 					   (studentPlacementForm.getListStudentPlacement().size()==0)){
 			               Student  student= studentPlacementForm.getStudent();
-			               countryCode=student.getCountryCode(student.getNumber());
+			               countryCode=student.getCountryCode();
 			               if(!countryCode.equals("0")){
 			                       studentPlacementForm.setSchoolFilterCountry(countryCode);
+			                       if(countryCode.trim().equals(PlacementUtilities.getSaCode())){
+			                                  studentPlacementForm.setSchoolFilterProvince(student.getProvinceCode());
+							                  studentPlacementForm.setSchoolFilterDistrict(student.getDistrictCode());
+			                       }
 			               }
 		                   return display(mapping, studentPlacementForm, request, response);
 		      }
-			   Integer schoolCode=schoolCode=studentPlacementForm.getStudentPlacement().getSchoolCode();
+			   Integer schoolCode=studentPlacementForm.getStudentPlacement().getSchoolCode();
 			   SchoolUI schoolUI= new SchoolUI();
 				if(schoolCode!=0){
 				       countryCode=schoolUI.getSchoolCountry(schoolCode);
@@ -123,6 +127,21 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		}
 		
 		if (studentPlacementForm.getSchoolCalledFrom().equalsIgnoreCase("inputPlacement") || studentPlacementForm.getSchoolCalledFrom().equalsIgnoreCase("listPlacement")){
+			if(countryCode.equals(PlacementUtilities.getSaCode())){  
+			      studentPlacementForm.setListFilterSchoolDistrict(studentPlacementForm.getListFilterPlacementDistrict());
+			      studentPlacementForm.setSchoolFilterProvince(studentPlacementForm.getPlacementFilterProvince());
+			      studentPlacementForm.setSchoolFilterDistrictValue(studentPlacementForm.getPlacementFilterDistrictValue());
+			      if (studentPlacementForm.getPlacementFilterDistrictValue()!=null && !studentPlacementForm.getPlacementFilterDistrictValue().equalsIgnoreCase("")){
+				        return display(mapping, studentPlacementForm, request, response);
+			      }
+			}else{
+				      studentPlacementForm.setSchoolFilterCountry(studentPlacementForm.getPlacementFilterCountry());
+				      return display(mapping, studentPlacementForm, request, response);
+			}
+		}else{
+			studentPlacementForm.setListFilterSchoolDistrict(new ArrayList());
+		}
+		if (studentPlacementForm.getSchoolCalledFrom().equalsIgnoreCase("addStudentPlacement") || studentPlacementForm.getSchoolCalledFrom().equalsIgnoreCase("listPlacement")){
 			if(countryCode.equals(PlacementUtilities.getSaCode())){  
 			      studentPlacementForm.setListFilterSchoolDistrict(studentPlacementForm.getListFilterPlacementDistrict());
 			      studentPlacementForm.setSchoolFilterProvince(studentPlacementForm.getPlacementFilterProvince());
@@ -442,6 +461,10 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		                                       if(stuPlacement!=null){
 		                                               stuPlacement.setTown(schoolUI.getTown(schoolCode));
 		                                               stuPlacement.setDatesToRequest(request);
+		                                       }
+		                                       if( studentPlacementForm.getStudentPlacementAction().equals("add")){
+		                                    	         PracticeDatesMaintenance practicalPeriodMaintenance =new PracticeDatesMaintenance ();
+		                                    	         practicalPeriodMaintenance.setPracDateBatcheLists(studentPlacementForm);
 		                                       }
 		                               		
 		                               }

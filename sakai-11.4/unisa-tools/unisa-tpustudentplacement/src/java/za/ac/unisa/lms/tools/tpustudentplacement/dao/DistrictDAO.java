@@ -109,7 +109,7 @@ public class DistrictDAO extends StudentSystemDAO {
                				                                	                         subProvCodeStr="0";
                				                                             }
                				                                             district.setSubProvCode(Short.parseShort(subProvCodeStr));
-               				                                            district.setSubProvince(data.get("subProvinceDescr").toString());
+               				                                            district.setSubProvince(dbutil.replaceNull(data.get("subProvinceDescr").toString()));
                	                                                         districtList.add(district);
                                                         }
 		   		                             return districtList;		

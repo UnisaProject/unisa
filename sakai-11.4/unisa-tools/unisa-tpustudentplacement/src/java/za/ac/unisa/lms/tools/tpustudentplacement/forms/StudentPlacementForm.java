@@ -51,9 +51,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String postalCalledFrom;
 	private String managementCalledFrom;
 	private String mentorCalledFrom;
-	
 	private int selectedDistrictIndex;
-	
 	private Integer communicationSchool;
 	private String communicationTo;
 	private List communicationList;
@@ -81,6 +79,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private String SchoolFilterDistrictValue;
 	private String schoolFilterDistrictDesc;
 	private String schoolFilter;
+   private String localSchool;
 	
 	//Supervisor
 	private Supervisor supervisor;
@@ -184,7 +183,10 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	//practical
 	private PracticeBatchDate practiceBatchDate;
 	private PracticeBatchDate originalPracticeBatchDate;
+	private PracticeBatchDate selectedPracticeBatchDate1;
+	private PracticeBatchDate selectedPracticeBatchDate2;
 	private List practiceBatchDateList;
+	private List practiceBatchDateSecPracPrdList;
 	private List listPracticalPeriods;
 	private List  listLevels;
 	private List  listLevelsforview;
@@ -194,7 +196,24 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	private List  listPracticalYearforview;
 	 private boolean   addPracActive;
 	 private Short practicalsProvince;
+	 private int practiceBatchDateListsIndex;
+	 private int practiceBatchDateSecPracPrdListsIndex;
+	 private String displaySecDatesBatch;
+     private String firstPeriod="Y";
+     private String yearChanged="N";
+      private String  dateBlockAssigned;
+	
+      
+      //town
+	 
+	 private List listTown;
+	 private String town ;
     
+	 //module
+	 private int studyLevel=1;
+	 //qualification
+	 String postGradIndicator="N";
+	 private String isPGCE="N";
 	public void setCurrProv(String currProv){
 		                    this.currProv=currProv;
 	}
@@ -1083,6 +1102,12 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	public void setPracticeBatchDateList(List practiceBatchDateList) {
 		this.practiceBatchDateList = practiceBatchDateList;
 	}
+	public List getPracticeBatchDateSecPracPrdList() {
+		return practiceBatchDateSecPracPrdList;
+	}
+	public void setPracticeBatchDateSecPracPrdList(List practiceBatchDateSecPracPrdList) {
+		this.practiceBatchDateSecPracPrdList = practiceBatchDateSecPracPrdList;
+	}
 	public List getListPracticalPeriods() {
 		return listPracticalPeriods;
 	}
@@ -1143,6 +1168,83 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	public void setOriginalPracticeBatchDate(PracticeBatchDate originalPracticeBatchDate) {
 		this.originalPracticeBatchDate = originalPracticeBatchDate;
 	}
-	
+	public PracticeBatchDate getSelectedPracticeBatchDate1() {
+		return selectedPracticeBatchDate1;
+	}
+	public void setSelectedPracticeBatchDate1(PracticeBatchDate selectedPracticeBatchDate1) {
+	                	this.selectedPracticeBatchDate1 = selectedPracticeBatchDate1;
+	}
+	public PracticeBatchDate getSelectedPracticeBatchDate2() {
+		               return selectedPracticeBatchDate2;
+	}
+	public void setSelectedPracticeBatchDate2(PracticeBatchDate selectedPracticeBatchDate2) {
+		this.selectedPracticeBatchDate2 = selectedPracticeBatchDate2;
+	}
+	public int getPracticeBatchDateListsIndex() {
+		return practiceBatchDateListsIndex;
+	}
+	public void setPracticeBatchDateListsIndex(int practiceBatchDateListsIndex) {
+		this.practiceBatchDateListsIndex = practiceBatchDateListsIndex;
+	}
+	public int getPracticeBatchDateSecPracPrdListsIndex() {
+		return practiceBatchDateSecPracPrdListsIndex;
+	}
+	public void setPracticeBatchDateSecPracPrdListsIndex(int practiceBatchDateSecPracPrdListsIndex) {
+		this.practiceBatchDateSecPracPrdListsIndex = practiceBatchDateSecPracPrdListsIndex;
+	}
+	public String getLocalSchool() {
+		return localSchool;
+	}
+	public void setLocalSchool(String localSchool) {
+		this.localSchool = localSchool;
+	}
+	public List getListTown() {
+		return listTown;
+	}
+	public void setListTown(List listTown) {
+		this.listTown = listTown;
+	}
+	public String getTown() {
+		return town;
+	}
+	public void setTown(String town) {
+		this.town = town;
+	}
+	public int getStudyLevel() {
+		return studyLevel;
+	}
+	public void setStudyLevel(int studyLevel) {
+		this.studyLevel = studyLevel;
+	}
+	public String  getDisplaySecDatesBatch() {
+		return displaySecDatesBatch;
+	}
+	public void setDisplaySecDatesBatch(String  displaySecDatesBatch) {
+		this.displaySecDatesBatch = displaySecDatesBatch;
+	}
+	public String getIsPGCE() {
+		return isPGCE;
+	}
+	public void setIsPGCE(String isPGCE) {
+		this.isPGCE = isPGCE;
+	}
+	public String getFirstPeriod() {
+		return firstPeriod;
+	}
+	public void setFirstPeriod(String firstPeriod) {
+		this.firstPeriod = firstPeriod;
+	}
+	public String getYearChanged() {
+		return yearChanged;
+	}
+	public void setYearChanged(String yearChanged) {
+		this.yearChanged = yearChanged;
+	}
+	public String getDateBlockAssigned() {
+		return dateBlockAssigned;
+	}
+	public void setDateBlockAssigned(String dateBlockAssigned) {
+		this.dateBlockAssigned = dateBlockAssigned;
+	}
 	
 }

@@ -23,6 +23,16 @@ public class StudentPlacementLogDAO {
             	                                      String errorMsg="StudentPlacementLogDAO:Error inserting  a create log into  TPUSPLLOG";
     	                                   dbutil.update(sql,errorMsg);
                }
+               public void addLogForCreateNewPlacementAction2(StudentPlacement spl,int academicYear,int semester,
+		               String afterImage,int personnelNum) throws Exception{
+	                           String sql="insert into TPUSPLLOG(MK_ACADEMIC_YEAR,SEMESTER_PERIOD,MK_STUDENT_NR,MK_SCHOOL_CODE,"+
+                                          " MK_STUDY_UNIT_CODE,ACTION_GC201,AFTER_IMAGE," +
+                                          " UPDATED_BY,UPDATED_ON)values("+academicYear +","+semester+","+
+                                          spl.getStuNum()+","+spl.getSchoolCode()+",'"+spl.getModule()+"','"+
+                                          "CREAT','"+afterImage+"',"+personnelNum+",SYSDATE)";
+	                                      String errorMsg="StudentPlacementLogDAO:Error inserting  a create log into  TPUSPLLOG";
+                               dbutil.update(sql,errorMsg);
+   }
                public void addLogForDeletePlacementAction(StudentPlacement spl,int academicYear,int semester,
 		                           String afterImage,int personnelNum)throws Exception{
             	                        String sql="insert into TPUSPLLOG(MK_ACADEMIC_YEAR,SEMESTER_PERIOD,MK_STUDENT_NR,MK_SCHOOL_CODE,"+

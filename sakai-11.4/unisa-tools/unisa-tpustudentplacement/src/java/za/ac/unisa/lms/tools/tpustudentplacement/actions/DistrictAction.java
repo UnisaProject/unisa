@@ -161,6 +161,7 @@ public ActionForward linkDistrictToSubProv(
 	                                                                                            	        DistrictDAO dao = new DistrictDAO();
 	                                                                                            	        dao.unlinkToSubProv(district.getCode());
 	                                                                                 }
+                                                                           	     studentPlacementForm.setIndexNrSelected(new String[1]);
                                                           return display(mapping,form,request,response);	
     }
 }

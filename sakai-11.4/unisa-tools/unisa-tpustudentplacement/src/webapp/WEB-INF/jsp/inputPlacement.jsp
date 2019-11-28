@@ -56,6 +56,17 @@
 					</logic:notEmpty>
 				</td>					
 			  </tr>		
+			  	<tr>
+			   	        <td><fmt:message key="prompt.town"/>&nbsp;</td>
+			        	<td>
+			        	            <html:select name="studentPlacementForm" property="town">
+						     	              <html:optionsCollection name="studentPlacementForm" property="listTown" value="code" label="name"/>
+						           </html:select> 
+						<html:submit property="action">                      
+						              <fmt:message key="button.searchTown"/>
+					            </html:submit>
+					     </td>	
+					</tr>
 			  <tr>
 				<td><fmt:message key="prompt.module"/>&nbsp;</td>
 				<td><html:select name="studentPlacementForm" property="placementFilterModule">

@@ -53,7 +53,7 @@
 			<sakai:group_table>				
 			<tr>
 			<td  ><fmt:message key="prompt.academicyear"/>&nbsp;</td>
-				<td><html:select name="studentPlacementForm" property="practiceBatchDate.academicYear" >
+				<td><html:select name="studentPlacementForm" property="practiceBatchDate.academicYear"  onchange="submit()" >
 						<html:optionsCollection name="studentPlacementForm"   property="listPracticalYear"  value="year" label="yearDescription"/>
 					</html:select>                                           
 				</td>                        
@@ -73,7 +73,7 @@
 			</tr>		
 			<tr>
 				<td ><fmt:message key="prompt.practicalperiod"/>&nbsp;</td>
-				<td><html:select name="studentPlacementForm" property="practiceBatchDate.practicalPeriod">
+				<td><html:select name="studentPlacementForm" property="practiceBatchDate.practicalPeriod"  onchange="submit()" >
 						<html:optionsCollection name="studentPlacementForm" property="listPracticalPeriods"  value="period" label="periodDescription"/>
 					</html:select>                                           
 				</td>
@@ -97,5 +97,6 @@
 					<fmt:message key="button.back"/>
 			</html:submit>
 		</sakai:actions>
+		<html:hidden property="action" value="acadYearChangeAction"/>		
 	</html:form>
 </sakai:html>

@@ -30,7 +30,7 @@ public class StuPlacementUpdater {
                                         		      InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
  	                            	        	      infoMessagesUtil.addMessages(messages,"The supervisor you selected has reached the maximum allowed students, choose another supervisor.");
  	                            	        	 }else{
-                                	                   editPrelimPlacement(studentPlacementForm,storedPlacement,newPlacement,messages);
+                                	                       editPrelimPlacement(studentPlacementForm,storedPlacement,newPlacement,messages);
                                                }
                                         }
 	        	                 }
@@ -57,19 +57,25 @@ public class StuPlacementUpdater {
                                           boolean keysChangedAndmoduleExist=checkSchoolAndModule(studentPlacementForm,originalPlacement,
                                         		  storedPlacement,newPlacement,messages);
                                           InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
-                                          if(keysChangedAndmoduleExist){
-                    	                            return;
-                                          }
-                                          updatePlacement(studentPlacementForm,originalPlacement,newPlacement,messages);
+                                          if(!newPlacement.isSecPrelimPlacement()){
+                                                      if(keysChangedAndmoduleExist){
+                    	                                           return;
+                                                      }
+	                                      }
+                                         updatePlacement(studentPlacementForm,originalPlacement,newPlacement,messages);
                                           if(messages.isEmpty()){
                                                  setPlacementLogForEdit(studentPlacementForm,originalPlacement,messages);
                                                  if(messages.isEmpty()){
                                                         infoMessagesUtil.addMessages(messages,"Changes have been saved");
-                                                        removeFromPrelimPlacementList(studentPlacementForm);
+                                                        if((!newPlacement.isTwoPlacements()||(!studentPlacementForm.getStudentPlacement().isSecPrelimPlacement()))){
+                                                                         removeFromPrelimPlacementList(studentPlacementForm);
+                                                        }
                                                  }
                                           }
                                           studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
-                                          studentPlacementForm.setCanSaveEdits(0);
+                                          if((newPlacement.isTwoPlacements()&&studentPlacementForm.getStudentPlacement().isSecPrelimPlacement())){
+                                                       studentPlacementForm.setCanSaveEdits(0);
+	                                     }
                }
 	           private boolean checkIfPreliminaryPlacementAlreadyEdited(StudentPlacementForm studentPlacementForm,ActionMessages messages){
 	        	                boolean canSave=true;

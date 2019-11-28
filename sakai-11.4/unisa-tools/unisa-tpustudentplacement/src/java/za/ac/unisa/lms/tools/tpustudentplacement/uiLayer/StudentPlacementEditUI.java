@@ -28,8 +28,8 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.StuPlacementActionValidat
           			                                Short.parseShort(studentPlacementForm.getSemester()),
         			                                Integer.parseInt(studentPlacementForm.getStudentNr()),
         			                                studentPlacementListRecord.getModule(),
-        			                                studentPlacementListRecord.getSchoolCode());
-            }
+        			                                studentPlacementListRecord.getSchoolCode(),studentPlacementListRecord.getPlacementPrd());
+            } 
            
            private StudentPlacementListRecord getPlacementListRecord(String[] arrayStr,
             		                StudentPlacementForm studentPlacementForm)throws Exception{

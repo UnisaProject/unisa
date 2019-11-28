@@ -9,12 +9,17 @@ public class StudentPlacementListRecord {
 	private String supervisorContactNumber;
 	private String startDate;
 	private String endDate;
+	private String startDateSecPracPeriod;
+	private String endDateSecPracPeriod;
 	private String numberOfWeeks;
+	private String numberOfWeeksSecPracPrd;
 	private String evaluationMark;
 	private String town;
 	private Integer mentorCode;
 	private String stuFullTime;
 	private String mentorName;
+	private int placementPrd;
+	   private boolean twoPlacements;
 	public String getModule() {
 		return module;
 	}
@@ -63,7 +68,7 @@ public class StudentPlacementListRecord {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public String getNumberOfWeeks() {
+public String getNumberOfWeeks() {
 		return numberOfWeeks;
 	}
 	public void setNumberOfWeeks(String numberOfWeeks) {
@@ -99,6 +104,34 @@ public class StudentPlacementListRecord {
 	public void setMentorName(String mentorName) {
 		this.mentorName = mentorName;
 	}
-	
-	
+	public String getStartDateSecPracPeriod() {
+		return startDateSecPracPeriod;
+	}
+	public void setStartDateSecPracPeriod(String startDateSecPracPeriod) {
+		this.startDateSecPracPeriod = startDateSecPracPeriod;
+	}
+	public String getEndDateSecPracPeriod() {
+		return endDateSecPracPeriod;
+	}
+	public void setEndDateSecPracPeriod(String endDateSecPracPeriod) {
+		this.endDateSecPracPeriod = endDateSecPracPeriod;
+	}
+	public String getNumberOfWeeksSecPracPrd() {
+		return numberOfWeeksSecPracPrd;
+	}
+	public void setNumberOfWeeksSecPracPrd(String numberOfWeeksSecPracPrd) {
+		this.numberOfWeeksSecPracPrd = numberOfWeeksSecPracPrd;
+	}
+	public int getPlacementPrd() {
+		return placementPrd;
+	}
+	public void setPlacementPrd(int placementPrd) {
+		this.placementPrd = placementPrd;
+	}
+	public boolean isTwoPlacements() {
+		return twoPlacements;
+	}
+	public void setTwoPlacements(boolean twoPlacements) {
+		this.twoPlacements = twoPlacements;
+	}
 }

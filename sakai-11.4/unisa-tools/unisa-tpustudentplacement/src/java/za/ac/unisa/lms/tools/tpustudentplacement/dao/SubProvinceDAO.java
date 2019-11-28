@@ -66,7 +66,12 @@ public class SubProvinceDAO {
                                                    return (SubProvince )subProvList.get(0);
                                                    
         	}
-			public void  delete(int code)throws Exception{
+		  public int  getProvCode(int subProvCode)throws Exception{
+           	                                 String sql=" select  fk_prv_code  from tpusubprv  where    code="+subProvCode;
+                                             String  errorMsg="database error  when accssing table subProv";
+                                             return dbutil.queryInt(sql, errorMsg);
+		  }
+		  public void  delete(int code)throws Exception{
 	                                                      String sql=" delete from   tpusubprv     where    code="+code;
                                                           String  errorMsg="database error  when accessing table tpuSubProv";
                                                          dbutil.update(sql, errorMsg);
