@@ -1694,7 +1694,12 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 				if (remoteAddr == null || "".equals(remoteAddr)) {
 					remoteAddr = request.getHeader("X_FORWARDED_FOR");
 					if (remoteAddr == null || "".equals(remoteAddr)) {
-						remoteAddr = request.getRemoteAddr();
+						remoteAddr = request.getHeader("X-Forwarded-For");
+						if (remoteAddr == null || "".equals(remoteAddr)) {
+							remoteAddr = request.getRemoteAddr();
+						} else {
+							remoteAddr = remoteAddr.split(",")[0].trim();
+						}
 					} else {
 						remoteAddr = remoteAddr.split(",")[0].trim();
 					}
@@ -1747,7 +1752,12 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
 				if (remoteAddr == null || "".equals(remoteAddr)) {
 					remoteAddr = request.getHeader("X_FORWARDED_FOR");
 					if (remoteAddr == null || "".equals(remoteAddr)) {
-						remoteAddr = request.getRemoteAddr();
+						remoteAddr = request.getHeader("X-Forwarded-For");
+						if (remoteAddr == null || "".equals(remoteAddr)) {
+							remoteAddr = request.getRemoteAddr();
+						} else {
+							remoteAddr = remoteAddr.split(",")[0].trim();
+						}
 					} else {
 						remoteAddr = remoteAddr.split(",")[0].trim();
 					}
