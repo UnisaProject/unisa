@@ -696,12 +696,7 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		}
 		 studentPlacementForm.setPracticeBatchDateListsIndex(-1);
          studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(-1);
-      int studyLevel=1;
-		if( (placement.getModule()!=null)||(! placement.getModule().trim().equals(""))){
-		                Module module=new Module();
-		                module=module.getModule(placement.getModule().trim());
-		                studyLevel=module.getLevel();
-		}
+     
 
 		 if(studyLevel==1){
   	    	                studentPlacementForm.setDisplaySecDatesBatch("N");
