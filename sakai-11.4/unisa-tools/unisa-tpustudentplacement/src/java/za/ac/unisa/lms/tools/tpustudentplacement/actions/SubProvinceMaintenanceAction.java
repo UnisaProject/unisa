@@ -44,7 +44,7 @@ public class SubProvinceMaintenanceAction extends LookupDispatchAction{
 		map.put("button.edit", "editSubProv");
 		map.put("button.save", "saveSubProv");	
 		map.put("button.add", "addSubProv");	
-		map.put("button.delete", "delete");	
+		map.put("button.remove", "delete");	
 		return map;
 	}
 		public ActionForward prevPage(
