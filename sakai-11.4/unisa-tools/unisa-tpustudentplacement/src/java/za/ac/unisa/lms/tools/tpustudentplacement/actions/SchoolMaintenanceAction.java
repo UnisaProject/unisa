@@ -462,9 +462,16 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		                                               stuPlacement.setTown(schoolUI.getTown(schoolCode));
 		                                               stuPlacement.setDatesToRequest(request);
 		                                       }
-		                                       if( studentPlacementForm.getStudentPlacementAction().equals("add")){
+		                                       if(studentPlacementForm.getStudentPlacementAction().equals("add")){
 		                                    	         PracticeDatesMaintenance practicalPeriodMaintenance =new PracticeDatesMaintenance ();
-		                                    	         practicalPeriodMaintenance.setPracDateBatcheLists(studentPlacementForm);
+		                                    	         String countryCode= schoolUI.getSchoolCountryCode(schoolCode);
+		                                    	         if(countryCode.equals(PlacementUtilities.getSaCode())){
+		                                    	                      practicalPeriodMaintenance.setPracDateBatcheLists(studentPlacementForm);
+		                                    	         }
+		                                    	         studentPlacementForm.getStudentPlacement().setSchoolCode2(
+		                                    	        		 studentPlacementForm.getStudentPlacement().getSchoolCode());
+		                                    	         PlacementUtilities placementUtilities=new   PlacementUtilities();
+														placementUtilities.setPlacementDateToRequestObject(request,studentPlacementForm.getStudentPlacement());
 		                                       }
 		                               		
 		                               }

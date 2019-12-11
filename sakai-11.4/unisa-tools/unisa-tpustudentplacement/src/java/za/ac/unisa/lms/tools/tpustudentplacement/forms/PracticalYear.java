@@ -26,14 +26,14 @@ public class PracticalYear {
 		public String getYearDescription() {
 			return yearDescription;
 		}
-
-		public void setYearDescription(String yearDescription) {
+        public void setYearDescription(String yearDescription) {
 			this.yearDescription = yearDescription;
 		}
 		public List getPracticalYearList() {
 			                              DateUtil dateUtil=new  DateUtil();
 			                              int currYear=dateUtil.getYearInt();
                                           List  listPracticalYear=new ArrayList();
+                                          listPracticalYear.add(new PracticalYear((currYear-1),(""+(currYear-1))));
                                           listPracticalYear.add(new PracticalYear(currYear,""+currYear));
                                           listPracticalYear.add(new PracticalYear((currYear+1),(""+(currYear+1))));
                                          return    listPracticalYear;

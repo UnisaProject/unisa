@@ -757,7 +757,9 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		                        }
 		                        StudentPlacement stuPlacement=studentPlacementForm.getStudentPlacement();
 		                        if(stuPlacement!=null){
-		                        	stuPlacement.setDatesToRequest(request);
+		                        	     PlacementUtilities placementUtilities=new PlacementUtilities();
+                                        	placementUtilities.setPlacementDateToRequestObject(request, stuPlacement);
+                                        	StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
                                 }
 		                        addErrors(request,messages);
 		                        studentPlacementForm.setCurrentPage(nextPage);

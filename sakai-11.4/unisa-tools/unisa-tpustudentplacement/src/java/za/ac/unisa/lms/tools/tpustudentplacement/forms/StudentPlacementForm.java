@@ -211,6 +211,7 @@ public class StudentPlacementForm extends ValidatorActionForm {
     
 	 //module
 	 private int studyLevel=1;
+	 private String moduleCode;
 	 //qualification
 	 String postGradIndicator="N";
 	 private String isPGCE="N";
@@ -1245,6 +1246,12 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	}
 	public void setDateBlockAssigned(String dateBlockAssigned) {
 		this.dateBlockAssigned = dateBlockAssigned;
+	}
+	public String getModuleCode() {
+		return moduleCode;
+	}
+	public void setModuleCode(String moduleCode) {
+		this.moduleCode = moduleCode;
 	}
 	
 }

@@ -1,7 +1,10 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl;
 import javax.servlet.http.HttpServletRequest;
+
+import za.ac.unisa.lms.tools.tpustudentplacement.dao.StudentPlacementDAO;
+
 import java.util.List;
-public class PrelimStudentPlacementImpl {
+public class PrelimStudentPlacementImpl extends StudentPlacementDAO{
 	
 	
 	public int getPosOfSelectedPlacement(List listPlacementListRecord,HttpServletRequest request){
