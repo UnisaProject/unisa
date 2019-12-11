@@ -64,7 +64,7 @@
 					<fmt:message key="button.edit"/>
 			</html:submit>	
 			<html:submit property="action">
-					<fmt:message key="button.delete"/>
+					<fmt:message key="button.remove"/>
 			</html:submit>	
 			</sakai:actions>		
 		</logic:notEmpty>
