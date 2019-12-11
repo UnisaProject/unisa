@@ -73,7 +73,7 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			throw new Exception("StudentPlacementDao : Error inserting TPUSPL / " + ex,ex);
 		}	
 	}
-	
+
 	public void updateStudentPlacement(Short acadYear, Short semester, Integer studentNr, String originalModule, Integer originalSchool, StudentPlacement placement,int originalSupCode) throws Exception {
 		
 		String sql = "update tpuspl" +
@@ -99,10 +99,45 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			sql+=" ,email_to_sup=null ";
 	     }
 			sql = sql +	" where mk_academic_year=" + acadYear +
+
 		" and semester_period=" + semester +
 		" and mk_student_nr=" + studentNr +
 		" and mk_study_unit_code='" + originalModule + "'" +
 		" and mk_school_code=" + originalSchool+
+			" and practice_period=" + placement.getPlacementPrd();
+		try{ 
+			   JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			   int result = jdt.update(sql);	
+		}
+		catch (Exception ex) {
+			throw new Exception("StudentPlacementDao : Error updating TPUDIS / " + ex,ex);
+		}	
+	}
+public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr,StudentPlacement placement) throws Exception {
+		
+		String sql = "update tpuspl" +
+		" set mk_school_code=" + placement.getSchoolCode2()+ "," +
+		" mk_study_unit_code='" + placement.getModule() + "'," +
+		" mk_supervisor_code=" + placement.getSupervisorCode() + "," +
+		" start_date=to_date('" + placement.getStartDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
+		" end_date=to_date('" + placement.getEndDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
+		" number_of_weeks=" + Short.parseShort(placement.getNumberOfWeeksSecPracPrd().trim()) + ",";
+		  	if (placement.getEvaluationMark()==null || placement.getEvaluationMark().trim().equalsIgnoreCase("")){
+			sql = sql  + "evaluation_mark=null";
+		}else{
+			sql = sql  + "evaluation_mark=" + Short.parseShort(placement.getEvaluationMark().trim());
+		}
+		sql+=(",stu_fulltime_sch='"+placement.getStuFullTime()+"'");
+		if((placement.getMentorCode()==null)||placement.getMentorCode()==0){
+			sql+=(",mk_mentor_code=null");
+		}else{
+			sql+=(",mk_mentor_code="+placement.getMentorCode());
+		}
+		sql = sql +	" where mk_academic_year=" + acadYear +
+		" and semester_period=" + semester +
+		" and mk_student_nr=" + studentNr +
+		" and mk_study_unit_code='" + placement.getModule()+ "'" +
+		" and mk_school_code=" +placement.getSchoolCode2()+
 			" and practice_period=" + placement.getPlacementPrd();
 		try{ 
 			   JdbcTemplate jdt = new JdbcTemplate(getDataSource());
@@ -280,7 +315,9 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                                                                                  " where tpuspl.mk_student_nr =a.mk_student_nr and   tpuspl.mk_study_unit_code=a.mk_study_unit_code  "
                                                                                  + " and tpuspl.mk_academic_year=a.mk_academic_year "+
                                                                                  "  and tpuspl.mk_school_code= a.mk_school_code and tpuspl.semester_period=a.semester_period "+
-                                                                                " and tpuspl.practice_period=2 )  as secDatesFragment";
+
+                                                                                " and tpuspl.practice_period=2)  as secDatesFragment";
+
 	                                          String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
 	                                                                 " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
 	                                                                 " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
@@ -294,12 +331,14 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
             	   sqlStr+=" from tpuspl a, tpusch b, tpusup c, stu d";
                }
                sqlStr+=" where a.mk_academic_year=" + acadYear +
-                       " and a.semester_period=" + semester +
-                       "  and a.mk_school_code=b.code" + 
-                       "  and a.mk_supervisor_code=c.code" +
-                       "  and a.mk_student_nr=d.nr"+
-                       " and a.practice_period=1";
-               return sqlStr;
+                       "  and a.semester_period=" + semester +
+                       "   and a.mk_school_code=b.code" + 
+                       "   and a.mk_supervisor_code=c.code" +
+                       "   and a.mk_student_nr=d.nr"+
+                       "  and a.practice_period=1"+
+                      "   and a.mk_supervisor_code=" +283;
+                 return sqlStr;
+
     }
     private String  getPlacementListSql(String   firstPartOfSqlStr,Short acadYear, Short semester, Short province, Short district, 
                       Integer supervisor, Integer school, String module, String sortOn,String country,String town){
@@ -313,13 +352,15 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	                                        sql = sql.trim() + " and b.mk_district_code=" + district;
 	                                  }
 	                       if (province!=null && province.compareTo(Short.parseShort("0"))>0){
-                            	                  if(Province.isProvince(province)){
-                            	                      sql = sql.trim() + "   and b.mk_prv_code=" + province;
+
+                            	                  if(province>=30){
+                            	                               sql = sql.trim() + "  and  "+ province+" = ( select fk_tpusubprv_code  from ldd where  code=  b.mk_district_code   )" ;
+                                   	               
                             	                  }else{
-                            	                         sql = sql.trim() + "  and  "+ province+" = ( select fk_tpusubprv_code  from ldd where  code=  b.mk_district_code   )" ;
-                            	                  }
+                            	                	            sql = sql.trim() + "   and b.mk_prv_code=" + province;
+                               	                            }
                               }
-                                  
+
                      }
 	                 if((town!=null)&&(!town.trim().isEmpty())&&(!town.trim().equals("-1"))){
                                 sql+=" and b.town='"+town.trim()+"'";
@@ -445,6 +486,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	                 placement.setStudentName(data.get("stuName").toString());
 	                 placement.setStudentNumber(Integer.parseInt(data.get("stuNumber").toString()));
 	                 placement.setSchoolCode(Integer.parseInt(data.get("schCode").toString()));
+	                 placement.setSchoolCode2(Integer.parseInt(data.get("schCode").toString()));
 	                 placement.setSchoolDesc(data.get("schName").toString());
 	                 String supCodeStr=  dbutil.replaceNull(data.get("supCode"));
 	                 if(supCodeStr.trim().equals(""))

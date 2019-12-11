@@ -75,12 +75,22 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			                                                         TownDAO  townDAO=new  TownDAO();
 			                                                         String country=studentPlacementForm.getPlacementFilterCountry();
 			                                                         Short province=studentPlacementForm.getPlacementFilterProvince();
-			                                                         Short district=studentPlacementForm.getPlacementFilterDistrict();
+
+			                                                         String districtStr=studentPlacementForm.getPlacementFilterDistrictValue();
+			                                                         if(studentPlacementForm.getPlacementFilterDistrictValue()!=null)
+			                                                        	if(studentPlacementForm.getPlacementFilterDistrictValue().indexOf('-')!=-1){
+			                                                        		districtStr=studentPlacementForm.getPlacementFilterDistrictValue().substring(0,
+			                                                        						    studentPlacementForm.getPlacementFilterDistrictValue().indexOf('-'));
+			                                                        	}
+			                                                         Short district=Short.parseShort(districtStr);
 			                                                          List townList=townDAO.getTownList(country, province,district);
 			                                                          Town town =new Town();
-			                                                          town.setCode("-1");
-			                                                          town.setName("ALL");
-			                                                          townList.add(0,town);
+			                                                          if(townList.size()>1){
+			                                                                       town.setCode("-1");
+			                                                                       town.setName("ALL");
+			                                                                       townList.add(0,town);
+			  			                                               }
+
 			                                                          studentPlacementForm.setListTown(townList);
 			                                                         return mapping.findForward(studentPlacementForm.getCurrentPage());
 		}

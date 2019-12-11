@@ -7,6 +7,7 @@ public class PlacementListRecord {
 	private String studentContactNumber;
 	private String module;
 	private Integer schoolCode;
+	private Integer schoolCode2;
 	private String schoolDesc;
 	private String schoolContactNumber;
 	private Integer supervisorCode;
@@ -229,5 +230,11 @@ public class PlacementListRecord {
 		}
 		public void setTwoPlacements(boolean twoPlacements) {
 			this.twoPlacements = twoPlacements;
+		}
+		public Integer getSchoolCode2() {
+			return schoolCode2;
+		}
+		public void setSchoolCode2(Integer schoolCode2) {
+			this.schoolCode2 = schoolCode2;
 		}
 	}

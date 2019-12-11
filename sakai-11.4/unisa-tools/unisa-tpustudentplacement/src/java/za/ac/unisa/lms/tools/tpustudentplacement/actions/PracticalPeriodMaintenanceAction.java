@@ -214,6 +214,9 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 				                                            HttpServletResponse response) throws Exception {
 			                                                              StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
 			                                                              PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+
+			                                                              studentPlacementForm.setPracticeBatchDateList(new ArrayList());
+
 			                                                              practiceDatesMaintenance.initialiseDataForMaintenanceFunction(studentPlacementForm,request);
 			                                                                                               studentPlacementForm.setCurrentPage("listPracticalBatches");
 			              		                              return mapping.findForward( studentPlacementForm.getCurrentPage());

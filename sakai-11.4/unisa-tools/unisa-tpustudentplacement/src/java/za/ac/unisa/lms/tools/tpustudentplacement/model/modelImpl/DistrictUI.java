@@ -1,5 +1,8 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.struts.util.LabelValueBean;
 
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.DistrictDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.District;
@@ -8,9 +11,17 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.SubProvince;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.SubProvinceUI;
 
-public class DistrictUI extends DistrictImpl{
+public class DistrictUI extends DistrictDAO{
 	
-	
+	public List getAllDistricts(Short province,Short district)throws Exception{
+	       List listDistrict = new ArrayList();
+        DistrictDAO dao = new DistrictDAO();
+        listDistrict = dao.getDistrictList2("Y", province,""+district);
+        String label="ALL";
+        String value="0-" + province.toString();
+        listDistrict.add(0,new LabelValueBean(label, value));
+      return listDistrict;
+}
 	
 	public void setDistrictValue(StudentPlacementForm formBean,Short province){
                    if (formBean.getPlacementFilterDistrictValue()!=null &&
@@ -21,15 +32,11 @@ public class DistrictUI extends DistrictImpl{
                    }
                            
       }
-    private List getAllDsitrict(short prov,short district)throws Exception{
-    	               DistrictImpl districtImpl=new DistrictImpl();
-    	               return districtImpl.getAllDistricts(prov, district);
-    }
-    private void allowAllDsitrictSelection(StudentPlacementForm studentPlacementForm,String district)throws Exception{
+      private void allowAllDsitrictSelection(StudentPlacementForm studentPlacementForm,String district)throws Exception{
     	              short prov=studentPlacementForm.getPlacementFilterProvince();
 	                  studentPlacementForm.setPlacementFilterDistrict(Short.parseShort(district));
 	                  short districtValue=studentPlacementForm.getPlacementFilterDistrict();
-    	              List districtList=getAllDsitrict(prov,districtValue);
+    	              List districtList=getAllDistricts(prov,districtValue);
                       studentPlacementForm.setListFilterPlacementDistrict(districtList);
    }
     public void unlinkToSubProv(Short districtCode) throws Exception {

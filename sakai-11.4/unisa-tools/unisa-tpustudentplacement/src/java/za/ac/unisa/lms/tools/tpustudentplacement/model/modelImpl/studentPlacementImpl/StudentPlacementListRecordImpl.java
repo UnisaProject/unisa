@@ -31,7 +31,9 @@ public class StudentPlacementListRecordImpl {
          stuPlacement.setSupervisorCode(stuPlacementRec.getSupervisorCode());
          stuPlacement.setEvaluationMark(stuPlacementRec.getEvaluationMark());
          stuPlacement.setNumberOfWeeks(stuPlacementRec.getNumberOfWeeks());
-         stuPlacement.setNumberOfWeeks(stuPlacementRec.getNumberOfWeeksSecPracPrd());
+
+         stuPlacement.setNumberOfWeeksSecPracPrd(stuPlacementRec.getNumberOfWeeksSecPracPrd());
+
          stuPlacement.setTown(stuPlacementRec.getTown());
          stuPlacement.setMentorCode(stuPlacementRec.getMentorCode());
          stuPlacement.setMentorName(stuPlacementRec.getMentorName());

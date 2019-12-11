@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 public class StudentPlacement extends StudentPlacementImpl{
 	protected String module;
 	protected Integer schoolCode;
+	private Integer schoolCode2;
 	private Integer mentorCode;
 	protected String schoolDesc;
 	protected Integer supervisorCode;
@@ -258,12 +259,12 @@ public class StudentPlacement extends StudentPlacementImpl{
                                                 	                               }else{
                                            		                                                        request.setAttribute("endDate",studentPlacementForm.getStudentPlacement().getEndDate());
                                                 	                               }
-                                                                                  if(studentPlacementForm.getStudentPlacementAction().equals("editPrelimPlacement")){
-                                                                            	                                 if((studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod()==null)||
+
+                                                                                                                 if((studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod()==null)||
                                           	                            		                                                      (studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod().trim().isEmpty())){
                                           	                            	                                                               request.setAttribute("startDateSecPrd", dateUtil.dateOnly());
                                           	                                                                      }else{
-                                      	                                                                                           request.setAttribute("startDateSecPrd",studentPlacementForm.getStudentPlacement().getStartDate());
+                                      	                                                                                   request.setAttribute("startDateSecPrd",studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod());
                                           	                                                                      }
                                                                             	                                 if((studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod()==null)||
                               	                            		                                                           (studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod().trim().isEmpty())){
@@ -271,8 +272,9 @@ public class StudentPlacement extends StudentPlacementImpl{
                               	                                                                                     }else{
                           	                                                                                              request.setAttribute("endDateSecPrd",studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
                               	                                                                        }
-                                                             	                 }
-                                               }
+
+                                                }
+
        }
 	public String getUserSelectedDateBlock() {
 		return userSelectedDateBlock;
@@ -318,6 +320,13 @@ public class StudentPlacement extends StudentPlacementImpl{
 	}
 	public void  setPacementDatesForView(){
 		                           setPacementDatesForView(this);
+	}
+
+	public Integer getSchoolCode2() {
+		return schoolCode2;
+	}
+	public void setSchoolCode2(Integer schoolCode2) {
+		this.schoolCode2 = schoolCode2;
 	}
 	
 }

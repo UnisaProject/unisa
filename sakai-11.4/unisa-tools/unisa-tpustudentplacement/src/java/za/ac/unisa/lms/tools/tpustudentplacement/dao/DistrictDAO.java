@@ -52,6 +52,9 @@ public class DistrictDAO extends StudentSystemDAO {
 	                	                                	             linkToSubProv( district.getCode(),subProvCode);
 	                	                               }
                       }
+	                   public District getDistrict(Short code) throws Exception {
+	                	                             return getDistrict(code, null);
+	                   }
 	                  public District getDistrict(Short code, String description) throws Exception {
 		                                  District district = new District();
 		                                  district.setDescription("not found");

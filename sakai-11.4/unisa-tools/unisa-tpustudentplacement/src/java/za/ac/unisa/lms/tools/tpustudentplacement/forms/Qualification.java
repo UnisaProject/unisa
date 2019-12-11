@@ -6,6 +6,7 @@ public class Qualification {
 	private String code;
 	private String description;
 	private String shortDesc;
+	private String type;
 	public String getCode() {
 		return code;
 	}
@@ -32,5 +33,12 @@ public class Qualification {
                                         QualificationDAO  qualificationDAO=new  QualificationDAO();
                                         return qualificationDAO.isPGCE(qualCode);
      }
+
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 }
