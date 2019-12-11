@@ -462,6 +462,7 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		                                               stuPlacement.setTown(schoolUI.getTown(schoolCode));
 		                                               stuPlacement.setDatesToRequest(request);
 		                                       }
+
 		                                       if(studentPlacementForm.getStudentPlacementAction().equals("add")){
 		                                    	         PracticeDatesMaintenance practicalPeriodMaintenance =new PracticeDatesMaintenance ();
 		                                    	         String countryCode= schoolUI.getSchoolCountryCode(schoolCode);
@@ -472,6 +473,7 @@ import za.ac.unisa.utils.CellPhoneVerification;
 		                                    	        		 studentPlacementForm.getStudentPlacement().getSchoolCode());
 		                                    	         PlacementUtilities placementUtilities=new   PlacementUtilities();
 														placementUtilities.setPlacementDateToRequestObject(request,studentPlacementForm.getStudentPlacement());
+
 		                                       }
 		                               		
 		                               }

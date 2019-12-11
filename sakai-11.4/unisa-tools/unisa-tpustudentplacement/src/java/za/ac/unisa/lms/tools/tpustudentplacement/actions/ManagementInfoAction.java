@@ -75,6 +75,7 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			                                                         TownDAO  townDAO=new  TownDAO();
 			                                                         String country=studentPlacementForm.getPlacementFilterCountry();
 			                                                         Short province=studentPlacementForm.getPlacementFilterProvince();
+
 			                                                         String districtStr=studentPlacementForm.getPlacementFilterDistrictValue();
 			                                                         if(studentPlacementForm.getPlacementFilterDistrictValue()!=null)
 			                                                        	if(studentPlacementForm.getPlacementFilterDistrictValue().indexOf('-')!=-1){
@@ -89,6 +90,7 @@ public class ManagementInfoAction extends LookupDispatchAction{
 			                                                                       town.setName("ALL");
 			                                                                       townList.add(0,town);
 			  			                                               }
+
 			                                                          studentPlacementForm.setListTown(townList);
 			                                                         return mapping.findForward(studentPlacementForm.getCurrentPage());
 		}

@@ -99,6 +99,7 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			sql+=" ,email_to_sup=null ";
 	     }
 			sql = sql +	" where mk_academic_year=" + acadYear +
+
 		" and semester_period=" + semester +
 		" and mk_student_nr=" + studentNr +
 		" and mk_study_unit_code='" + originalModule + "'" +
@@ -314,7 +315,9 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                                                                                  " where tpuspl.mk_student_nr =a.mk_student_nr and   tpuspl.mk_study_unit_code=a.mk_study_unit_code  "
                                                                                  + " and tpuspl.mk_academic_year=a.mk_academic_year "+
                                                                                  "  and tpuspl.mk_school_code= a.mk_school_code and tpuspl.semester_period=a.semester_period "+
+
                                                                                 " and tpuspl.practice_period=2)  as secDatesFragment";
+
 	                                          String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
 	                                                                 " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
 	                                                                 " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
@@ -335,6 +338,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                        "  and a.practice_period=1"+
                       "   and a.mk_supervisor_code=" +283;
                  return sqlStr;
+
     }
     private String  getPlacementListSql(String   firstPartOfSqlStr,Short acadYear, Short semester, Short province, Short district, 
                       Integer supervisor, Integer school, String module, String sortOn,String country,String town){
@@ -348,6 +352,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	                                        sql = sql.trim() + " and b.mk_district_code=" + district;
 	                                  }
 	                       if (province!=null && province.compareTo(Short.parseShort("0"))>0){
+
                             	                  if(province>=30){
                             	                               sql = sql.trim() + "  and  "+ province+" = ( select fk_tpusubprv_code  from ldd where  code=  b.mk_district_code   )" ;
                                    	               
@@ -355,6 +360,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                             	                	            sql = sql.trim() + "   and b.mk_prv_code=" + province;
                                	                            }
                               }
+
                      }
 	                 if((town!=null)&&(!town.trim().isEmpty())&&(!town.trim().equals("-1"))){
                                 sql+=" and b.town='"+town.trim()+"'";

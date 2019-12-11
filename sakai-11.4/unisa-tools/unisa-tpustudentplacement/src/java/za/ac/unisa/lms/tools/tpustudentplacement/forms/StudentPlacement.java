@@ -259,6 +259,7 @@ public class StudentPlacement extends StudentPlacementImpl{
                                                 	                               }else{
                                            		                                                        request.setAttribute("endDate",studentPlacementForm.getStudentPlacement().getEndDate());
                                                 	                               }
+
                                                                                                                  if((studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod()==null)||
                                           	                            		                                                      (studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod().trim().isEmpty())){
                                           	                            	                                                               request.setAttribute("startDateSecPrd", dateUtil.dateOnly());
@@ -271,7 +272,9 @@ public class StudentPlacement extends StudentPlacementImpl{
                               	                                                                                     }else{
                           	                                                                                              request.setAttribute("endDateSecPrd",studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
                               	                                                                        }
+
                                                 }
+
        }
 	public String getUserSelectedDateBlock() {
 		return userSelectedDateBlock;
@@ -318,6 +321,7 @@ public class StudentPlacement extends StudentPlacementImpl{
 	public void  setPacementDatesForView(){
 		                           setPacementDatesForView(this);
 	}
+
 	public Integer getSchoolCode2() {
 		return schoolCode2;
 	}

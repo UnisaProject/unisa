@@ -33,6 +33,7 @@ public class Qualification {
                                         QualificationDAO  qualificationDAO=new  QualificationDAO();
                                         return qualificationDAO.isPGCE(qualCode);
      }
+
 	public String getType() {
 		return type;
 	}

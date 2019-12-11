@@ -161,6 +161,8 @@ public ActionForward linkDistrictToSubProv(
 	                                                                                            	        DistrictDAO dao = new DistrictDAO();
 	                                                                                            	        dao.unlinkToSubProv(district.getCode());
 	                                                                                 }
+
                                                            return display(mapping,form,request,response);	
+
     }
 }
