@@ -103,11 +103,11 @@ public ActionForward linkDistrictToSubProv(
 			HttpServletResponse response) throws Exception {
 		
 		StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
-		ActionMessages messages = new ActionMessages();	
-		
 		List list = new ArrayList<District>();
 		DistrictDAO dao = new DistrictDAO();
-		         	list = dao.getDistrictList(studentPlacementForm.getDistrictFilterProvince());
+		studentPlacementForm.setListDistrictsOfProvince(list);
+		studentPlacementForm.setIndexNrSelected(new String[studentPlacementForm.getListDistrictsOfProvince().size()]);
+	         	list = dao.getDistrictList(studentPlacementForm.getDistrictFilterProvince());
 			studentPlacementForm.setListDistrictsOfProvince(list);
 			 studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
 			 studentPlacementForm.setCurrentPage("districtScreen");
@@ -161,7 +161,6 @@ public ActionForward linkDistrictToSubProv(
 	                                                                                            	        DistrictDAO dao = new DistrictDAO();
 	                                                                                            	        dao.unlinkToSubProv(district.getCode());
 	                                                                                 }
-                                                                           	     studentPlacementForm.setIndexNrSelected(new String[1]);
-                                                          return display(mapping,form,request,response);	
+                                                           return display(mapping,form,request,response);	
     }
 }

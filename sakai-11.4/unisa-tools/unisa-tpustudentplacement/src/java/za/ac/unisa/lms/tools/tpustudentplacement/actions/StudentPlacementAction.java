@@ -35,6 +35,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.CommunicationUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.LetterUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.PrelimStudentPlacementImpl;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.*;
 public class StudentPlacementAction extends LookupDispatchAction{
 	
@@ -628,15 +629,16 @@ public class StudentPlacementAction extends LookupDispatchAction{
 				         record=(StudentPlacementListRecord)studentPlacementForm.getListStudentPlacement().get(i);
 				         placement.setModule(record.getModule());
 				         placement.setSchoolCode(record.getSchoolCode());
+				         placement.setSchoolCode2(record.getSchoolCode());
 				         placement.setSchoolDesc(record.getSchoolDesc());
 				         placement.setSupervisorCode(record.getSupervisorCode());
 				         placement.setSupervisorName(record.getSupervisorName());
-				         placement.setStartDate(record.getStartDate());
-				         placement.setEndDate(record.getEndDate());
-				         placement.setStartDateSecPracPeriod(record.getStartDateSecPracPeriod());
-				         placement.setEndDateSecPracPeriod(record.getEndDateSecPracPeriod());
-				         placement.setNumberOfWeeks(record.getNumberOfWeeks());
-				         placement.setNumberOfWeeksSecPracPrd(record.getNumberOfWeeksSecPracPrd());
+				         placement.setStartDate("");
+				         placement.setEndDate("");
+				         placement.setStartDateSecPracPeriod("");
+				         placement.setEndDateSecPracPeriod("");
+				         placement.setNumberOfWeeks("");
+				         placement.setNumberOfWeeksSecPracPrd("");
 				         break;
 			     }
 				}else{
@@ -645,6 +647,7 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		PlacementUtilities placementUtilities=new PlacementUtilities();
 		placementUtilities.setPlacementDateToRequestObject(request, placement);
 		Integer schoolCode=placement.getSchoolCode();
+		Student student=new Student();
 		placement.setCountryCode(studentPlacementForm.getStudent().getCountryCode());
 		studentPlacementForm.setPlacementFilterCountry(placement.getCountryCode());
 		studentPlacementForm.setSchoolFilterCountry(placement.getCountryCode());
@@ -653,9 +656,8 @@ public class StudentPlacementAction extends LookupDispatchAction{
 			       SchoolUI schoolUI=new  SchoolUI();
 			       String town=schoolUI.getTown(schoolCode);
 			       placement.setTown(town);
-			       placement.setCountryCode(schoolUI.getSchCountryCode(schoolCode));
 		}
-		if(placement.getCountryCode().equals(PlacementUtilities.getSaCode())){
+		if(studentPlacementForm.getStudent().getCountryCode().trim().equals("1015")){
 		              studentPlacementForm.setLocalSchool("Y");
 		              Short districtCode=studentPlacementForm.getStudent().getDistrictCode();
 		              Short provCode=studentPlacementForm.getStudent().getProvinceCode();
@@ -665,11 +667,11 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		      		studentPlacementForm.setSupervisorFilterDistrict(districtCode);
 		      		
 		}else{
-			         studentPlacementForm.setPracticeBatchDateListsIndex(-1);
-			         studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(-1);
-			         studentPlacementForm.setLocalSchool("N");
+			           studentPlacementForm.setLocalSchool("N");
 		}
-		int studyLevel=1;
+		 studentPlacementForm.setPracticeBatchDateListsIndex(-1);
+         studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(-1);
+      int studyLevel=1;
 		if( (placement.getModule()!=null)||(! placement.getModule().trim().equals(""))){
 		                Module module=new Module();
 		                module=module.getModule(placement.getModule().trim());
@@ -683,8 +685,10 @@ public class StudentPlacementAction extends LookupDispatchAction{
        	 studentPlacementForm.setStudyLevel(studyLevel);
 		 PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
          studentPlacementForm.setStudentPlacement(placement);
-         practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
-         studentPlacementForm.setStudentPlacementAction("add");	
+     	if(studentPlacementForm.getStudent().getCountryCode().trim().equals("1015")){
+			   practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
+		  }
+          studentPlacementForm.setStudentPlacementAction("add");	
 		studentPlacementForm.setSchoolCalledFrom("editStudentPlacement");
 		studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
 		studentPlacementForm.setCurrentPage("editStudentPlacement");
@@ -703,6 +707,7 @@ public class StudentPlacementAction extends LookupDispatchAction{
         	        	       studentPlacementForm.getStudentPlacement().setTwoPlacements(true);
         	          }
          }
+       placement.setNumberOfWeeks(student.getCountryCode());
 		return mapping.findForward("editStudentPlacement");	
 	}
 	public ActionForward editStudentPlacement(
@@ -747,16 +752,40 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		                                                                           StudentPlacement.setDatesFromRequest(studentPlacementForm, request);
 			                                                                        stuPlacementUI.changeDateFormat(studentPlacementForm.getStudentPlacement());
 			                                                                       studentPlacementForm.getStudentPlacement().setSecPrelimPlacement(false);
+			                                                                       if(studentPlacementForm.getStudentPlacementAction().equals("add")){
+			                                                                    	   studentPlacementForm.getStudentPlacement().setPlacementPrd(1);
+			                                                                       }
 		                                                                            ActionMessages messages=stuPlacementUI.saveStuPlacement(studentPlacementForm);
 		                                                                              if( studentPlacementForm.getStudentPlacement().isTwoPlacements()){
 		                                                                            	              studentPlacementForm.getStudentPlacement().setSecPrelimPlacement(true);
+		                                                                            	              if(studentPlacementForm.getStudentPlacementAction().equals("editPrelimPlacement")||
+		                                                                            	            		  studentPlacementForm.getStudentPlacementAction().equals("edit")){
+		                                                                            	                          PrelimStudentPlacementImpl  prelimStudentPlacementImpl =new PrelimStudentPlacementImpl();
+		                                                                            	                          Short   acadYear=Short.parseShort(studentPlacementForm.getAcadYear());
+                                                                           	            		                  Integer     stuNum=Integer.parseInt(studentPlacementForm.getStudentPlacement().getStuNum());
+		                                                                            	                          prelimStudentPlacementImpl.updateSecPlacement(acadYear,(short)0, stuNum,
+		                                                                            	            		                                          studentPlacementForm.getStudentPlacement());
+		                                                                            	              }else{
+		                                                                            	              Integer schoolCode=studentPlacementForm.getStudentPlacement().getSchoolCode();
+		                                                                            	              studentPlacementForm.getStudentPlacement().setSchoolCode(
+		                                                                            	            		  studentPlacementForm.getStudentPlacement().getSchoolCode2());
+		                                                                            	              String startDate=studentPlacementForm.getStudentPlacement().getStartDate();
+		                                                                            	              String endDate=studentPlacementForm.getStudentPlacement().getEndDate();
 		  		                                                                                      studentPlacementForm.getStudentPlacement().setStartDate(
                                                                                              		  studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod());
                                                                                                       studentPlacementForm.getStudentPlacement().setEndDate(
-                                                                                             		                     studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
+                                                                                             		  studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
                                                                                                        studentPlacementForm.getStudentPlacement().setPlacementPrd(2);
-                                                                                                       studentPlacementForm.getStudentPlacement().setNumberOfWeeks(studentPlacementForm.getStudentPlacement().getNumberOfWeeksSecPracPrd());
+                                                                                                       String numOfWeeks= studentPlacementForm.getStudentPlacement().getNumberOfWeeks();
+                                                                                                       studentPlacementForm.getStudentPlacement().setNumberOfWeeks(
+                                                                                                    		   studentPlacementForm.getStudentPlacement().getNumberOfWeeksSecPracPrd());
                                                                                                        messages=stuPlacementUI.saveStuPlacement(studentPlacementForm);
+                                                                                                       studentPlacementForm.getStudentPlacement().setStartDate(startDate);
+                                                                                                       studentPlacementForm.getStudentPlacement().setEndDate(endDate);
+                                                                                                       studentPlacementForm.getStudentPlacement().setPlacementPrd(1);
+                                                                                                       studentPlacementForm.getStudentPlacement().setNumberOfWeeks(numOfWeeks);
+                                                                                                       studentPlacementForm.getStudentPlacement().setSchoolCode(schoolCode);
+                                                                                       	              }
                                                                                          }
 		                                                                           StudentPlacement.setDatesDataToRequest(studentPlacementForm, request);
 		                              		                                       studentPlacementForm.setCommunicationSchool(studentPlacementForm.getStudentPlacement().getSchoolCode());
@@ -817,8 +846,19 @@ public class StudentPlacementAction extends LookupDispatchAction{
 			                                              ActionForm form,
 			                                              HttpServletRequest request,
 			                                              HttpServletResponse response) throws Exception {
-		                                                                                       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-		                                                                                       StudentPlacement stuplcmt=studentPlacementForm.getStudentPlacement();
+    	                                                                                   StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
+    	                                                                                  /* if(!studentPlacementForm.getModuleCode().equals(
+    	                                                                                		   studentPlacementForm.getStudentPlacement().getModule())){
+    	                                                                                	           if(studentPlacementForm.getStudentPlacementAction().equals("edit")){    
+    	                                                                                	                   studentPlacementForm.getStudentPlacement().setModule(
+    	                                                                                			           studentPlacementForm.getModuleCode());
+                                                                               	                               return mapping.findForward("editPrelimPlacement");
+    	                                                                                	           }
+                                                                               	             }*/
+		                                                                                        Module module=new Module();
+		                                                                                       module=module.getModule(studentPlacementForm.getStudentPlacement().getModule());
+		                                                                              if(studentPlacementForm.getStudyLevel()==module.getLevel()){
+		                                                                                        StudentPlacement stuplcmt=studentPlacementForm.getStudentPlacement();
 		                                                                                         int index=studentPlacementForm.getPracticeBatchDateListsIndex();
 		                                                                                        int index2=studentPlacementForm.getPracticeBatchDateSecPracPrdListsIndex();
 		                                                                                        PlacementUtilities placementUtilities=new PlacementUtilities();
@@ -841,13 +881,21 @@ public class StudentPlacementAction extends LookupDispatchAction{
                        	                                                                                                                  stuplcmt.setStartDateSecPracPeriod(practiceBatchDate.getStartDate());
                        	                                                                                                                  stuplcmt.setEndDateSecPracPeriod(practiceBatchDate.getEndDate());
                        	                                                                                                                  stuplcmt.setNumberOfWeeksSecPracPrd(""+practiceBatchDate.getPracticalDays());
-                       	                                                                                                                  placementUtilities.setSecPrdPlacementDateToRequestObject(request, placement);
+                       	                                                                                                                 placementUtilities.setPlacementDateToRequestObject(request, placement);
                        	                                                                                                        }else{
                    	                                                                    	                                             stuplcmt.setStartDateSecPracPeriod("");
                                                                                                                                          stuplcmt.setEndDateSecPracPeriod("");
                                                                                                                                          stuplcmt.setNumberOfWeeksSecPracPrd("");
                                                                                                                              }
                                                                                                  }
+		                                                                              }else{
+		                                                                            	          if(studentPlacementForm.getStudentPlacementAction().equals("editPrelimPlacement")){
+		                                                                            	        	           studentPlacementForm.getStudentPlacement().setModule(studentPlacementForm.getModuleCode());
+		                                                                            	         }else{
+		                                                                            	                      module.checkOnModuleChange(studentPlacementForm,request);
+		                                                                            	                      studentPlacementForm.setModuleCode(studentPlacementForm.getStudentPlacement().getModule());
+		                                                                            	         }
+		                                                                              }
 		                                                                                      return mapping.findForward("editPrelimPlacement");
     }
 	

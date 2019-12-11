@@ -29,6 +29,11 @@ public class StuPlacementEditWinBuilder {
 		       		   StuPlacementReader stuPlacementReader=new StuPlacementReader();
 		       		   StudentPlacement studentPlacement =stuPlacementReader.getStudentPlacement(studentPlacementForm, studentPlacementListRecord);
 		       		   studentPlacementForm.setStudentPlacement(studentPlacement);
+		       		 studentPlacement.setCountryCode(studentPlacementForm.getStudent().getCountryCode(studentPlacementForm.getStudent().getNumber()));
+		    		studentPlacementForm.setPlacementFilterCountry( studentPlacement.getCountryCode());
+		    		studentPlacementForm.setSchoolFilterCountry( studentPlacement.getCountryCode());
+		    		 studentPlacementForm.setSupervisorFilterCountry( studentPlacement.getCountryCode());
+		    	
 		       		   String moduleCode=studentPlacement.getModule();
 		       		   if((studentPlacement==null)||(moduleCode==null)||(moduleCode.equals(""))){
 		       				  return;
@@ -37,23 +42,25 @@ public class StuPlacementEditWinBuilder {
 		       		   studentPlacementForm.setSupervisorCode(studentPlacement.getSupervisorCode());
 		       		   studentPlacementForm.setStudentPlacement(studentPlacement);
 		       		   studentPlacementForm.setStudentPlacementAction("edit");	
-		       	      	if( PlacementUtilities.getSaCode().equals(studentPlacementForm.getPlacementFilterCountry())){
+		       		if(studentPlacementForm.getStudent().getCountryCode().trim().equals("1015")){
                                                 studentPlacementForm.setLocalSchool("Y");
                         }else{
                                               studentPlacementForm.setLocalSchool("N");
  	                     }
 		       	       Module module=new Module();
 		       	       module=module.getModule(moduleCode);
-		       	      if(module.getLevel()==1){
-		       	    	  studentPlacementForm.setDisplaySecDatesBatch("N");
-		       	       }else{
-		       	    	studentPlacementForm.setDisplaySecDatesBatch("Y");
-		       	       }
-                         studentPlacementForm.setPracticeBatchDateListsIndex(-1);
+		       	      studentPlacementForm.setStudyLevel(module.getLevel());
+		       	   	          studentPlacementForm.setDisplaySecDatesBatch("N");
+		       	    	         studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
+		       	       studentPlacementForm.setPracticeBatchDateListsIndex(-1);
                          studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(-1);
-                         PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
-                         practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
-                         PlacementUtilities placementUtilities=new PlacementUtilities();
+                         if(studentPlacementForm.getStudent().getCountryCode().trim().equals("1015")){
+                                 PracticeDatesMaintenance practiceDatesMaintenance=new PracticeDatesMaintenance();
+                     	         practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
+                     	}
+                     	studentPlacementForm.setSchoolFilterCountry(studentPlacementForm.getPlacementFilterCountry());
+                      	studentPlacementForm.setSupervisorFilterCountry(studentPlacementForm.getPlacementFilterCountry());
+            	         PlacementUtilities placementUtilities=new PlacementUtilities();
                          StudentPlacement placement=studentPlacementForm.getStudentPlacement();
                          placementUtilities.setPlacementDateToRequestObject(request, placement);
                          studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
@@ -63,11 +70,12 @@ public class StuPlacementEditWinBuilder {
 		       		    //studentPlacement.setTotPracDays();
 		       		    String qualCode=studentPlacementForm.getStudent().getQual().getCode();
 		       		    Qualification qualification=new Qualification();
-                        if(qualification.isPGCE(qualCode)){
-                                     studentPlacementForm.setIsPGCE("Y");
-                        }else{
-     	                               studentPlacementForm.setIsPGCE("N");
-                       }
+		       		 if(qualification.isPGCE(qualCode)){
+     	                studentPlacementForm.setIsPGCE("Y");
+     	   }else{
+     	             studentPlacementForm.setIsPGCE("N");
+       }
+     
                         studentPlacement .setPacementDatesForView();
 		       	       StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
 	 }

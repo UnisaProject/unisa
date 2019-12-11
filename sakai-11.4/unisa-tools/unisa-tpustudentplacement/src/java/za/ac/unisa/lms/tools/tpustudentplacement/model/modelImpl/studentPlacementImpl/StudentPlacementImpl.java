@@ -151,7 +151,7 @@ public class StudentPlacementImpl extends StuPlacementCRUDHelperClass{
            public void  setPacementDatesForView(StudentPlacement stuPlacement){
                                              stuPlacement.setStartDateView(stuPlacement.getStartDate());
                                              stuPlacement.setEndDateView(stuPlacement.getEndDate());
-                                             stuPlacement.setStartDateSecPracPeriodView(stuPlacement.getStartDateSecPracPeriod());
+                                               stuPlacement.setStartDateSecPracPeriodView(stuPlacement.getStartDateSecPracPeriod());
                                              stuPlacement.setEndDateSecPracPeriodView(stuPlacement.getEndDateSecPracPeriod());
            }         
 }
