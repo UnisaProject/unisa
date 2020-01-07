@@ -99,7 +99,6 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			sql+=" ,email_to_sup=null ";
 	     }
 			sql = sql +	" where mk_academic_year=" + acadYear +
-
 		" and semester_period=" + semester +
 		" and mk_student_nr=" + studentNr +
 		" and mk_study_unit_code='" + originalModule + "'" +
@@ -153,8 +152,6 @@ public List getStudentPlacementList(Short acadYear, Short semester, Integer stud
 		                                                              "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName," +
 		                                                              "  to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate," +
 		                                                               "  a.number_of_weeks as numWeeks,"+
-		                                                               "  to_char(a.start_date_sec_prd,'YYYY/MM/DD') as startDate_sec_prd,to_char(a.end_date_sec_prd,'YYYY/MM/DD') as endDate_sec_prd," +
-		                                                               "  a.number_of_weeks_sec_prd as numWeeks_sec_prd,"+
 		                                                               "  a.evaluation_mark as evalMark,a.practice_period as practiceprd,"+mentordatasql+",stu_FullTime_sch " +
 		                                                               "  from tpuspl a, tpusch b, tpusup c" +
 		                                                               "  where a.mk_academic_year=" + acadYear +
@@ -315,9 +312,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                                                                                  " where tpuspl.mk_student_nr =a.mk_student_nr and   tpuspl.mk_study_unit_code=a.mk_study_unit_code  "
                                                                                  + " and tpuspl.mk_academic_year=a.mk_academic_year "+
                                                                                  "  and tpuspl.mk_school_code= a.mk_school_code and tpuspl.semester_period=a.semester_period "+
-
                                                                                 " and tpuspl.practice_period=2)  as secDatesFragment";
-
 	                                          String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
 	                                                                 " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
 	                                                                 " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
@@ -338,7 +333,6 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                        "  and a.practice_period=1"+
                       "   and a.mk_supervisor_code=" +283;
                  return sqlStr;
-
     }
     private String  getPlacementListSql(String   firstPartOfSqlStr,Short acadYear, Short semester, Short province, Short district, 
                       Integer supervisor, Integer school, String module, String sortOn,String country,String town){
@@ -352,7 +346,6 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	                                        sql = sql.trim() + " and b.mk_district_code=" + district;
 	                                  }
 	                       if (province!=null && province.compareTo(Short.parseShort("0"))>0){
-
                             	                  if(province>=30){
                             	                               sql = sql.trim() + "  and  "+ province+" = ( select fk_tpusubprv_code  from ldd where  code=  b.mk_district_code   )" ;
                                    	               
@@ -360,7 +353,6 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                             	                	            sql = sql.trim() + "   and b.mk_prv_code=" + province;
                                	                            }
                               }
-
                      }
 	                 if((town!=null)&&(!town.trim().isEmpty())&&(!town.trim().equals("-1"))){
                                 sql+=" and b.town='"+town.trim()+"'";
@@ -587,8 +579,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                     "  a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,a.town as town,"+
                     "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
                    "   to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-                   "  to_char(a.start_date_sec_prd,'YYYY/MM/DD') as startDate_sec_prd,to_char(a.end_date_sec_prd,'YYYY/MM/DD') as endDate_sec_prd,"+
-                   "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year, a.semester_period"+ 
+                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year, a.semester_period"+ 
                    " ,a.practice_period as  practiceprd,"+
                    "  semester,f.eng_description as prov,"+
                    "  a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+mentordatasql+" from tpuspl a,"+ 
