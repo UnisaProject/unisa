@@ -33,7 +33,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 	 *            The application type : F = formal / S = Short courses
 	 */
 
-	public ArrayList getQualList(String applyType, String sYear)
+	public ArrayList getQualListxx(String applyType, String sYear)
 			throws Exception {
 		ArrayList list = new ArrayList();
 		String query = "";
@@ -48,6 +48,84 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 				+ " and code not in ('0605X','08052','97837','98549','98550')"
 				+ " order by eng_description";
 		query = formalUnisa;
+
+		try {
+			//log.debug(query);
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query);
+			Iterator i = queryList.iterator();
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				String code = data.get("CODE").toString();
+				String desc = data.get("long_eng_descripti").toString();
+				list.add(new org.apache.struts.util.LabelValueBean(code + " - "	+ desc, code + desc));
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"MdApplicationsQueryDAO : Error reading qual list / " + ex, ex);
+		}
+		return list;
+	}
+	
+	public ArrayList getQualList(String applyType, String sYear, boolean isAdmin)
+			throws Exception {
+		ArrayList list = new ArrayList();
+		String query = "";
+		/*Johanet 20190913 - read long description instead of eng_description*/
+		if (isAdmin) {
+		query = "select code,long_eng_descripti from grd where"
+				+ " (type <> 'S' or code='00051')"
+				+ " and in_use_flag = 'Y' "
+				+ " and (to_year=0 or to_year>=" + sYear + ") "
+				+ " and (from_year=0 or from_year<=" + sYear + ") "
+				+ " and (repeaters_from_yea =0 or repeaters_from_yea > " +sYear +") "
+				+ " and UNDER_POST_CATEGOR in ('M','D')"
+				+ " and code not in ('0605X','08052','97837','98549','98550')"
+				+ " order by long_eng_descripti";
+		}else {		
+		query = "select code,long_eng_descripti" 
+		+ " from grd,regdat,quaspc where"
+		+ " (grd.type <> 'S' or grd.code='00051')"
+		+ " and grd.in_use_flag = 'Y'" 
+		+ " and (grd.to_year=0 or grd.to_year>=" + sYear + ")"
+		+ " and (grd.from_year=0 or grd.from_year<=" + sYear + ")"
+		+ " and (grd.repeaters_from_yea =0 or grd.repeaters_from_yea > " + sYear + ")"
+		+ " and grd.UNDER_POST_CATEGOR in ('M','D')"
+		+ " and grd.code not in ('0605X','08052','97837','98549','98550')"
+		+ " and (trunc(sysdate) between regdat.from_date and regdat.to_date)"
+		+ " and (regdat.type in ('WAPM','WAPD'))"
+		+ " and regdat.academic_year = " + sYear 
+		+ " and QUASPC.MK_QUALIFICATION_C=grd.code"
+		+ " and quaspc.app_open in ('WAPM','WAPD')"
+		+ " and grd.code not in (" 
+		+ " select flexdat.mk_qualification_c" 
+		+ " from flexdat" 
+		+ " where flexdat.year = " + sYear 
+		+ " and flexdat.type like 'APP'" 
+		+ " and (trunc(sysdate) < flexdat.from_date or trunc(sysdate) > flexdat.to_date))" 
+		+ " union"
+		+ " select code,long_eng_descripti" 
+		+ " from grd,regdat,quaspc where"
+		+ " (grd.type <> 'S' or grd.code='00051')" 
+		+ " and grd.in_use_flag = 'Y' "
+		+ " and (grd.to_year=0 or grd.to_year>=" + sYear + ")"
+		+ " and (grd.from_year=0 or grd.from_year<=" + sYear + ")"
+		+ " and (grd.repeaters_from_yea =0 or grd.repeaters_from_yea > " + sYear + ")"
+		+ " and grd.UNDER_POST_CATEGOR in ('M','D')"
+		+ " and grd.code not in ('0605X','08052','97837','98549','98550')"
+		+ " and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date)"
+		+ " and (regdat.type in ('WAPM','WAPD'))"
+		+ " and regdat.academic_year = " + sYear 
+		+ " and QUASPC.MK_QUALIFICATION_C=grd.code"
+		+ " and quaspc.app_open in ('WAPM','WAPD')"
+		+ " and grd.code in (" 
+		+ " select flexdat.mk_qualification_c" 
+		+ " from flexdat" 
+		+ " where flexdat.year = " + sYear 
+		+ " and flexdat.type like 'APP'"  
+		+ " and (trunc(sysdate) between flexdat.from_date and flexdat.to_date))"
+		+ " order by long_eng_descripti";
+		}
 
 		try {
 			//log.debug(query);
@@ -260,7 +338,7 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 	/**
 	 * This method returns a list of specialisations
 	 */
-	public ArrayList getSpesList(String sQual, String sYear, boolean isAdmin) throws Exception {
+	public ArrayList getSpesListxx(String sQual, String sYear, boolean isAdmin) throws Exception {
 		ArrayList list = new ArrayList();
 
 		String wapString = " and trunc(sysdate) between regdat.from_date and regdat.to_date ";
@@ -303,6 +381,89 @@ public class MdApplicationsQueryDAO extends StudentSystemDAO {
 			ListOrderedMap data = (ListOrderedMap) i.next();
 			String code = data.get("SPECIALITY_CODE").toString();
 			String desc = data.get("ENGLISH_DESCRIPTIO").toString();
+			list.add(new org.apache.struts.util.LabelValueBean(code + " - "	+ desc, code + desc));
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+			"MdApplicationsQueryDAO : Error reading spes list / " + ex, ex);
+		}
+		return list;
+	}
+	
+	
+	public ArrayList getSpesList(String sQual, String sYear, boolean isAdmin) throws Exception {
+		ArrayList list = new ArrayList();
+
+		String query="";
+        if (isAdmin) {
+        	query  = "select substr(trim(speciality_code)||'NVT',1,3)||'-'||mk_qualification_c as code ," +
+						" substr(english_descriptio,1,60) as ENG_DESCRIPTION " +
+						" from quaspc " +
+						" where in_use_flag = 'Y'" +
+						" and mk_qualification_c = '" + sQual + "' " +
+						" and speciality_code <> ' ' " +
+						" and (repeaters_from_yea =0 or repeaters_from_yea >"  +sYear + ")" +
+						" and (from_year=0 or from_year<=" +sYear + ")" +
+						" and (to_year=0 or to_year>=" +sYear + ")" +
+						" order by mk_qualification_c, english_descriptio";
+        }else {
+        	query  = "SELECT DISTINCT(T.CODE) as CODE, T.ENG_DESCRIPTION FROM ( "
+					+ " 	select substr(trim(quaspc.speciality_code)||'NVT',1,3) as CODE , "
+					+ " 	substr(quaspc.english_descriptio,1,60) as ENG_DESCRIPTION  "
+   					+ " 	from quaspc, regdat, grd "
+					+ " 	where quaspc.in_use_flag = 'Y' "
+					+ " 	and quaspc.mk_qualification_c = '" + sQual + "'"
+					+ " 	and (quaspc.repeaters_from_yea = 0 or quaspc.repeaters_from_yea > " + sYear + ") "
+					+ " 	and (quaspc.from_year = 0 or quaspc.from_year <= " + sYear + " ) "
+					+ " 	and (quaspc.to_year = 0 or quaspc.to_year >=" + sYear + ") "
+					+ " 	and quaspc.repeaters_only <> 'Y' "
+					+ " 	and regdat.academic_year = " + sYear + " "
+					+ " 	and quaspc.app_open = regdat.type "
+					+ " 	and quaspc.mk_qualification_c = grd.code "
+					+ " 	and (trunc(sysdate) between regdat.from_date and regdat.to_date) "
+					+ " 	and quaspc.speciality_code not in ( "
+					+ " 		select flexdat.speciality_code "
+					+ " 		from flexdat "
+					+ " 		where flexdat.mk_qualification_c = quaspc.mk_qualification_c "
+					+ " 		and flexdat.year = " + sYear 
+					+ " 		and flexdat.type like 'APP' "
+					+ "			and (trunc(sysdate) < from_date or trunc(sysdate) > to_date) "				
+					+ " 	) "
+					+ "		UNION ALL "
+					+ " 	select substr(trim(quaspc.speciality_code)||'NVT',1,3) as CODE , "
+					+ " 	substr(quaspc.english_descriptio,1,60) as ENG_DESCRIPTION "
+					+ " 	from quaspc, regdat, grd "
+					+ " 	where quaspc.in_use_flag = 'Y' "
+					+ " 	and quaspc.mk_qualification_c =  '" + sQual + "'"
+					+ " 	and (quaspc.repeaters_from_yea = 0 or quaspc.repeaters_from_yea > " + sYear + ") "
+					+ " 	and (quaspc.from_year = 0 or quaspc.from_year <= " + sYear + " ) "
+					+ " 	and (quaspc.to_year = 0 or quaspc.to_year >= " + sYear + ") "
+					+ " 	and quaspc.repeaters_only <> 'Y' "
+					+ " 	and regdat.academic_year = " + sYear 
+					+ " 	and quaspc.app_open = regdat.type "
+					+ " 	and quaspc.mk_qualification_c = grd.code "
+					+ " 	and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date) "
+					+ " 	and quaspc.speciality_code in ( "
+					+ " 	select flexdat.speciality_code "
+					+ " 		from flexdat "
+					+ " 		where flexdat.mk_qualification_c = quaspc.mk_qualification_c "
+					+ " 		and flexdat.year = " + sYear  
+					+ " 		and flexdat.type like 'APP' "
+					+ "			and trunc(sysdate) between from_date and to_date "
+					+ " 	) "
+					+ " ) T "
+					+ "	order by T.ENG_DESCRIPTION ASC ";	
+        }
+		
+		try {
+		//log.debug(query);
+		JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+		List queryList = jdt.queryForList(query);
+		Iterator i = queryList.iterator();
+		while (i.hasNext()) {
+			ListOrderedMap data = (ListOrderedMap) i.next();		
+			String code = data.get("CODE").toString();
+			String desc = data.get("ENG_DESCRIPTION").toString();
 			list.add(new org.apache.struts.util.LabelValueBean(code + " - "	+ desc, code + desc));
 			}
 		} catch (Exception ex) {

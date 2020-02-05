@@ -466,7 +466,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			return mapping.findForward("login");
 		}else{			
 			if (mdForm.getLoginType() == null || "".equals(mdForm.getLoginType().trim()) || "APP".equalsIgnoreCase(mdForm.getLoginType().trim())){
-				setUpQualList(request,"F", mdForm.getStudent().getAcademicYear());
+				setUpQualList(request,"F", mdForm.getStudent().getAcademicYear(),mdForm.getAdminStaff().isAdmin());
 				setDropdownListsStep1(request,mdForm.getApplyType());
 				return mapping.findForward("step1forward");
 			}else{
@@ -1928,7 +1928,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", errorMsg));
 			addErrors(request, messages);
-			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear());
+			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear(), mdForm.getAdminStaff().isAdmin());
 			setDropdownListsStep1(request,mdForm.getApplyType());
 			return mapping.findForward("step1forward");
 		}else{
@@ -1942,7 +1942,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "A Processing error occurred, Please try again"));
 				addErrors(request, messages);
-				setUpQualList(request,"F", mdForm.getStudent().getAcademicYear());
+				setUpQualList(request,"F", mdForm.getStudent().getAcademicYear(),mdForm.getAdminStaff().isAdmin());
 				setDropdownListsStep1(request,mdForm.getApplyType());
 				return mapping.findForward("step1forward");
 			}else{
@@ -1990,7 +1990,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 
 		String nextPage = "";
 		if ("step1".equalsIgnoreCase(request.getParameter("page"))){
-			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear());
+			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear(),mdForm.getAdminStaff().isAdmin());
 			setDropdownListsStep1(request,mdForm.getApplyType());
  			nextPage = applyStep2(mapping,form,request, response);
 		}else if ("step2".equalsIgnoreCase(request.getParameter("page"))){
@@ -2031,7 +2031,7 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		}
 				
 		if ("step2".equalsIgnoreCase(request.getParameter("page"))) {
-			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear());
+			setUpQualList(request,"F", mdForm.getStudent().getAcademicYear(),mdForm.getAdminStaff().isAdmin());
  			setDropdownListsStep1(request,mdForm.getApplyType());
 			prevPage = "step1forward";
 		}else if ("step3".equalsIgnoreCase(request.getParameter("page"))) {
@@ -2116,10 +2116,10 @@ public class MdApplicationsAction extends LookupDispatchAction {
 		return mapping.findForward("login");
 	}
 
-	private void setUpQualList(HttpServletRequest request, String appsType, String akdyear) throws Exception{
+	private void setUpQualList(HttpServletRequest request, String appsType, String akdyear, boolean isAdmin) throws Exception{
 
 		MdApplicationsQueryDAO dao = new MdApplicationsQueryDAO();
-		List<LabelValueBean> list = dao.getQualList(appsType, akdyear);
+		List<LabelValueBean> list = dao.getQualList(appsType, akdyear, isAdmin);
 		list.add(0,new LabelValueBean("Select from Menu","-1"));
 		request.setAttribute("quallist",list);
 	}
