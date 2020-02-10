@@ -27,6 +27,7 @@ public class SmsBatchForm extends ValidatorForm {
 	private String geoCriteriaType;
 	private String prevRegCriteriaType;
 	private String selectedItems;
+	private String selectedPostalCodes;
 	
 	private short academicYear;
 	private String registrationPeriod;
@@ -53,6 +54,9 @@ public class SmsBatchForm extends ValidatorForm {
 	private String dataFileName;
 	/** Reason list*/
 	private List regList;
+	private List displayPostalCodeList;
+	private List postalCodeList;
+	private int postalCodeAddressType;
 	private String[] regSelection = new String[15];
 	private String[] geoSelection = new String[15];
 	private String selectionString;
@@ -80,6 +84,39 @@ public class SmsBatchForm extends ValidatorForm {
 	private String selectionCriteria;
 	private boolean dcmUser=false;	
 	
+	
+	public List getDisplayPostalCodeList() {
+		return displayPostalCodeList;
+	}
+
+	public void setDisplayPostalCodeList(List displayPostalCodeList) {
+		this.displayPostalCodeList = displayPostalCodeList;
+	}
+
+	public int getPostalCodeAddressType() {
+		return postalCodeAddressType;
+	}
+
+	public void setPostalCodeAddressType(int postalCodeAddressType) {
+		this.postalCodeAddressType = postalCodeAddressType;
+	}
+	
+	public List getPostalCodeList() {
+		return postalCodeList;
+	}
+
+	public void setPostalCodeList(List postalCodeList) {
+		this.postalCodeList = postalCodeList;
+	}
+
+	public String getSelectedPostalCodes() {
+		return selectedPostalCodes;
+	}
+
+	public void setSelectedPostalCodes(String selectedPostalCodes) {
+		this.selectedPostalCodes = selectedPostalCodes;
+	}
+
 	public boolean isDcmUser() {
 		return dcmUser;
 	}

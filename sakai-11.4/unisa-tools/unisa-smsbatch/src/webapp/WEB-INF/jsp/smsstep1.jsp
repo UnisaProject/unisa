@@ -38,6 +38,8 @@
 			<td><html:radio property="geoCriteriaType" value="R"/><fmt:message key="page.regions"/></td>
 		</tr><tr>
 			<td><html:radio property="geoCriteriaType" value="M"/><fmt:message key="page.mag.districts"/></td>
+		</tr><tr>
+			<td><html:radio property="geoCriteriaType" value="P"/><fmt:message key="page.postalCodes"/></td>
 		</tr>
   	</table> 
   	

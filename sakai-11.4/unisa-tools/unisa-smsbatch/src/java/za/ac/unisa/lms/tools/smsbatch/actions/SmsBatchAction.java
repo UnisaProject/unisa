@@ -109,10 +109,11 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 * NB NB NB NB NB NB NB NB set user code for local dev only
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
-				//smsForm.setNovellUserCode("PRETOJ");
+				//
+				smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
 				//smsForm.setNovellUserCode("MAMETMD");
-				return "userunknown";
+				//return "userunknown";
 			}
 		} else {
 			return "userunknown";
@@ -257,9 +258,9 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 * NB NB NB NB NB NB NB NB set user code for local dev only
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
-				//smsForm.setNovellUserCode("PRETOJ");
+				smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
-				return mapping.findForward("userunknown");
+				//return mapping.findForward("userunknown");
 			}
 		} else {
 			return mapping.findForward("userunknown");
@@ -283,6 +284,7 @@ public class SmsBatchAction extends LookupDispatchAction {
 		for (int i=0; i <=2; i++){
 			controlNumberList.add(controlNumber);
 		}
+		smsForm.setPostalCodeAddressType(0);
 		smsForm.setControlCellNumberList(controlNumberList);
 
 		return mapping.findForward("step1forward");
@@ -468,7 +470,128 @@ public class SmsBatchAction extends LookupDispatchAction {
 							"Select at most 20 magisterial districts with one request."));
 					addErrors(request, messages);
 					err = true;
-			}
+			} else if ("P".equalsIgnoreCase(smsBatchForm.getGeoCriteriaType())){
+				if(smsBatchForm.getSelectedPostalCodes().length()==0) {
+					messages.add(
+							ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage",
+									"Enter at least one postal code as criteria."));
+					addErrors(request, messages);
+					err = true;
+				}else {
+					//remove all spaces from postal code list
+					smsBatchForm.setSelectedPostalCodes(smsBatchForm.getSelectedPostalCodes().replaceAll(" ",""));
+					if(smsBatchForm.getSelectedPostalCodes().length()>100) {
+						messages.add(
+								ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage",
+									"Enter at most 20 postal codes as criteria."));
+						addErrors(request, messages);
+						err = true;
+					}
+					/* test length of string */
+					String testString = smsBatchForm.getSelectedPostalCodes().replaceAll(",", "");
+					if ((testString.length() % 4) > 0) {
+						messages.add(
+								ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage",
+									"Invalid postal code list. Postal codes must have a length of 4 numbers, seperated by a comma."));
+						addErrors(request, messages);
+						err = true;
+					}
+					if (smsBatchForm.getPostalCodeAddressType()==0) {
+						messages.add(
+								ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage",
+									"Please select the student address type to apply the postal code list to for student extraction."));
+						addErrors(request, messages);
+						err = true;
+					}
+					if (err)
+						return "step2forward";
+					/* remove duplicates */
+					smsBatchForm.setSelectedPostalCodes(removeDuplicates(smsBatchForm
+							.getSelectedPostalCodes(), smsBatchForm
+							.getGeoCriteriaType()));
+					try {
+						// Do postal code validation
+						List itemList = new ArrayList();
+						List<String> postalCodeList = new ArrayList<String>();
+						List areaList = new ArrayList();
+						itemList = setupItemList(smsBatchForm
+								.getSelectedPostalCodes(), smsBatchForm
+								.getGeoCriteriaType());
+						for (int i = 0; i < itemList.size(); i++) {
+							SmsBatchDAO dao = new SmsBatchDAO();
+							GeneralItem item = new GeneralItem();							
+							try
+								{
+									int postalCode = Integer.parseInt(itemList.get(i).toString());
+								}	
+								catch(NumberFormatException e)
+								{messages
+									.add(
+											ActionMessages.GLOBAL_MESSAGE,
+											new ActionMessage(
+													"message.generalmessage",
+													itemList.get(i)
+															.toString()
+															.toUpperCase()
+															+ " : Invalid postal code list. Postal codes must have a length of 4 numbers, seperated by a comma."));
+								addErrors(request, messages);
+								err = true;
+								break;}
+							areaList = new ArrayList();
+							areaList = dao.getPostalCodeDetail(Integer.parseInt(itemList
+									.get(i).toString()),smsBatchForm.getPostalCodeAddressType());
+							if (areaList.size()==0) {
+								if (smsBatchForm.getPostalCodeAddressType()==1) {
+									messages
+									.add(
+											ActionMessages.GLOBAL_MESSAGE,
+											new ActionMessage(
+													"message.generalmessage",
+													itemList.get(i)
+															.toString()
+															.toUpperCase()
+															+ " : Invalid postal code for a Postal Address."));
+								}else {
+									messages
+									.add(
+											ActionMessages.GLOBAL_MESSAGE,
+											new ActionMessage(
+													"message.generalmessage",
+													itemList.get(i)
+															.toString()
+															.toUpperCase()
+															+ " : Invalid postal code for a Physical or Courier Address."));
+								}
+								
+								addErrors(request, messages);
+								err = true;
+								break;								
+							} else {
+								for (int j = 0; j < areaList.size(); j++) {
+									postalCodeList.add(itemList.get(i).toString() + " : " + 
+								    areaList.get(j).toString());
+								}	
+							}
+						}
+						smsBatchForm.setDisplayPostalCodeList(postalCodeList);
+						smsBatchForm.setPostalCodeList(itemList);
+					} catch (StringIndexOutOfBoundsException e) {
+						messages
+								.add(
+										ActionMessages.GLOBAL_MESSAGE,
+										new ActionMessage(
+												"message.generalmessage",
+												"Invalid postal code list. Postal codes must have a length of 4 numbers, seperated by a comma."));
+						addErrors(request, messages);
+						err = true;
+					}
+				}
+			}	
+			  		
 		}
 		if (err)
 			return "step2forward";
@@ -758,16 +881,25 @@ public class SmsBatchAction extends LookupDispatchAction {
 
 		/** setup selection criteria */
 		int count = 0;
-		for (int i = 0; i < smsBatchForm.getGeoSelection().length; i++) {
-			if (smsBatchForm.getGeoSelection()[i] != null
-					&& !"".equals(smsBatchForm.getGeoSelection()[i])) {
-				/* Seperate code and description */
-				genItem = getItem(smsBatchForm.getGeoSelection()[i].trim());
-				op.setInMagisterialGpCsfStringsString15(count, genItem
-						.getCode());
-				count = count + 1;
+		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){			
+			for (int i = 0; i < smsBatchForm.getPostalCodeList().size(); i++) {
+					op.setInMagisterialGpCsfStringsString15(count, smsBatchForm.getPostalCodeList().get(i).toString().trim());
+					count = count + 1;
+				}
+		}else {
+			count = 0;
+			for (int i = 0; i < smsBatchForm.getGeoSelection().length; i++) {
+				if (smsBatchForm.getGeoSelection()[i] != null
+						&& !"".equals(smsBatchForm.getGeoSelection()[i])) {
+					/* Seperate code and description */
+					genItem = getItem(smsBatchForm.getGeoSelection()[i].trim());
+					op.setInMagisterialGpCsfStringsString15(count, genItem
+							.getCode());
+					count = count + 1;
+				}
 			}
 		}
+		
 		count = 0;
 		List itemList = new ArrayList();
 		itemList = setupItemList(smsBatchForm.getSelectedItems(), smsBatchForm
@@ -1426,6 +1558,8 @@ public class SmsBatchAction extends LookupDispatchAction {
 			len = 7;
 		} else if ("Q".equalsIgnoreCase(type)) {
 			len = 5;
+		} else if ("P".equalsIgnoreCase(type)) {
+			len = 4;
 		}
 		try {
 			if (inputStr.length() == len) {

@@ -99,9 +99,36 @@
     	<tr>
     		<td colspan="2"><fmt:message key="page.all.rsa"/></td>
     	</tr>
-    	</logic:equal>     	
+    	</logic:equal>    
+    	<logic:equal name="smsBatchForm" property="geoCriteriaType" value="P">    	
+	    	<logic:iterate name="smsBatchForm" property="displayPostalCodeList" id="record" indexId="i">
+	    	<tr>
+	    		<logic:equal name="i" value="0">
+		    		<td><fmt:message key="page.postalCodes"/></td>
+		    		<td><bean:write name="record"/>&nbsp;</td>
+	    		</logic:equal>
+	    		<logic:notEqual name="i" value="0">
+						<td>&nbsp;</td>
+	    				<td><bean:write name="record"/>&nbsp;</td>
+				</logic:notEqual>
+			</tr>	
+	    	</logic:iterate>    	
+	    	<tr><td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		    	<td>
+			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="1">
+			    		<fmt:message key="page.postalAddress"/>
+			    	</logic:equal>	
+			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="3">
+			    		<fmt:message key="page.physicalAddress"/>
+			    	</logic:equal>	
+			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="7">
+			    		<fmt:message key="page.courierAddress"/>
+			    	</logic:equal>	   
+			 </td></tr>
+    	</logic:equal> 
     	<logic:notEqual name="smsBatchForm" property="geoCriteriaType" value="A">
     	<logic:notEqual name="smsBatchForm" property="geoCriteriaType" value="S">
+    	<logic:notEqual name="smsBatchForm" property="geoCriteriaType" value="P">
     		<logic:iterate name="smsBatchForm" property="geoSelection" id="record" indexId="i">
     			<logic:equal name="i" value="0">
     			<tr>
@@ -124,6 +151,7 @@
     				</tr>
 				</logic:notEqual>
 			</logic:iterate>
+		</logic:notEqual>
     	</logic:notEqual>	
     	</logic:notEqual>
   	</table>

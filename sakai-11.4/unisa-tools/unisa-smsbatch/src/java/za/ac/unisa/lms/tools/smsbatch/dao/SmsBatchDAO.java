@@ -315,7 +315,103 @@ public class batchUpdate {
 		}		
 	return item;		
 }			
+	
+	public List getPostalCodeDetailxx(int postalCode) throws Exception{
 		
+		List areaList = new ArrayList();
+		GeneralItem item = new GeneralItem();
+		
+		String sql= "select CODE,TOWN,SUBURB " +
+				" from pstcod " +
+				" where pstcod.code = " + postalCode; 
+
+		try{ 
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+		
+			Iterator i = queryList.iterator();
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				item.setCode(data.get("CODE").toString());
+				item.setDesc(data.get("TOWN").toString() + " (" + data.get("SUBURB").toString()  + ")");
+				areaList.add(item.getDesc());
+			}
+		}
+		catch (Exception ex) {
+			throw new Exception("SmsBatchDAO : Error reading pstcod / " + ex);
+		}		
+	return areaList;		
+	}			
+	
+	
+public List<String> getPostalCodeDetail(int postalCode, int addressType) throws Exception{
+			
+		List<String> areaList = new ArrayList<String>();
+		String addressTypeCondition = "";
+		if (addressType==1) {
+			addressTypeCondition = " and type in ('B','S')";
+		}else {
+			addressTypeCondition = " and type = 'S'";
+		}
+		
+		String sql= "select distinct town || ' (' || suburb || ')' as codeDesc " +
+				" from pstcod " +
+				" where pstcod.code = " + postalCode +
+				" and suburb not like '% UIT %'" + 
+				" and suburb not like '% UIT'" +
+				" and suburb not like '% UITBREIDING'" +
+				" and suburb not like '% LGD'" +
+				" and suburb not like '%LANDGOED%'" +
+				" and suburb not like '% UNIVERSITEIT%'" +
+				" and suburb not like '% BLOK %'" +
+				" and suburb not like '% BLOK%'" +
+				" and suburb not like '% SONE %'" +
+				" and suburb not like '% FASE %'" +
+				" and suburb not like '% RIF'" +
+				" and suburb not like '% SEKSIE%'" +
+				" and suburb not like '% GEBIED'" +
+				" and suburb not like '% SENTRUM'" +
+				" and suburb not like '% STASIE'" +
+				" and suburb not like '% SENTRAAL'" +
+				" and suburb not like '% DORP'" +
+				" and suburb not like '% HOOGTE'" +
+				" and suburb not like '% LOKASIE'" +
+				" and suburb not like '% PLEIN'" +
+				" and suburb not like '% WINKELSENTRUM'" +
+				" and suburb not like '% SPOEDDIENSTE'" +
+				" and suburb not like '% INDUSTRIEEL'" +
+				" and suburb not like '% DORPSGEBIED'" +
+				" and suburb not like '% OOS'" +
+				" and suburb not like '%-OOS'" +
+				" and suburb not like '% WES'" +
+				" and suburb not like '%-WES'" +
+				" and suburb not like '% NOORD'" +
+				" and suburb not like '%-NOORD'" +
+				" and suburb not like '% SUID'" +
+				" and suburb not like '%-SUID'" +
+				" and suburb not like '%VALLEI'" +
+				" and suburb not like '%BAAI'" +
+				" and suburb not like '%HEUWEL'" +
+				" and suburb not like '%HEUWELS'" +
+				addressTypeCondition +
+				" order by town || ' (' || suburb || ')'"; 
+
+		try{ 
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+		
+			Iterator i = queryList.iterator();
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();			
+				areaList.add(data.get("codeDesc").toString());
+			}
+		}
+		catch (Exception ex) {
+			throw new Exception("SmsBatchDAO : Error reading pstcod / " + ex);
+		}		
+	return areaList;		
+	}			
+
 	public List getGeneralCodesList(HttpServletRequest request, String genCode, int sortOrder) throws Exception{
 		
 		String orderBy = "";
