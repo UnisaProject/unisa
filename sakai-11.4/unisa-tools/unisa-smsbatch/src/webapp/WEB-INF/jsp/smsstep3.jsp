@@ -113,7 +113,7 @@
 				</logic:notEqual>
 			</tr>	
 	    	</logic:iterate>    	
-	    	<tr><td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	    	<tr><td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		    	<td>
 			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="1">
 			    		<fmt:message key="page.postalAddress"/>

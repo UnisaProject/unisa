@@ -159,7 +159,7 @@
     		<td  style="white-space:nowrap;"><fmt:message key="page.postal.code"/>&nbsp;
     		<td  colspan="2"><html:text name="smsBatchForm" property="selectedPostalCodes" size="60" maxlength="160"/>
     	</tr><tr>
-  			<td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  			<td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td colspan="2"><html:radio property="postalCodeAddressType" value="1"/><fmt:message key="page.postalAddress"/>&nbsp;&nbsp;	
 			<html:radio property="postalCodeAddressType" value="3"/><fmt:message key="page.physicalAddress"/>&nbsp;&nbsp;
 			<html:radio property="postalCodeAddressType" value="7"/><fmt:message key="page.courierAddress"/><td>
