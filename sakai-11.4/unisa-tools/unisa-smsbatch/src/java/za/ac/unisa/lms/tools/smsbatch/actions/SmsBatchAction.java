@@ -110,10 +110,10 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
 				//
-				smsForm.setNovellUserCode("PRETOJ");
+				//smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
 				//smsForm.setNovellUserCode("MAMETMD");
-				//return "userunknown";
+				return "userunknown";
 			}
 		} else {
 			return "userunknown";
@@ -258,9 +258,9 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 * NB NB NB NB NB NB NB NB set user code for local dev only
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
-				smsForm.setNovellUserCode("PRETOJ");
+				//smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
-				//return mapping.findForward("userunknown");
+				return mapping.findForward("userunknown");
 			}
 		} else {
 			return mapping.findForward("userunknown");
@@ -284,7 +284,7 @@ public class SmsBatchAction extends LookupDispatchAction {
 		for (int i=0; i <=2; i++){
 			controlNumberList.add(controlNumber);
 		}
-		smsForm.setPostalCodeAddressType(0);
+		smsForm.setPostalCodeAddressType("");
 		smsForm.setControlCellNumberList(controlNumberList);
 
 		return mapping.findForward("step1forward");
@@ -499,7 +499,7 @@ public class SmsBatchAction extends LookupDispatchAction {
 						addErrors(request, messages);
 						err = true;
 					}
-					if (smsBatchForm.getPostalCodeAddressType()==0) {
+					if (smsBatchForm.getPostalCodeAddressType()==null || smsBatchForm.getPostalCodeAddressType().trim().equalsIgnoreCase("")) {
 						messages.add(
 								ActionMessages.GLOBAL_MESSAGE,
 								new ActionMessage("message.generalmessage",
@@ -518,6 +518,7 @@ public class SmsBatchAction extends LookupDispatchAction {
 						List itemList = new ArrayList();
 						List<String> postalCodeList = new ArrayList<String>();
 						List areaList = new ArrayList();
+						String postalCodeListStr="";
 						itemList = setupItemList(smsBatchForm
 								.getSelectedPostalCodes(), smsBatchForm
 								.getGeoCriteriaType());
@@ -543,9 +544,9 @@ public class SmsBatchAction extends LookupDispatchAction {
 								break;}
 							areaList = new ArrayList();
 							areaList = dao.getPostalCodeDetail(Integer.parseInt(itemList
-									.get(i).toString()),smsBatchForm.getPostalCodeAddressType());
+									.get(i).toString()),smsBatchForm.getPostalCodeAddressType());						
 							if (areaList.size()==0) {
-								if (smsBatchForm.getPostalCodeAddressType()==1) {
+								if (smsBatchForm.getPostalCodeAddressType().trim().equalsIgnoreCase("1")) {
 									messages
 									.add(
 											ActionMessages.GLOBAL_MESSAGE,
@@ -572,12 +573,15 @@ public class SmsBatchAction extends LookupDispatchAction {
 								break;								
 							} else {
 								for (int j = 0; j < areaList.size(); j++) {
-									postalCodeList.add(itemList.get(i).toString() + " : " + 
-								    areaList.get(j).toString());
+//									postalCodeList.add(itemList.get(i).toString() + " : " + 
+//								    areaList.get(j).toString());
+									postalCodeListStr = postalCodeListStr + itemList.get(i).toString() + " : " + 
+										    areaList.get(j).toString() + "\r\n";
 								}	
 							}
 						}
-						smsBatchForm.setDisplayPostalCodeList(postalCodeList);
+						smsBatchForm.setPostalCodeListStr(postalCodeListStr);
+//						smsBatchForm.setDisplayPostalCodeList(postalCodeList);
 						smsBatchForm.setPostalCodeList(itemList);
 					} catch (StringIndexOutOfBoundsException e) {
 						messages
@@ -880,6 +884,7 @@ public class SmsBatchAction extends LookupDispatchAction {
 		op.setInSmsRequestProgramName("STD_BATCH");
 
 		/** setup selection criteria */
+		op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
 		int count = 0;
 		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){			
 			for (int i = 0; i < smsBatchForm.getPostalCodeList().size(); i++) {
@@ -1095,16 +1100,26 @@ public class SmsBatchAction extends LookupDispatchAction {
 
 		/** setup selection criteria */
 		int count = 0;
-		for (int i = 0; i < smsBatchForm.getGeoSelection().length; i++) {
-			if (smsBatchForm.getGeoSelection()[i] != null
-					&& !"".equals(smsBatchForm.getGeoSelection()[i])) {
-				/* Seperate code and description */
-				genItem = getItem(smsBatchForm.getGeoSelection()[i].trim());
-				op.setInMagisterialGpCsfStringsString15(count, genItem
-						.getCode());
-				count = count + 1;
+		op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
+		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){			
+			for (int i = 0; i < smsBatchForm.getPostalCodeList().size(); i++) {
+					op.setInMagisterialGpCsfStringsString15(count, smsBatchForm.getPostalCodeList().get(i).toString().trim());
+					count = count + 1;
+				}
+		}else {
+			count = 0;
+			for (int i = 0; i < smsBatchForm.getGeoSelection().length; i++) {
+				if (smsBatchForm.getGeoSelection()[i] != null
+						&& !"".equals(smsBatchForm.getGeoSelection()[i])) {
+					/* Seperate code and description */
+					genItem = getItem(smsBatchForm.getGeoSelection()[i].trim());
+					op.setInMagisterialGpCsfStringsString15(count, genItem
+							.getCode());
+					count = count + 1;
+				}
 			}
 		}
+		
 		count = 0;
 		for (int i = 0; i < smsBatchForm.getRegList().size(); i++) {
 			if (smsBatchForm.getRegList().get(i) != null
@@ -1434,6 +1449,11 @@ public class SmsBatchAction extends LookupDispatchAction {
 			smsBatchForm.setSelectedItems("");
 			smsBatchForm.setReasonGc27("2 : Learner Support");
 			smsBatchForm.setFileContentType("");
+			smsBatchForm.setPostalCodeAddressType("");
+			smsBatchForm.setSelectedPostalCodes("");
+			smsBatchForm.setPostalCodeListStr("");
+			smsBatchForm.setDisplayPostalCodeList(new ArrayList());
+			smsBatchForm.setPostalCodeList(new ArrayList());
 			prevPage = checkUser(mapping, form, request, response);
 		}
 
