@@ -1686,6 +1686,31 @@ public class Srsms02sSendSmsToStudList  implements ActionListener, java.io.Seria
       importView.InNovellCodeWsStaffEmailAddress = FixedStringAttr.valueOf(s, (short)60);
    }
  
+   public short getInWsAddressV2Type() {
+      return importView.InWsAddressV2Type;
+   }
+   public void setInWsAddressV2Type(short s)
+      throws PropertyVetoException {
+      if (java.lang.Math.abs(s) >= 100.0) {
+         throw new PropertyVetoException("InWsAddressV2Type has more than 2 digits.",
+               new PropertyChangeEvent (this, "InWsAddressV2Type", null, null));
+      }
+      importView.InWsAddressV2Type = ShortAttr.valueOf(s);
+   }
+   public void setAsStringInWsAddressV2Type(String s)
+      throws PropertyVetoException {
+      if (s == null || s.length() == 0) {
+          throw new PropertyVetoException("InWsAddressV2Type is not a valid numeric value: " + s,
+                                          new PropertyChangeEvent (this, "InWsAddressV2Type", null, null));
+      }
+      try {
+          setInWsAddressV2Type(Short.parseShort(s) );
+      } catch (NumberFormatException e) {
+          throw new PropertyVetoException("InWsAddressV2Type is not a valid numeric value: " + s,
+                                          new PropertyChangeEvent (this, "InWsAddressV2Type", null, null));
+      }
+   }
+ 
    public final int OutRcGroupMax = 25;
    public short getOutRcGroupCount() {
       return (short)(exportView.OutRcGroup_MA);

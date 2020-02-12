@@ -56,7 +56,8 @@ public class SmsBatchForm extends ValidatorForm {
 	private List regList;
 	private List displayPostalCodeList;
 	private List postalCodeList;
-	private int postalCodeAddressType;
+	private String postalCodeAddressType;
+	private String postalCodeListStr;
 	private String[] regSelection = new String[15];
 	private String[] geoSelection = new String[15];
 	private String selectionString;
@@ -85,6 +86,14 @@ public class SmsBatchForm extends ValidatorForm {
 	private boolean dcmUser=false;	
 	
 	
+	public String getPostalCodeListStr() {
+		return postalCodeListStr;
+	}
+
+	public void setPostalCodeListStr(String postalCodeListStr) {
+		this.postalCodeListStr = postalCodeListStr;
+	}
+
 	public List getDisplayPostalCodeList() {
 		return displayPostalCodeList;
 	}
@@ -92,15 +101,15 @@ public class SmsBatchForm extends ValidatorForm {
 	public void setDisplayPostalCodeList(List displayPostalCodeList) {
 		this.displayPostalCodeList = displayPostalCodeList;
 	}
-
-	public int getPostalCodeAddressType() {
+	
+	public String getPostalCodeAddressType() {
 		return postalCodeAddressType;
 	}
 
-	public void setPostalCodeAddressType(int postalCodeAddressType) {
+	public void setPostalCodeAddressType(String postalCodeAddressType) {
 		this.postalCodeAddressType = postalCodeAddressType;
 	}
-	
+
 	public List getPostalCodeList() {
 		return postalCodeList;
 	}
