@@ -19,8 +19,7 @@
 
   <sakai:heading><fmt:message key="page.heading"/></sakai:heading>
   <html:form action="/smsbatch">
-  	<html:hidden property="page" value="3"/>
-  	
+  	<html:hidden property="page" value="3"/>  	
   	<table>
   		<tr>
   			<td><i><fmt:message key="page.display.instruction"/></i></td></tr>
@@ -100,20 +99,8 @@
     		<td colspan="2"><fmt:message key="page.all.rsa"/></td>
     	</tr>
     	</logic:equal>    
-    	<logic:equal name="smsBatchForm" property="geoCriteriaType" value="P">    	
-	    	<logic:iterate name="smsBatchForm" property="displayPostalCodeList" id="record" indexId="i">
-	    	<tr>
-	    		<logic:equal name="i" value="0">
-		    		<td><fmt:message key="page.postalCodes"/></td>
-		    		<td><bean:write name="record"/>&nbsp;</td>
-	    		</logic:equal>
-	    		<logic:notEqual name="i" value="0">
-						<td>&nbsp;</td>
-	    				<td><bean:write name="record"/>&nbsp;</td>
-				</logic:notEqual>
-			</tr>	
-	    	</logic:iterate>    	
-	    	<tr><td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    	<logic:equal name="smsBatchForm" property="geoCriteriaType" value="P">   
+    		<tr><td><fmt:message key="page.postalCodeAddressType"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		    	<td>
 			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="1">
 			    		<fmt:message key="page.postalAddress"/>
@@ -124,7 +111,14 @@
 			    	<logic:equal name="smsBatchForm" property="postalCodeAddressType" value="7">
 			    		<fmt:message key="page.courierAddress"/>
 			    	</logic:equal>	   
-			 </td></tr>
+			 	</td>
+			 </tr><tr>
+			  	 <td><fmt:message key="page.postalCodes"/></td>
+				 <td><bean:write name="smsBatchForm" property="selectedPostalCodes"/></td>
+			 </tr><tr>
+			 	<td>&nbsp;</td>
+				<td><textarea rows="5" cols="100" readonly><bean:write name="smsBatchForm" property="postalCodeListStr"/></textarea></td>
+			 </tr>
     	</logic:equal> 
     	<logic:notEqual name="smsBatchForm" property="geoCriteriaType" value="A">
     	<logic:notEqual name="smsBatchForm" property="geoCriteriaType" value="S">

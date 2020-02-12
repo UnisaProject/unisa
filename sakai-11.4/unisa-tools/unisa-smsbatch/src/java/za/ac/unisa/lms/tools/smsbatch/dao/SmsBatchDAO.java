@@ -344,11 +344,11 @@ public class batchUpdate {
 	}			
 	
 	
-public List<String> getPostalCodeDetail(int postalCode, int addressType) throws Exception{
+public List<String> getPostalCodeDetail(int postalCode, String addressType) throws Exception{
 			
 		List<String> areaList = new ArrayList<String>();
 		String addressTypeCondition = "";
-		if (addressType==1) {
+		if (addressType.equalsIgnoreCase("1")) {
 			addressTypeCondition = " and type in ('B','S')";
 		}else {
 			addressTypeCondition = " and type = 'S'";
@@ -410,7 +410,8 @@ public List<String> getPostalCodeDetail(int postalCode, int addressType) throws 
 			throw new Exception("SmsBatchDAO : Error reading pstcod / " + ex);
 		}		
 	return areaList;		
-	}			
+	}	
+
 
 	public List getGeneralCodesList(HttpServletRequest request, String genCode, int sortOrder) throws Exception{
 		
