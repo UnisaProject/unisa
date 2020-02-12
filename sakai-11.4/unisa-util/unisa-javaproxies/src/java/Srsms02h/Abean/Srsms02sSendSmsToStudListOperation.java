@@ -29,14 +29,14 @@ public class Srsms02sSendSmsToStudListOperation
                                              "Srsms02sSendSmsToStudList",
                                              "SRSMS02S",
                                              "DEV SRC STUDENT ACADEMIC REC C",
-                                             "SRC_J",
+                                             "smsWB",
                                               new String [] {"","","","","","","",""},
                                               new String [] {"","","","","","","",""},
-                                             "src_j",
-                                             "src_j",
+                                             "smswb",
+                                             "smswb",
                                              "",
                                              "",
-                                             "src_j",
+                                             "smswb",
                                              "com.ca.gen80.odc.ITPIPTranEntry",
                                              new String [] {"", "0","Y"});
  
