@@ -3,10 +3,20 @@ package za.ac.unisa.lms.tools.tpustudentplacement.forms;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.QualificationDAO;
 
 public class Qualification {
+	 QualificationDAO  qualificationDAO;
+	  public Qualification() {
+		       qualificationDAO=new  QualificationDAO();
+	}
+	 public Qualification(int studentNr, Short acadYear) throws Exception {
+	            qualificationDAO=new  QualificationDAO();
+	            qualificationDAO.getStudentQual(this,studentNr, acadYear);
+	}
 	private String code;
 	private String description;
 	private String shortDesc;
 	private String type;
+	private String specializationCode;
+	private boolean pgceStudent=false;
 	public String getCode() {
 		return code;
 	}
@@ -25,20 +35,23 @@ public class Qualification {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	 public Qualification getStudentQual(int studentNr, Short acadYear) throws Exception {
-		                              QualificationDAO  qualificationDAO=new  QualificationDAO();
-		                              return qualificationDAO.getStudentQual(studentNr, acadYear);
-	 }
-	 public boolean isPGCE(String qualCode) throws Exception {
-                                        QualificationDAO  qualificationDAO=new  QualificationDAO();
-                                        return qualificationDAO.isPGCE(qualCode);
-     }
-
 	public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getSpecializationCode() {
+		return specializationCode;
+	}
+	public void setSpecializationCode(String specializationCode) {
+		this.specializationCode = specializationCode;
+	}
+	public boolean isPgceStudent() {
+		return pgceStudent;
+	}
+	public void setPgceStudent(boolean pgceStudent) {
+		this.pgceStudent = pgceStudent;
 	}
 	
 }

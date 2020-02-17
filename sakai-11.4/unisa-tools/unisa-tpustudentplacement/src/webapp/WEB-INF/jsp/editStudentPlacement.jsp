@@ -85,7 +85,7 @@
 			</tr>			
 			<tr>
 				<td><fmt:message key="prompt.qualification"/></td>
-				<td><bean:write name="studentPlacementForm" property="student.qual.description"/></td>
+				<td><bean:write name="studentPlacementForm" property="student.qualification.description"/></td>
 			</tr>				
 		</sakai:group_table>
 		<hr/>	
@@ -149,10 +149,8 @@
 				    </td>			
 			      </tr>
 			</logic:equal>     
-
 			<logic:equal name="studentPlacementForm" property="student.countryCode"   value="1015">
-
-			                               	<logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
+			                               	       <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
 			                               	          <logic:equal name="studentPlacementForm" property="isPGCE"   value="Y">
 			                               	                    <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
 				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
@@ -240,9 +238,7 @@
 				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
 				                                                                 <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
 				                                                                  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
-
 				                                                       <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="6"/></td>
-
 			                                                    
 			                                      </logic:equal>
 			                                         <logic:equal name="studentPlacementForm" property="isPGCE"   value="N">
@@ -317,9 +313,7 @@
 			                                         </logic:equal>
 			                            </logic:notEqual>
 				    </logic:equal>
-
 					 <logic:notEqual name="studentPlacementForm"  property="student.countryCode"   value="1015">
-
 					                            	<logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
 					                                                     <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
 				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
@@ -338,14 +332,11 @@
 				                                                                          &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
 			                                                                              <input type="text"  name="endDateSecPrd" size="14" maxlength="10"  id="endDateSecPrd"  value='<%=request.getAttribute("endDateSecPrd")%>'/>
 			                                                                              &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
-
 			                                                                              <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeksSecPracPrd" size="4" maxlength="2"/>
-
 			                                                                         </td>
 			                                                         </tr>	
 			                                                         	</logic:notEqual>
 			                                  </logic:equal>
-
 			                              <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="add">
 			                                <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
 				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
@@ -373,18 +364,15 @@
 			                                <tr><td align="left"  colspan=3><fmt:message key="prompt.pracprds"/></td></tr> 
 				                                                       <tr> <td ><fmt:message key="prompt.pracprd"/></td>
 				                                                       <td><fmt:message key="prompt.startDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
-
 				                                                          <input type="text" name="startDate" size="14" maxlength="10" id="startDate"   value='<%=request.getAttribute("startDate")%>'/>
 				                                                           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.endDate"/>&nbsp;<fmt:message key="prompt.mandatory"/>
 				                                                             <input type="text"  name="endDate" size="14" maxlength="10"  id="endDate"  value='<%=request.getAttribute("endDate")%>'/>
 				                                                                 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <fmt:message key="prompt.numberOfWeeks"/>&nbsp;<fmt:message key="prompt.mandatory"/>
-
 				                                                            <html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="6"/></td>
 			                                               </tr>
 			                              
 			                              </logic:equal>
 			       </logic:notEqual>
-
 			       <tr>
 				                         <td><fmt:message key="prompt.evaluationMark"/>&nbsp;</td>
 				                         <td><html:text name="studentPlacementForm" property="studentPlacement.evaluationMark" size="4" maxlength="3"/></td>

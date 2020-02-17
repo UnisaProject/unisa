@@ -18,22 +18,25 @@ public class Module  {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	public Module getModule(String  code) throws Exception {
+	public Module getModule(Qualification qual,String moduleCode,int acadYear) throws Exception {
 		                     ModuleDAO moduleDAO=new  ModuleDAO();
-		                     return moduleDAO.getModule(code);
+		                     return moduleDAO.getModule(qual,moduleCode,acadYear);
 	}
 	public  Module(){
 	}
-    public   Module(String code)throws Exception {
+    public   Module(Qualification qual,String moduleCode,int acadYear)throws Exception {
 	                      ModuleDAO moduleDAO=new  ModuleDAO();
-	                      Module module=moduleDAO.getModule(code);
+	                      Module module=moduleDAO.getModule(qual,moduleCode,acadYear);
 	                       this.code=module.getCode();
 	                       this.level=module.getLevel();
 	}
     public void checkOnModuleChange(StudentPlacementForm studenPlacementForm, HttpServletRequest request) throws Exception{
     	                   Module   module=new Module();
-    	                   module=module.getModule(studenPlacementForm.getStudentPlacement().getModule());
-    	                   int level=module.getLevel();
+    	                   String moduleCode=studenPlacementForm.getStudentPlacement().getModule();
+                           Qualification qual=studenPlacementForm.getStudent().getQualification();
+                           int acadYear=Integer.parseInt(studenPlacementForm.getAcadYear());
+                          module=module.getModule(qual,moduleCode,acadYear);
+                          int level=module.getLevel();
                           if(module.getLevel()==1){
                         	                studenPlacementForm.setDisplaySecDatesBatch("N");
                           }else{

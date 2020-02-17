@@ -13,13 +13,13 @@ public class ContactImpl {
 	                	     dao=new ContactDAO();
 	                   }
 	                    public Contact getContactDetails(Integer referenceNo,Integer category) throws Exception {
-	                    		             return getContactDetails(referenceNo,category);	
+	                    		             return dao.getContactDetails(referenceNo,category);	
 	              	    }
 	                    public ArrayList getPostalCodeList(String searchType, String searchCriteria, String postalType) throws Exception {
-	                                         return getPostalCodeList(searchType, searchCriteria, postalType);
+	                                         return dao.getPostalCodeList(searchType, searchCriteria, postalType);
 	                    }
 	                    public Address getAddress(Integer referenceNo,Integer category,Integer type) throws Exception {
-	              		    		              return getAddress(referenceNo,category,type);	
+	              		    		              return dao.getAddress(referenceNo,category,type);	
 	                    }
 	                    public int countRecords(int reference,int category)throws Exception {
 	                    	      return dao.countRecords(reference, category);

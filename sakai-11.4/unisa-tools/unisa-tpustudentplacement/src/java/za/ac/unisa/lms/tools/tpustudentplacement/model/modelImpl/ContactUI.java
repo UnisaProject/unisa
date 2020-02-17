@@ -12,9 +12,7 @@ public class ContactUI {
 	       public  ContactUI(){
 		              contactImpl=new ContactImpl();
 	       }
-	
-	
-	       public Contact getContactDetails(Integer referenceNo,Integer category) throws Exception {
+	      public Contact getContactDetails(Integer referenceNo,Integer category) throws Exception {
                  return contactImpl.getContactDetails(referenceNo,category);	
            }
            public ArrayList getPostalCodeList(String searchType, String searchCriteria, String postalType) throws Exception {

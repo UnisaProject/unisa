@@ -57,7 +57,7 @@ public  class StuPlacementCRUDHelperClass extends StuPlacementAdder{
                    }
                     public String listStudentPlacement(ActionMapping mapping, ActionForm form,
        				                     HttpServletRequest request, HttpServletResponse response,
-       				                     ActionMessages messages){
+       				                     ActionMessages messages) throws Exception {
                     	                           return stuPlacementReader.listStudentPlacement(mapping,form,request,response,messages);
                     }
 }

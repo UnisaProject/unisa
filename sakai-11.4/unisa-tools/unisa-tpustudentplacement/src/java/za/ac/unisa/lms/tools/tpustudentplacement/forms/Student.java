@@ -1,20 +1,20 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.forms;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import za.ac.unisa.lms.tools.tpustudentplacement.dao.ContactDAO;
-import za.ac.unisa.lms.tools.tpustudentplacement.dao.StudentDAO;
+import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.ContactUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.StudentImp;
-import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StringsUtil;
-import za.ac.unisa.lms.tools.tpustudentplacement.utils.StudentValidator;
 
 public class Student {
-	
+	  public Student(int stuNum,int acadYear)throws Exception{
+		                           qualification=  new Qualification(stuNum,(short)acadYear);
+		                           ContactUI contact=new  ContactUI();
+		                           studentImp=new StudentImp(qualification,contact);
+		                           studentImp.setStudentData(this, stuNum,(short)acadYear,(short)0);
+	    }
+	  public Student(){
+       } 
 	private String name;
 	private String printName;
 	private Integer number;
-	private Qualification qual;
 	private Address postalAddress;
 	private Address physicalAddress;
 	private Contact contactInfo;
@@ -23,37 +23,15 @@ public class Student {
 	private String countryCode;
 	private short provinceCode;
 	private short districtCode;
+	private StudentImp  studentImp;
+	private Qualification qualification;
 	
-	StudentImp  studentImp;
-	StudentImplHelper studentImplHelper;
-	Qualification qualification;
-	public Student(){
-		        studentImp=new StudentImp();
-		        studentImplHelper=new  StudentImplHelper();
-		        qualification=new Qualification();
+	public String getStudentEmail() throws Exception{
+		return  contactInfo.getEmailAddress();
 	}
-	public String getStudentEmail(String stuNum) throws Exception{
-		return  studentImp.getStudentEmail(stuNum);
+	public  String getCellNumber() throws Exception{
+		return  contactInfo.getCellNumber();
 	}
-	public  List getStudentModuleList(int studentNr, Short acadYear, Short semester)throws Exception{
-		return  studentImp.getStudentModuleList(studentNr, acadYear, semester);
-    }
-	public  String getStudentCell(String studentNr) throws Exception{
-		return  studentImp.getStudentCell(studentNr);
-	}
-	public  String getCountryCode(int studentNr) throws Exception{
-		 return  studentImp.getCountryCode(studentNr);
-	}
-	public void getStudent(int studentNr) throws Exception {
-		         studentImp.getStudent(this,studentNr);
-	}
-	public  String  getStudentData(Student student,short acadYear,short semester)throws Exception{
-                  		  //if empty string is returned then the data is valid
-                          return studentImplHelper.getStudentData(student,acadYear,semester);
-    }
-	 public Qualification getStudentQual(int studentNr, Short acadYear) throws Exception {
-		                            return qualification.getStudentQual(studentNr, acadYear);
-	 }
 	public String getPracticalModules() {
 		return practicalModules;
 	}
@@ -77,12 +55,6 @@ public class Student {
 	}
 	public void setNumber(Integer number) {
 		this.number = number;
-	}
-	public Qualification getQual() {
-		return qual;
-	}
-	public void setQual(Qualification qual) {
-		this.qual = qual;
 	}
 	public Address getPostalAddress() {
 		return postalAddress;
@@ -108,30 +80,7 @@ public class Student {
 	public void setListPracticalModules(List listPracticalModules) {
 		this.listPracticalModules = listPracticalModules;
 	}	
-	         public String getStudentContactNumber(int studentNumber) throws Exception{
-		            return studentImp.getStudentContactNumber(studentNumber);
-	         }
-	         
-             public  Address getStuPostalAddress(int stuNum)throws Exception{
-      	                        return studentImp.getStudPostalAddress(stuNum);
-             }
-             public  Address getStuPhysicalAddress(int stuNum)throws Exception{
-            	               return studentImp.getStuPhysicalAddress(stuNum);
-             } 
-             public Contact getContactDetails(int stuNum)throws Exception{
-    	                       return  studentImp.getContactDetails(stuNum);
-             }
-             public Qualification  getStudentQualification(int stuNum,short year) throws Exception{
-	                            return studentImp.getStudentQualification(stuNum,year);
-             }
-             public List getStudentPracticalModuleList(int stuNum,short academicYear,short semester) throws Exception{
-                            return studentImp.getStudentPracticalModuleList(stuNum, academicYear, semester);
-             }
-             public void setStudentData(Student student, int stuNum,short acadYear,short semester)throws Exception{
-            	                studentImp.setStudentData(student,stuNum,acadYear,semester);
-            	                  
-             }
-			public String getCountryCode() {
+	public String getCountryCode() {
 				return countryCode;
 			}
 			public void setCountryCode(String countryCode) {
@@ -149,6 +98,10 @@ public class Student {
 			public void setDistrictCode(short districtCode) {
 				this.districtCode = districtCode;
 			}
-             
-	      
+			public Qualification getQualification() {
+				return qualification;
+			}
+			public void setQualification(Qualification qualification) {
+				this.qualification = qualification;
+			}
 }

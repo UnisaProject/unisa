@@ -20,42 +20,7 @@ public class StudentDAO {
                     
            } 
 	       
-	       public Student getStudent(int studentNr) throws Exception {
-		
-		                     Student student = new Student();
-		
-		                     String sql = "select mk_title,surname,initials,mk_country_code,fk_lddcode as districtCode," + 
-		                    		  "  decode(mk_country_code,'1015',(select fk_prvcode from ldd where ldd.code=fk_lddcode),null) as prov"+
-		                                  "  from stu" +
-		                                  " where nr=" + studentNr;
-		                  		      String errorMsg="Error reading Student / ";
-		                  		      databaseUtils dbutil=new databaseUtils();
-			                          List queryList = dbutil.queryForList(sql,errorMsg);
-                            		  Iterator i = queryList.iterator();
-			                          while (i.hasNext()) {
-				                             ListOrderedMap data = (ListOrderedMap) i.next();
-				                             String title ="";
-				                             String surname="";
-				                             String initials="";
-				                             title= dbutil.replaceNull(data.get("mk_title"));
-				                             surname= dbutil.replaceNull(data.get("surname"));
-				                             initials= dbutil.replaceNull(data.get("initials"));
-				                             student.setNumber(studentNr);
-				                             student.setName(surname + ' ' + initials + ' ' + title);
-				                             student.setPrintName(title + ' ' + initials + ' ' + surname);
-				                             student.setCountryCode( dbutil.replaceNull(data.get("mk_country_code")));
-				                             String provStr=dbutil.replaceNull(data.get("prov"));
-				                             if(provStr.isEmpty())
-				                            	 provStr="0'";
-				                             student.setProvinceCode(Short.parseShort(provStr));
-				                             String districtStr=dbutil.replaceNull(data.get("districtCode"));
-				                             if(districtStr.isEmpty())
-				                            	    districtStr="0'";
-				                             student.setDistrictCode(Short.parseShort(districtStr));
-			                          }
-		                    return student;
- 	     }
-	       public void getStudent(Student student,int studentNr) throws Exception {
+	      	       public void getStudent(Student student,int studentNr) throws Exception {
 	   		
                               String sql = "select mk_title,surname,initials,fk_lddcode as districtCode, mk_country_code,fk_lddcode as districtCode," + 
                             		  " decode(mk_country_code,'1015',(select fk_prvcode from ldd where ldd.code=fk_lddcode),null) as prov"+
@@ -79,11 +44,11 @@ public class StudentDAO {
 	                                   student.setCountryCode( dbutil.replaceNull(data.get("mk_country_code")));
 	                                   String provStr=dbutil.replaceNull(data.get("prov"));
 			                             if(provStr.isEmpty())
-			                            	 provStr="0'";
+			                            	 provStr="0";
 			                             student.setProvinceCode(Short.parseShort(provStr));
 			                             String districtStr=dbutil.replaceNull(data.get("districtCode"));
 			                             if(districtStr.isEmpty())
-			                            	    districtStr="0'";
+			                            	    districtStr="0";
 			                             student.setDistrictCode(Short.parseShort(districtStr));
 		                     }
 	       }
@@ -103,29 +68,7 @@ public class StudentDAO {
                 }
                 return countryCode;
          }
-	     public Qualification getStudentQual(int studentNr, Short acadYear) throws Exception {
-		
-		                         Qualification qual = new Qualification();
-				                 String sql = "select a.mk_highest_qualifi as qualCode, b.eng_description as qualDesc, b.short_description as qaulShortDesc" + 
-		                                      " from stuann a,grd b" +
-		                                      " where a.mk_student_nr=" + studentNr +
-		                                      " and a.mk_academic_year=" + acadYear +
-		                                      " and a.mk_academic_period=1" +
-		                                      " and a.mk_highest_qualifi=b.code";
-      	                                      databaseUtils dbutil=new databaseUtils();
-      	                                      String errorMsg="Error reading stuan, grd tables, in StudentDAO";
-			                                  List queryList = dbutil.queryForList(sql,errorMsg);
-			                                  Iterator i = queryList.iterator();
-			                                   while (i.hasNext()) {
-				                                       ListOrderedMap data = (ListOrderedMap) i.next();
-				                                       qual.setCode(dbutil.replaceNull(data.get("qualCode")));
-				                                       qual.setDescription(dbutil.replaceNull(data.get("qualDesc")));
-				                                       qual.setShortDesc(dbutil.replaceNull(data.get("qaulShortDesc")));
-			                                    }
-		                               return qual;
-		
-	      }
-	public List getPracticalModuleList() throws Exception {
+	   	public List getPracticalModuleList() throws Exception {
 		
 		                List moduleList = new ArrayList(); 
 		                String sql = "select code as module" + 
@@ -203,19 +146,5 @@ public class StudentDAO {
 		                 email = dbutil.querySingleValue(query,"email_address",errorMsg);		
 		              return email;
 	}
-	public String getStudentContactNumber(int studentNumber) throws Exception{
-		              ContactDAO  contactDAO=new ContactDAO();
-		              Contact  contact  = contactDAO.getContactDetails(studentNumber,1);
-                      String contactNum="";
-                      if (contact.getCellNumber()!=null && !contact.getCellNumber().trim().equalsIgnoreCase("")){
-                             contactNum=contact.getCellNumber();
-                      }else if (contact.getWorkNumber()!=null && !contact.getWorkNumber().trim().equalsIgnoreCase("")){
-                                  contactNum=contact.getWorkNumber();
-                      }
-                      if (contactNum==null){
-                              contactNum="";
-                      }
-                   return contactNum;
-    }
-
+	
 }

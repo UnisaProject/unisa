@@ -60,7 +60,7 @@ public class StudentValidator {
                                }
             }
           	public void validateStudentData(Student student,ActionMessages messages){ 
-	                        validateQualification(student.getQual(),messages);
+	                        validateQualification(student.getQualification(),messages);
 	                        if(!messages.isEmpty()){
                                    return;
                             }

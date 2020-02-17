@@ -56,10 +56,13 @@ public class PracticeDatesMaintenance extends PracticePeriodDAO{
 	   }
 	  	    public  List getPracticalDateBatches(StudentPlacement studentPlacement,int pracPrd,StudentPlacementForm studentPlacementForm)throws Exception{
 	                                        	int level=1;
-	    	                                    if((studentPlacement.getModule()!=null)&&(!studentPlacement.getModule().trim().equals(""))){
+	                                        	String moduleCode=studentPlacement.getModule().trim();
+	    	                                    if((moduleCode!=null)&&(!moduleCode.equals(""))){
 	    		                                                   Module module=new Module();
-	    		                                                   module=module.getModule(studentPlacement.getModule());
-                                                                   level=module.getLevel();
+	    		                                                   Qualification qual=studentPlacementForm.getStudent().getQualification();
+	    		                                                   int acadYear=Integer.parseInt(studentPlacementForm.getAcadYear());
+	    		                                                   module=module.getModule(qual,moduleCode,acadYear);
+	    		                                                   level=module.getLevel();
 	    	                                   }
 	    	                                    studentPlacementForm.setStudyLevel(level);
                                               SchoolUI  schoolUI=new SchoolUI();
@@ -93,7 +96,7 @@ public class PracticeDatesMaintenance extends PracticePeriodDAO{
                                                          }
                                                          provsPracPeriodList.removeAll(pracPeriodToBeDeletedList);
        }
-	       public void initialiseDataForMaintenanceFunction(StudentPlacementForm studentPlacementForm,   HttpServletRequest request){
+	   public void initialiseDataForMaintenanceFunction(StudentPlacementForm studentPlacementForm,   HttpServletRequest request){
 		                                                    PracticePeriod  practicePeriod=new PracticePeriod();
 		                                                    practicePeriod.setPracticePeriods(studentPlacementForm);
 		                                                    Level level=new Level();
@@ -152,4 +155,8 @@ public class PracticeDatesMaintenance extends PracticePeriodDAO{
                                            }
                                 return returnMsg;
   }
+  /*    
+      public void addProvPracDateBatcheLists(int provCode)throws Exception{
+    	             saveDateBlocks(List<PracticeBatchDate>  practicePeriodList)
+    }*/
 }

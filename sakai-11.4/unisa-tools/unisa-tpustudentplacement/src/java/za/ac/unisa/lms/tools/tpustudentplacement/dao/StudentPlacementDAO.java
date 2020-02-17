@@ -449,8 +449,8 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 		 					     placement.setTown(surburb);
 		 				 }*/
 		 				 placement.setCountryCode(country);
-		                 placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
-		                 placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
+		 				 setStuContactNum(placement );
+		                  placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
 		                 placement.setSchoolContactNumber(school.getSchoolContactNumber(placement.getSchoolCode()));
 		                 String mentorCode=dbutil.replaceNull(data.get("mentorCode"));
 					       if( mentorCode.trim().equals("")){
@@ -532,8 +532,8 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	 					placement.setTown(surburb);
 	 				 }*/
 	 				 placement.setCountryCode(country);
-	                 placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
-	                 placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
+	 				 setStuContactNum(placement );
+	                    placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
 	                 placement.setSchoolContactNumber(school.getSchoolContactNumber(placement.getSchoolCode()));
 	                 String mentorCode=dbutil.replaceNull(data.get("mentorCode"));
 				       if( mentorCode.trim().equals("")){
@@ -546,7 +546,18 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	           }
          return placementList;
 }
-
+     
+     private void setStuContactNum(PlacementListRecord placement )throws Exception{
+                              DateUtil dateUtil=new DateUtil();
+                              Short acadYear=(short)dateUtil.getYearInt();
+                              Student student2=new  Student(placement.getStudentNumber(),acadYear);
+                              if((student2.getContactInfo().getHomeNumber()!=null)
+                            		  &&(!student2.getContactInfo().getHomeNumber().isEmpty())){
+                                          placement.setStudentContactNumber(student2.getContactInfo().getHomeNumber());
+                             }else{
+  	                              placement.setStudentContactNumber(student2.getContactInfo().getHomeNumber());
+                             }
+     }
   private String getSupervisorContactNumber(int supervisorCode,ContactDAO contactDAO,Contact contact) throws Exception{
                       contact  = contactDAO.getContactDetails(supervisorCode,231);
                       String contactNum="";
@@ -690,8 +701,10 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
     }
     private void setPlacementContactInfo(PlacementListRecord placement )throws Exception{
                    SchoolUI schoolUI=new SchoolUI();
-                   Student student=new  Student();
-                   placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
+                   DateUtil dateUtil=new DateUtil();
+                   Short acadYear=(short)dateUtil.getYearInt();
+                   Student student=new  Student(placement.getStudentNumber(),acadYear);
+                   placement.setStudentContactNumber(student.getContactInfo().getHomeNumber());
                    placement.setSchoolContactNumber(schoolUI.getSchoolContactNumber(placement.getSchoolCode()));
     }
     public void updateEmailToSupField(int supervisorCode) throws Exception{

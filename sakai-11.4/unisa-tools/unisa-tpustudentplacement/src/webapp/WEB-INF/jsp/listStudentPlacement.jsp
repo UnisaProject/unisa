@@ -33,7 +33,7 @@
 			</tr>			
 			<tr>
 				<td><fmt:message key="prompt.qualification"/></td>
-				<td><bean:write name="studentPlacementForm" property="student.qual.description"/></td>
+				<td><bean:write name="studentPlacementForm" property="student.qualification.description"/></td>
 			</tr>
 			<tr>
 				<td><fmt:message key="prompt.practicalModules"/></td>

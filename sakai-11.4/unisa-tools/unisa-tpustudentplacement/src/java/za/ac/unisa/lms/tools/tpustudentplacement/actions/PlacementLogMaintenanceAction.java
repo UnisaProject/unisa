@@ -41,10 +41,9 @@ public class PlacementLogMaintenanceAction extends LookupDispatchAction{
 				HttpServletResponse response) throws Exception {
 			       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
 			       StudentPlacementLog spl=new StudentPlacementLog();
-			       Student student=new Student(); 
-			       String stuNum=request.getParameter("stuNum");
-			       student.getStudent(Integer.parseInt(stuNum));
-			       String name=student.getName();
+			        String stuNum=request.getParameter("stuNum");
+			        Student student=new Student(Integer.parseInt(stuNum),Short.parseShort(studentPlacementForm.getAcadYear())); 
+				    String name=student.getName();
 			       String action=request.getParameter("action");
 			       spl.setAction(action);
 				   String updatedOn=request.getParameter("updatedOn");

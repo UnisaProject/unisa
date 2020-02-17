@@ -13,8 +13,8 @@ public class StudentPlacementValidator {
 	                                validateSchool(studentPlacement,errorMsgList);
 	                                validateSupervisorCode(studentPlacement,errorMsgList);
 	                                validateModule(studentPlacement,errorMsgList);
-	                                validateStartDate(studentPlacement,academicYear,errorMsgList);
-	                                validateEndDate(studentPlacement,academicYear,errorMsgList);
+	                                //validateStartDate(studentPlacement,academicYear,errorMsgList);
+	                                //validateEndDate(studentPlacement,academicYear,errorMsgList);
 	                                validateNumberOfWeeks(studentPlacement,errorMsgList);
 	                                return errorMsgList;
 	    }     

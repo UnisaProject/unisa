@@ -68,7 +68,7 @@ public class SchoolEmailData {
 				                        "<tr><th  align=left><b>Student Number</b></th>" +
 				                        "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;"+ student.getNumber() + "</b></td></tr>"+
 			                            "<tr><th  align=left><b>Programme</b></th>" +
-			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;" + student.getQual().getShortDesc() + "</b></td></tr>"+
+			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;" + student.getQualification().getShortDesc() + "</b></td></tr>"+
 			                            "<tr><th  align=left><b>Teaching Practice Module</b></th>" +
 			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;"+ getModule(listPlacements,schoolCode)+"</b></td></tr>"+
 			                            "<tr><th  align=left><b>Duration</b></th>" +
