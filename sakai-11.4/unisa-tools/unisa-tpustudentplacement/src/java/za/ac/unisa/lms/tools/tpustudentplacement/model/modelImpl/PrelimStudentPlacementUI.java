@@ -118,4 +118,5 @@ public class PrelimStudentPlacementUI{
                        ActionMessages messages =setListPrelimPlacementScreen(studentPlacementForm);
                        return messages;
      }
+
   }

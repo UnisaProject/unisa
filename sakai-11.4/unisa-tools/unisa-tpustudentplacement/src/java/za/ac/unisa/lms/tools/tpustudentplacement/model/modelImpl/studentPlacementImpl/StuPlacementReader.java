@@ -1,7 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

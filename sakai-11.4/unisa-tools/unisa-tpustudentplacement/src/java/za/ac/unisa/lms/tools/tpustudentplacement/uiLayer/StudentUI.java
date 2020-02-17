@@ -39,5 +39,5 @@ public class StudentUI {
 	    	                                           student.setNumber(-1);   
 	       	                           }
 	    	                           studentPlacementForm.setStudent(student);
-		  }
+  }
 }

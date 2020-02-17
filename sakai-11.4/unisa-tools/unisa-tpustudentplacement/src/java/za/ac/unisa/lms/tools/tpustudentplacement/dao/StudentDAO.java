@@ -14,8 +14,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 
 public class StudentDAO {
 	 
-              
-	       
+            
 	       public StudentDAO(){
                     
            } 

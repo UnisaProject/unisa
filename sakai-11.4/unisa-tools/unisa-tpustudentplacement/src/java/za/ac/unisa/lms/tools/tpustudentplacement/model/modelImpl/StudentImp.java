@@ -8,8 +8,8 @@ import java.util.List;
 public class StudentImp extends  StudentDAO{
 	                             public StudentImp(Qualification qual,ContactUI contact){
 	                            	               this.qual=qual;
-	                            	               this.contact=contact;
-		                         }
+                            	               this.contact=contact;
+		                      }
 	                            Qualification qual;
 	                            ContactUI contact;
 	                      private void setStuModulesData(Student student, int stuNum,short acadYear,short semester)throws Exception{

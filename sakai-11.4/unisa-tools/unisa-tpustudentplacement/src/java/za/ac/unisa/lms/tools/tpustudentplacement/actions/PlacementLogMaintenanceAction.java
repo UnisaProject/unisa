@@ -20,8 +20,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 
 public class PlacementLogMaintenanceAction extends LookupDispatchAction{
-	    
-	
 	    protected Map getKeyMethodMap() {
 			// TODO Auto-generated method stub
 			Map map = new HashMap();

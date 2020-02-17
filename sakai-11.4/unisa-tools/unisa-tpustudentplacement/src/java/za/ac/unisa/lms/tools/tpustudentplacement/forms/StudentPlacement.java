@@ -5,7 +5,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.StudentPlacementValidator
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 public class StudentPlacement extends StudentPlacementImpl{
 	protected String module;
 	protected Integer schoolCode;

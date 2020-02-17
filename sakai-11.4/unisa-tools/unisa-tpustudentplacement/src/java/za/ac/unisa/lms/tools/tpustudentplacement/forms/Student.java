@@ -11,7 +11,7 @@ public class Student {
 		                           studentImp.setStudentData(this, stuNum,(short)acadYear,(short)0);
 	    }
 	  public Student(){
-       } 
+     } 
 	private String name;
 	private String printName;
 	private Integer number;

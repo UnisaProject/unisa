@@ -12,7 +12,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 
 public class StudentPlacementImpl extends StuPlacementCRUDHelperClass{
 	
-	           StudentPlacementDAO dao;
+	         StudentPlacementDAO dao;
 	           public StudentPlacementImpl(){
 		                             dao=new StudentPlacementDAO();
 		     }

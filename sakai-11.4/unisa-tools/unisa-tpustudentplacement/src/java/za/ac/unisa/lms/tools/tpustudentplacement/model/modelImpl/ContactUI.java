@@ -5,7 +5,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Address;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.ContactImpl;
-
 public class ContactUI {
     
 	        ContactImpl contactImpl;

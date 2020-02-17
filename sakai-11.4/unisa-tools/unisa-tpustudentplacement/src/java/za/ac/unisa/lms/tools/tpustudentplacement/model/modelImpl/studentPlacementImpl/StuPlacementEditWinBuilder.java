@@ -86,6 +86,5 @@ public class StuPlacementEditWinBuilder {
                                                                              student.setListPracticalModules(listPracticalModules);
                                                       }              
  	}
-	 
 
 }

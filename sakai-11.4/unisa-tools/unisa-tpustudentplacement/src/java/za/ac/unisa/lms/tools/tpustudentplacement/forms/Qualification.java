@@ -53,5 +53,6 @@ public class Qualification {
 	public void setPgceStudent(boolean pgceStudent) {
 		this.pgceStudent = pgceStudent;
 	}
+
 	
 }

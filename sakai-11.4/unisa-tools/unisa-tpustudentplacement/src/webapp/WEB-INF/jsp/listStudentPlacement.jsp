@@ -14,6 +14,7 @@
 		<sakai:group_heading>
 			<fmt:message key="heading.studentPlacement.studentInfo"/> 
 		</sakai:group_heading>
+
 		<sakai:group_table>	
 			<tr>
 				<td><fmt:message key="prompt.acadYear"/>/<fmt:message key="prompt.semester"/></td>

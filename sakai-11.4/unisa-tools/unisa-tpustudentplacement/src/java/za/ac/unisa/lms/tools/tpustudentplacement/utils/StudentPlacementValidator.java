@@ -7,7 +7,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 public class StudentPlacementValidator {
 	
 	
-	  public List   validateStudentPlacement(StudentPlacement studentPlacement,int academicYear){
+ public List   validateStudentPlacement(StudentPlacement studentPlacement,int academicYear){
 		  //validation returns a list of error messages in a list, the list will be empty when the placement has valid data
 		                            List  errorMsgList=new ArrayList(); 
 	                                validateSchool(studentPlacement,errorMsgList);

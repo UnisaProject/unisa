@@ -2,7 +2,6 @@ package za.ac.unisa.lms.tools.tpustudentplacement.forms;
 import javax.servlet.http.HttpServletRequest;
 
 import  za.ac.unisa.lms.tools.tpustudentplacement.dao.ModuleDAO;
-
 public class Module  {
 	 private String code;
 	 private int level;

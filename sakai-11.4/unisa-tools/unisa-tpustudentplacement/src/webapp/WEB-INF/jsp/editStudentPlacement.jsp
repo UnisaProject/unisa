@@ -7,6 +7,7 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources"/>
 
 <sakai:html>
+s
   <head>  
       <meta charset="utf-8">  
       <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">  

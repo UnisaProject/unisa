@@ -7,7 +7,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 
 public class StudentValidator {
 	
-	
 	         InfoMessagesUtil infMsgUtil;
 	         public StudentValidator(){
 	        	         infMsgUtil=new InfoMessagesUtil();

@@ -1,7 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
-
 import java.util.ArrayList;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Address;
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.ContactDAO;
