@@ -1,7 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
@@ -57,7 +56,7 @@ public  class StuPlacementCRUDHelperClass extends StuPlacementAdder{
                    }
                     public String listStudentPlacement(ActionMapping mapping, ActionForm form,
        				                     HttpServletRequest request, HttpServletResponse response,
-       				                     ActionMessages messages){
+       				                     ActionMessages messages) throws Exception {
                     	                           return stuPlacementReader.listStudentPlacement(mapping,form,request,response,messages);
                     }
 }

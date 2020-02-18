@@ -6,7 +6,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.domain.general.Person;
 import java.util.List;
 public class SchoolEmailData {
-	
 	public String getMailBody(Person user,School school,Student student, List listPlacements){
 	                   String message=getSalutation(school);
 	                          message+=writePlacementData(student,listPlacements,school.getCode());
@@ -68,7 +67,7 @@ public class SchoolEmailData {
 				                        "<tr><th  align=left><b>Student Number</b></th>" +
 				                        "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;"+ student.getNumber() + "</b></td></tr>"+
 			                            "<tr><th  align=left><b>Programme</b></th>" +
-			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;" + student.getQual().getShortDesc() + "</b></td></tr>"+
+			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;" + student.getQualification().getShortDesc() + "</b></td></tr>"+
 			                            "<tr><th  align=left><b>Teaching Practice Module</b></th>" +
 			                            "<td  align=left><b>&nbsp;&nbsp;&nbsp;&nbsp;"+ getModule(listPlacements,schoolCode)+"</b></td></tr>"+
 			                            "<tr><th  align=left><b>Duration</b></th>" +

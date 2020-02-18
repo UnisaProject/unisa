@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ListIterator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -137,7 +135,9 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;	
 		       studentPlacementForm.setDaysToExpiry("");
 		       DateUtil dateutil=new DateUtil();  
-               studentPlacementForm.setAcadYear(""+dateutil.yearInt());
+		       if( (studentPlacementForm.getAcadYear()==null)||(studentPlacementForm.getAcadYear().trim().equals(""))){
+		    	           studentPlacementForm.setAcadYear(""+dateutil.yearInt());
+		       }
 		studentPlacementForm.setSupervisorCalledFrom(studentPlacementForm.getCurrentPage());
 		if (studentPlacementForm.getSupervisorCalledFrom()==null){
 			studentPlacementForm.setSupervisorCalledFrom("inputStudentPlacement");
@@ -757,17 +757,14 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
 		                        }
 		                        StudentPlacement stuPlacement=studentPlacementForm.getStudentPlacement();
 		                        if(stuPlacement!=null){
-		                        	     PlacementUtilities placementUtilities=new PlacementUtilities();
-                                        	placementUtilities.setPlacementDateToRequestObject(request, stuPlacement);
-                                        	StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
+		                        	 stuPlacement.setDatesToRequest(request);
+		                        	 stuPlacement.setDatesFromRequest(request,stuPlacement);
                                 }
 		                        addErrors(request,messages);
 		                        studentPlacementForm.setCurrentPage(nextPage);
 			                   return mapping.findForward(nextPage);
 	}
-	 
-    
-     private void changeSupervTotStuAllowed(StudentPlacementForm studentPlacementForm){
+	  private void changeSupervTotStuAllowed(StudentPlacementForm studentPlacementForm){
 		//change the totalStudentAllowed field for a supervisor in the supervisors List
 		            SupervisorListRecord supervisor = new SupervisorListRecord();
 		            int index=0;

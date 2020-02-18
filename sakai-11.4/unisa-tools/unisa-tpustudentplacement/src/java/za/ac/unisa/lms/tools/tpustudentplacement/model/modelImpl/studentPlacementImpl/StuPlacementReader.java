@@ -1,7 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,14 +8,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 
+import za.ac.unisa.lms.tools.tpustudentplacement.dao.StudentPlacementDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentUI;
-import za.ac.unisa.lms.tools.tpustudentplacement.utils.InfoMessagesUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementValidator;
 
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 public class StuPlacementReader {
 	
@@ -53,10 +53,10 @@ public class StuPlacementReader {
    	            	}
            }
 	        public String   listStudentPlacement(ActionMapping mapping, ActionForm form,
-				                      HttpServletRequest request, HttpServletResponse response,ActionMessages messages){
+				                      HttpServletRequest request, HttpServletResponse response,ActionMessages messages) throws Exception{
 	        	                     	
 	        	                         StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
-			                         try{
+			                        // try{
 			                          
 			                                PlacementValidator placementValidator =new PlacementValidator();
 			                                String year=studentPlacementForm.getAcadYear();
@@ -65,24 +65,27 @@ public class StuPlacementReader {
 			                                placementValidator.validateStuNum(stuNum, messages);
 			                                studentPlacementForm.setPreviousPage(studentPlacementForm.getCurrentPage());
 			                                if (messages.isEmpty()) {
-			                    	              StudentUI studentUI=new StudentUI(); 
-			    		                          studentUI.setStudent(studentPlacementForm);
-			                    	              placementValidator.validateStuNumRegistered(""+studentPlacementForm.getStudent().getNumber(),
-			                    	        		 messages);
-			                                }
+			                    	                   StudentUI studentUI=new StudentUI(); 
+			    		                               studentUI.setStudent(studentPlacementForm);
+			                    	                  placementValidator.validateStuNumRegistered(""+studentPlacementForm.getStudent().getNumber(),
+			                    	        		  messages);
+			                    	                  if(studentPlacementForm.getStudent().getNumber()!=null){
+			    	    	                                   setStudentPlacementList(studentPlacementForm);
+			    	    	                          }
+			                    	        }
 			                                if (messages.isEmpty()) {
    			                                         studentPlacementForm.setCurrentPage("listStudentPlacement");
 			                                }else{
 			                     	                studentPlacementForm.setCurrentPage("inputStudentPlacement");
 			                                } 
 			                                return studentPlacementForm.getCurrentPage();
-			                            }catch(Exception ex){
+			                           /* }catch(Exception ex){
 			                    	                  InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
   	    	                    	                  String message="There was an error listing  a placements: eror is "+ex.getMessage();
   	    	                    	                  infoMessagesUtil.addMessages(messages, message);
   	    	                    	                  studentPlacementForm.setCurrentPage("inputStudentPlacement");
   	    	                    	                return studentPlacementForm.getCurrentPage();
-			                           }
+			                           }*/
 		  }
 	      public Set getSchoolCodesInPlacementList(List listPlacements){
 	    	                 Set  schoolCodesList=new HashSet();
@@ -93,4 +96,13 @@ public class StuPlacementReader {
 	    	                  return schoolCodesList;
 	    	  
 	      }
+	      private void  setStudentPlacementList(StudentPlacementForm studentPlacementForm) throws Exception{
+				int stuNum=Integer.parseInt(studentPlacementForm.getStudentNr());
+		    	short semester=Short.parseShort(studentPlacementForm.getSemester());
+		    	short academicYear=Short.parseShort(studentPlacementForm.getAcadYear());
+		 		   		        StudentPlacementDAO dao = new StudentPlacementDAO();
+		                        List listStudentPlacement = new ArrayList<StudentPlacementListRecord>();
+		                        listStudentPlacement = dao.getStudentPlacementList(academicYear,semester,stuNum);
+		                        studentPlacementForm.setListStudentPlacement(listStudentPlacement);
+		    }
 }
