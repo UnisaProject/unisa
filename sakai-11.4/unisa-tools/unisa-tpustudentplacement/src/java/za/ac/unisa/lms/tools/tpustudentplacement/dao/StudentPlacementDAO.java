@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 import za.ac.unisa.lms.dao.Gencod;
@@ -114,16 +115,14 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr,StudentPlacement placement) throws Exception {
 		
 		String sql = "update tpuspl" +
-		" set mk_school_code=" + placement.getSchoolCode2()+ "," +
-		" mk_study_unit_code='" + placement.getModule() + "'," +
-		" mk_supervisor_code=" + placement.getSupervisorCode() + "," +
+		" set  mk_supervisor_code=" + placement.getSupervisorCode() + "," +
 		" start_date=to_date('" + placement.getStartDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
 		" end_date=to_date('" + placement.getEndDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
-		" number_of_weeks=" + Short.parseShort(placement.getNumberOfWeeksSecPracPrd().trim()) + ",";
+		" number_of_weeks=" + Short.parseShort(placement.getNumberOfWeeksSecPracPrd().trim()) ;
 		  	if (placement.getEvaluationMark()==null || placement.getEvaluationMark().trim().equalsIgnoreCase("")){
-			sql = sql  + "evaluation_mark=null";
+			sql = sql  + ",evaluation_mark=null";
 		}else{
-			sql = sql  + "evaluation_mark=" + Short.parseShort(placement.getEvaluationMark().trim());
+			sql = sql  + ",evaluation_mark=" + Short.parseShort(placement.getEvaluationMark().trim());
 		}
 		sql+=(",stu_fulltime_sch='"+placement.getStuFullTime()+"'");
 		if((placement.getMentorCode()==null)||placement.getMentorCode()==0){
@@ -131,12 +130,12 @@ public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr
 		}else{
 			sql+=(",mk_mentor_code="+placement.getMentorCode());
 		}
-		sql = sql +	" where mk_academic_year=" + acadYear +
-		" and semester_period=" + semester +
-		" and mk_student_nr=" + studentNr +
-		" and mk_study_unit_code='" + placement.getModule()+ "'" +
-		" and mk_school_code=" +placement.getSchoolCode2()+
-			" and practice_period=" + placement.getPlacementPrd();
+		sql = sql +	"  where mk_academic_year=" + acadYear +
+		"  and semester_period=" + semester +
+		"  and mk_student_nr=" + studentNr +
+		"  and mk_study_unit_code='" + placement.getModule()+ "'" +
+		"  and mk_school_code=" +placement.getSchoolCode()+
+			"  and practice_period=2" ;
 		try{ 
 			   JdbcTemplate jdt = new JdbcTemplate(getDataSource());
 			   int result = jdt.update(sql);	
