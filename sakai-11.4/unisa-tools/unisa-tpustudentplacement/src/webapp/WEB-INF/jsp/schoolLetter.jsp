@@ -105,7 +105,7 @@
 						<bean:define id="schoolCom" name="studentPlacementForm" property="communicationSchool"/>
 						<tr><td><b>Name of student</b></td><td><b><bean:write name="studentPlacementForm" property="student.printName"/></b></td></tr>
 						<tr><td><b>Student Number</b></td><td><b><bean:write name="studentPlacementForm" property="student.number"/></b></td></tr>
-						<tr><td><b>Programme</b></td><td><b><bean:write name="studentPlacementForm" property="student.qual.shortDesc"/></b></b></td></tr>
+						<tr><td><b>Programme</b></td><td><b><bean:write name="studentPlacementForm" property="student.qualification.shortDesc"/></b></b></td></tr>
 							<logic:iterate name="studentPlacementForm" property="listStudentPlacement" id="rec" indexId="index">	
 									<bean:define id="school" name="rec" property="schoolCode"/>									
 									<%if (schoolCom.toString().equalsIgnoreCase(school.toString())){
@@ -222,7 +222,7 @@
 		<sakai:actions>
 			<input type=button value=Print onclick="window.print()"/>
 			<html:submit property="action">
-						 <fmt:message key="button.back"/>
+						<fmt:message key="button.back"/>
 			</html:submit>
 		</sakai:actions>
 	</html:form>
