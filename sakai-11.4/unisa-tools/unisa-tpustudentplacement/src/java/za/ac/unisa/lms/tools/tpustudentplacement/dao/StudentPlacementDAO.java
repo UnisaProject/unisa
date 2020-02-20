@@ -115,16 +115,14 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr,StudentPlacement placement) throws Exception {
 		
 		String sql = "update tpuspl" +
-		" set mk_school_code=" + placement.getSchoolCode2()+ "," +
-		" mk_study_unit_code='" + placement.getModule() + "'," +
-		" mk_supervisor_code=" + placement.getSupervisorCode() + "," +
+		" set  mk_supervisor_code=" + placement.getSupervisorCode() + "," +
 		" start_date=to_date('" + placement.getStartDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
 		" end_date=to_date('" + placement.getEndDateSecPracPeriod().toUpperCase().trim()+ "','YYYY/MM/DD')," +
-		" number_of_weeks=" + Short.parseShort(placement.getNumberOfWeeksSecPracPrd().trim()) + ",";
+		" number_of_weeks=" + Short.parseShort(placement.getNumberOfWeeksSecPracPrd().trim()) ;
 		  	if (placement.getEvaluationMark()==null || placement.getEvaluationMark().trim().equalsIgnoreCase("")){
-			sql = sql  + "evaluation_mark=null";
+			sql = sql  + ",evaluation_mark=null";
 		}else{
-			sql = sql  + "evaluation_mark=" + Short.parseShort(placement.getEvaluationMark().trim());
+			sql = sql  + ",evaluation_mark=" + Short.parseShort(placement.getEvaluationMark().trim());
 		}
 		sql+=(",stu_fulltime_sch='"+placement.getStuFullTime()+"'");
 		if((placement.getMentorCode()==null)||placement.getMentorCode()==0){
@@ -132,12 +130,12 @@ public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr
 		}else{
 			sql+=(",mk_mentor_code="+placement.getMentorCode());
 		}
-		sql = sql +	" where mk_academic_year=" + acadYear +
-		" and semester_period=" + semester +
-		" and mk_student_nr=" + studentNr +
-		" and mk_study_unit_code='" + placement.getModule()+ "'" +
-		" and mk_school_code=" +placement.getSchoolCode2()+
-			" and practice_period=" + placement.getPlacementPrd();
+		sql = sql +	"  where mk_academic_year=" + acadYear +
+		"  and semester_period=" + semester +
+		"  and mk_student_nr=" + studentNr +
+		"  and mk_study_unit_code='" + placement.getModule()+ "'" +
+		"  and mk_school_code=" +placement.getSchoolCode()+
+			"  and practice_period=2" ;
 		try{ 
 			   JdbcTemplate jdt = new JdbcTemplate(getDataSource());
 			   int result = jdt.update(sql);	
@@ -449,8 +447,8 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 		 					     placement.setTown(surburb);
 		 				 }*/
 		 				 placement.setCountryCode(country);
-		                 placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
-		                 placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
+		 				 setStuContactNum(placement );
+		                  placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
 		                 placement.setSchoolContactNumber(school.getSchoolContactNumber(placement.getSchoolCode()));
 		                 String mentorCode=dbutil.replaceNull(data.get("mentorCode"));
 					       if( mentorCode.trim().equals("")){
@@ -532,8 +530,8 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	 					placement.setTown(surburb);
 	 				 }*/
 	 				 placement.setCountryCode(country);
-	                 placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
-	                 placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
+	 				 setStuContactNum(placement );
+	                    placement.setSupervisorContactNumber(getSupervisorContactNumber(placement.getSupervisorCode(),contactDAO,contact));
 	                 placement.setSchoolContactNumber(school.getSchoolContactNumber(placement.getSchoolCode()));
 	                 String mentorCode=dbutil.replaceNull(data.get("mentorCode"));
 				       if( mentorCode.trim().equals("")){
@@ -546,7 +544,18 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	           }
          return placementList;
 }
-
+     
+     private void setStuContactNum(PlacementListRecord placement )throws Exception{
+                              DateUtil dateUtil=new DateUtil();
+                              Short acadYear=(short)dateUtil.getYearInt();
+                              Student student2=new  Student(placement.getStudentNumber(),acadYear);
+                              if((student2.getContactInfo().getHomeNumber()!=null)
+                            		  &&(!student2.getContactInfo().getHomeNumber().isEmpty())){
+                                          placement.setStudentContactNumber(student2.getContactInfo().getHomeNumber());
+                             }else{
+  	                              placement.setStudentContactNumber(student2.getContactInfo().getHomeNumber());
+                             }
+     }
   private String getSupervisorContactNumber(int supervisorCode,ContactDAO contactDAO,Contact contact) throws Exception{
                       contact  = contactDAO.getContactDetails(supervisorCode,231);
                       String contactNum="";
@@ -690,8 +699,10 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
     }
     private void setPlacementContactInfo(PlacementListRecord placement )throws Exception{
                    SchoolUI schoolUI=new SchoolUI();
-                   Student student=new  Student();
-                   placement.setStudentContactNumber(student.getStudentContactNumber(placement.getStudentNumber()));
+                   DateUtil dateUtil=new DateUtil();
+                   Short acadYear=(short)dateUtil.getYearInt();
+                   Student student=new  Student(placement.getStudentNumber(),acadYear);
+                   placement.setStudentContactNumber(student.getContactInfo().getHomeNumber());
                    placement.setSchoolContactNumber(schoolUI.getSchoolContactNumber(placement.getSchoolCode()));
     }
     public void updateEmailToSupField(int supervisorCode) throws Exception{

@@ -1,12 +1,8 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import za.ac.unisa.lms.tools.tpustudentplacement.dao.StudentPlacementDAO;
-import za.ac.unisa.lms.tools.tpustudentplacement.dao.databaseUtils;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementListRecord;
@@ -16,10 +12,10 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 
 public class StudentPlacementImpl extends StuPlacementCRUDHelperClass{
 	
-	           StudentPlacementDAO dao;
+	         StudentPlacementDAO dao;
 	           public StudentPlacementImpl(){
-		                    dao=new StudentPlacementDAO();
-		      }
+		                             dao=new StudentPlacementDAO();
+		     }
 	   	      public List getPlacementListForSupervEmail(int supervisorCode) throws Exception {
 		                       return dao.getPlacementListForSupervEmail(supervisorCode);
 	          }
@@ -151,9 +147,17 @@ public class StudentPlacementImpl extends StuPlacementCRUDHelperClass{
            public void  setPacementDatesForView(StudentPlacement stuPlacement){
                                              stuPlacement.setStartDateView(stuPlacement.getStartDate());
                                              stuPlacement.setEndDateView(stuPlacement.getEndDate());
-
                                                stuPlacement.setStartDateSecPracPeriodView(stuPlacement.getStartDateSecPracPeriod());
-
                                              stuPlacement.setEndDateSecPracPeriodView(stuPlacement.getEndDateSecPracPeriod());
-           }         
+           }      
+           public void initialiseNumOfWeeks(StudentPlacement stuPlacement){
+        	                                if((stuPlacement.getNumberOfWeeks()==null)||
+	                        		                     (stuPlacement.getNumberOfWeeks().equals("0"))){
+        	                        	                          stuPlacement.setNumberOfWeeks("");
+        	                                }
+        	                                if((stuPlacement.getNumberOfWeeksSecPracPrd()==null)||
+        	                        		               (stuPlacement.getNumberOfWeeksSecPracPrd().equals("0"))){
+        	                        	                                 stuPlacement.setNumberOfWeeksSecPracPrd("");
+     	                                   }
+         }
 }

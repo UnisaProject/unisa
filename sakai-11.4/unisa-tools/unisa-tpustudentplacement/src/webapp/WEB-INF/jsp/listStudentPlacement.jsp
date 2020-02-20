@@ -14,6 +14,7 @@
 		<sakai:group_heading>
 			<fmt:message key="heading.studentPlacement.studentInfo"/> 
 		</sakai:group_heading>
+
 		<sakai:group_table>	
 			<tr>
 				<td><fmt:message key="prompt.acadYear"/>/<fmt:message key="prompt.semester"/></td>
@@ -33,7 +34,7 @@
 			</tr>			
 			<tr>
 				<td><fmt:message key="prompt.qualification"/></td>
-				<td><bean:write name="studentPlacementForm" property="student.qual.description"/></td>
+				<td><bean:write name="studentPlacementForm" property="student.qualification.description"/></td>
 			</tr>
 			<tr>
 				<td><fmt:message key="prompt.practicalModules"/></td>

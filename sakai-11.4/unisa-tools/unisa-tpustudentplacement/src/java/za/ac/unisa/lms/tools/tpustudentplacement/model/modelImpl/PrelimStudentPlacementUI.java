@@ -6,12 +6,12 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Module;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PracticeDatesMaintenance;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Qualification;
+import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacement;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentPlacementListRecordUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StudentUI;
-import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 import org.apache.struts.action.ActionMessages;
 public class PrelimStudentPlacementUI{
@@ -53,57 +53,53 @@ public class PrelimStudentPlacementUI{
                                                                           		           }else{
                                                                           			                            studentPlacementForm.setLocalSchool("N");
                                                                           	            	}
-                                                                                	     	Module module=new Module();
-                                                                                	     	module=module.getModule(stuPlacement.getModule());
-                                                                                	     	 studentPlacementForm.setStudyLevel(module.getLevel());
-                                                                                	     	  if(module.getLevel()==1){
-                                                                        		       	    	           studentPlacementForm.setDisplaySecDatesBatch("N");
-                                                                        		       	    	        studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
-                                                                        		       	    	     if((stuPlacement==null)||(stuPlacement.equals("0"))){
-                                                                     	                            	stuPlacement.setNumberOfWeeks("");
-                                                                     	                            }
-                                                                        		       	       }else{
-                                                                        		       	    	           studentPlacementForm.getStudentPlacement().setTwoPlacements(true);
-                                                                        		       	    	           studentPlacementForm.setDisplaySecDatesBatch("Y");
-                                                                        		       	       }
-                                                                                          studentPlacementForm.setPracticeBatchDateListsIndex(0);
-                                                        			                     studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(0);
-                                                        			                     if(studentPlacementForm.getPlacementFilterCountry().equals(PlacementUtilities.getSaCode())){
-                                                                               		           practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
-                                                        			                     }
-                                                                                          studentPlacementForm.setStudentNr(stuPlacement.getStuNum());
-                                                                                          StudentUI studentUI=new StudentUI();
-                                                                                          studentUI.setStudent(studentPlacementForm);
-                                                                                           studentPlacementForm.setOriginalPrelimPlacement(stuPlacementListRec);
-                                                                                          endReached=true;
-                                                                                          PlacementUtilities placementUtilities=new PlacementUtilities();
-                                                                                          studentPlacementForm.setStudyLevel(module.getLevel());
-                                                                                          placementUtilities.setPlacementDateToRequestObject(request, stuPlacement);
-                                                                                          //stuPlacement.setTotPracDays();
-                                                                                          stuPlacement.setPacementDatesForView();
-                                                                                               studentPlacementForm.setStudentPlacementAction("editPrelimPlacement");	
-                                                                                          Qualification qualification=new Qualification();
-                                                                                          String qualCode=studentPlacementForm.getStudent().getQual().getCode();
-                                                                                          if(qualification.isPGCE(qualCode)){
-                                                                                        	                studentPlacementForm.setIsPGCE("Y");
-                                                                                        	                studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
-                                                                                        	                if((stuPlacement==null)||(stuPlacement.equals("0"))){
-                                                                                        	                            	stuPlacement.setNumberOfWeeks("");
-                                                                                        	                }
-                                                                          		          }else{
-                                                                                        	             studentPlacementForm.setIsPGCE("N");
-                                                                                          }
-                                                                                          StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
-                                                                                          
-                                                       }
+                                                                   Module module=new Module();
+                                                                   String moduleCode=studentPlacementForm.getStudentPlacement().getModule();
+                                                                   int acadYear=Integer.parseInt(studentPlacementForm.getAcadYear());
+                                                                   Student stu=new Student(Integer.parseInt(stuPlacement.getStuNum()),acadYear);
+                                                                   studentPlacementForm.setStudent(stu);
+                                                                   Qualification qual= stu.getQualification();
+                                                                   module=module.getModule(qual ,moduleCode,acadYear);
+                                                                   studentPlacementForm.setStudyLevel(module.getLevel());
+                                                                  if(module.getLevel()==1){
+                                                              	    	           studentPlacementForm.setDisplaySecDatesBatch("N");
+                                                                  	    	        studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
+                                                                    }else{
+                                                                        		   studentPlacementForm.getStudentPlacement().setTwoPlacements(true);
+                                                                        		   studentPlacementForm.setDisplaySecDatesBatch("Y");
+                                                                  }
+                                                                  studentPlacementForm.setPracticeBatchDateListsIndex(0);
+                                                        		  studentPlacementForm.setPracticeBatchDateSecPracPrdListsIndex(0);
+                                                        		  if(studentPlacementForm.getPlacementFilterCountry().equals(PlacementUtilities.getSaCode())){
+                                                                               	  practiceDatesMaintenance.setPracDateBatcheLists(studentPlacementForm);
+                                                        		  }
+                                                                   studentPlacementForm.setStudentNr(stuPlacement.getStuNum());
+                                                                   StudentUI studentUI=new StudentUI();
+                                                                   studentUI.setStudent(studentPlacementForm);
+                                                                   studentPlacementForm.setOriginalPrelimPlacement(stuPlacementListRec);
+                                                                   endReached=true;
+                                                                   PlacementUtilities placementUtilities=new PlacementUtilities();
+                                                                   studentPlacementForm.setStudyLevel(module.getLevel());
+                                                                   placementUtilities.setPlacementDateToRequestObject(request, stuPlacement);
+                                                                    //stuPlacement.setTotPracDays();
+                                                                     stuPlacement.setPacementDatesForView();
+                                                                     studentPlacementForm.setStudentPlacementAction("editPrelimPlacement");	
+                                                                     if(qual.isPgceStudent()){
+                                                                                            studentPlacementForm.setIsPGCE("Y");
+                                                                                            studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
+                                                                     }else{
+                                                                                       studentPlacementForm.setIsPGCE("N");
+                                                                    }
+                                                                     StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
+                                                                     stuPlacement.initialiseTotalPracticeDays();
+                                                    }
                                                      return endReached;
      }
      public ActionMessages setListPrelimPlacementScreen(StudentPlacementForm studentPlacementForm)throws Exception{
 	                                                             PrelimPlacementScreenBuilder screenBuilder=new PrelimPlacementScreenBuilder(this);
 	                                                             return screenBuilder.setListPrelimPlacementScreen(studentPlacementForm);
      }
-     
-     public void setPlacementList(StudentPlacementForm studentPlacementForm,Short province) throws Exception {     
+      public void setPlacementList(StudentPlacementForm studentPlacementForm,Short province) throws Exception {     
                        StudentPlacementUI stuPlacementUI = new StudentPlacementUI();
                        stuPlacementUI .setPrelimPlacementList(studentPlacementForm, province);
      }
@@ -122,6 +118,5 @@ public class PrelimStudentPlacementUI{
                        ActionMessages messages =setListPrelimPlacementScreen(studentPlacementForm);
                        return messages;
      }
-     
-    
-}
+
+  }

@@ -222,7 +222,7 @@
 		<sakai:actions>
 			<input type=button value=Print onclick="window.print()"/>
 			<html:submit property="action">
-						<fmt:message key="button.back"/>
+						 <fmt:message key="button.back"/>
 			</html:submit>
 		</sakai:actions>
 	</html:form>

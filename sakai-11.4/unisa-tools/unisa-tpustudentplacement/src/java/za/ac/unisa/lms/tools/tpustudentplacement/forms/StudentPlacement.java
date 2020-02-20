@@ -5,7 +5,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.StudentPlacementValidator
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 public class StudentPlacement extends StudentPlacementImpl{
 	protected String module;
 	protected Integer schoolCode;
@@ -57,8 +56,7 @@ public class StudentPlacement extends StudentPlacementImpl{
 	}
 	StudentPlacementImpl  studentplacementImlp;
 	public  StudentPlacement(){
-		       studentplacementImlp=new StudentPlacementImpl();	
-		       studentPlacementValidator=new StudentPlacementValidator();
+	           	    studentPlacementValidator=new StudentPlacementValidator();
 	}
 	public  List validateStuPlacement( StudentPlacement  studentPlacement,int academicYear){
 		             return studentPlacementValidator.validateStudentPlacement(studentPlacement,academicYear);
@@ -259,7 +257,6 @@ public class StudentPlacement extends StudentPlacementImpl{
                                                 	                               }else{
                                            		                                                        request.setAttribute("endDate",studentPlacementForm.getStudentPlacement().getEndDate());
                                                 	                               }
-
                                                                                                                  if((studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod()==null)||
                                           	                            		                                                      (studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod().trim().isEmpty())){
                                           	                            	                                                               request.setAttribute("startDateSecPrd", dateUtil.dateOnly());
@@ -272,9 +269,7 @@ public class StudentPlacement extends StudentPlacementImpl{
                               	                                                                                     }else{
                           	                                                                                              request.setAttribute("endDateSecPrd",studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
                               	                                                                        }
-
                                                 }
-
        }
 	public String getUserSelectedDateBlock() {
 		return userSelectedDateBlock;
@@ -313,20 +308,21 @@ public class StudentPlacement extends StudentPlacementImpl{
 		this.secPrelimPlacement = secPrelimPlacement;
 	}
 	public boolean isTwoPlacements() {
-		return twoPlacements;
+		              return twoPlacements;
 	}
 	public void setTwoPlacements(boolean twoPlacements) {
-		this.twoPlacements = twoPlacements;
+		                this.twoPlacements = twoPlacements;
 	}
 	public void  setPacementDatesForView(){
 		                           setPacementDatesForView(this);
 	}
-
 	public Integer getSchoolCode2() {
 		return schoolCode2;
 	}
 	public void setSchoolCode2(Integer schoolCode2) {
 		this.schoolCode2 = schoolCode2;
 	}
-	
+	  public void initialiseTotalPracticeDays(){
+		            initialiseNumOfWeeks(this);
+      }
 }
