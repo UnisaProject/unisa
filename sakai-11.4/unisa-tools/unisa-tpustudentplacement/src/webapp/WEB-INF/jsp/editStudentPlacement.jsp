@@ -7,7 +7,6 @@
 <fmt:setBundle basename="za.ac.unisa.lms.tools.tpustudentplacement.ApplicationResources"/>
 
 <sakai:html>
-s
   <head>  
       <meta charset="utf-8">  
       <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">  
@@ -276,24 +275,12 @@ s
 				                                                             <td><html:text name="studentPlacementForm" property="studentPlacement.numberOfWeeks" size="4" maxlength="2"/>
 				                                                        </td>
 				                                                     </tr>
-				                                        <logic:notEqual name="studentPlacementForm" property="studentPlacementAction"   value="edit">
-			                                               	<logic:notEqual name="studentPlacementForm" property="studyLevel"   value="1">
-			                                                	  <tr>
+				                                        <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="add">
+				                                         <logic:notEqual name="studentPlacementForm" property="studyLevel"   value="1">
+			                                               	 	  <tr>
 			                                                      <td  colspan="2"><fmt:message key="prompt.secpracprd"/></td>
 			                                                    </tr>
-			                                                     <logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="edit">
-			                                                            <tr><td > &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;<fmt:message key="prompt.secperiodselectedblock"/>  
-			                                 	                              </td> 
-			                                 	                              <td > 
-			                                 	                                      <bean:write name="studentPlacementForm"  property="studentPlacement.startDateSecPracPeriodView"/>
-			                                 	                                         <logic:notEmpty  name="studentPlacementForm" property="studentPlacement.startDateSecPracPeriodView" >
-			                                 	                                                       <fmt:message key="prompt.dash"/>
-			                                 	                                         </logic:notEmpty>
-			                                 	                                     <bean:write name="studentPlacementForm"  property="studentPlacement.endDateSecPracPeriodView"/>
-			                                 	                               </td> 
-			                                 	                        </tr> 
-			                                 	                        </logic:equal>
-			                                                              <tr>
+			                                                                 <tr>
 			                                                                      <td> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
 			                                                                              <fmt:message key="prompt.selectpracprd"/>&nbsp;<fmt:message key="prompt.mandatory"/>
 				                                                                   </td>
@@ -310,9 +297,9 @@ s
 				                                                        </td>
 				                                                     </tr>
 				                                                     </logic:notEqual>
-				                                                  </logic:notEqual>
-			                                         </logic:equal>
-			                            </logic:notEqual>
+				                                                   </logic:equal>
+				                                       </logic:equal>
+			                                </logic:notEqual>
 				    </logic:equal>
 					 <logic:notEqual name="studentPlacementForm"  property="student.countryCode"   value="1015">
 					                            	<logic:equal name="studentPlacementForm" property="studentPlacementAction"   value="editPrelimPlacement">
