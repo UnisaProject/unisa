@@ -623,6 +623,7 @@ public class StudentPlacementAction extends LookupDispatchAction{
 		                                                              }
 		                                                             StudentPlacement placement = new StudentPlacement();
 		                                                            placement.setSchoolCode(-1);
+		                                                            studentPlacementForm.setStudentPlacement(placement);
 		                                                           //initialise values
 		                                                           if (studentPlacementForm.getListStudentPlacement().size()>0){
 		                                                                  	for (int i=0; i < studentPlacementForm.getListStudentPlacement().size(); i++){
@@ -674,7 +675,7 @@ public class StudentPlacementAction extends LookupDispatchAction{
       int studyLevel=1;
 		if( (placement.getModule()!=null)||(! placement.getModule().trim().equals(""))){
 		                Module module=new Module();
-		                String moduleCode=studentPlacementForm.getStudentPlacement().getModule();
+		                String moduleCode=placement.getModule();
                         Qualification qual=studentPlacementForm.getStudent().getQualification();
                         int acadYear=Integer.parseInt(studentPlacementForm.getAcadYear());
                        module=module.getModule(qual,moduleCode,acadYear);
