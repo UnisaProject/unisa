@@ -125,6 +125,23 @@ public class StudentUploadAction extends LookupDispatchAction {
 		stuUpForm.setSelectReset("");
 		stuUpForm.setWebLoginMsg("");
 		
+		String originatedFrom =  request.getParameter("originatedFrom");
+		stuUpForm.setOriginatedFrom(originatedFrom);
+		if (originatedFrom != null)
+		{
+			stuUpForm.getStudent().setAcademicYear(request.getParameter("acaYear"));
+			stuUpForm.getStudent().setAcademicPeriod(request.getParameter("acaPeriod"));
+			stuUpForm.getStudent().setNumber(request.getParameter("nr"));
+			stuUpForm.getStudent().setSurname(request.getParameter("surname"));
+			stuUpForm.getStudent().setFirstnames(request.getParameter("firstNames"));
+			stuUpForm.getStudent().setBirthYear(request.getParameter("birthYear"));
+			stuUpForm.getStudent().setBirthMonth(request.getParameter("birthMonth"));
+			stuUpForm.getStudent().setBirthDay(request.getParameter("birthDay"));
+			stuUpForm.getStudent().setStuExist(true);
+			
+			return mapping.findForward("documentUpload");
+		}
+		
 		//Write version number to log to check all servers
 		//log.debug("StudentUploadAction - Applications Version="+stuUpForm.getVersion());
 		

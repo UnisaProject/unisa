@@ -66,8 +66,9 @@ public class StudentStatusAction extends LookupDispatchAction {
 	    
 	    map.put("applyLogin", "applyLogin");
 	    map.put("applyStatus", "applyStatus");
-	    map.put("backToOffer", "backToOffer");
-	    	    
+	    map.put("gotoOfferAcceptance", "gotoOfferAcceptance");
+	    map.put("gotoUploadDocuments", "gotoUploadDocuments");
+	    map.put("gotoPayFees", "gotoPayFees");	    	    
     
 	    return map;
 	 }
@@ -80,7 +81,7 @@ public class StudentStatusAction extends LookupDispatchAction {
 		
 	}
 	
-	public ActionForward backToOffer(
+	public ActionForward gotoOfferAcceptance(
 			ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,
@@ -97,6 +98,35 @@ public class StudentStatusAction extends LookupDispatchAction {
 				  "&birthDay=" + stuStatForm.getStudent().getBirthDay() +
 				  "&birthMonth=" + stuStatForm.getStudent().getBirthMonth() +
 				  "&birthYear=" + stuStatForm.getStudent().getBirthYear(),true);
+	}
+	
+	public ActionForward gotoUploadDocuments(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		StudentStatusForm stuStatForm = (StudentStatusForm) form;
+
+		String serverpath = ServerConfigurationService.getServerUrl();		
+		return new ActionForward(serverpath+"/unisa-findtool/default.do?sharedTool=unisa.studentupload&originatedFrom=unisa.studentstatus&acaYear=" + stuStatForm.getStudent().getAcademicYear() +
+				  "&acaPeriod=" + stuStatForm.getStudent().getAcademicPeriod() +
+		  		  "&nr=" + stuStatForm.getStudent().getNumber() +
+				  "&surname=" +  stuStatForm.getStudent().getSurname() +
+				  "&firstNames=" + stuStatForm.getStudent().getFirstnames() +
+				  "&birthDay=" + stuStatForm.getStudent().getBirthDay() +
+				  "&birthMonth=" + stuStatForm.getStudent().getBirthMonth() +
+				  "&birthYear=" + stuStatForm.getStudent().getBirthYear(),true);
+	}
+	
+	public ActionForward gotoPayFees(
+			ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		String serverpath = ServerConfigurationService.getServerUrl();
+		return new ActionForward(serverpath+"/unisa-findtool/default.do?sharedTool=unisa.creditcardpayment",true);
 	}
 	
 	public ActionForward walkthrough(ActionMapping mapping, ActionForm form,
@@ -128,6 +158,32 @@ public class StudentStatusAction extends LookupDispatchAction {
 			stuStatForm.getStudent().setStuExist(true);
 			
 			applyStatus(request, stuStatForm);
+			boolean showButtonOffer = false;
+			boolean showButtonUpload = false;
+			boolean showButtonPayFees = false;
+			if (stuStatForm.getQualStatusCode1()!=null && 
+					(stuStatForm.getQualStatusCode1().equalsIgnoreCase("EO") || 
+							stuStatForm.getQualStatusCode1().equalsIgnoreCase("TO"))){
+				showButtonOffer=true;
+			}
+			if (stuStatForm.getQualStatusCode2()!=null && 
+					(stuStatForm.getQualStatusCode2().equalsIgnoreCase("EO") || 
+							stuStatForm.getQualStatusCode2().equalsIgnoreCase("TO"))){
+				showButtonOffer=true;
+			}
+			if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("NP")) ||
+					(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("NP"))){
+				showButtonPayFees=true;
+			}		
+			if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD")) || 
+					(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD"))){
+				showButtonUpload=true;
+			}
+			
+			request.setAttribute("showButtonOffer", showButtonOffer);
+			request.setAttribute("showButtonUpload", showButtonUpload);
+			request.setAttribute("showButtonPayFees", showButtonPayFees);
+			
 			return mapping.findForward("applyStatus");
 		}
 				
@@ -579,6 +635,33 @@ public class StudentStatusAction extends LookupDispatchAction {
 				/** Flow Check: (4) **/
 				//log.debug("StudentStatusAction - applyLogin - (4) - Redirect to Status page");
 				applyStatus(request, stuStatForm);
+				
+				boolean showButtonOffer = false;
+				boolean showButtonUpload = false;
+				boolean showButtonPayFees = false;
+				if (stuStatForm.getQualStatusCode1()!=null && 
+						(stuStatForm.getQualStatusCode1().equalsIgnoreCase("EO") || 
+								stuStatForm.getQualStatusCode1().equalsIgnoreCase("TO"))){
+					showButtonOffer=true;
+				}
+				if (stuStatForm.getQualStatusCode2()!=null && 
+						(stuStatForm.getQualStatusCode2().equalsIgnoreCase("EO") || 
+								stuStatForm.getQualStatusCode2().equalsIgnoreCase("TO"))){
+					showButtonOffer=true;
+				}
+				if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("NP")) ||
+						(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("NP"))){
+					showButtonPayFees=true;
+				}		
+				if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD")) || 
+						(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD"))){
+					showButtonUpload=true;
+				}
+				
+				request.setAttribute("showButtonOffer", showButtonOffer);
+				request.setAttribute("showButtonUpload", showButtonUpload);
+				request.setAttribute("showButtonPayFees", showButtonPayFees);
+				
 				return mapping.findForward("applyStatus");
 			} else{ //Student thus doesn't have a STUAPQ record for this Academic Year & Period
 				/** Flow Check: (5) **/
@@ -1253,14 +1336,14 @@ public class StudentStatusAction extends LookupDispatchAction {
 				
 				//Offer Reason
 				if ("AX".equalsIgnoreCase(stuStatForm.getQualStatusCode1())){
-					String reason1 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode1());
+					String reason1 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode1().substring(0, 5));
 					stuStatForm.setQualStatus1Reason(reason1);
 					//log.debug("StudentStatusAction - applyStatus - Reason1="+reason1);
 				}	
 				
 				if (stuStatForm.getSelQualCode2() != null && !"Not Found".equalsIgnoreCase(stuStatForm.getSelQualCode2())){
 					if ("AX".equalsIgnoreCase(stuStatForm.getQualStatusCode2())){
-						String reason2 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode2());
+						String reason2 = dao.getDeclineReason(stuStatForm.getStudent().getNumber(),stuStatForm.getStudent().getAcademicYear(), stuStatForm.getStudent().getAcademicPeriod(), stuStatForm.getSelQualCode2().substring(0, 5));
 						stuStatForm.setQualStatus2Reason(reason2);
 						//log.debug("StudentStatusAction - applyStatus - Reason2="+reason2);
 					}
