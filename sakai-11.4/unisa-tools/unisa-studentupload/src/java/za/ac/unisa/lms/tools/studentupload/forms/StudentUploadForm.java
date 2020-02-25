@@ -143,11 +143,20 @@ public class StudentUploadForm extends ValidatorActionForm {
 	private String qualUploadCode2 = "";
 	private String qualUpload1Reason = "";
 	private String qualUpload2Reason = "";
+	private String originatedFrom = "";
 	
 	//FileUpload
 	//for showing optional docs
+	public String getOriginatedFrom() {
+		return originatedFrom;
+	}
 
+	public void setOriginatedFrom(String originatedFrom) {
+		this.originatedFrom = originatedFrom;
+	}
+	
 	private List<String> desc = new ArrayList<String>();
+	
 	private Map<String, List<String>> map = new HashMap<String, List<String>>();
 		
 
