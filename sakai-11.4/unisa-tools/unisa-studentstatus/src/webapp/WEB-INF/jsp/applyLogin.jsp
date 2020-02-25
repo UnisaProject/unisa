@@ -194,11 +194,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title text-center"><fmt:message key="page.login.heading"/></h3>
-				</div>
+				</div>				
 				<div class="panel-body clearfix">
 					<div class="col-md-3 col-sm-3 col-xs-3">
 					</div>
-					<div class="col-md-6 col-sm-6 col-xs-6 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-6 clearfix">	
+					<table>
+					 <tr><td><fmt:message key="page.login.mandNote"/></td></tr>
+					 <tr><td>&nbsp;</td></tr>
+					</table>			
 						<table style="width:100%;">
 			               	<logic:equal name="studentStatusForm" property="allowLogin" value="true">
 					               	<tr>
