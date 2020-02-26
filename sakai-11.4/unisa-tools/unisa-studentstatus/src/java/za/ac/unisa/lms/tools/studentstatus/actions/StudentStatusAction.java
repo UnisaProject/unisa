@@ -175,8 +175,8 @@ public class StudentStatusAction extends LookupDispatchAction {
 					(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("NP"))){
 				showButtonPayFees=true;
 			}		
-			if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD")) || 
-					(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD"))){
+			if ((stuStatForm.getQualStatusCode1()!=null && (stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD") || stuStatForm.getQualStatusCode1().equalsIgnoreCase("ND")) || 
+					(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD") || stuStatForm.getQualStatusCode2().equalsIgnoreCase("ND")))){
 				showButtonUpload=true;
 			}
 			
@@ -653,8 +653,8 @@ public class StudentStatusAction extends LookupDispatchAction {
 						(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("NP"))){
 					showButtonPayFees=true;
 				}		
-				if ((stuStatForm.getQualStatusCode1()!=null && stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD")) || 
-						(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD"))){
+				if ((stuStatForm.getQualStatusCode1()!=null && (stuStatForm.getQualStatusCode1().equalsIgnoreCase("APD") || stuStatForm.getQualStatusCode1().equalsIgnoreCase("ND")) || 
+						(stuStatForm.getQualStatusCode2()!=null && stuStatForm.getQualStatusCode2().equalsIgnoreCase("APD") || stuStatForm.getQualStatusCode2().equalsIgnoreCase("ND")))){
 					showButtonUpload=true;
 				}
 				
