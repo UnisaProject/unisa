@@ -4,7 +4,7 @@
 <%@ taglib uri="http://sakaiproject.org/struts/sakai" prefix="sakai" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>    
 <fmt:setBundle basename="za.ac.unisa.lms.tools.brochures.ApplicationResources"/>
 
 <sakai:html>
@@ -25,9 +25,9 @@
 	</tr><tr>
 	<td><html:link href="brochures.do?act=myModules">myModules</html:link></td>
 	</tr>
-	<!--<tr>
+	<tr>
 		<td><html:link href="brochures.do?act=mySLP">mySLP</html:link></td>
-	</tr> -->
+	</tr> 
 	<tr>
 	<td><html:link href="brochures.do?act=auditReport">Audit Reports</html:link></td>
 	</tr>
