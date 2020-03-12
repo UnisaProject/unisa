@@ -4,7 +4,8 @@
 <%@ taglib uri="http://sakaiproject.org/struts/sakai" prefix="sakai" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>    
+
 <fmt:setBundle basename="za.ac.unisa.lms.tools.brochures.ApplicationResources"/>
 
 <sakai:html>
