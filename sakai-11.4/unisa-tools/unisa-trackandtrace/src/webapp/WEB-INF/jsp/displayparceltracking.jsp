@@ -26,8 +26,8 @@
 		<fmt:message key="function.instructiontext7"/>
 		<fmt:message key="function.instructiontext8"/>
 		<fmt:message key="function.instructiontext9"/>
-		<fmt:message key="function.instructiontext11"/>
-		<fmt:message key="function.instructiontext15"/>		
+		<!--<fmt:message key="function.instructiontext11"/>
+		<fmt:message key="function.instructiontext15"/>	-->	
 		<fmt:message key="function.instructiontext14"/>
 		<fmt:message key="function.instructiontext12"/>
 		<logic:notEmpty name="records">
