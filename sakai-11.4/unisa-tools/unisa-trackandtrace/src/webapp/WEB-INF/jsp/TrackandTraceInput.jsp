@@ -17,20 +17,28 @@
 			<sakai:instruction>
 		<h3><fmt:message key="function.heading"/></h3><br></sakai:instruction>
 		
-		<sakai:group_table>
+		<logic:notEqual name="parcelTrackingDisplayForm" property="studentuser" value="true">
+		   <sakai:group_table>
 			<tr>
-				<td><fmt:message key="function.studno"/>&nbsp;</td>
-				<td><html:text property="student.number" size="10" maxlength="8"/></td>
+			 <td><fmt:message key="function.studno"/>&nbsp;</td>
+			 <td><html:text property="student.number" size="10" maxlength="8"/></td>
 			</tr>
-	</sakai:group_table>
-	
-		
+		   </sakai:group_table>
+		  </logic:notEqual>
+		  
+		  <logic:equal name="parcelTrackingDisplayForm" property="studentuser" value="true">
+		   <sakai:group_table>
+			<tr>
+			 <td><fmt:message key="function.studno"/>&nbsp;</td>
+			 <td><html:text property="student.number" size="10" maxlength="8" disabled="true"/></td>
+			</tr>
+		   </sakai:group_table>
+		  </logic:equal>
+				
 		<sakai:actions>
 			<html:submit property="action">
-			<fmt:message key="button.displayfd"/></html:submit>
-		
+			<fmt:message key="button.displayfd"/></html:submit>	   
 		</sakai:actions>
 		
-			
 		</html:form>
 </sakai:html>
