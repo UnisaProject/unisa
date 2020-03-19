@@ -110,10 +110,10 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
 				//
-				//smsForm.setNovellUserCode("PRETOJ");
+				smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
 				//smsForm.setNovellUserCode("MAMETMD");
-				return "userunknown";
+				//return "userunknown";
 			}
 		} else {
 			return "userunknown";
@@ -258,9 +258,9 @@ public class SmsBatchAction extends LookupDispatchAction {
 				 * NB NB NB NB NB NB NB NB set user code for local dev only
 				 */
 				//smsForm.setNovellUserCode("DLAMIW");
-				//smsForm.setNovellUserCode("PRETOJ");
+				smsForm.setNovellUserCode("PRETOJ");
 				//smsForm.setNovellUserCode("PENZHE");
-				return mapping.findForward("userunknown");
+				//return mapping.findForward("userunknown");
 			}
 		} else {
 			return mapping.findForward("userunknown");
@@ -882,11 +882,11 @@ public class SmsBatchAction extends LookupDispatchAction {
 		op.setInSmsRequestControlCellNr3(controlCellPhoneList.get(2).toString()
 		.trim());
 		op.setInSmsRequestProgramName("STD_BATCH");
-
-		/** setup selection criteria */
-		op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
+		op.setInWsAddressV2Type(Short.parseShort("0")); //initialize to 0 if Geographical area not postal codes
+		/** setup selection criteria */		
 		int count = 0;
-		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){			
+		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){		
+			op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
 			for (int i = 0; i < smsBatchForm.getPostalCodeList().size(); i++) {
 					op.setInMagisterialGpCsfStringsString15(count, smsBatchForm.getPostalCodeList().get(i).toString().trim());
 					count = count + 1;
@@ -1100,8 +1100,9 @@ public class SmsBatchAction extends LookupDispatchAction {
 
 		/** setup selection criteria */
 		int count = 0;
-		op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
+		op.setInWsAddressV2Type(Short.parseShort("0"));
 		if (smsBatchForm.getGeoCriteriaType().equalsIgnoreCase("P")){			
+			op.setInWsAddressV2Type(Short.parseShort(smsBatchForm.getPostalCodeAddressType()));
 			for (int i = 0; i < smsBatchForm.getPostalCodeList().size(); i++) {
 					op.setInMagisterialGpCsfStringsString15(count, smsBatchForm.getPostalCodeList().get(i).toString().trim());
 					count = count + 1;
