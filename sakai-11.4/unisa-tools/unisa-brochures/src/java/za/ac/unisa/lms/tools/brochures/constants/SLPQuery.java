@@ -22,7 +22,7 @@ public class SLPQuery {
 		stringBuilder.append(" grd.MK_DEPARTMENT_CODE departmentCode,");
 		stringBuilder.append(" (select kat.ENG_DESCRIPTION from kat where kat.code = grd.FK_KATCODE) qualCategory,");
 		stringBuilder.append(" grd.LONG_ENG_DESCRIPTI qualDescription,");
-		stringBuilder.append(" quaslp.MK_QUALIFICATION_CODE code, quaslp.MK_ACADEMIC_YEAR year, NVL(quaslp.TARGET_GROUP,' '),"); 
+		stringBuilder.append(" quaslp.MK_QUALIFICATION_CODE code, quaslp.MK_ACADEMIC_YEAR year, NVL(quaslp.TARGET_GROUP,' ') TARGET_GROUP,"); 
 		stringBuilder.append(" NVL(quaslp.ADMISSION_REQUIREMENTS,' ') adminReq, NVL(quaslp.DURATION,' ') duration,");
 		stringBuilder.append(" NVL(quaslp.LANGUAGE_MEDIUM,' ') languageMedium, NVL(quaslp.REGISTRATION_PERIODS,' ') registrationPeriods,");
 		stringBuilder.append(" NVL(quaslp.TUITION_METHOD,' ') tuitionMethod, NVL(quaslp.KIND_OF_ASSESSMENT,' ') kindOfAssessment,");
