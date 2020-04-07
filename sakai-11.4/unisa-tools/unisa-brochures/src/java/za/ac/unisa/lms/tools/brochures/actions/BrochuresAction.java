@@ -853,7 +853,7 @@ public class BrochuresAction extends LookupDispatchAction {
 						return "myslp";
 				    }*/
 				    	filename = "mySLP.xml";
-				        //filename1 = "mySLP.doc";
+				        filename1 = "mySLP.doc";
 
 				  
 				
