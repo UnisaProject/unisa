@@ -65,7 +65,7 @@
     <tr> 
  	 <td>Output Format</td>
  <td> <html:select property="format" style="width: 350px">
- 	    <!--<html:option value="1">Word Format</html:option>-->
+ 	    <html:option value="1">Word Format</html:option>
  	    <html:option value="2">XML Format</html:option>		         	
     	</html:select> </td>
     </tr>
