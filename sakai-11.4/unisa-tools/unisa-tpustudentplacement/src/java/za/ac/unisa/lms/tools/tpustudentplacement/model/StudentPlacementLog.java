@@ -8,8 +8,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.PlacementImage;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl.StudentPlacementLogImpl;
 
 public class StudentPlacementLog extends StudentPlacement{
-	 private String year;
-	 private String semester;
 	 private String action;
 	 private String correspondenceTo;
 	 private String  beforeImage="";
@@ -22,8 +20,8 @@ public class StudentPlacementLog extends StudentPlacement{
 	 private Personnel personnel;
 	 private String  imageTracker="0";
 	 StudentPlacement placement;
-	 
-	 public void setPlacement(StudentPlacement placement){
+	
+ public void setPlacement(StudentPlacement placement){
 		 this.placement=placement;
 	 }
 	 public StudentPlacement getPlacement(){
@@ -64,19 +62,7 @@ public class StudentPlacementLog extends StudentPlacement{
 	 public void setSortOrder(String sortOrder){
 		    this.sortOrder=sortOrder;
 	 }
-	  public String getYear(){
-		 return year;
-	 }
-	 public void setYear(String year){
-		 this.year=year;
-	 }
-	 public String getSemester(){
-		 return semester;
-	 }
-	 public void setSemester(String semester){
-		      this.semester=semester;
-	 }
-	 public String getAction(){
+	   public String getAction(){
 		 return action;
 	 }
 	 public void setAction(String action){

@@ -14,7 +14,6 @@
 		<sakai:group_heading>
 			<fmt:message key="heading.studentPlacement.studentInfo"/> 
 		</sakai:group_heading>
-
 		<sakai:group_table>	
 			<tr>
 				<td><fmt:message key="prompt.acadYear"/>/<fmt:message key="prompt.semester"/></td>
@@ -81,9 +80,14 @@
 			</logic:iterate>
 		</sakai:flat_list>	
 		<sakai:actions>
-			<html:submit property="action">
-					<fmt:message key="button.placeModule"/>
-			</html:submit>
+		           <logic:equal name="studentPlacementForm" property="usingBlockDates" value="Y">
+		  	             <html:submit property="action">
+					              <fmt:message key="button.placeModule"/>
+			            </html:submit>
+			     </logic:equal>
+			 	      <html:submit property="action">
+					    <fmt:message key="button.placeModuleNoBlocks"/>
+			          </html:submit>
 			<logic:notEmpty name="studentPlacementForm" property="listStudentPlacement">	
 				<html:submit property="action">
 						<fmt:message key="button.edit"/>

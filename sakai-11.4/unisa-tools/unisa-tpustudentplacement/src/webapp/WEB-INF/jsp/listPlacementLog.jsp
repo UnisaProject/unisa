@@ -23,7 +23,7 @@
 		<sakai:group_table  >	
 			<tr>
 				<td><fmt:message key="prompt.acadYear"/>&nbsp;<fmt:message key="prompt.mandatory"/></td>
-				<td><html:text name="studentPlacementForm" property="studentPlacementLog.year" size="4" maxlength="4"/></td>
+				<td><html:text name="studentPlacementForm" property="studentPlacementLog.acadYear" size="4" maxlength="4"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
@@ -115,7 +115,7 @@
 				  <bean:define id="code" name="rec" property="schoolCode"></bean:define>
 				  <bean:define id="afterImageStr" name="rec" property="afterImage"></bean:define>
 				  <bean:define id="communicTo" name="rec" property="correspondenceTo"></bean:define>
-				  <bean:define id="yearStr" name="rec" property="year"></bean:define>
+				  <bean:define id="yearStr" name="rec" property="acadYear"></bean:define>
 				  <bean:define id="semesterStr" name="rec" property="semester"></bean:define>
 				  
 			      <%

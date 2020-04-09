@@ -55,7 +55,9 @@ public class PrelimStudentPlacementUI{
                                                                           	            	}
                                                                    Module module=new Module();
                                                                    String moduleCode=studentPlacementForm.getStudentPlacement().getModule();
-                                                                   int acadYear=Integer.parseInt(studentPlacementForm.getAcadYear());
+                                                         studentPlacementForm.setModuleCode(studentPlacementForm.getStudentPlacement().getModule());
+          
+int acadYear=Integer.parseInt(studentPlacementForm.getAcadYear());
                                                                    Student stu=new Student(Integer.parseInt(stuPlacement.getStuNum()),acadYear);
                                                                    studentPlacementForm.setStudent(stu);
                                                                    Qualification qual= stu.getQualification();
@@ -87,9 +89,14 @@ public class PrelimStudentPlacementUI{
                                                                      if(qual.isPgceStudent()){
                                                                                             studentPlacementForm.setIsPGCE("Y");
                                                                                             studentPlacementForm.getStudentPlacement().setTwoPlacements(false);
-                                                                     }else{
+
+                                                                               studentPlacementForm.setUsingBlockDates("N");                                                                
+ 
+
+                                                                      }else{
                                                                                        studentPlacementForm.setIsPGCE("N");
-                                                                    }
+                                                                                       studentPlacementForm.setUsingBlockDates("Y");                                                                    
+}
                                                                      StudentPlacement.setDatesDataToRequest(studentPlacementForm ,request);
                                                                      stuPlacement.initialiseTotalPracticeDays();
                                                     }

@@ -5,6 +5,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.StudentPlacementValidator
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
 public class StudentPlacement extends StudentPlacementImpl{
 	protected String module;
 	protected Integer schoolCode;
@@ -42,6 +43,8 @@ public class StudentPlacement extends StudentPlacementImpl{
 	private String startDateSecPracPeriodView;
 	 private String endDateSecPracPeriodView;
 	private boolean secPrelimPlacement;
+	private short semester;
+	private int acadYear;
 	 public String getCountryCode(){
 	    return countryCode;
     }
@@ -225,7 +228,17 @@ public class StudentPlacement extends StudentPlacementImpl{
 		this.placementPrd = placementPrd;
 	}
 	public static void setDatesFromRequest(StudentPlacementForm studentPlacementForm,HttpServletRequest request){
-   	                                       if(((studentPlacementForm.getLocalSchool().equals("Y"))&&(studentPlacementForm.getIsPGCE().equals("Y")))
+   	                                      
+if(studentPlacementForm.getUsingBlockDates().equals("N")){
+ if(request.getParameter("startDate")!=null){
+    	                                                                                  studentPlacementForm.getStudentPlacement().setStartDate(request.getParameter("startDate").toString());
+   	                                    	                                 } 
+   	                                    	                                 if(request.getParameter("endDate")!=null){
+   	                                    	                                 studentPlacementForm.getStudentPlacement().setEndDate(request.getParameter("endDate").toString());
+   	                                    	                              }
+}else{
+
+ if(((studentPlacementForm.getLocalSchool().equals("Y"))&&(studentPlacementForm.getIsPGCE().equals("Y")))
    	                                                       ||(studentPlacementForm.getLocalSchool().equals("N"))){
    	                                    	                                 if(request.getParameter("startDate")!=null){
     	                                                                                  studentPlacementForm.getStudentPlacement().setStartDate(request.getParameter("startDate").toString());
@@ -239,12 +252,29 @@ public class StudentPlacement extends StudentPlacementImpl{
                                                                                                      studentPlacementForm.getStudentPlacement().setEndDateSecPracPeriod(request.getParameter("endDateSecPrd").toString());
                                                                             	          }
                                                                                }
+
                                              }
+    }
    }
 	public static void setDatesDataToRequest(StudentPlacementForm studentPlacementForm,HttpServletRequest request){
 	                                                 	DateUtil   dateUtil =new DateUtil();
-	                                                 	if(((studentPlacementForm.getLocalSchool().equals("Y"))&&(studentPlacementForm.getIsPGCE().equals("Y")))
-                                            	                       ||(studentPlacementForm.getLocalSchool().equals("N"))){
+if(studentPlacementForm.getUsingBlockDates().equals("N")){
+if((studentPlacementForm.getStudentPlacement().getStartDate()==null)||
+                                                	                            		        (studentPlacementForm.getStudentPlacement().getStartDate().trim().isEmpty())){
+                                                	                            	                        request.setAttribute("startDate", dateUtil.dateOnly());
+                                                	                               }else{
+                                            	                                                   request.setAttribute("startDate",studentPlacementForm.getStudentPlacement().getStartDate());
+                                                	                               }
+                                                	                               if((studentPlacementForm.getStudentPlacement().getEndDate()==null)||
+                                           	                            		                       (studentPlacementForm.getStudentPlacement().getEndDate().trim().isEmpty())){
+                                                	                            	                               request.setAttribute("endDate", dateUtil.dateOnly());
+                                                	                               }else{
+                                           		                                                        request.setAttribute("endDate",studentPlacementForm.getStudentPlacement().getEndDate());
+                                                	                               }
+                                                                                
+}else{
+	                                                 	if(studentPlacementForm.getIsPGCE().equals("Y")
+                                            	                       ||studentPlacementForm.getLocalSchool().equals("N")){
                                                 	                              if((studentPlacementForm.getStudentPlacement().getStartDate()==null)||
                                                 	                            		        (studentPlacementForm.getStudentPlacement().getStartDate().trim().isEmpty())){
                                                 	                            	                        request.setAttribute("startDate", dateUtil.dateOnly());
@@ -264,12 +294,13 @@ public class StudentPlacement extends StudentPlacementImpl{
                                       	                                                                                   request.setAttribute("startDateSecPrd",studentPlacementForm.getStudentPlacement().getStartDateSecPracPeriod());
                                           	                                                                      }
                                                                             	                                 if((studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod()==null)||
-                              	                            		                                                           (studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod().trim().isEmpty())){
+                              	                            		                                          (studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod().trim().isEmpty())){
                               	                            	                                                                                   request.setAttribute("endDateSecPrd", dateUtil.dateOnly());
                               	                                                                                     }else{
                           	                                                                                              request.setAttribute("endDateSecPrd",studentPlacementForm.getStudentPlacement().getEndDateSecPracPeriod());
                               	                                                                        }
                                                 }
+}
        }
 	public String getUserSelectedDateBlock() {
 		return userSelectedDateBlock;
@@ -325,4 +356,16 @@ public class StudentPlacement extends StudentPlacementImpl{
 	  public void initialiseTotalPracticeDays(){
 		            initialiseNumOfWeeks(this);
       }
+	public short getSemester() {
+		return semester;
+	}
+	public void setSemester(short semester) {
+		this.semester = semester;
+	}
+	public int getAcadYear() {
+		return acadYear;
+	}
+	public void setAcadYear(int acadYear) {
+		this.acadYear = acadYear;
+	}
 }
