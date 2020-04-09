@@ -4,6 +4,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.forms.Address;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Qualification;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.StringsUtil;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ContactUI;
 import java.util.List;
 public class StudentImp extends  StudentDAO{
 	                             public StudentImp(Qualification qual,ContactUI contact){

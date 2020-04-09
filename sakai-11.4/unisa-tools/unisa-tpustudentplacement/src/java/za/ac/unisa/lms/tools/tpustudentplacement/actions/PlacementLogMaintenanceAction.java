@@ -20,6 +20,8 @@ import za.ac.unisa.lms.tools.tpustudentplacement.utils.DateUtil;
 import za.ac.unisa.lms.tools.tpustudentplacement.utils.PlacementUtilities;
 
 public class PlacementLogMaintenanceAction extends LookupDispatchAction{
+	    
+	
 	    protected Map getKeyMethodMap() {
 			// TODO Auto-generated method stub
 			Map map = new HashMap();
@@ -121,13 +123,13 @@ public class PlacementLogMaintenanceAction extends LookupDispatchAction{
 			       ActionMessages messages = new ActionMessages();
 			       StudentPlacementForm studentPlacementForm = (StudentPlacementForm) form;
 			       StudentPlacementLog spl = studentPlacementForm.getStudentPlacementLog();
-			       String yearStr=spl.getYear();
-			       String semester=spl.getSemester();
+			       Integer year=spl.getAcadYear();
+			       Short semester=spl.getSemester();
 			       String networkCode=spl.getUpdatedBy();
 			       String studentNum=spl.getStuNum();
 			       studentPlacementForm.setJustEnteredPlacementLogs("yes");
 			       PlacementUtilities  pu=new PlacementUtilities();
-			       if((yearStr==null)||(yearStr.equals(""))){
+			       if((year==null)||(year==0)){
 			    	      messages.add(ActionMessages.GLOBAL_MESSAGE,
 					                    new ActionMessage("message.generalmessage",
 								           "Please enter Academic Year"));
@@ -141,7 +143,7 @@ public class PlacementLogMaintenanceAction extends LookupDispatchAction{
 			    	      addErrors(request,messages);
 			    	      return mapping.findForward(studentPlacementForm.getCurrentPage());
 			       }
-			       if(!pu.isInteger(yearStr)){
+			       if(!pu.isInteger(""+year)){
 			    	      messages.add(ActionMessages.GLOBAL_MESSAGE,
 					                    new ActionMessage("message.generalmessage",
 								           "Academic year must be an integer"));
@@ -202,8 +204,8 @@ public class PlacementLogMaintenanceAction extends LookupDispatchAction{
 		}
 		 private void initializeStuPlacementLog(StudentPlacementLog spl){
 			               DateUtil  dateutil=new DateUtil();
-	    	   			   spl.setYear(""+dateutil.getYearInt());
-			               spl.setSemester("0");
+	    	   			   spl.setAcadYear(dateutil.getYearInt());
+			               spl.setSemester((short)0);
 			               spl.setSortOrder("first");
 			               spl.setAction("All");
        }

@@ -158,4 +158,27 @@ public class PracticeDatesMaintenance extends PracticePeriodDAO{
       public void addProvPracDateBatcheLists(int provCode)throws Exception{
     	             saveDateBlocks(List<PracticeBatchDate>  practicePeriodList)
     }*/
+      public boolean  dateBatchInList(StudentPlacementForm  studentPlacementForm)throws Exception{
+	    	                                       boolean found=false;
+	    	                                       List pracDateBatchesPrd1=studentPlacementForm.getPracticeBatchDateList();
+                                                   StudentPlacement studentPlacement=studentPlacementForm.getStudentPlacement();
+                                                   if(studentPlacement.getPlacementPrd()==2){
+                                                	   return true;
+                                                   }
+                                                   String startDate=studentPlacement.getStartDate();
+                                                   String endDate=studentPlacement.getEndDate();
+                                                   found=dateBatchInList(pracDateBatchesPrd1, startDate,endDate);
+                                                   return found;
+      }
+	    public boolean  dateBatchInList(List<PracticeBatchDate>  dateBatchList,String startDate,String  endDate){
+                                            boolean found=false;
+                                           for(PracticeBatchDate practicePeriod:dateBatchList){
+                                                  	if(practicePeriod.getStartDate().trim().equals(startDate.trim())&&
+                         		                          	practicePeriod.getEndDate().trim().equals(endDate.trim())){
+                         		                           found =true;
+                         		                           break;
+                         	                       }
+                                           }
+            return found;
+}
 }

@@ -5,8 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMessages;
-
-import za.ac.unisa.lms.tools.tpustudentplacement.dao.SupervisorDAO;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementForm;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
@@ -43,15 +41,21 @@ public class SupervisorUI  extends  SupervisorImpl{
                                                nextPage=fromPage;
                                    }
                               return nextPage;
-    }
-	
-	public String setSupForEditPlacement(StudentPlacementForm studentPlacementForm,
+        }
+        public String setSupForEditPlacement(StudentPlacementForm studentPlacementForm,
                     SupervisorListRecord supervisor,String fromPage,String returnStr)throws Exception{
                     String nextPage=returnStr;
-                    if ((fromPage.equalsIgnoreCase("editStudentPlacement"))||
+if (fromPage.equalsIgnoreCase("editStudentPlacement")){
+      if(studentPlacementForm.getStudentPlacement().getSupervisorCode()
+                                       !=supervisor.getCode()){
+                                              studentPlacementForm.setSameSupervisorSelected("N");
+      }
+ }
+  if ((fromPage.equalsIgnoreCase("editStudentPlacement"))||
 				           (fromPage.equalsIgnoreCase("editPrelimPlacement"))
 				                 &&(returnStr.trim().equals(""))) {
-                    	              studentPlacementForm.getStudentPlacement().setSupervisorCode(supervisor.getCode());
+                                        studentPlacementForm.setSameSupervisorSelected("Y");
+                                        studentPlacementForm.getStudentPlacement().setSupervisorCode(supervisor.getCode());
                                       studentPlacementForm.getStudentPlacement().setSupervisorName(supervisor.getName());
                                       nextPage=fromPage;
                     }
@@ -82,9 +86,8 @@ public class SupervisorUI  extends  SupervisorImpl{
 	public void setSelectedSupervisor(StudentPlacementForm studentPlacementForm) throws Exception{
                       Supervisor supervisor = new Supervisor();
                       SupervisorListRecord supervisorListRecord=getSelectedSupervisor(studentPlacementForm);
-                      SupervisorDAO dao = new SupervisorDAO();
                       int supervisorCode = supervisorListRecord.getCode();
-                      supervisor = dao.getSupervisor(supervisorCode);
+                      supervisor = getSupervisor(supervisorCode);
                       supervisor.setStudentsAllowed(supervisorListRecord.getStudentsAllowed());
                       supervisor.setStudentsAllocated(supervisorListRecord.getStudentsAllocated());
                       supervisor.setEmailAddress(supervisorListRecord.getEmailAddress());

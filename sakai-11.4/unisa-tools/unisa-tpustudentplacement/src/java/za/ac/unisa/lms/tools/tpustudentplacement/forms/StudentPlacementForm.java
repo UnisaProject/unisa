@@ -211,12 +211,19 @@ public class StudentPlacementForm extends ValidatorActionForm {
     
 	 //module
 	 private int studyLevel=1;
-
 	 private String moduleCode;
-
 	 //qualification
 	 String postGradIndicator="N";
 	 private String isPGCE="N";
+	 private String usingBlockDates;
+	 private String usingNoBlockDates;
+	 private String  sameSupervisorSelected;
+       public void setSameSupervisorSelected(String sameSupervisorSelected){
+             this.sameSupervisorSelected=sameSupervisorSelected;
+       }
+       public String getSameSupervisorSelected(){
+            return sameSupervisorSelected;
+       }
 	public void setCurrProv(String currProv){
 		                    this.currProv=currProv;
 	}
@@ -1249,12 +1256,23 @@ public class StudentPlacementForm extends ValidatorActionForm {
 	public void setDateBlockAssigned(String dateBlockAssigned) {
 		this.dateBlockAssigned = dateBlockAssigned;
 	}
-
 	public String getModuleCode() {
 		return moduleCode;
 	}
 	public void setModuleCode(String moduleCode) {
 		this.moduleCode = moduleCode;
+	}
+	public String getUsingBlockDates() {
+		return usingBlockDates;
+	}
+	public void setUsingBlockDates(String usingBlockDates) {
+		this.usingBlockDates = usingBlockDates;
+	}
+	public String getUsingNoBlockDates() {
+		return usingNoBlockDates;
+	}
+	public void setUsingNoBlockDates(String usingNoBlockDates) {
+		this.usingNoBlockDates = usingNoBlockDates;
 	}
 	
 }

@@ -6,7 +6,7 @@ import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ProvinceUI;
 
 import org.apache.struts.util.LabelValueBean;
 
-public class Supervisor {
+public class Supervisor  extends SupervisorImpl {
 	private Integer code;
 	private String title;
 	private String initials;
@@ -69,38 +69,17 @@ public class Supervisor {
 	private List studentPlacementList;
 	
 	
-	  SupervisorImpl supervisorImpl ; 
-	     public Supervisor(){
-	    	     supervisorImpl=new SupervisorImpl();
-	     }
-	     public List getSupervProvList(int supervisorCode)throws Exception{
-			        return supervisorImpl.getSupervProvList(supervisorCode);
-		 }
-		 public Supervisor getSupervisor(Integer code) throws Exception {
-			           return supervisorImpl.getSupervisor(code);
-		 }
-		 public Supervisor getSup(int code) throws Exception {
-	           return supervisorImpl.getSup(code);
+	    	  public Supervisor getSup(int code) throws Exception {
+	           return getSup(code);
          }
-		 public String getStudentsAllocated(int supervisorCode,int year)throws Exception {
-			 return supervisorImpl.getStudentsAllocated(supervisorCode, year);
-		 }
 		 public String supervisorProvListAsStr(List provincesCodeList)throws Exception {
 			             ProvinceUI prov=new ProvinceUI();
 			             return prov.provinceListAsString(provincesCodeList);
 			             
 		 }
-		 public String getSurpervisorName(int supervisorCode)throws Exception{
-                        return supervisorImpl.getSurpervisorName(supervisorCode);
-         }
-		 public   String getEmailAddress(int supervisorCode)throws Exception {
-             return supervisorImpl.getSupervisorEmail(supervisorCode);
-        }
-		 public List getSupervisorList(String country,Short province,Short district,String filter,String contractStatus,int timeLimit) throws Exception {
-             return supervisorImpl.getSupervisorList(country,province,district,filter,contractStatus,timeLimit);
-        }
-		 public List getSupervisorList(String country,Short province) throws Exception {
-                         List supervList=supervisorImpl.getSupervisorList(country,province);
+		
+		 public List getSupervisorList(String country,Short province,String assignable) throws Exception {
+                         List supervList=getSupervList(country,province,assignable);
                          Supervisor superv=new Supervisor();
                          LabelValueBean labelValueBean=new LabelValueBean();
                          labelValueBean.setValue("283");
@@ -227,7 +206,7 @@ public class Supervisor {
 	public String getEmailAddress() {
 		return emailAddress;
 	}
-	public void setEmailAddress(String emailAddress) {
+        public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 	public String getCellNr() {

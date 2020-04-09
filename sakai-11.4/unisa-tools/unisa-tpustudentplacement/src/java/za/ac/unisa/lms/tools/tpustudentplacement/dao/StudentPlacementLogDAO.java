@@ -102,7 +102,7 @@ public class StudentPlacementLogDAO {
 	                          " MK_STUDY_UNIT_CODE,ACTION_GC201,CORRESPONDANCE_TO,BEFORE_IMAGE,AFTER_IMAGE," +
 	                          " CELL_NO,b.EMAIL_ADDRESS,UPDATED_BY,novell_user_id,TO_CHAR(UPDATED_ON,'YYYY-MM-DD HH24:MI:SS') as "+
 	                          " updatedOn from staff a,TPUSPLLOG b,tpusch c"+
-	                          " where a.persno=b.updated_by and b.MK_SCHOOL_CODE=c.code  and MK_ACADEMIC_YEAR="+sPLog.getYear()+" and SEMESTER_PERIOD="+sPLog.getSemester();
+	                          " where a.persno=b.updated_by and b.MK_SCHOOL_CODE=c.code  and MK_ACADEMIC_YEAR="+sPLog.getAcadYear()+" and SEMESTER_PERIOD="+sPLog.getSemester();
 	                          
 	                          if((sPLog.getUpdatedBy()!=null)&&(!sPLog.getUpdatedBy().equals(""))){
 	                        	  sql+=" and persno=  "+sPLog.getPersonnelNumber();
@@ -193,8 +193,8 @@ public class StudentPlacementLogDAO {
                                sPLog.setCorrespondenceTo(dbutil.replaceNull(data.get("CORRESPONDANCE_TO")));
                                sPLog.setEmailAddress(dbutil.replaceNull(data.get("EMAIL_ADDRESS")));
                                sPLog.setModule(dbutil.replaceNull(data.get("MK_STUDY_UNIT_CODE")));
-                               sPLog.setYear(dbutil.replaceNull(data.get("MK_ACADEMIC_YEAR")));
-                               sPLog.setSemester(dbutil.replaceNull(data.get("SEMESTER_PERIOD")));
+                               sPLog.setAcadYear(Integer.parseInt(dbutil.replaceNull(data.get("MK_ACADEMIC_YEAR"))));
+                               sPLog.setSemester(Short.parseShort(dbutil.replaceNull(data.get("SEMESTER_PERIOD"))));
                                sPLog.setUpdatedBy(dbutil.replaceNull(data.get("novell_user_id")));
                                sPLog.setSchoolDesc(dbutil.replaceNull(data.get("schName")));
                                sPLog.setStuNum(dbutil.replaceNull(data.get("MK_STUDENT_NR")));
@@ -208,6 +208,5 @@ public class StudentPlacementLogDAO {
                                }else{
                             	   sPLog.setImageTracker("1");
                                }
-    
-            }
+         }
 }
