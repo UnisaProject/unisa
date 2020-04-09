@@ -15,12 +15,12 @@ public class StudentPlacementLogUI extends PlacementLogAdderClass{
 	public void  setLogList(StudentPlacementForm studentPlacementForm)throws Exception{
 	                  StudentPlacementLog spl=new StudentPlacementLog();
                       Student student=studentPlacementForm.getStudent();
-                      short year= Short.parseShort(studentPlacementForm.getAcadYear());
+                      int year= Integer.parseInt(studentPlacementForm.getAcadYear());
                       short semester=Short.parseShort(studentPlacementForm.getSemester());
                       String moduleStr="";
-                      spl.setStuNum(student.getNumber().toString());
-                      spl.setYear(""+year);
-                      spl.setSemester(""+semester);
+                     spl.setStuNum(student.getNumber().toString());
+                      spl.setAcadYear(year);
+                      spl.setSemester(semester);
                       spl.setModule("");
                       spl.setAction("All");
                       spl.setCorrespondenceTo("");

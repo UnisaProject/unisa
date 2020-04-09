@@ -1,4 +1,7 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.studentPlacementImpl;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionMapping;
@@ -26,20 +29,37 @@ public class StuPlacementRemover {
                                String module,int schoolCode,int  pracprd) throws Exception {
                                dao.removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode, pracprd);
              }
-	  	     private void removeStudentPlacement(StudentPlacementListRecord placementListRecord,
-	  			                StudentPlacementForm studentPlacementForm,
-	  			                ActionMessages messages){
-	  	    	                    try{
-	  		                                int schoolCode=placementListRecord.getSchoolCode();
+	  	   public void removeStudentPlacement(StudentPlacementForm studentPlacementForm, ActionMessages messages) {
+	  		                       List  placementList=studentPlacementForm.getListStudentPlacement();
+                                                      
+if((placementList!=null)&&(!placementList.isEmpty())){
+ Iterator iter=placementList.iterator();
+                                                       while(iter.hasNext()){
+                                                               	StudentPlacementListRecord placementListRecord=(StudentPlacementListRecord)iter.next();
+                                                                removeStudentPlacement(placementListRecord,studentPlacementForm, messages);
+                                                           	    if (!messages.isEmpty()) {
+                                                           	    	         break;
+                                                           	    }else{
+                                                           	    	         setLog(studentPlacementForm,placementListRecord,0);
+                                                           	    }
+                                                   }
+}
+
+           }
+	  	   private void removeStudentPlacement(StudentPlacementListRecord placementListRecord,
+	  			                              StudentPlacementForm studentPlacementForm,
+	  			                              ActionMessages messages){
+	  	    	                                 try{
+	  		                                                int schoolCode=placementListRecord.getSchoolCode();
 	  		                                String module=placementListRecord.getModule();
 	  		                                short semester=Short.parseShort(studentPlacementForm.getSemester());
 	  		                                short acadYear=Short.parseShort(studentPlacementForm.getAcadYear());
 	  		                                int studentNr=Integer.parseInt(studentPlacementForm.getStudentNr());
 	  		                                int pracprd=placementListRecord.getPlacementPrd();
-	  		                                removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode, pracprd);
+	  		                               dao.removeStudentPlacement(acadYear, semester, studentNr,module,schoolCode, pracprd);
 	  	    	                    }catch(Exception ex){
 	  	    	                    	InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
-	  	    	                    	String message="There was an error removing a placement: eror is +ex.message";
+	  	    	                    	String message="There was an error removing a placement: eror is" +ex.getMessage();
 	  	    	                    	infoMessagesUtil.addMessages(messages, message);
                     	  	    	 }
              }
@@ -70,21 +90,42 @@ public class StuPlacementRemover {
                                  return nextPage;
                 }
 	  	        private void validateEvalMarkForRemovePlacement(StudentPlacementForm studentPlacementForm,
-                                 StudentPlacementListRecord placementListRecord,ActionMessages messages){
-                                 if (messages.isEmpty()) {
-                    	                StuPlacementActionValidator validator=new StuPlacementActionValidator();
-                                        String evalMark=placementListRecord.getEvaluationMark();
-                                        validator.validateEvalMark(evalMark, messages);
-                                 }
+                                               StudentPlacementListRecord placementListRecord,ActionMessages messages){
+                                               if (messages.isEmpty()) {
+                    	                                  StuPlacementActionValidator validator=new StuPlacementActionValidator();
+                                                         String evalMark=placementListRecord.getEvaluationMark();
+                                                         validator.validateEvalMark(evalMark, messages);
+                                              }
                }
 	  	        private void setLog(StudentPlacementForm studentPlacementForm,
-	  	        		            StudentPlacementListRecord placementListRecord){
-	  	        	                      try{
-	  	        	                            StudentPlacementUI spUI=new StudentPlacementUI();
-	  	        	                            StudentPlacement sp=spUI.getStudentPlacement(studentPlacementForm,placementListRecord);
-	  	        	                            StudentPlacementLogUI  splUI=new StudentPlacementLogUI();
-	  	        	                            splUI.setLogOnDeletePlacement(studentPlacementForm);
-	  	        	                      }catch(Exception ex){}
-	  	        }
-	  	   	  	     
+	  	        		                                       StudentPlacementListRecord placementListRecord){
+	  	        	                                                    try{
+	  	        	                                                                    StudentPlacementLogUI  splUI=new StudentPlacementLogUI();
+	  	        	                                                                    int persno=Integer.parseInt(studentPlacementForm.getPersonnelNumber());
+	  	        	                                                                     splUI.setLogOnDeletePlacement(studentPlacementForm,persno);
+	  	        	                                                    }catch(Exception ex){}
+	  	      }
+	  	      private void setLog(StudentPlacementForm studentPlacementForm,
+                                                              StudentPlacementListRecord placementListRecord,int personnelNum){
+                                                                    try{
+                                                                                    StudentPlacementLogUI  splUI=new StudentPlacementLogUI();
+                                                                                    splUI.setLogOnDeletePlacement(studentPlacementForm,personnelNum);
+                                                                    }catch(Exception ex){}
+          }
+public void removeStuPlacement(StudentPlacementForm studentPlacementForm,
+	  			                              ActionMessages messages){
+	  	    	                                 try{
+StudentPlacement placementRecord=studentPlacementForm.getStudentPlacement();
+	  		                                String module=placementRecord.getModule();
+	  		                                short semester=Short.parseShort(studentPlacementForm.getSemester());
+	  		                                short acadYear=Short.parseShort(studentPlacementForm.getAcadYear());
+	  		                                int studentNr=Integer.parseInt(studentPlacementForm.getStudentNr());
+	  		                                int pracprd=placementRecord.getPlacementPrd();
+	  		                               dao.removeStudentPlacement(acadYear, semester, studentNr,module);
+	  	    	                    }catch(Exception ex){
+	  	    	                    	InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
+	  	    	                    	String message="There was an error removing a placement: eror is" +ex.getMessage();
+	  	    	                    	infoMessagesUtil.addMessages(messages, message);
+                    	  	    	 }
+             }
 }

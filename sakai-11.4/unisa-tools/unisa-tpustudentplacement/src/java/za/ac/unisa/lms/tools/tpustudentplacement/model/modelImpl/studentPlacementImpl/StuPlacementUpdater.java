@@ -57,11 +57,11 @@ public class StuPlacementUpdater {
                                           boolean keysChangedAndmoduleExist=checkSchoolAndModule(studentPlacementForm,originalPlacement,
                                         		  storedPlacement,newPlacement,messages);
                                           InfoMessagesUtil infoMessagesUtil=new InfoMessagesUtil();
-                                          if(!newPlacement.isSecPrelimPlacement()){
+                                         /* if(!newPlacement.isSecPrelimPlacement()){
                                                       if(keysChangedAndmoduleExist){
                     	                                           return;
                                                       }
-	                                      }
+	                                      }*/
                                          updatePlacement(studentPlacementForm,originalPlacement,newPlacement,messages);
                                           if(messages.isEmpty()){
                                                  setPlacementLogForEdit(studentPlacementForm,originalPlacement,messages);

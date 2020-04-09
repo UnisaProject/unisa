@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Address;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Supervisor;
-import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.ContactUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ContactUI;
 import za.ac.unisa.lms.db.StudentSystemDAO;
 public class ContactDAO extends StudentSystemDAO {
 	              

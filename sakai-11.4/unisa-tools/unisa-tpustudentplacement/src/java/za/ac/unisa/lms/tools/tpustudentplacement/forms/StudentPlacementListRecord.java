@@ -19,12 +19,28 @@ public class StudentPlacementListRecord {
 	private String stuFullTime;
 	private String mentorName;
 	private int placementPrd;
+	private int stuNr;
+	private short semester;
+	private int acadYear;
+	
+	  public  StudentPlacementListRecord (StudentPlacement  studentPlacement){
+	                          	this.module=studentPlacement.getModule();
+		                       this.schoolCode=studentPlacement.getSchoolCode();
+		                       this.supervisorCode=studentPlacement.getSupervisorCode();
+		                       this.placementPrd=studentPlacement.getPlacementPrd();
+		                       this.setStuNr(Integer.parseInt(studentPlacement.getStuNum()));
+		                       this.setAcadYear(studentPlacement.getAcadYear());
+		                       this.semester=studentPlacement.getSemester();
+	   }
+	  public  StudentPlacementListRecord (){
+        	
+    }
 	   private boolean twoPlacements;
-	public String getModule() {
-		return module;
+	   public String getModule() {
+		                       return module;
 	}
 	public void setModule(String module) {
-		this.module = module;
+		                       this.module = module;
 	}
 	public Integer getSchoolCode() {
 		return schoolCode;
@@ -133,5 +149,23 @@ public String getNumberOfWeeks() {
 	}
 	public void setTwoPlacements(boolean twoPlacements) {
 		this.twoPlacements = twoPlacements;
+	}
+	public int getStuNr() {
+		return stuNr;
+	}
+	public void setStuNr(int stuNr) {
+		this.stuNr = stuNr;
+	}
+	public short getSemester() {
+		return semester;
+	}
+	public void setSemester(short semester) {
+		this.semester = semester;
+	}
+	public int getAcadYear() {
+		return acadYear;
+	}
+	public void setAcadYear(int acadYear) {
+		this.acadYear = acadYear;
 	}
 }

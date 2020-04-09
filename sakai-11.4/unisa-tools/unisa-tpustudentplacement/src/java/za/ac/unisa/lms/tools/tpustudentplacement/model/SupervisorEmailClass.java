@@ -12,7 +12,7 @@ public class SupervisorEmailClass {
     	                       DateUtil dateUtil=new DateUtil();
     	                       SupervisorMailBody  smb=new SupervisorMailBody();
     	                       int supervCode=supervisor.getCode();
-    	                       int curryear=dateUtil.getYearInt();
+    	                       int curryear=2019;//dateUtil.getYearInt();
     	                       EmailImpl emailImpl=new EmailImpl();
     	                       emailImpl.setBody(smb.createEmailBody(supervisor.getName(),supervisor.getCode()));
     	                       String emailAddr=supervisor.getEmailAddress();

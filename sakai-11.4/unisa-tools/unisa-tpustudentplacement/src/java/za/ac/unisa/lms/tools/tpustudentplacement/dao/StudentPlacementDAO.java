@@ -15,7 +15,6 @@ import za.ac.unisa.lms.tools.tpustudentplacement.dao.databaseUtils;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.StudentPlacementListRecord;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.schoolImpl.SchoolUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.PlacementListRecord;
-import za.ac.unisa.lms.tools.tpustudentplacement.forms.Province;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Contact;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.Student;
 import za.ac.unisa.lms.tools.tpustudentplacement.forms.School;
@@ -36,6 +35,9 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 		          return list;
 		          
 	}
+
+
+
 		public void insertStudentPlacement(Short acadYear, Short semester, Integer studentNr, StudentPlacement placement) throws Exception {
 			
 		String sql = "insert into tpuspl" +
@@ -49,10 +51,10 @@ public class StudentPlacementDAO extends StudentSystemDAO {
 			placement.getSchoolCode() + "," +
 			"'" + placement.getModule() + "'," +
 			placement.getSupervisorCode() + "," +
-			"to_date('" + placement.getStartDate().toUpperCase().trim()+ "','YYYY/MM/DD')," +
-			"to_date('" + placement.getEndDate().toUpperCase().trim()+ "','YYYY/MM/DD')," +
+			"to_date('" + placement.getStartDate().trim()+ "','YYYY/MM/DD')," +
+			"to_date('" + placement.getEndDate().trim()+ "','YYYY/MM/DD')," +
 			Short.parseShort(placement.getNumberOfWeeks().trim())+",";
-		if (placement.getEvaluationMark().trim().equalsIgnoreCase("")){
+		if (placement.getEvaluationMark()==null||placement.getEvaluationMark().trim().equalsIgnoreCase("")){
 			sql = sql  + " null";
 		}else{
 			sql = sql+ Short.parseShort(placement.getEvaluationMark().trim()) ;
@@ -146,15 +148,16 @@ public void updateSecPlacement(Short acadYear, Short semester, Integer studentNr
 	}
 public List getStudentPlacementList(Short acadYear, Short semester, Integer studentNr) throws Exception {
 	                                  List placementList = new ArrayList<StudentPlacementListRecord>();
-		                                                               String sql = " select a.mk_school_code as schCode, b.name as schName,b.town as town, a.mk_study_unit_code as module," + 
+		                                 String sql = " select a.mk_school_code as schCode, b.name as schName,b.town as town, a.mk_study_unit_code as module," + 
 		                                                              "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName," +
 		                                                              "  to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate," +
 		                                                               "  a.number_of_weeks as numWeeks,"+
-		                                                               "  a.evaluation_mark as evalMark,a.practice_period as practiceprd,"+mentordatasql+",stu_FullTime_sch " +
-		                                                               "  from tpuspl a, tpusch b, tpusup c" +
+		                         "  a.evaluation_mark as evalMark,a.practice_period as practiceprd,"+
+                                mentordatasql+",stu_FullTime_sch " +
+		                    "  from tpuspl a, tpusch b, tpusup c" +
 		                                                               "  where a.mk_academic_year=" + acadYear +
-		                                                               " and a.semester_period=" + semester +
-		                                                               " and a.mk_student_nr=" + studentNr +
+		                " and a.semester_period=" + semester +
+		                                     " and a.mk_student_nr=" + studentNr +
 		                                                              "  and a.mk_school_code=b.code" + 
 		                                                                "  and a.mk_supervisor_code=c.code" +
 		                                                               " and a.mk_school_code=b.code" + 
@@ -217,7 +220,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
  }
     public StudentPlacement getStudentPlacement(Short acadYear,Short semester,Integer studentNr,String module, Integer school,Integer practicePrd) throws Exception {
 	                                                              	StudentPlacement placement = new StudentPlacement();
-		                                                        	String sql = " select a.mk_school_code as schCode, b.name as schName,b.town as town, a.mk_study_unit_code as module," + 
+		              String sql = " select a.mk_school_code as schCode, b.name as schName,b.town as town, a.mk_study_unit_code as module," + 
 		                                                                                "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName," +
 		                                                                                "  to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch," +
 		                                                                               " a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark, a.practice_period as practice_period,"+mentordatasql+
@@ -285,34 +288,52 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	                                       String errorMessage="StudentPlacementDao : Error deleting TPUSPL / ";
 			                               dbutil.update(sql,errorMessage);	
  	 }
+	public void removeStudentPlacement(Short acadYear,Integer studentNr) throws Exception {
+                                                  String sql = "delete from tpuspl  where mk_academic_year=" + acadYear +
+                                                                     " and mk_student_nr=" + studentNr;
+                                                 databaseUtils dbutil=new databaseUtils();
+                                                 String errorMessage="StudentPlacementDao : Error deleting TPUSPL / ";
+                                                 dbutil.update(sql,errorMessage);	
+   }
+public void removeStudentPlacement(Short acadYear,Short semester,Integer studentNr,String module) throws Exception {
+                                                  String sql = "delete from tpuspl  where mk_academic_year=" + acadYear +
+                                                                     " and mk_student_nr=" + studentNr+" and mk_study_unit_code='" + module + "'";
+                                                 databaseUtils dbutil=new databaseUtils();
+                                                 String errorMessage="StudentPlacementDao : Error deleting TPUSPL / ";
+                                                 dbutil.update(sql,errorMessage);	
+   }
+    
      private String getFirstPartOfSqlStrForPlacementList(Short acadYear, Short semester,String country){
-    	          String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
-	                    "  a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
-	                    "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
-	                    " to_char(a.start_date,'YYYY/MM/DD') as startDate,"+
-	                    "  to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-	                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  as year, a.semester_period   as semester,"+
-	                    " email_to_sup as dateSent,stu_FullTime_sch,practice_period as practiceprd";
-               if((country!=null)&&country.equals(databaseUtils.saCode)){
-            	   sqlStr+=" ,a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+mentordatasql+" from tpuspl a, tpusch b, tpusup c, stu d, ldd e";
-               }else{
-            	   sqlStr+=" from tpuspl a, tpusch b, tpusup c, stu d";
-               }
-               sqlStr+=" where a.mk_academic_year=" + acadYear +
-                       " and a.semester_period=" + semester +
-                       "  and a.mk_school_code=b.code" + 
-                       "  and a.mk_supervisor_code=c.code" +
-                       "  and a.mk_student_nr=d.nr";
-               return sqlStr;
+    	   String  sqlStr="select a.mk_student_nr as stuNumber,"+
+                           " (d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
+	                "  a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
+	              "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
+	                                                        " to_char(a.start_date,'YYYY/MM/DD') as startDate,"+
+	                                                        "  to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
+	                                                        "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year "+ 
+	                                                        "  as year, a.semester_period   as semester,"+
+	                                                        "  email_to_sup as dateSent,stu_FullTime_sch,practice_period as practiceprd";
+                                                           if((country!=null)&&country.equals(databaseUtils.saCode)){
+            	                                                        sqlStr+=" ,a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+
+                                                                        mentordatasql+" from tpuspl a, tpusch b, tpusup c, stu d, ldd e";
+                                                            }else{
+            	                                                                 sqlStr+=" from tpuspl a, tpusch b, tpusup c, stu d";
+                                                           }
+                                                           sqlStr+=" where a.mk_academic_year=" + acadYear +
+                                                                        "  and a.semester_period=" + semester +
+                                                                        "  and a.mk_school_code=b.code" + 
+                                                                        "  and a.mk_supervisor_code=c.code" +
+                                                                        "  and a.mk_student_nr=d.nr";
+                                                        return sqlStr;
     }
      private String getFirstPartOfSqlStrForPrelimPlacementList(Short acadYear, Short semester,String country){
-    	                                      String   secDateFrag= "( select   to_char(start_date,'YYYY/MM/DD')  || '-' ||  to_char(end_date,'YYYY/MM/DD')   || '-' ||  number_of_weeks  from tpuspl  "+
-                                                                                 " where tpuspl.mk_student_nr =a.mk_student_nr and   tpuspl.mk_study_unit_code=a.mk_study_unit_code  "
+      String   secDateFrag= "( select   to_char(start_date,'YYYY/MM/DD')  || '-' ||  to_char(end_date,'YYYY/MM/DD')   || '-' ||  number_of_weeks  from tpuspl  "+
+                      " where tpuspl.mk_student_nr =a.mk_student_nr and   tpuspl.mk_study_unit_code=a.mk_study_unit_code  "
                                                                                  + " and tpuspl.mk_academic_year=a.mk_academic_year "+
                                                                                  "  and tpuspl.mk_school_code= a.mk_school_code and tpuspl.semester_period=a.semester_period "+
                                                                                 " and tpuspl.practice_period=2)  as secDatesFragment";
-	                                          String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
-	                                                                 " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
+	         String  sqlStr="select a.mk_student_nr as stuNumber,(d.surname || ' ' || d.initials || ' ' || d.mk_title) as stuName,"+
+	                          " a.mk_school_code as schCode, b.name as schName,b.town as town,b.suburb as suburb, a.mk_study_unit_code as module,"+
 	                                                                 " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
 	                                                                 " to_char(a.start_date,'YYYY/MM/DD') as startDate,"+
 	                                                                 " to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
@@ -323,7 +344,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                }else{
             	   sqlStr+=" from tpuspl a, tpusch b, tpusup c, stu d";
                }
-               sqlStr+=" where a.mk_academic_year=" + acadYear +
+               sqlStr+=" where a.mk_academic_year=" +2019+
                        "  and a.semester_period=" + semester +
                        "   and a.mk_school_code=b.code" + 
                        "   and a.mk_supervisor_code=c.code" +
@@ -352,7 +373,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
                                	                            }
                               }
                      }
-	                 if((town!=null)&&(!town.trim().isEmpty())&&(!town.trim().equals("-1"))){
+	                 if((town!=null)&&(!town.trim().isEmpty())&&(!town.trim().equals("-1"))&&(!town.trim().equals("0"))){
                                 sql+=" and b.town='"+town.trim()+"'";
                         }
                   if (school!=null && school!=0){
@@ -547,7 +568,7 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
      
      private void setStuContactNum(PlacementListRecord placement )throws Exception{
                               DateUtil dateUtil=new DateUtil();
-                              Short acadYear=(short)dateUtil.getYearInt();
+                              Short acadYear=2019;//(short)dateUtil.getYearInt();
                               Student student2=new  Student(placement.getStudentNumber(),acadYear);
                               if((student2.getContactInfo().getHomeNumber()!=null)
                             		  &&(!student2.getContactInfo().getHomeNumber().isEmpty())){
@@ -585,15 +606,16 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
   private String  getLocalPlacementListSql(int supervisorCode,int saCode){
 		                                 DateUtil dateutil=new DateUtil();
 		               String sql="select a.mk_student_nr as stuNumber,(d.mk_title || ' ' ||  d.initials || ' ' || d.surname ) as stuName,"+
-                    "  a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,a.town as town,"+
+                    "  a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,b.town as town,"+
                     "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
                    "   to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year, a.semester_period"+ 
+                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year,"+
+                    "   a.semester_period as semester"+ 
                    " ,a.practice_period as  practiceprd,"+
-                   "  semester,f.eng_description as prov,"+
+                   "  f.eng_description as prov,"+
                    "  a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+mentordatasql+" from tpuspl a,"+ 
                    "  tpusch b, tpusup c, stu d, ldd e, prv f"+
-                   " where a.mk_academic_year="+ dateutil.yearInt()+
+                   " where a.mk_academic_year="+ 2019+
                    "  and a.semester_period=0"+
                    " and a.mk_school_code=b.code"+
                    " and a.mk_supervisor_code=c.code"+
@@ -610,11 +632,11 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
 	 private String  getInternationalPlacementListSql(int supervisorCode,int saCode){
       DateUtil dateutil=new DateUtil();
       String sql="select a.mk_student_nr as stuNumber,(d.mk_title || ' ' ||  d.initials || ' ' || d.surname ) as stuName,"+
-      " a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,a.town as town,"+
+      " a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,b.town as town,"+
       " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
      "  to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-         "a.evaluation_mark as evalMark,a.mk_academic_year  year, a.semester_period,"+ 
-     "   a.number_of_weeks as numWeeks,semester,e.eng_description,a.practice_period as  practiceprd,"+
+         "a.evaluation_mark as evalMark,a.mk_academic_year  year,"+ 
+     "   a.number_of_weeks as numWeeks,a.semester_period as semester,e.eng_description,a.practice_period as  practiceprd,"+
      "  a.email_to_sup as dateSent ,"+mentordatasql+"  from tpuspl a, tpusch b, tpusup c, stu d,lns e"+
      " where a.mk_academic_year="+ dateutil.yearInt()+
      "  and a.semester_period=0"+
@@ -718,6 +740,21 @@ public boolean isDateBlockAssigned(String fromDate,String toDate) throws Excepti
     	            		                " and mk_academic_year="+acadYear+
     	                                    " and semester_period="+semester+" and mk_school_code= "+schoolCode+
     	                                    " and mk_study_unit_code='"+module+"'"+ "  and practice_period="+practicePeriod ;
+    	                         String errorMsg="StudentPlacementDAO: Error quering tpuspl  to check for duplicate placement ";
+    	                         databaseUtils dbutil=new databaseUtils();
+    	                         int  totOcurrances=dbutil.queryInt(sql, errorMsg);
+    	                         if(totOcurrances==0){
+    	                        	 return false;
+    	                         }else{
+    	                        	 return true;
+    	                         }
+  }
+public boolean  isModulePlacedForStu(Short acadYear, Short semester, 
+    		               Integer studentNr,String module)throws Exception{
+    	                         String sql="select count(*) from TPUSPLLOG  where action_gc201='CREATE'  and mk_student_nr="+studentNr+
+    	            		                " and mk_academic_year="+acadYear+
+    	                                    " and semester_period="+semester+
+    	                                    " and mk_study_unit_code='"+module+"'";
     	                         String errorMsg="StudentPlacementDAO: Error quering tpuspl  to check for duplicate placement ";
     	                         databaseUtils dbutil=new databaseUtils();
     	                         int  totOcurrances=dbutil.queryInt(sql, errorMsg);

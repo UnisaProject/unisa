@@ -1,6 +1,6 @@
 package za.ac.unisa.lms.tools.tpustudentplacement.forms;
 import java.util.List;
-import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.ContactUI;
+import za.ac.unisa.lms.tools.tpustudentplacement.uiLayer.ContactUI;
 import za.ac.unisa.lms.tools.tpustudentplacement.model.modelImpl.StudentImp;
 
 public class Student {

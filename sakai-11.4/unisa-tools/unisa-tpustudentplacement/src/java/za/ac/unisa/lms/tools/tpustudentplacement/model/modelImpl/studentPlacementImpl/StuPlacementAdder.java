@@ -78,10 +78,9 @@ public class StuPlacementAdder {
                                   }
                                   return messages;
          }	    
-         public ActionMessages addPlacement(StudentPlacementForm studentPlacementForm){
+         public ActionMessages addPlacement(StudentPlacementForm studentPlacementForm)throws Exception{
         	                         ActionMessages messages =new ActionMessages();
-        	                         try{
-                                              checkModuleExists(studentPlacementForm,messages);
+        	                              checkModuleExists(studentPlacementForm,messages);
        	                                      if (messages.isEmpty()){
                                            	        insertPlacement(studentPlacementForm); 
                                                     if (messages.isEmpty()){
@@ -94,7 +93,6 @@ public class StuPlacementAdder {
                                                     	 }
                                                     }
        	                                      }
-                                      }catch(Exception err){}
-                                     return messages;
+                                                                         return messages;
         }
 }

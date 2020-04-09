@@ -20,7 +20,7 @@ public class StringsUtil {
 	    	        	            if (x>0){
 	    	        		            listString+=",";
 	    	        	            }
-	                                listString=i.next().toString();
+	                                listString+=i.next().toString();
 	    	                   }
 	                     return listString;
 	    	}
@@ -30,10 +30,11 @@ public class StringsUtil {
                 String listString="";
                 while(i.hasNext()){
      	            if (x>0){
-     		            listString+=",";
+     		            listString+=separatorChar;
      	            }
-                     listString=i.next().toString();
+                     listString+=i.next().toString();
                 }
           return listString;
 }
 }
+
