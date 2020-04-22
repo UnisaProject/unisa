@@ -45,12 +45,16 @@ public class SupervisorUI  extends  SupervisorImpl{
         public String setSupForEditPlacement(StudentPlacementForm studentPlacementForm,
                     SupervisorListRecord supervisor,String fromPage,String returnStr)throws Exception{
                     String nextPage=returnStr;
+                    try{
 if (fromPage.equalsIgnoreCase("editStudentPlacement")){
-      if(studentPlacementForm.getStudentPlacement().getSupervisorCode()
-                                       !=supervisor.getCode()){
+	if((studentPlacementForm.getStudentPlacement()!=null) &&(studentPlacementForm.getStudentPlacement().getSupervisorCode()
+                                       !=supervisor.getCode())){
                                               studentPlacementForm.setSameSupervisorSelected("N");
       }
  }
+                    }catch(Exception ex){
+                    	 studentPlacementForm.setSameSupervisorSelected("N");
+                    }
   if ((fromPage.equalsIgnoreCase("editStudentPlacement"))||
 				           (fromPage.equalsIgnoreCase("editPrelimPlacement"))
 				                 &&(returnStr.trim().equals(""))) {

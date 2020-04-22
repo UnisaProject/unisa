@@ -69,6 +69,21 @@ public class CoordinatorDAO {
    	                            	                                                       return true;
    	                                                                      }
    	                  }
+	                    public   boolean isCoordinatorLinkedToProv(String networkCode,String workstation)throws Exception{
+	                    	                                      List  coordList=getCoordinatorList();
+                                                                 if((coordList==null)||(coordList.size()==0)){
+                                	                                       return false;
+                                                                  }
+                                                                 boolean found=false;
+                                                                  for(int x=0;x<coordList.size();x++){
+                                                                          	Coordinator  coordinator=(Coordinator)coordList.get(x);
+                                                                        	if(coordinator.getNetworkCode().equals(networkCode)&&coordinator.getWorkStationCode().equals(workstation) ){
+                                                                        		found=true;
+                                                                        		break;
+                                                                        	}
+                                                                 }
+           	                                                return found;
+                         }
 	                    public   boolean coordinatorsExit()throws Exception{
            	                              String query="Select  mk_persno from tpuwsc";
            	                              String errorMsg="CoordinatorDAO:Error reading tpuwsc";
@@ -138,6 +153,17 @@ public class CoordinatorDAO {
            	                                                    }
                                                                 return coordinator;
                  }
+           	  public boolean isCoordForProv(int provinceCode) throws Exception{
+           		                                    List  coordList=getCoordinatorList();
+           		                                    if((coordList==null)||(coordList.size()==0)){
+           		                                    	return false;
+           		                                    }
+                                                    if(getCoordinatorForProv(provinceCode)==null){
+                                                       	   return false;
+           	                                        }else{
+           	                                        	return true;
+           	                                        }
+              }
            	  public Coordinator getCoordinatorForSadecInt() throws Exception{
 	                                                       Coordinator  coordinator=null;
 	                                                       String persno=getPersnoForSadecInt();

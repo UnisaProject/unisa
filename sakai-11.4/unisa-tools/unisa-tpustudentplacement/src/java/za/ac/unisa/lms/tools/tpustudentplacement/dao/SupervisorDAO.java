@@ -416,8 +416,11 @@ public String getSupervProvDesc(int supervisorCode) throws Exception{
 	     List listArea = new ArrayList<SupervisorAreaRecord>();
 	     supervisor.setListArea(listArea);
 	
-	//Get district supervisor is linked to
-	String sqlDistrict = "select a.mk_prv_code as supProv, (select eng_description from prv where prv.code = a.mk_prv_code) as supProvDesc,a.mk_district_code as supDistrictCode,(select eng_description from ldd where ldd.code=a.mk_district_code) as supDistrictDesc" +
+	//Get district supervisor is linked to (supervisorArea)
+	String sqlDistrict = "select a.mk_prv_code as supProv, Decode((select eng_description from prv where prv.code = a.mk_prv_code) ,null,"+
+	"(select eng_description from tpusubprv where tpusubprv.code = a.mk_prv_code) ,"+
+	"(select eng_description from prv where prv.code = a.mk_prv_code) ) as  supProvDesc,"+
+	"a.mk_district_code as supDistrictCode,(select eng_description from ldd where ldd.code=a.mk_district_code) as supDistrictDesc" +
 		  " from tpusar a" +
 		  " where mk_superv_code=" + supervisor.getCode() +
 	      " order by supProvDesc, supDistrictDesc";
@@ -541,7 +544,11 @@ List listArea = new ArrayList<SupervisorAreaRecord>();
 List queryList = new ArrayList();
 
 //Get district supervisor is linked to
-String sqlDistrict = "select a.mk_prv_code as supProv, (select eng_description from prv where prv.code = a.mk_prv_code) as supProvDesc,a.mk_district_code as supDistrictCode,(select eng_description from ldd where ldd.code=a.mk_district_code) as supDistrictDesc" +
+String sqlDistrict = "select a.mk_prv_code as supProv, "+
+        "  Decode((select eng_description from prv where prv.code = a.mk_prv_code),null,"+
+        " (select tpusubprv.eng_description from tpusubprv where tpusubprv.code = a.mk_prv_code),"+
+       "   (select eng_description from prv where prv.code = a.mk_prv_code))"+
+		"  as supProvDesc,a.mk_district_code as supDistrictCode,(select eng_description from ldd where ldd.code=a.mk_district_code) as supDistrictDesc" +
 		  " from tpusar a" +
 		  " where mk_superv_code=" + supervisorCode +
 	      " order by supProvDesc, supDistrictDesc";
@@ -644,49 +651,50 @@ Short district,String filter,String contractStatus,int timeLimit) throws Excepti
 
 private String  nationalSupsSQL(String country,Short province,Short district,String filter,String contractStatus,int timeLimit) throws Exception {
                      DateUtil dateUtil=new DateUtil();
-                     int year=2019;dateUtil.yearInt(); 
+                     int year=dateUtil.yearInt(); 
 	                        String sql="";
 	                        if (province==null ||(province.compareTo(Short.parseShort("0"))==0)){
 	                            if (district==null || district.compareTo(Short.parseShort("0"))==0){
 	                            	sql+=    "  select  distinct  a.code as supCode, a.surname || ' ' || a.initials || ' ' || a.mk_title as supName, "+
                                             "  (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber,  "+
                                             "   (select email_address from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) "+
-                                            "   as email_address,(Select  count(*)  from tpuspl where mk_supervisor_code="+
-                                            "   a.code and semester_period=0  and mk_academic_year="+year+") as totalAllocated,"+
-                                            "   Decode((Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-                                            "   and mk_academic_year="+year+"),null,100,"+
-                                           "     (Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-                                              "   and mk_academic_year="+year+") ) as totAllowed,"+
-                                        "   to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart,  to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd,  "+
+                                            "   as email_address,"+
+                                            "   to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart, "+
+                                             "  to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd,  "+
                                                "  a.contract as contract,c.eng_description as supCountry,"+
                                                "   Decode((select  min(distinct(mk_prv_code))  from "+
-                                               "   tpusar where tpusar.mk_superv_code=a.code),null,0,(select  min(distinct(mk_prv_code))   from  tpusar where tpusar.mk_superv_code=a.code)) "+
+                                               "   tpusar where tpusar.mk_superv_code=a.code),null,0,(select  min(distinct(mk_prv_code))    "+
+                                               "   from  tpusar where tpusar.mk_superv_code=a.code)) "+
                                                "   as supProvCode,(select prv.eng_description from prv where prv.code="+
                                                   "   Decode((select  min(distinct(mk_prv_code)) from  tpusar where tpusar.mk_superv_code=a.code),null,0,"+
                                                    "  (select  min(distinct(mk_prv_code))   from  tpusar where tpusar.mk_superv_code=a.code)))  as prov"+
                                              "   from tpusup a, lns c where  a.mk_country_code = c.code  and    ( select fk_tpusubprv_code  from  ldd  where ldd.code=( Decode((select  min(distinct(mk_district_code))"+  
                                              "   from  tpusar where tpusar.mk_superv_code=a.code),null,0,(select  min(distinct(mk_district_code))  from  tpusar where tpusar.mk_superv_code=a.code)))) is null  ";
-                                           
-
-                                          }
+                                                                                     }
 	                        }
 	                        if ((province!=null && province.compareTo(Short.parseShort("0"))!=0)|| (district!=null && district!=0)){
 	                                         sql=  "select distinct a.code as supCode," + 
 	                        	                                                                 "   a.surname || ' ' || a.initials || ' ' || a.mk_title as supName," +
 	                                                                                            "   (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber, " +
 	                                                                                            "   (select email_address from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) "+
-	                                                                                            "    as email_address,(Select  count(*)  from tpuspl where mk_supervisor_code="+
-	                                                                                            "    a.code and semester_period=0  and mk_academic_year="+year+") as totalAllocated,"+
-	                                                                                            "   Decode((Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-	                                                                                            "   and mk_academic_year="+year+"),0,100,"+
-	                                                                                            "     (Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-	                                                                                            "   and mk_academic_year="+year+") ) as totAllowed,"+
+	                                                                                            "    as email_address,"+
 	                                                                                            "    to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart," +
 	                                                                                             "   to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd," +
 	                                                                                             "   a.contract as contract,c.eng_description as supCountry," +
-	                                                                                               "   b.mk_prv_code as supProvCode," +
-	                                                                                             "   Decode(b.mk_prv_code,null,' ',(select prv.eng_description from prv where prv.code=b.mk_prv_code)) as prov " +
-	                                                                                              "   from tpusup a,tpusar b, lns c" +
+	                                                                                               "   b.mk_prv_code as supProvCode " ;
+	                                         if ((province!=null )&& (province.compareTo(Short.parseShort("0"))!=0)){
+	                                        	    if(province>=30){
+	                                                        sql+=  ",  (select tpusubprv.eng_description from "+
+	                                                        		  "    tpusubprv where tpusubprv.code="+province +" ) as prov " ;
+	                                        	    }else{
+	                                        	    	 sql+=  " , (select prv.eng_description from "+
+                                                       		      "    prv where prv.code="+province+") as prov " ;
+	                                        	    }
+	                                         }else if (district!=null && district!=0){    
+	                                        	   sql+=  ",  select prv.eng_description from prv where prv.code="+
+	                                               "  select ldd.code  from  ldd  where ldd.code="+district;
+                                             }
+	                                                                                            sql+=  "   from tpusup a,tpusar b, lns c" +
 	                                                                                             "   where a.code = b.mk_superv_code" + 
 	                                                                                             "    and a.mk_country_code = c.code  and "+
 	                                                                                             "    (select fk_tpusubprv_code  from  ldd  where ldd.code=b.mk_district_code) is null  ";
@@ -720,12 +728,7 @@ private String  nationalSupsSQL(String country,Short province,Short district,Str
                                          "  a.surname || ' ' || a.initials || ' ' || a.mk_title as supName," +
                                         "  (select cell_number from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) as cellNumber, " +
                                         "  (select email_address from adrph where adrph.reference_no=a.code and adrph.fk_adrcatcode=231) "+
-                                       "    as email_address,(Select  count(*)  from tpuspl where mk_supervisor_code="+
-                                       "    a.code and semester_period=0  and mk_academic_year="+year+") as totalAllocated,"+
-                                        "   Decode((Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-                                        "   and mk_academic_year="+year+"),0,100,"+
-                                       "     (Select  tot_stud_alloc  from tpusuptot  where mk_supervisor_code=a.code and semester_period=0 "+
-                                          "   and mk_academic_year="+year+") ) as totAllowed,"+
+                                       "    as email_address,"+
                                          "   to_char(a.contract_start, 'YYYY/MM/DD') as supContractStart," +
                                          "   to_char(a.contract_end, 'YYYY/MM/DD') as supContractEnd," +
                                          "   a.contract as contract,e.eng_description as supCountry," +
@@ -767,15 +770,23 @@ private String  nationalSupsSQL(String country,Short province,Short district,Str
     private List getSupervisoList(String sql,String country,String contractStatus,int timeLimit,String assignable) throws Exception{
 	                databaseUtils dbutil=new databaseUtils();
                         DateUtil dateUtil=new DateUtil();
-                        int year=2019;//dateUtil.yearInt();
+                        int year=dateUtil.yearInt();
                         List listSupervisor  = new ArrayList<SupervisorListRecord>();
                         List queryList = new ArrayList();
                         JdbcTemplate jdt = new JdbcTemplate(getDataSource());
                         queryList = jdt.queryForList(sql);
+                        int prvCode=0;
                         for (int i=0; i<queryList.size();i++){
+                        	 try{
+     	                        
 			             SupervisorListRecord supervisor = new SupervisorListRecord();	
                                      ListOrderedMap data = (ListOrderedMap) queryList.get(i);
                                      supervisor.setCode(Integer.parseInt(data.get("supCode").toString()));
+                                    if(prvCode== supervisor.getCode()){
+                                             	 	        continue;
+                                    }else{
+                                    	       prvCode= supervisor.getCode();
+                                    }
                                      supervisor.setName(data.get("supName").toString());
                                      supervisor.setCellNumber(dbutil.replaceNull(data.get("cellNumber")));
                                      supervisor.setContractStart(dbutil.replaceNull(data.get("supContractStart")));
@@ -784,15 +795,18 @@ private String  nationalSupsSQL(String country,Short province,Short district,Str
                                      supervisor.setContract(dbutil.replaceNull(data.get("contract")));	
                                      if((country!=null) &&country.equals(PlacementUtilities.getSaCode())){
             	                         String provinceCode=dbutil.replaceNull(data.get("supProvCode").toString());
-            	                         String province=dbutil.replaceNull(data.get("prov").toString());
-                                         supervisor.setProvince(province);
-                              String district=getSupervisorDistrict(supervisor,provinceCode);
-                                 supervisor.setDistrict(district);		
+            	                         String province="";
+            	                                  	 province= dbutil.replaceNull(data.get("prov").toString());
+            	                         supervisor.setProvince(province);
+                                        String district=getSupervisorDistrict(supervisor,provinceCode);
+                                         supervisor.setDistrict(district);		
                          }
                            supervisor.setEmailAddress(dbutil.replaceNull(data.get("email_address")));
                            supervisor.setStudentsAllowed(getStudentsAllowed(supervisor.getCode(),year));
       	                   supervisor.setStudentsAllocated(getStudentsAllocated(supervisor.getCode(),year));
                            addSupervToList(listSupervisor,supervisor,contractStatus,timeLimit,assignable);
+                        	  }catch(Exception ex){}
+                             
                         }
                     return listSupervisor;
     }
@@ -917,13 +931,13 @@ private String  nationalSupsSQL(String country,Short province,Short district,Str
      }
  public   String getStudentsAllowed(int supervisorCode)throws Exception {
                           DateUtil dateUtil=new DateUtil();
-                          int year=2019;//dateUtil.yearInt();
+                          int year=dateUtil.yearInt();
                     return getStudentsAllowed(supervisorCode,year);
      }
     
      public   String getStudentsAllocated(int supervisorCode)throws Exception {
                         DateUtil dateUtil=new DateUtil();
-                        int year=2019;//dateUtil.yearInt();
+                        int year=dateUtil.yearInt();
                         return getStudentsAllocated(supervisorCode,year);
      }
      public   String getStudentsAllocated(int supervisorCode,int year)throws Exception {

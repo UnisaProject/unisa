@@ -50,6 +50,9 @@ public class Coordinator extends Personnel{
               public Coordinator getCoordinatorForSadecInt() throws Exception{
                                      return coordinatorImpl.getCoordinatorForSadecInt();
               }
+              public   boolean isCoordinatorLinkedToProv(String networkCode,String workstation)throws Exception{
+                                     	  return dao.isCoordinatorLinkedToProv(networkCode,workstation);
+              }
               public Coordinator getCoordForProvGivenSchoolCode(int schoolCode)throws Exception{
             	                      SchoolUI school=new SchoolUI();
             	                      boolean isSchoolLocal=school.isSchoolLocal(schoolCode);

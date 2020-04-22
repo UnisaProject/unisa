@@ -77,6 +77,8 @@ public class CommunicationUI {
 	                public StudentPlacementListRecord getPlacementForCorresp(StudentPlacementForm studentPlacementForm){
                                                       List placementList= studentPlacementForm.getListStudentPlacement();
                                                       StudentPlacementListRecord placement = new StudentPlacementListRecord();
+                                                      if(placementList==null)
+                                                          	return  studentPlacementForm.getStudentPlacementListRecord();
                                                       for (int i=0; i < placementList.size(); i++){
                                                              placement = (StudentPlacementListRecord)placementList.get(i);
                                                              checkCommunicationSchcool(placement,studentPlacementForm);
@@ -91,6 +93,8 @@ public class CommunicationUI {
                                         List placementList= studentPlacementForm.getListStudentPlacement();
                                         StudentPlacementListRecord placement = new StudentPlacementListRecord();
                                         List placementsAtAschool=new ArrayList();
+                                        if(placementList==null)
+                                        	return placementsAtAschool;
                                         for (int i=0; i < placementList.size(); i++){
                                                 placement = (StudentPlacementListRecord)placementList.get(i);
                                                 if(i==0){
