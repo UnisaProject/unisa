@@ -344,7 +344,7 @@ public void removeStudentPlacement(Short acadYear,Short semester,Integer student
                }else{
             	   sqlStr+=" from tpuspl a, tpusch b, tpusup c, stu d";
                }
-               sqlStr+=" where a.mk_academic_year=" +2019+
+               sqlStr+=" where a.mk_academic_year=" +acadYear+
                        "  and a.semester_period=" + semester +
                        "   and a.mk_school_code=b.code" + 
                        "   and a.mk_supervisor_code=c.code" +
@@ -568,7 +568,7 @@ public void removeStudentPlacement(Short acadYear,Short semester,Integer student
      
      private void setStuContactNum(PlacementListRecord placement )throws Exception{
                               DateUtil dateUtil=new DateUtil();
-                              Short acadYear=2019;//(short)dateUtil.getYearInt();
+                              Short acadYear=(short)dateUtil.getYearInt();
                               Student student2=new  Student(placement.getStudentNumber(),acadYear);
                               if((student2.getContactInfo().getHomeNumber()!=null)
                             		  &&(!student2.getContactInfo().getHomeNumber().isEmpty())){
@@ -609,13 +609,13 @@ public void removeStudentPlacement(Short acadYear,Short semester,Integer student
                     "  a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,b.town as town,"+
                     "  a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
                    "   to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year  year,"+
+                    "  a.number_of_weeks as numWeeks,a.evaluation_mark as evalMark,a.mk_academic_year as year,"+
                     "   a.semester_period as semester"+ 
                    " ,a.practice_period as  practiceprd,"+
                    "  f.eng_description as prov,"+
                    "  a.email_to_sup as dateSent ,e.code as disCode,e.eng_description as disName,"+mentordatasql+" from tpuspl a,"+ 
                    "  tpusch b, tpusup c, stu d, ldd e, prv f"+
-                   " where a.mk_academic_year="+ 2019+
+                   " where a.mk_academic_year="+dateutil.yearInt()+
                    "  and a.semester_period=0"+
                    " and a.mk_school_code=b.code"+
                    " and a.mk_supervisor_code=c.code"+
@@ -635,7 +635,7 @@ public void removeStudentPlacement(Short acadYear,Short semester,Integer student
       " a.mk_school_code as schCode, b.name as schName, a.mk_study_unit_code as module,b.town as town,"+
       " a.mk_supervisor_code as supCode, (c.surname || ' ' || c.initials || ' ' || c.mk_title) as supName,"+
      "  to_char(a.start_date,'YYYY/MM/DD') as startDate,to_char(a.end_date,'YYYY/MM/DD') as endDate,stu_fulltime_sch,"+
-         "a.evaluation_mark as evalMark,a.mk_academic_year  year,"+ 
+         "a.evaluation_mark as evalMark,a.mk_academic_year  as year,"+ 
      "   a.number_of_weeks as numWeeks,a.semester_period as semester,e.eng_description,a.practice_period as  practiceprd,"+
      "  a.email_to_sup as dateSent ,"+mentordatasql+"  from tpuspl a, tpusch b, tpusup c, stu d,lns e"+
      " where a.mk_academic_year="+ dateutil.yearInt()+
