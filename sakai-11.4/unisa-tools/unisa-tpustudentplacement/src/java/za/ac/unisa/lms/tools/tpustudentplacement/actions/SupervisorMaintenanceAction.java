@@ -505,21 +505,15 @@ public class SupervisorMaintenanceAction extends LookupDispatchAction{
            Coordinator coordinator=new Coordinator();
            studentPlacementForm.setCoordinatorActive(coordinator.isCoordinator(networkCode));
            int provCode= getSupervisorProvince(studentPlacementForm);
-           String country=studentPlacementForm.getSupervisorFilterCountry();
-           String showLink="N";
+           studentPlacementForm.setCoordinatorForProv("N");
            if(studentPlacementForm.getCoordinatorActive().equals("Y")){
-                    coordinator=new Coordinator();
-                    coordinator.setNetworkCode(networkCode);
-                    showLink=coordinator.checkCoordinatorForProv(country,provCode);
-          }
-          if(showLink.equals("Y")){
-                  studentPlacementForm.setCoordinatorForProv("Y");
-          }else{
-                 studentPlacementForm.setCoordinatorForProv("N");
+                    if(coordinator. isCoordinatorLinkedToProv(networkCode,""+provCode)){
+                    	     studentPlacementForm.setCoordinatorForProv("Y");
+                    }
           }
           studentPlacementForm.setContractStatus("All");
-      return mapping.findForward("editSupervisor");	
-}
+         return mapping.findForward("editSupervisor");	
+   }
 	private int getSupervisorProvince(StudentPlacementForm studentPlacementForm){
 		                  Supervisor supervisor= studentPlacementForm.getSupervisor();
 		                  if(supervisor.getProvinceCode()==null){
