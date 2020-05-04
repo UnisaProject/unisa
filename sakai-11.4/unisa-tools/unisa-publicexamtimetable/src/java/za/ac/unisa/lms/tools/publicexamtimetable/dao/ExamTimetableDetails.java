@@ -5,10 +5,16 @@ public class ExamTimetableDetails {
 	private String studyUnit;
 	private String paperNo;
 	private String examDate;
+	private String examType;
 	private String examTime;
 	private String duration;
 	
-	
+	public String getExamType() {
+		return examType;
+	}
+	public void setExamType(String examType) {
+		this.examType = examType;
+	}
 	public String getDuration() {
 		return duration;
 	}

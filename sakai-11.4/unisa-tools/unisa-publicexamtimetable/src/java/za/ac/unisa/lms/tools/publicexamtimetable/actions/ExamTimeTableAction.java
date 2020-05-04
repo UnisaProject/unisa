@@ -158,7 +158,9 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 			boolean invalidCodeFound = false;
 			if( examTimeTableForm.getUnitCode1().equalsIgnoreCase("") && examTimeTableForm.getUnitCode2().equalsIgnoreCase("") &&
 				examTimeTableForm.getUnitCode3().equalsIgnoreCase("") && examTimeTableForm.getUnitCode4().equalsIgnoreCase("") &&
-				examTimeTableForm.getUnitCode5().equalsIgnoreCase("")){
+				examTimeTableForm.getUnitCode5().equalsIgnoreCase("") && examTimeTableForm.getUnitCode6().equalsIgnoreCase("") && 
+				examTimeTableForm.getUnitCode7().equalsIgnoreCase("") && examTimeTableForm.getUnitCode8().equalsIgnoreCase("") && 
+				examTimeTableForm.getUnitCode9().equalsIgnoreCase("") && examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Please enter a study unit code."));
 				addErrors(request, messages);
 				return inputSubject(mapping,form,request,response);
@@ -200,6 +202,41 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
 				}
 			}
+			if(!examTimeTableForm.getUnitCode6().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode6().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode6()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode7().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode7().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode7()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode8().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode8().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode8()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode9().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode9().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode9()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode10().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode10()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
+				}
+			}
 
 			if(!messages.isEmpty()){
 				addErrors(request,messages);
@@ -236,7 +273,9 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 			String subjCodes = "";
 			if( examTimeTableForm.getUnitCode1().equalsIgnoreCase("") && examTimeTableForm.getUnitCode2().equalsIgnoreCase("") &&
 				examTimeTableForm.getUnitCode3().equalsIgnoreCase("") && examTimeTableForm.getUnitCode4().equalsIgnoreCase("") &&
-				examTimeTableForm.getUnitCode5().equalsIgnoreCase("")){
+				examTimeTableForm.getUnitCode5().equalsIgnoreCase("") && examTimeTableForm.getUnitCode6().equalsIgnoreCase("") && 
+				examTimeTableForm.getUnitCode7().equalsIgnoreCase("") && examTimeTableForm.getUnitCode8().equalsIgnoreCase("") && 
+				examTimeTableForm.getUnitCode9().equalsIgnoreCase("") && examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Fill in the atleast one Study Unit Code."));
 				addErrors(request, messages);
 				return mapping.findForward("subjectinputforward");
@@ -278,7 +317,41 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
 				}
 			}
-
+			if(!examTimeTableForm.getUnitCode6().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode6().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode6()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode7().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode7().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode7()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode8().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode8().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode8()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode9().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode9().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode9()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
+				}
+			}
+			if(!examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
+				if (examTimeTableForm.getUnitCode10().length() > 5){
+					subjCodes += examTimeTableForm.getUnitCode10()+",";
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
+				}
+			}
 			if(!messages.isEmpty()){
 				addErrors(request,messages);
 				return inputSubject(mapping,form,request,response);
@@ -303,6 +376,12 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 		examTimeTableForm.setUnitCode3("");
 		examTimeTableForm.setUnitCode4("");
 		examTimeTableForm.setUnitCode5("");
+		examTimeTableForm.setUnitCode6("");
+		examTimeTableForm.setUnitCode7("");
+		examTimeTableForm.setUnitCode8("");
+		examTimeTableForm.setUnitCode9("");
+		examTimeTableForm.setUnitCode10("");
+		
 		return inputSubject(mapping,form,request,response);
 	}
 
