@@ -42,7 +42,7 @@ public class ExamTimetableDAO extends StudentSystemDAO{
 		}
 	}
 
-	public ArrayList getExamTimetableList(String year,String period,String subjCodes) throws Exception{
+	public ArrayList xxgetExamTimetableList(String year,String period,String subjCodes) throws Exception{
 		ArrayList results = new ArrayList();
 		String sql;
 		sql =	"select SUBSTR(XAMDAT.FK_STUDY_UNIT_CODE,1,7) STUDY_CODE," +
@@ -95,6 +95,70 @@ public class ExamTimetableDAO extends StudentSystemDAO{
 					
 				}
 				
+								
+				results.add(examTimetableDetails);
+			}
+		}catch(Exception ex) {
+			throw new Exception("ExamTimetableDAO : error reading the getExamTimetableList function / "+ ex,ex);
+		}
+		return results;
+	}
+	
+	public ArrayList getExamTimetableList(String year,String period,String subjCodes) throws Exception{
+		ArrayList results = new ArrayList();
+		String sql;
+		sql =	"select t.module as module,t.fk_nr as paper,decode(t.exam_date,'19010101','Will be informed','19030303'," + 
+				" decode(t.paper_type_gc22,'EXISTNVB',t.due_date," + 
+				"'PFMYADMIN',t.open_submission || ' - ' || t.final_submission," + 
+				"'MCQSAMIGO',t.open_submission || ' - ' || t.final_submission," + 
+				"'MCQMYEXAMS',t.open_submission || ' - ' || t.final_submission," + 
+				"'HOMEMYADM',t.open_submission || ' - ' || t.final_submission," + 
+				"'HOMEMYEXM',t.open_submission || ' - ' || t.final_submission," + 
+				"'FMCQMYADM',t.open_submission || ' - ' || t.final_submission," + 
+				"'ORAL',t.open_submission || ' - ' || t.final_submission," + 
+				"'Lecturer Arrangement'),t.venue_exam_date || ' ' || t.start_time || ' - ' || t.end_time) as exam_date," + 
+				" t.exam_type as exam_type" + 
+				" from" + 
+				" (select XAMDAT.FK_STUDY_UNIT_CODE as Module,XAMDAT.FK_NR,to_char(XAMDAT.DATE0,'YYYYMMDD') as exam_date,to_char(XAMDAT.DATE0,'dd Mon YYYY') as venue_exam_date," + 
+				" to_char(XAMDAT.STARTING_TIME,'HH24:MI') as start_time," + 
+				" to_char(xamdat.starting_time + to_dsinterval('PT' || trim(to_char(XAMDAT.DURATION_HOURS,'09')) || 'H' || trim(to_char(XAMDAT.DURATION_MINUTES,'09')) || 'M'),'HH24:MI') as end_time," + 
+				" XAMDAT.DURATION_HOURS,XAMDAT.PAPER_TYPE_GC22,XAMDAT.MK_UNIQUE_NR," + 
+				" decode(to_char(XAMDAT.DATE0,'YYYYMMDD'),'19030303',decode(gencod.eng_description,null,'Non-Venue based Exam',gencod.eng_description),'Venue Based') as exam_type," + 
+				" UNQASS.ASSESS_GROUP_GC230 as ass_type," + 
+				" to_char(unqass.closing_date,'dd Mon YYYY') as due_date," + 
+				" to_char(UNQASS.FINAL_SUBMIT_DATE,'dd Mon YYYY HH24:MI') as final_submission," + 
+				" to_char(UNQASS.PF_OPEN_DATE,'dd Mon YYYY') || ' ' || to_char(UNQASS.PF_OPEN_TIME,'HH24:MI') as open_submission" + 
+				" from xamdat,unqass,gencod" + 
+				" where" + 
+				" XAMDAT.MK_EXAM_PERIOD_COD="+period+
+				" and XAMDAT.FK_EXAM_YEAR="+year+
+				" and XAMDAT.FK_STUDY_UNIT_CODE in"; 				
+				String[] result = subjCodes.split(",");
+				for(int i=0 ; i < result.length; i++){
+					if (i == 0){
+						sql +=	" ('" +result[i].toUpperCase()+"'";
+					} else {
+						sql += ",'" +result[i].toUpperCase()+"'";
+					}
+				}
+		sql +=	")" +
+				" and gencod.code(+)=XAMDAT.PAPER_TYPE_GC22" + 
+				" and gencod.fk_gencatcode(+)=22" + 
+				" and UNQASS.UNIQUE_NR(+)=XAMDAT.MK_UNIQUE_NR" + 
+				" and UNQASS.ASSESS_GROUP_GC230(+)='S') t" +
+				" order by t.Module, t.fk_nr ASC";
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+			Iterator i = queryList.iterator();
+			String examYear = "";
+			while(i.hasNext()){
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				ExamTimetableDetails examTimetableDetails = new ExamTimetableDetails();
+				examTimetableDetails.setStudyUnit(data.get("module").toString());
+				examTimetableDetails.setPaperNo(data.get("paper").toString());
+				examTimetableDetails.setExamDate(data.get("exam_date").toString());
+				examTimetableDetails.setExamType(data.get("exam_type").toString());		
 								
 				results.add(examTimetableDetails);
 			}

@@ -33,16 +33,18 @@
 							<th><fmt:message key="examtimetable.label.studyunit"/></th>
 							<th><fmt:message key="examtimetable.label.paperno"/></th>
 							<th><fmt:message key="examtimetable.label.examdate"/></th>
-							<th><fmt:message key="examtimetable.label.time"/></th>
-							<th><fmt:message key="examtimetable.label.duration"/></th>
+							<th><fmt:message key="examtimetable.label.examtype"/></th>
+							<!-- <th><fmt:message key="examtimetable.label.time"/></th>
+							<th><fmt:message key="examtimetable.label.duration"/></th> -->
 						</tr>
 						<logic:iterate name="examtimetableform" property="timetableList" id="c" indexId="cindex">
 							<tr>
 								<td><bean:write name="c" property="studyUnit"/></td>
 								<td><bean:write name="c" property="paperNo"/></td>
 								<td><bean:write name="c" property="examDate"/></td>
-								<td><bean:write name="c" property="examTime"/></td>
-								<td><bean:write name="c" property="duration"/></td>
+								<td><bean:write name="c" property="examType"/></td>
+								<!-- <td><bean:write name="c" property="examTime"/></td>
+								<td><bean:write name="c" property="duration"/></td> -->
 							</tr>							
 						</logic:iterate>
 					</sakai:group_table>

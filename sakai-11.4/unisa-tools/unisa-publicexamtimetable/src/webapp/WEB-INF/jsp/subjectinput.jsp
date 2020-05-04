@@ -14,7 +14,7 @@
 	<sakai:messages />
 	<sakai:heading><fmt:message key="examtimetable.display.heading"/></sakai:heading>
 	<sakai:instruction>
-		<fmt:message key="examtimetable.input.instruction1"/><br/><fmt:message key="examtimetable.input.instruction2"/>
+		<fmt:message key="examtimetable.input.instruction1"/><!-- <br/><fmt:message key="examtimetable.input.instruction2"/> -->
 	</sakai:instruction>
 	<html:form action="examtimetable">
 		<sakai:group_table>
@@ -40,6 +40,14 @@
 					<html:text property="unitCode3" maxlength="7" size="7"/>&nbsp;
 					<html:text property="unitCode4" maxlength="7" size="7"/>&nbsp;
 					<html:text property="unitCode5" maxlength="7" size="7"/>
+				</td>
+			</tr>	
+				<td colspan="2">
+					<html:text property="unitCode6" maxlength="7" size="7"/>&nbsp;
+					<html:text property="unitCode7" maxlength="7" size="7"/>&nbsp;
+					<html:text property="unitCode8" maxlength="7" size="7"/>&nbsp;
+					<html:text property="unitCode9" maxlength="7" size="7"/>&nbsp;
+					<html:text property="unitCode10" maxlength="7" size="7"/>
 				</td>
 			</tr>			
 		</sakai:group_table>

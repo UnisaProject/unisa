@@ -21,6 +21,11 @@ public class ExamTimeTableForm extends ActionForm {
 	private String examPeriod;
 	private String unitCode1;
 	private String unitCode5;
+	private String unitCode6;
+	private String unitCode7;
+	private String unitCode8;
+	private String unitCode9;
+	private String unitCode10;
 	private String timeTableStatus;
 	private String examPeriodDesc;
 	private String academicYear;
@@ -29,6 +34,46 @@ public class ExamTimeTableForm extends ActionForm {
 	private String printable;
 	private List periods;
 
+
+	public String getUnitCode6() {
+		return unitCode6;
+	}
+
+	public void setUnitCode6(String unitCode6) {
+		this.unitCode6 = unitCode6;
+	}
+
+	public String getUnitCode7() {
+		return unitCode7;
+	}
+
+	public void setUnitCode7(String unitCode7) {
+		this.unitCode7 = unitCode7;
+	}
+
+	public String getUnitCode8() {
+		return unitCode8;
+	}
+
+	public void setUnitCode8(String unitCode8) {
+		this.unitCode8 = unitCode8;
+	}
+
+	public String getUnitCode9() {
+		return unitCode9;
+	}
+
+	public void setUnitCode9(String unitCode9) {
+		this.unitCode9 = unitCode9;
+	}
+
+	public String getUnitCode10() {
+		return unitCode10;
+	}
+
+	public void setUnitCode10(String unitCode10) {
+		this.unitCode10 = unitCode10;
+	}
 
 	public String getPrintable() {
 		return printable;
