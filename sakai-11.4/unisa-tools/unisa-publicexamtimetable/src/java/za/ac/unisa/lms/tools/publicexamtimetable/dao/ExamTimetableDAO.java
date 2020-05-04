@@ -123,7 +123,7 @@ public class ExamTimetableDAO extends StudentSystemDAO{
 				" to_char(XAMDAT.STARTING_TIME,'HH24:MI') as start_time," + 
 				" to_char(xamdat.starting_time + to_dsinterval('PT' || trim(to_char(XAMDAT.DURATION_HOURS,'09')) || 'H' || trim(to_char(XAMDAT.DURATION_MINUTES,'09')) || 'M'),'HH24:MI') as end_time," + 
 				" XAMDAT.DURATION_HOURS,XAMDAT.PAPER_TYPE_GC22,XAMDAT.MK_UNIQUE_NR," + 
-				" decode(to_char(XAMDAT.DATE0,'YYYYMMDD'),'19030303',decode(gencod.eng_description,null,'Non-Venue based Exam',gencod.eng_description),'Venue Based') as exam_type," + 
+				" decode(to_char(XAMDAT.DATE0,'YYYYMMDD'),'19030303',decode(gencod.eng_description,null,'Non-Venue based Exam',gencod.eng_description),'19010101',' ','Venue Based') as exam_type," + 
 				" UNQASS.ASSESS_GROUP_GC230 as ass_type," + 
 				" to_char(unqass.closing_date,'dd Mon YYYY') as due_date," + 
 				" to_char(UNQASS.FINAL_SUBMIT_DATE,'dd Mon YYYY HH24:MI') as final_submission," + 
