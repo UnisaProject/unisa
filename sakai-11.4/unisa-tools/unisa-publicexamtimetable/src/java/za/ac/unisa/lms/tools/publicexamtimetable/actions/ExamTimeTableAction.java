@@ -153,7 +153,7 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 			if (status.equalsIgnoreCase("Y")){
 				examTimeTableForm.setTimeTableStatus("Final Examination Timetable");
 			} else {
-				examTimeTableForm.setTimeTableStatus("Provisional Examination Timetable");
+				examTimeTableForm.setTimeTableStatus("Preliminary Examination Timetable");
 			}
 			boolean invalidCodeFound = false;
 			if( examTimeTableForm.getUnitCode1().equalsIgnoreCase("") && examTimeTableForm.getUnitCode2().equalsIgnoreCase("") &&
@@ -161,80 +161,80 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 				examTimeTableForm.getUnitCode5().equalsIgnoreCase("") && examTimeTableForm.getUnitCode6().equalsIgnoreCase("") && 
 				examTimeTableForm.getUnitCode7().equalsIgnoreCase("") && examTimeTableForm.getUnitCode8().equalsIgnoreCase("") && 
 				examTimeTableForm.getUnitCode9().equalsIgnoreCase("") && examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
-				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Please enter a study unit code."));
+				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Please enter a module."));
 				addErrors(request, messages);
 				return inputSubject(mapping,form,request,response);
 
 			}
 
 			if(!examTimeTableForm.getUnitCode1().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode1().length() > 5){
+				if (examTimeTableForm.getUnitCode1().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode1()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode1().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode1().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode2().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode2().length() > 5){
+				if (examTimeTableForm.getUnitCode2().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode2()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode2().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode2().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode3().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode3().length() > 5){
+				if (examTimeTableForm.getUnitCode3().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode3()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode3().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode3().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode4().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode4().length() > 5){
+				if (examTimeTableForm.getUnitCode4().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode4()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode4().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode4().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode5().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode5().length() > 5){
+				if (examTimeTableForm.getUnitCode5().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode5()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode6().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode6().length() > 5){
+				if (examTimeTableForm.getUnitCode6().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode6()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode7().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode7().length() > 5){
+				if (examTimeTableForm.getUnitCode7().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode7()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode8().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode8().length() > 5){
+				if (examTimeTableForm.getUnitCode8().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode8()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode9().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode9().length() > 5){
+				if (examTimeTableForm.getUnitCode9().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode9()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode10().length() > 5){
+				if (examTimeTableForm.getUnitCode10().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode10()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
 				}
 			}
 
@@ -245,7 +245,7 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 			String[] result = subjCodes.split(",");
 			for(int i=0 ; i < result.length; i++){
 				if(examTimetabledao.isCodeInValid(result[i].toUpperCase())){
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The code "+result[i].toUpperCase()+" you entered is not valid Unisa study unit code. Please correct the code or delete from your list."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The code "+result[i].toUpperCase()+" you entered is not valid Unisa Module code. Please correct the code or delete from your list."));
 					invalidCodeFound = true;
 				}
 			}
@@ -276,80 +276,80 @@ public class ExamTimeTableAction extends LookupDispatchAction {
 				examTimeTableForm.getUnitCode5().equalsIgnoreCase("") && examTimeTableForm.getUnitCode6().equalsIgnoreCase("") && 
 				examTimeTableForm.getUnitCode7().equalsIgnoreCase("") && examTimeTableForm.getUnitCode8().equalsIgnoreCase("") && 
 				examTimeTableForm.getUnitCode9().equalsIgnoreCase("") && examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
-				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Fill in the atleast one Study Unit Code."));
+				messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","Fill in the atleast one Module Code."));
 				addErrors(request, messages);
 				return mapping.findForward("subjectinputforward");
 
 			}
 
 			if(!examTimeTableForm.getUnitCode1().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode1().length() > 5){
+				if (examTimeTableForm.getUnitCode1().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode1()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode1().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode1().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode2().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode2().length() > 5){
+				if (examTimeTableForm.getUnitCode2().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode2()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode2().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode2().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode3().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode3().length() > 5){
+				if (examTimeTableForm.getUnitCode3().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode3()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode3().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode3().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode4().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode4().length() > 5){
+				if (examTimeTableForm.getUnitCode4().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode4()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode4().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode4().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode5().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode5().length() > 5){
+				if (examTimeTableForm.getUnitCode5().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode5()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode5().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode6().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode6().length() > 5){
+				if (examTimeTableForm.getUnitCode6().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode6()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode6().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode7().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode7().length() > 5){
+				if (examTimeTableForm.getUnitCode7().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode7()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Module must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode7().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode8().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode8().length() > 5){
+				if (examTimeTableForm.getUnitCode8().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode8()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode8().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode9().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode9().length() > 5){
+				if (examTimeTableForm.getUnitCode9().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode9()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode9().toUpperCase()+"."));
 				}
 			}
 			if(!examTimeTableForm.getUnitCode10().equalsIgnoreCase("")){
-				if (examTimeTableForm.getUnitCode10().length() > 5){
+				if (examTimeTableForm.getUnitCode10().length() == 7){
 					subjCodes += examTimeTableForm.getUnitCode10()+",";
 				} else {
-					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Study Unit Code must be  atleast be 5 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
+					messages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("errors.message","The Module Code must be 7 characters, correct or delete "+examTimeTableForm.getUnitCode10().toUpperCase()+"."));
 				}
 			}
 			if(!messages.isEmpty()){
