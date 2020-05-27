@@ -507,7 +507,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " AND grd.from_year < "
 				+ nextyr
 				+ " AND grd.TYPE <> 'S'"
-				+ " AND under_post_categor IN ('U')"
+				+ " AND under_post_categor IN ('U','H')"
 				+ " AND quaspc.college_code = colleg.code";
 
 		if (!catCode.equals("-1")) {
@@ -861,7 +861,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 				+ " AND grd.from_year < "
 				+ nextyr
 				+ " AND grd.TYPE <> 'S'"
-				+ " AND grd.under_post_categor IN ('M','D','H')"
+				+ " AND grd.under_post_categor IN ('M','D')"
 				+ " AND quaspc.college_code = colleg.code";
 		if (!catCode.equals("-1")) {
 			query = query + " AND kat.code=" + catCode;
