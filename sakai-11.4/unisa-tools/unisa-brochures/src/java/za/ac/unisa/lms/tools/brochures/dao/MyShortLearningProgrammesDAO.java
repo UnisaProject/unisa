@@ -74,11 +74,16 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 				String programmeAdmin;
 				String purposeStatement;
 				
+				String moduleName;
+				String moduleCode;
+				String moduleContent;
+				
 				Element colleges = null;
 				Element college = null;
 				Element department = null;
 				Element qualificationCategory = null;
 				Element qualification = null;
+				Element module = null;
 				
 				colleges = document.createElement("colleges");
 				document.appendChild(colleges);
@@ -140,86 +145,114 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 	
 					
 					//qualification details
-					qualification = document.createElement("qualification");
-					qualificationCategory.appendChild(qualification);
-					
-					qualName = data.get("qualDescription").toString();
-					Element qualificationName = document.createElement("name");
-					qualificationName.appendChild(document
-							.createTextNode(qualName));							
-					qualification.appendChild(qualificationName);	
-					
-					qualCode = data.get("code").toString();
-					Element qualificationCode = document.createElement("code");
-					qualificationCode.appendChild(document
-							.createTextNode(qualCode));							
-					qualification.appendChild(qualificationCode);	
-					
-					qualYear = data.get("year").toString();
-					Element qualificationYear = document.createElement("year");
-					qualificationYear.appendChild(document
-							.createTextNode(qualYear));							
-					qualification.appendChild(qualificationYear);	
-					
-					targetGroup = data.get("TARGET_GROUP").toString();
-					Element qualificationTarget = document.createElement("target_group");
-					qualificationTarget.appendChild(document
-							.createTextNode(targetGroup));							
-					qualification.appendChild(qualificationTarget);	
-										
-					admissionRequirement = data.get("adminReq").toString();
-					Element qualificationRequirements = document.createElement("admission_requirements");
-					qualificationRequirements.appendChild(document
-							.createTextNode(admissionRequirement));							
-					qualification.appendChild(qualificationRequirements);
-					
-					duration = data.get("duration").toString();
-					Element qualificationDuration = document.createElement("duration");
-					qualificationDuration.appendChild(document
-							.createTextNode(duration));							
-					qualification.appendChild(qualificationDuration);
-					
-					languageMedium = data.get("languageMedium").toString();
-					Element qualificationLanguage = document.createElement("language_medium");
-					qualificationLanguage.appendChild(document
-							.createTextNode(languageMedium));							
-					qualification.appendChild(qualificationLanguage);
-					
-					registrationPeriods = data.get("registrationPeriods").toString();
-					Element qualificationRegPeriods = document.createElement("registration_periods");
-					qualificationRegPeriods.appendChild(document
-							.createTextNode(registrationPeriods));							
-					qualification.appendChild(qualificationRegPeriods);
+					if(! qualName.equals(data.get("qualDescription").toString())){
+						qualification = document.createElement("qualification");
+						qualificationCategory.appendChild(qualification);
+						
+						qualName = data.get("qualDescription").toString();
+						Element qualificationName = document.createElement("name");
+						qualificationName.appendChild(document
+								.createTextNode(qualName));							
+						qualification.appendChild(qualificationName);		
 
-					tuitionMethod = data.get("tuitionMethod").toString();
-					Element qualTuitionMethod = document.createElement("tuition_method");
-					qualTuitionMethod.appendChild(document
-							.createTextNode(tuitionMethod));							
-					qualification.appendChild(qualTuitionMethod);
+						qualCode = data.get("code").toString();
+						Element qualificationCode = document.createElement("code");
+						qualificationCode.appendChild(document
+								.createTextNode(qualCode));							
+						qualification.appendChild(qualificationCode);	
+						
+						qualYear = data.get("year").toString();
+						Element qualificationYear = document.createElement("year");
+						qualificationYear.appendChild(document
+								.createTextNode(qualYear));							
+						qualification.appendChild(qualificationYear);	
+						
+						targetGroup = data.get("TARGET_GROUP").toString();
+						Element qualificationTarget = document.createElement("target_group");
+						qualificationTarget.appendChild(document
+								.createTextNode(targetGroup));							
+						qualification.appendChild(qualificationTarget);	
+											
+						admissionRequirement = data.get("adminReq").toString();
+						Element qualificationRequirements = document.createElement("admission_requirements");
+						qualificationRequirements.appendChild(document
+								.createTextNode(admissionRequirement));							
+						qualification.appendChild(qualificationRequirements);
+						
+						duration = data.get("duration").toString();
+						Element qualificationDuration = document.createElement("duration");
+						qualificationDuration.appendChild(document
+								.createTextNode(duration));							
+						qualification.appendChild(qualificationDuration);
+						
+						languageMedium = data.get("languageMedium").toString();
+						Element qualificationLanguage = document.createElement("language_medium");
+						qualificationLanguage.appendChild(document
+								.createTextNode(languageMedium));							
+						qualification.appendChild(qualificationLanguage);
+						
+						registrationPeriods = data.get("registrationPeriods").toString();
+						Element qualificationRegPeriods = document.createElement("registration_periods");
+						qualificationRegPeriods.appendChild(document
+								.createTextNode(registrationPeriods));							
+						qualification.appendChild(qualificationRegPeriods);
+
+						tuitionMethod = data.get("tuitionMethod").toString();
+						Element qualTuitionMethod = document.createElement("tuition_method");
+						qualTuitionMethod.appendChild(document
+								.createTextNode(tuitionMethod));							
+						qualification.appendChild(qualTuitionMethod);
+						
+						kindOfAssessment = data.get("kindOfAssessment").toString();
+						Element qualAssessment = document.createElement("kind_of_assessment");
+						qualAssessment.appendChild(document
+								.createTextNode(kindOfAssessment));							
+						qualification.appendChild(qualAssessment);						
+					}
+										
+					/**************************MODULE DETAILS**********************************************/
+					module = document.createElement("module");
+					qualification.appendChild(module);
 					
-					kindOfAssessment = data.get("kindOfAssessment").toString();
-					Element qualAssessment = document.createElement("kind_of_assessment");
-					qualAssessment.appendChild(document
-							.createTextNode(kindOfAssessment));							
-					qualification.appendChild(qualAssessment);
+					moduleName = data.get("studyUnitDesc").toString();
+					Element studyUnitDescription = document.createElement("name");
+					studyUnitDescription.appendChild(document
+							.createTextNode(moduleName));							
+					module.appendChild(studyUnitDescription);	
 					
-					leaderDetails = data.get("leaderDetails").toString();
-					Element qualLeader = document.createElement("course_leader_details");
-					qualLeader.appendChild(document
-							.createTextNode(leaderDetails));							
-					qualification.appendChild(qualLeader);
+					moduleCode = data.get("studyUnitCode").toString();
+					Element studyUnitCode = document.createElement("code");
+					studyUnitCode.appendChild(document
+							.createTextNode(moduleCode));							
+					module.appendChild(studyUnitCode);	
 					
-					programmeAdmin = data.get("programmeAdmin").toString();
-					Element qualAdmin = document.createElement("programme_administrator");
-					qualAdmin.appendChild(document
-							.createTextNode(programmeAdmin));							
-					qualification.appendChild(qualAdmin);
+					moduleContent = data.get("studyUnitContent").toString();
+					Element studyUnitContent = document.createElement("content");
+					studyUnitContent.appendChild(document
+							.createTextNode(moduleContent));							
+					module.appendChild(studyUnitContent);	
+					/**************************END MODULE DETAILS******************************************/
 					
-					purposeStatement = data.get("purposeStatement").toString();
-					Element qualPurpose = document.createElement("purpose_statement");
-					qualPurpose.appendChild(document
-							.createTextNode(purposeStatement));							
-					qualification.appendChild(qualPurpose);
+					if(! qualName.equals(data.get("qualDescription").toString())){
+						leaderDetails = data.get("leaderDetails").toString();
+						Element qualLeader = document.createElement("course_leader_details");
+						qualLeader.appendChild(document
+								.createTextNode(leaderDetails));							
+						qualification.appendChild(qualLeader);
+						
+						programmeAdmin = data.get("programmeAdmin").toString();
+						Element qualAdmin = document.createElement("programme_administrator");
+						qualAdmin.appendChild(document
+								.createTextNode(programmeAdmin));							
+						qualification.appendChild(qualAdmin);
+						
+						purposeStatement = data.get("purposeStatement").toString();
+						Element qualPurpose = document.createElement("purpose_statement");
+						qualPurpose.appendChild(document
+								.createTextNode(purposeStatement));							
+						qualification.appendChild(qualPurpose);						
+					}
+
 					
 
 				}
