@@ -60,7 +60,7 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 				String dptName = "";
 				String deptCode;
 				String qualCatName = "";
-				String qualName;
+				String qualName = "";
 				String qualCode;
 				String qualYear;
 				String targetGroup;
