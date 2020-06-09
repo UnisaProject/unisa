@@ -13,7 +13,7 @@
 <sakai:html>
 <head>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js" />"></script>
-
+	
 	<script type="text/javascript">
 
 		var totalCredits=0;
@@ -122,7 +122,6 @@ String hidStuNo = stuRegForm.getStudentNr();
 ArrayList<StudyUnit> suList = (ArrayList<StudyUnit>)stuRegForm.getListStudyUnits();
 ArrayList<String> suSelectedList = (ArrayList<String>)stuRegForm.getSelectedAdditionalStudyUnits();
 %>
-
 <html:form action="/additions">
 	<html:hidden property="page" value="3" />
 	<html:hidden property="goto" value="4" />
