@@ -26,7 +26,7 @@ public class SLPQuery {
 		stringBuilder.append(" NVL(quaslp.ADMISSION_REQUIREMENTS,' ') adminReq, NVL(quaslp.DURATION,' ') duration,");
 		stringBuilder.append(" NVL(quaslp.LANGUAGE_MEDIUM,' ') languageMedium, NVL(quaslp.REGISTRATION_PERIODS,' ') registrationPeriods,");
 		stringBuilder.append(" NVL(quaslp.TUITION_METHOD,' ') tuitionMethod, NVL(quaslp.KIND_OF_ASSESSMENT,' ') kindOfAssessment,");  
-		stringBuilder.append(" sununs.MK_STUDY_UNIT_CODE studyUnitCode, sun.ENG_LONG_DESCRIPTI studyUnitDesc");
+		stringBuilder.append(" sununs.MK_STUDY_UNIT_CODE studyUnitCode, sun.ENG_LONG_DESCRIPTI studyUnitDesc,");
 		stringBuilder.append(" NVL(sununs.purpose,' ') studyUnitContent,");
 		stringBuilder.append(" NVL(quaslp.COURSE_LEADER_DETAILS,' ') leaderDetails,");
 		stringBuilder.append(" NVL(quaslp.PROGRAMME_ADMINISTRATOR_DETAIL,' ') programmeAdmin,");			
