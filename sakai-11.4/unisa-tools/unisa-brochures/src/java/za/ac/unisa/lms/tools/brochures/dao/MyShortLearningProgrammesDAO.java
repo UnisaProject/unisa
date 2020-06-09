@@ -207,7 +207,25 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 						Element qualAssessment = document.createElement("kind_of_assessment");
 						qualAssessment.appendChild(document
 								.createTextNode(kindOfAssessment));							
-						qualification.appendChild(qualAssessment);						
+						qualification.appendChild(qualAssessment);		
+
+						leaderDetails = data.get("leaderDetails").toString();
+						Element qualLeader = document.createElement("course_leader_details");
+						qualLeader.appendChild(document
+								.createTextNode(leaderDetails));							
+						qualification.appendChild(qualLeader);
+						
+						programmeAdmin = data.get("programmeAdmin").toString();
+						Element qualAdmin = document.createElement("programme_administrator");
+						qualAdmin.appendChild(document
+								.createTextNode(programmeAdmin));							
+						qualification.appendChild(qualAdmin);
+						
+						purposeStatement = data.get("purposeStatement").toString();
+						Element qualPurpose = document.createElement("purpose_statement");
+						qualPurpose.appendChild(document
+								.createTextNode(purposeStatement));							
+						qualification.appendChild(qualPurpose);							
 					}
 										
 					/**************************MODULE DETAILS**********************************************/
@@ -232,28 +250,7 @@ public class MyShortLearningProgrammesDAO extends StudentSystemDAO{
 							.createTextNode(moduleContent));							
 					module.appendChild(studyUnitContent);	
 					/**************************END MODULE DETAILS******************************************/
-					
-					if(! qualName.equals(data.get("qualDescription").toString())){
-						leaderDetails = data.get("leaderDetails").toString();
-						Element qualLeader = document.createElement("course_leader_details");
-						qualLeader.appendChild(document
-								.createTextNode(leaderDetails));							
-						qualification.appendChild(qualLeader);
-						
-						programmeAdmin = data.get("programmeAdmin").toString();
-						Element qualAdmin = document.createElement("programme_administrator");
-						qualAdmin.appendChild(document
-								.createTextNode(programmeAdmin));							
-						qualification.appendChild(qualAdmin);
-						
-						purposeStatement = data.get("purposeStatement").toString();
-						Element qualPurpose = document.createElement("purpose_statement");
-						qualPurpose.appendChild(document
-								.createTextNode(purposeStatement));							
-						qualification.appendChild(qualPurpose);						
-					}
-
-					
+										
 
 				}
 				return document;
