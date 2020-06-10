@@ -206,7 +206,8 @@ ArrayList<String> suSelectedList = (ArrayList<String>)stuRegForm.getSelectedAddi
 				<td colspan="5"><strong><fmt:message key="page.additions.closed6" /></strong></td>
 			</tr>
 		</logic:notEqual>-->
-	<logic:notEqual name="regDetailsForm" property="listType" value="T"> 		
+	<logic:notEqual name="regDetailsForm" property="listType" value="T"> 	
+ 		<logic:present name="regDetailsForm" property="listStudyUnits">
  			<tr><td colspan="5">
  				<%for (int index = 0; index < stuRegForm.getNumberOfUnits(); index++) {%>
 					<select id='selectedAdditionalStudyUnits<%=index%>' name='selectedAdditionalStudyUnits<%=index%>' onchange="getStudyUnitDetail(this,<%=index%>);" >
@@ -228,8 +229,18 @@ ArrayList<String> suSelectedList = (ArrayList<String>)stuRegForm.getSelectedAddi
 	 					<%} %>
 					</select>
 				<%}%>
-			</td></tr>		
-	</logic:notEqual>	
+			</td></tr>
+		</logic:present>
+	</logic:notEqual>
+	<logic:equal name="regDetailsForm" property="listType" value="T">
+	 	<logic:present name="regDetailsForm" property="selectedAdditionalStudyUnits">
+	 	<logic:iterate name="regDetailsForm" property="selectedAdditionalStudyUnits" id="studyUnit" indexId="index">
+			<tr><td colspan="5">
+				<html:text property='<%="selectedAdditionalStudyUnits[" + index + "]" %>' size="10" maxlength="7"/>
+			</td></tr>
+		</logic:iterate>
+		</logic:present>
+	 </logic:equal>
 	</sakai:group_table>
 
 

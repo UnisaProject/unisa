@@ -26,7 +26,9 @@
 	           $('input[id=regionalOffice]').val(JSON.parse(this.responseText).code);
 	       }
 	     };
-	     xhttp.open("GET", "https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/"+myip, true);
+	     
+	     xhttp.open("GET", "https://registrationqa.int.unisa.ac.za/unisa-ip-geolocation/"+myip, true);
+//       xhttp.open("GET", "https://unisa-dev.westeurope.cloudapp.azure.com/unisa-ip-geolocation/"+myip, true);
 	     xhttp.setRequestHeader("Content-Type","application/json");
 	     xhttp.send();
 	    }
