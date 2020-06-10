@@ -1250,11 +1250,6 @@ public class AdditionsAction extends LookupDispatchAction {
 			}
 			/* default complete qual to N */
 			regDetailsForm.setCompleteQual("N");
-			/* Johanet 20200608 Add code because jsp was falling over with null pointer exception*/
-			if (regDetailsForm.getSelectedAdditionalStudyUnits()==null) {
-				regDetailsForm.setSelectedAdditionalStudyUnits(new ArrayList());
-			}		
-			/*20200608 ended*/
 
 		} catch(Exception e){
 			throw e;
