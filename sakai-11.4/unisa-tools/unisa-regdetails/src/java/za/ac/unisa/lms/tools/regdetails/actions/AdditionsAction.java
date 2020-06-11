@@ -1241,10 +1241,10 @@ public class AdditionsAction extends LookupDispatchAction {
 					addErrors(request, messages);
 					return step2b(mapping,form,request, response);
 				}
-
+				
 				if (regDetailsForm.getNumberOfUnits()>0 ){
 					if (regDetailsForm.getSelectedAdditionalStudyUnits() ==null || regDetailsForm.getSelectedAdditionalStudyUnits().isEmpty()){
-						regDetailsForm.setListStudyUnits(list);
+						regDetailsForm.setListStudyUnits(list);				
 					}
 				}
 			}
@@ -1253,8 +1253,7 @@ public class AdditionsAction extends LookupDispatchAction {
 
 		} catch(Exception e){
 			throw e;
-		}
-		
+		}		
 		return "step3";
 	}
 
@@ -1388,8 +1387,8 @@ public class AdditionsAction extends LookupDispatchAction {
 					boolean isSelected = false;
 					ArrayList newList = new ArrayList();
 					//log.debug("Step4 - NumberOfUnits="+regDetailsForm.getNumberOfUnits());
-					for (int i = 0; i < regDetailsForm.getNumberOfUnits(); i++) {
-						String selUnits = request.getParameter("selectedAdditionalStudyUnits"+i);
+					for (int i = 0; i < regDetailsForm.getNumberOfUnits(); i++) {						
+						String selUnits = request.getParameter("selectedAdditionalStudyUnits"+i);						
 						//log.debug("Step4 - selectedAdditionalStudyUnits"+i+"="+selUnits);
 						if (selUnits != null && !"".equals(selUnits) && !"-1".equals(selUnits)){
 							isSelected = true;
@@ -2692,6 +2691,9 @@ private boolean askOdlQuestion(ArrayList<StudyUnit> suList ){
         op.setInStudentAnnualRecordRegistrationMethodCode("P");
         //Johanet set regionalOffice
         String strRegionalOffice = request.getParameter("regionalOffice");
+        if (strRegionalOffice==null || strRegionalOffice.trim().equalsIgnoreCase("")) {
+        	strRegionalOffice="0";
+        }
         Short shortReginalOffice = Short.parseShort(strRegionalOffice);
         
         op.setInStudentAnnualRecordMkRegionalOfficeCode(shortReginalOffice);
