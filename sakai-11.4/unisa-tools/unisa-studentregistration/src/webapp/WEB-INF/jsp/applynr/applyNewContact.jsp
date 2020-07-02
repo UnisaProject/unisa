@@ -114,11 +114,244 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			$("input[name='Cancel']").click(function(){
 	            //$.blockUI({ message: "<strong><img src='<c:url value='/resources/images/ajax-loader.gif' />' alt=' * ' /> <br>Logging Out...</strong>" });
 	        });
-		});
-		  
+			
+			//Hide doFinAid for SLP Students
+			var isStuSLP = $("#isStuSLP").val();
+			if (isStuSLP == "true"){
+				$("#doFinAid").hide();	
+				$("input:radio[name='studentApplication.finaidNsfas'][value='N']").prop('checked', true);
+				$("input:radio[name='studentApplication.completeQual'][value='N']").prop('checked', true);
+				$('#completeText').val(' ');
+			}
+			
+			//Hide completeText
+			$(".doCompleteText").css('visibility', 'hidden');
+			
+			//Manage Exam Centres according to Radio buttons
+			/** Check previous selected Prison value **/
+			var prisonRadio = $('#prevPrison').val(); 
+			if (prisonRadio !== null && prisonRadio !== "" && prisonRadio !== "undefined"){
+				//alert("Previous Prison Radio value="+prisonRadio);
+				var prisonPrev = $('#prevExam').val(); 
+				if (prisonPrev != null && prisonPrev != "" && prisonPrev !== "undefined"){
+					if (prisonRadio === "Y"){
+						//alert("Previous Prison Selected value="+prisonPrev);
+						populateExamCentres(prisonPrev, "P");
+					}else{
+						populateExamCentres(prisonPrev, "F");
+					}
+				}else{
+					//alert("Previous Prison Selected value Not Found!!");
+					//populateExamCentres("", "FP");
+					if (prisonRadio === "Y"){
+						//alert("Previous Prison Selected value="+prisonPrev);
+						populateExamCentres("", "P");
+					}else{
+						populateExamCentres("", "F");
+					}
+				}
+			}else{
+				//alert("Previous Prison Radio value Not Found!!");
+				//populateExamCentres("", "FP");
+				$("select[name='selectedExamCentre']").empty(); //Remove all previous options (Index cleanup for various browsers)
+				$("select[name='selectedExamCentre']").append('<option value="-1">Select Prisoner Yes/No above</option>'); //Temp option to show if database retrieval is slow
+
+			}
+			
+			$("input:radio[name='studentApplication.prisoner']").change(function() {
+				var isPrisoner = $(this).val();
+				var selectFP = "FP";
+				if (isPrisoner === 'Y') {
+					selectFP = "P";
+				}else if (isPrisoner === 'N') {
+					selectFP = "F";
+				}else{
+					selectFP = "FP"; //Catch All
+				}
+				var prisonPrev = $('#prevExam').val(); 
+				if (prisonPrev != null && prisonPrev != "" && prisonPrev !== "undefined"){
+					populateExamCentres(prisonPrev, selectFP);
+				}else{
+					populateExamCentres("", selectFP);
+				}
+			});
+			
+			//$("input:radio[name='studentApplication.prisoner'][value='N']").prop('checked', true);
+			
+			var maxLength = 100;
+			var qualRadio = $("input:radio[name='studentApplication.completeQual']:checked").val();
+			if (qualRadio !== null && qualRadio !== "" && qualRadio !== "undefined") {
+				if (qualRadio === 'Y') {
+					$(".doCompleteText").css('visibility', 'visible');
+					var textLine = $('#textLine').val();
+				    if (textLine && 0 !== textLine.length){
+				    	var textLength = maxLength - textLine.length;
+				    	$('#completeText').val(textLine);
+				    	$('#chars').text(textLength);
+				    }
+				}
+			}else{
+				$(".doCompleteText").css('visibility', 'hidden');
+			}
+			
+			$("input:radio[name='studentApplication.completeQual']").change(function() {
+				if (this.value === 'Y') {
+					$(".doCompleteText").css('visibility', 'visible');
+				}else {
+					$(".doCompleteText").css('visibility', 'hidden');
+			    }
+			});
+
+			
+			$('#completeText').keyup(function() {
+				var textLength = maxLength - $(this).val().length;
+				$('#chars').text(textLength);
+			});
+			
+			/**Change Exam Centre - Warn about Prison list without page refresh **/
+			$("select[name='selectedExamCentre']").change(function(){
+				//var isPrison = $("input:radio[name='studentApplication.prisoner']:checked").val();
+				//if (isPrison === 'Y') {
+				var valExam = $("select[name='selectedExamCentre']").find("option:selected").text();
+				if (valExam != "-1" &&  (valExam.toLowerCase().indexOf("correctional") >= 0)){
+					var chkP = confirm("You have selected a correctional facility as exam center. Click on 'OK' to confirm or on 'Cancel' to select a new exam centre.");
+					if (chkP === false) {
+						$("input:radio[name='studentApplication.prisoner'][value='N']").prop('checked', true);
+						populateExamCentres("", "F");
+					}
+			    }
+			});		
+		});  
 		
-		function validate(){
-			var email
+		
+		function populateExamCentres(examCentre, selectFP) {
+			/**Change Exam Centres - Use Ajax to Get Centre list without page refresh **/
+			$("select[name='selectedExamCentre']").empty(); //Remove all previous options (Index cleanup for various browsers)
+			$("select[name='selectedExamCentre']").append('<option value="-1">Loading....</option>'); //Temp option to show if database retrieval is slow
+			
+			var url = 'applyForStudentNumber.do?act=populateExamCentres&type='+selectFP;
+			var examErr = false;
+			$.getJSON(url, function(data) {
+				$("select[name='selectedExamCentre']").empty(); //Remove all previous options again (Remove temp option above)
+				var ddItems = [];
+				ddItems.push('<option value="-1">Select from Menu</option>');
+				cache : false,
+				$.each(data, function(key, data2) {
+					//alert("Exam Key="+key);
+					if (key === "Error"){
+						showError("Error", data2);
+						examErr = true;
+						return false;
+					}
+					if (key === "Exam"){
+						$.each(data2, function(key2, val2) {
+							var splitString = val2.split('~');
+							//alert("Option="+key2+", Value="+splitString[0]+", Description="+splitString[1]);
+							if(splitString[0].toUpperCase() === examCentre.toUpperCase()) {
+								ddItems.push("<option value='"+splitString[0].toUpperCase()+"' selected=selected>"+splitString[1].toUpperCase()+"</option>");
+						    }else{
+						    	ddItems.push("<option value='"+splitString[0].toUpperCase()+"'>"+splitString[1].toUpperCase()+"</option>");
+						    }
+						});
+					}
+				});
+				if (!examErr){
+					$("select[name='selectedExamCentre']").html(ddItems);
+				}
+			});
+		}
+		
+		function validateSelect(){
+			var email;
+			var cellNr = $("input[name='student.cellNr']").val().trim();
+			var cellNr2 = $("input[name='student.cellNr2']").val().trim();
+			var emailAddress= $("input[name='student.emailAddress']").val().trim();
+			var emailAddress2= $("input[name='student.emailAddress2']").val().trim();
+			var homePhone = $("input[name='student.homePhone']").val().trim();
+			var radioCounsel = $("input:radio[name='studentApplication.careerCounsel']:checked").val();
+			var radioStaff = $("input:radio[name='studentApplication.staffCurrent']:checked").val();
+			var radioDeceased = $("input:radio[name='studentApplication.staffDeceased']:checked").val();
+			var radioPrisoner = $("input:radio[name='studentApplication.prisoner']:checked").val();
+			var radioNSFAS = $("input:radio[name='studentApplication.finaidNsfas']:checked").val();
+			var radioComplete = $("input:radio[name='studentApplication.completeQual']:checked").val();
+			var radioExemption = $("input:radio[name='studentApplication.applyExemptions']:checked").val();
+				
+			if (cellNr == null || cellNr == "" || cellNr == "undefined"){
+				showError("Note", "Please enter your cellular phone number.");
+				return false;
+			}
+			if (cellNr2 == null || cellNr2 == "" || cellNr2 == "undefined"){
+				showError("Note", "Please confirm your cellular phone number.");
+				return false;
+			}
+			if (cellNr != cellNr2){
+				showError("Note", "Entered cellular phone numbers do not match.");
+				return false;
+			}
+			if (emailAddress == null || emailAddress == "" || emailAddress == "undefined"){
+				showError("Note", "Please enter your e-mail address.");
+				return false;
+			}
+			if (emailAddress2 == null || emailAddress2 == "" || emailAddress2 == "undefined"){
+				showError("Note", "Please confirm your e-mail address.");
+				return false;
+			}
+			if (emailAddress != emailAddress2){
+				showError("Note", "Entered e-mail addresses do not match.");
+				return false;
+			}
+			if (homePhone == null || homePhone == "" || homePhone == "undefined"){
+				showError("Note", "Please enter your home phone number.");
+				return false;
+			}
+			if (radioCounsel == null || radioCounsel == "" || radioCounsel == "undefined"){
+				showError("Note", "Please confirm if you require further Career counceling.");
+				return false;
+			}
+			if (radioStaff == null || radioStaff == "" || radioStaff == "undefined"){
+				showError("Note", "Please confirm if you are a current or retired Unisa staff member.");
+				return false;
+			}
+			if (radioDeceased == null || radioDeceased == "" || radioDeceased == "undefined"){
+				showError("Note", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member.");
+				return false;
+			}
+			if (radioPrisoner == null || radioPrisoner == "" || radioPrisoner == "undefined"){
+				showError("Note", "Please confirm if you are a prisoner.");
+				return false;
+			}
+			var valExam = $("select[name='selectedExamCentre']").find("option:selected").val();
+			if (valExam == null || valExam == "" || valExam == "undefined" || valExam == "-1"){
+				showError("Note", "Please select an Examination Centre."); 
+				return false;
+			}
+			if (radioExemption == null || radioExemption == "" || radioExemption == "undefined"){
+				showError("Note", "Please confirm if you intend to apply for subject exemptions/credits from previous studies.");
+				return false;
+			}
+			if (radioNSFAS == null || radioNSFAS == "" || radioNSFAS == "undefined"){
+				showError("Note", "Please indicate whether you will require Financial aid from NSFAS.");
+				return false;
+			}
+			if (radioComplete == null || radioComplete == "" || radioComplete == "undefined"){
+				showError("Note", "Please confirm if you are in the process of completing a qualification.");
+				return false;
+			}else{
+				if (radioComplete == "Y"){ 
+					 var comment = $.trim($('#completeText').val());
+					 if(comment.length == 0){
+					    // textarea is empty or contains only white-space
+						showError("Note", "Please enter which qualification you will be completing.");
+						return false;
+					}
+				}
+			}		
+			//$.blockUI({ message: "<strong><img src='<c:url value='/resources/images/ajax-loader.gif' />' alt=' * ' /> <br>Processing. Please wait...</strong>" });
+		}
+
+		function cleanError(){
+			/**Clean error**/
+			$("#forExam").text('');
 		}
 		
 		//Click button
@@ -170,6 +403,14 @@ if(emailAddressGood){
 <!-- Form -->
 <html:form action="/applyForStudentNumber">
 	<html:hidden property="page" value="applyNewContact"/>
+	
+	<input type="hidden" name="textLine" id="textLine" value="<bean:write name='studentRegistrationForm' property='studentApplication.completeText'/>"/>
+	<input type="hidden" name="prevExam" id="prevExam" value="<bean:write name='studentRegistrationForm' property='selectedExamCentre'/>"/>
+	<input type="hidden" name="prevPrison" id="prevPrison" value="<bean:write name='studentRegistrationForm' property='studentApplication.prisoner'/>"/>	
+	<input type="hidden" id="isStuSLP" name="isStuSLP" value="<bean:write name='studentRegistrationForm' property='student.stuSLP' />" />	
+
+	<label id="forSchool" style="color:red"></label>
+	<label id="forExam" style="color:red"></label>
 
 	<sakai:messages/>
 	<sakai:messages message="true"/>
@@ -186,9 +427,27 @@ if(emailAddressGood){
 				<div class="panel-body">	
 					<sakai:group_table>
 						<tr>
-							<td colspan="3"><strong><fmt:message key="page.required.instruction"/></strong></td>
+							<td colspan="3"><strong><fmt:message key="page.required.fields"/><fmt:message key="prompt.required"/></strong></td>
 						</tr><tr>
-							<td><fmt:message key="page.home"/>&nbsp;</td>
+							<td><fmt:message key="page.cell"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td><html:text name="studentRegistrationForm" property="student.cellNr" maxlength="20" size="30"/></td>
+							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg2"/></i></span></td>
+						</tr><tr>
+							<td><fmt:message key="page.cell2"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td><html:text name="studentRegistrationForm" property="student.cellNr2" maxlength="20" size="30"/></td>
+							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg2"/></i></span></td>
+						</tr><tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg3"/></i></span></td>
+						</tr><tr>
+							<td><fmt:message key="page.emailaddress"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td colspan="2"><html:text name="studentRegistrationForm" property="student.emailAddress" maxlength="60" size="40" /></td>
+						</tr><tr>
+							<td><fmt:message key="page.emailaddress2"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td colspan="2"><html:text name="studentRegistrationForm" property="student.emailAddress2" maxlength="60" size="40"/></td>
+						</tr><tr>
+							<td><fmt:message key="page.home"/><fmt:message key="prompt.required"/>&nbsp;</td>
 							<td><html:text name="studentRegistrationForm" property="student.homePhone" maxlength="28" size="30"/></td>
 							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg1"/></i></span></td>
 						</tr><tr>
@@ -199,30 +458,90 @@ if(emailAddressGood){
 							<td><fmt:message key="page.fax"/></td>
 							<td><html:text name="studentRegistrationForm" property="student.faxNr" maxlength="28" size="30"/></td>
 							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg1"/></i></span></td>
-						</tr><tr>
-							<td><fmt:message key="page.cell"/>&nbsp;</td>
-							<td><html:text name="studentRegistrationForm" property="student.cellNr" maxlength="20" size="30"/></td>
-							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg2"/></i></span></td>
-						</tr><tr>
-							<td><fmt:message key="page.cell2"/>&nbsp;</td>
-							<td><html:text name="studentRegistrationForm" property="student.cellNr2" maxlength="20" size="30"/></td>
-							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg2"/></i></span></td>
-						</tr><tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td align="left"><span class="small"><i><fmt:message key="page.studentnr.apply.eg3"/></i></span></td>
-						</tr><tr>
-							<td><fmt:message key="page.emailaddress"/>&nbsp;</td>
-							<td colspan="2"><html:text name="studentRegistrationForm" property="student.emailAddress" maxlength="60" size="40" /></td>
-						</tr><tr>
-							<td><fmt:message key="page.emailaddress2"/>&nbsp;</td>
-							<td colspan="2"><html:text name="studentRegistrationForm" property="student.emailAddress2" maxlength="60" size="40"/></td>
 						</tr>
 					</sakai:group_table>
+					<sakai:group_table>
+						<tr>
+							<td colspan="3"><font size="1">&nbsp;</font></td>
+						</tr>
+						<tr>
+							<td colspan="2"><fmt:message key="page.apply.careercounsel"/><fmt:message key="prompt.required"/></td>
+							<td>
+								<html:radio property="studentApplication.careerCounsel" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="studentApplication.careerCounsel" value="N"/>&nbsp;<fmt:message key="page.no"/>
+							</td>
+						</tr><tr>
+							<td colspan="2"><fmt:message key="page.apply.currentStaff"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td>
+								<html:radio property="studentApplication.staffCurrent" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="studentApplication.staffCurrent" value="N"/>&nbsp;<fmt:message key="page.no"/>
+							</td>
+						</tr><tr>
+							<td colspan="2"><fmt:message key="page.apply.deceasedStaff"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td>
+								<html:radio property="studentApplication.staffDeceased" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="studentApplication.staffDeceased" value="N"/>&nbsp;<fmt:message key="page.no"/>
+							</td>
+						</tr><tr>
+							<td colspan="2"><fmt:message key="page.apply.prisoner"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td>
+								<html:radio property="studentApplication.prisoner" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="studentApplication.prisoner" value="N"/>&nbsp;<fmt:message key="page.no"/>
+							</td>
+						</tr><tr>
+							<td colspan="3"><fmt:message key="page.examination.centre"/><fmt:message key="prompt.required"/>&nbsp;</td>
+						</tr><tr>
+							<td colspan="3">
+								<html:select name="studentRegistrationForm" property="selectedExamCentre" 
+									errorStyleClass="error" errorKey="org.apache.struts.action.ERROR" >
+								</html:select>
+							</td>
+						</tr><!-- <tr>
+							<td colspan="3"><font size="1">&nbsp;</font></td>
+						</tr> --><tr>
+							<td colspan="2"><fmt:message key="page.apply.exemptions"/><fmt:message key="prompt.required"/>&nbsp;</td>
+							<td>
+								<html:radio property="studentApplication.applyExemptions" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="studentApplication.applyExemptions" value="N"/>&nbsp;<fmt:message key="page.no"/>
+							</td>
+						</tr>
+					</sakai:group_table>					
+					<div id="doFinAid">
+						<sakai:group_table>
+							<tr>
+								<td colspan="2"><strong><fmt:message key="page.apply.finaid"/>&nbsp;</strong></td>
+							</tr><tr>
+								<td><fmt:message key="page.apply.nsfas"/><fmt:message key="prompt.required"/></td>
+								<td>
+									<html:radio property="studentApplication.finaidNsfas" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<html:radio property="studentApplication.finaidNsfas" value="N"/>&nbsp;<fmt:message key="page.no"/>
+								</td>
+							</tr><tr>
+								<td><fmt:message key="page.apply.complete"/><fmt:message key="prompt.required"/></td>
+								<td>
+									<html:radio property="studentApplication.completeQual" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<html:radio property="studentApplication.completeQual" value="N"/>&nbsp;<fmt:message key="page.no"/>
+								</td>
+							</tr><tr>
+								<td>
+									<div class="doCompleteText">
+										<fmt:message key="page.apply.completeInfo"/><fmt:message key="prompt.required"/>
+									</div>
+								</td>
+								<td>
+									<div class="doCompleteText">
+										<textarea id="completeText" name="completeText" rows="2" cols="50" maxlength="100"></textarea>
+										<br>
+										<font size="1"><span id="chars"></span> Characters remaining</font>
+									</div>
+								</td>
+							</tr>
+						</sakai:group_table>
+					</div>
 				</div>
 				<div class="panel-footer clearfix">
 					<sakai:actions>
-						<html:submit property="act" onclick="validate();"><fmt:message key="button.continue"/></html:submit>
+						<html:submit property="act" onclick="return validateSelect();"><fmt:message key="button.continue"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.back"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.cancel"/></html:submit>
 					</sakai:actions>

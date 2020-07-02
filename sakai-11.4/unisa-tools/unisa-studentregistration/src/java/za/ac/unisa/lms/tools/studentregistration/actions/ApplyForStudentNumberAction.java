@@ -60,6 +60,7 @@ import za.ac.unisa.lms.tools.studentregistration.bo.Qualifications;
 import za.ac.unisa.lms.tools.studentregistration.bo.SavedDoc;
 import za.ac.unisa.lms.tools.studentregistration.bo.Specializations;
 import za.ac.unisa.lms.tools.studentregistration.bo.Status;
+import za.ac.unisa.lms.tools.studentregistration.bo.College;
 import za.ac.unisa.lms.tools.studentregistration.utils.PdfDownloader;
 
 //import za.ac.unisa.utils.WorkflowFile;
@@ -72,6 +73,8 @@ import Menu95h.Abean.Menu95S;
 import za.ac.unisa.utils.CellPhoneVerification;
 
 public class ApplyForStudentNumberAction extends LookupDispatchAction {
+	
+	
 	
     /** Our log (commons). */
 	public static Log log = LogFactory.getLog(ApplyForStudentNumberAction.class);
@@ -585,6 +588,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - applySLPSelect - AcademicYear="+stuRegForm.getStudent().getAcademicYear()+", selectSLP="+stuRegForm.getSelectSLP()+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
 		if("YES".equalsIgnoreCase(stuRegForm.getSelectSLP())){
 			//log.debug("ApplyForStudentNumberAction - applySLPSelect - selectSLP="+stuRegForm.getSelectSLP().trim()+" - Goto applyQualification");
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else{
 			//log.debug("ApplyForStudentNumberAction - applySLPSelect - SLP Student Doesn't want to select a second Choice - Go to Upload");
@@ -603,13 +609,16 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 	}
 	
 	public ActionForward stepAPSSelect(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
 
 			//log.debug("ApplyForStudentNumberAction - stepAPSSelect - Start");
 			
 			StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
 			ActionMessages messages = new ActionMessages();
+			
+			stuRegForm.setCollegeList(getColleges());
+					
 			
         	//stripXSS(String value, String valueDesc, String action, String studentNr, String year, String period, boolean logYN)
 			stuRegForm.setSelectHEMain(stripXSS(request.getParameter("selectHEMain"), "selectHEMain", "APSSelect", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
@@ -627,6 +636,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				return mapping.findForward("applyIDNumber");
 			}else{
 				//log.debug("ApplyForStudentNumberAction - stepAPSSelect - SelectHEMain="+stuRegForm.getSelectHEMain().trim()+" - Goto applyQualification");
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}			
 				return mapping.findForward("applyQualification");
 			}	
 	}
@@ -1568,6 +1580,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			/* Edmund Update 2018 - Now flowing to APS*/
 			if ("HON".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || "MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || "SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || stuRegForm.getAdminStaff().isAdmin()){
 				//log.debug("ApplyForStudentNumberAction - applyLoginNew (2a) - New Student - No Student Number - HONS or M&D - Goto ApplyQualification");
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}else{
 				//log.debug("ApplyForStudentNumberAction - applyLoginNew (2b) - New Student - No Student Number - Undergrad - Goto APS 1 Forward");
@@ -2343,10 +2358,16 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 								/** Flow Check: (16e) **/
 								if (stuRegForm.getAdminStaff().isAdmin()){
 									//log.debug("ApplyForStudentNumberAction - applyLoginReturn (16e) - Returning Student Admin - Goto ApplyQualification");
+									if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+										stuRegForm.setCollegeList(getColleges());
+									}
 									return mapping.findForward("applyQualification");
 								}else{
 									if (stuRegForm.getStudent().isDateWAPRU()){
 										//log.debug("ApplyForStudentNumberAction - applyLoginReturn (16f) - Returning Student - Goto ApplyQualification");
+										if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+											stuRegForm.setCollegeList(getColleges());
+										}
 										return mapping.findForward("applyQualification");
 									}else{
 										stuRegForm.setAllowLogin(false);
@@ -2396,6 +2417,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						stuRegForm.setWebLoginMsg2("");
 						if (stuRegForm.getAdminStaff().isAdmin()){
 							//log.debug("ApplyForStudentNumberAction - applyLoginReturn (18) - Returning Student Admin - HONS - Goto ApplyQualification");
+							if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+								stuRegForm.setCollegeList(getColleges());
+							}
 							return mapping.findForward("applyQualification");
 						}else{
 							if ("UD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -2413,6 +2437,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 							//Johanet 20180827 - add SLP returning student	
 							}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 								if (stuRegForm.getStudent().isDateWAPS ()){
+									if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+										stuRegForm.setCollegeList(getColleges());
+									}
 									return mapping.findForward("applyQualification");
 								}else{
 									stuRegForm.setAllowLogin(false);
@@ -2425,6 +2452,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 							}else{
 								if (stuRegForm.getStudent().isDateWAPRH()){
 									//log.debug("ApplyForStudentNumberAction - applyLoginReturn (18b) - Returning Student - HONS - Goto ApplyQualification");
+									if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+										stuRegForm.setCollegeList(getColleges());
+									}
 									return mapping.findForward("applyQualification");
 								}else{
 									stuRegForm.setAllowLogin(false);
@@ -2580,9 +2610,15 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg2("");
 					if (stuRegForm.getAdminStaff().isAdmin()){
 						//log.debug("ApplyForStudentNumberAction - applyLoginReturn (28) - Returning Student ADMIN - Goto ApplyQualification");
+						if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+							stuRegForm.setCollegeList(getColleges());
+						}
 						return mapping.findForward("applyQualification");
 					}else if (stuRegForm.getStudent().isStuSLP()){
 						//log.debug("ApplyForStudentNumberAction - applyLoginReturn (28) - Returning Student - Goto ApplyQualification");
+						if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+							stuRegForm.setCollegeList(getColleges());
+						}
 						return mapping.findForward("applyQualification");
 					}else{
 						if ("UD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
@@ -2600,6 +2636,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						}else{
 							if (stuRegForm.getStudent().isDateWAPRH()){
 								//log.debug("ApplyForStudentNumberAction - applyLoginReturn (28b) - Returning Student - HONS or M&D - Goto ApplyQualification");
+								if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+									stuRegForm.setCollegeList(getColleges());
+								}
 								return mapping.findForward("applyQualification");
 							}else{
 								stuRegForm.setAllowLogin(false);
@@ -3070,12 +3109,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		try {
 			String selCategoryCode = stripXSS(request.getParameter("selCategoryCode"), "selCategoryCode", "popQual", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true);
+			String selCollegeCode = stripXSS(request.getParameter("selCollegeCode"), "selCollegeCode", "popQual", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true);
 			
 			ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 			//log.debug("ApplyForStudentNumberAction - populateQualifications - selCategoryCode: " + selCategoryCode + " - acaYear: " + stuRegForm.getStudent().getAcademicYear() + " - catSelect: " + selCategoryCode+", isAdmin="+stuRegForm.getAdminStaff().isAdmin());
 
 			//log.debug("ApplyForStudentNumberAction - populateQualifications - selCategoryCode: " + selCategoryCode + " - acaYear: " + stuRegForm.getStudent().getAcademicYear() + " - catSelect: " + selCategoryCode+", isAdmin="+stuRegForm.getAdminStaff().isAdmin()+", isQualIDMatch="+stuRegForm.isQualIDMatch());
 
+			StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+			Gencod gencod = new Gencod();
+			gencod = systemDao.getGenCode("363", "OVERSUB");		
+			String overSubscribed = gencod.getEngDescription();
 			boolean isQualListOK = false;
 			if ("NSC".equalsIgnoreCase(stuRegForm.getSelectHEMain()) && ("02".equals(selCategoryCode) || "03".equals(selCategoryCode) || "04".equals(selCategoryCode) || "05".equals(selCategoryCode) || "06".equals(selCategoryCode) || "07".equals(selCategoryCode))){
 
@@ -3098,6 +3142,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					
 					//op.setInGcQualLevelCsfStringsString2(selCategoryCode);
 					op.setInGencodQualLevelCsfStringsString2(selCategoryCode);
+					//Johanet 2021 BRS changes - send in collegeCode
+					op.setInWsStudentMkLastAcademicYear(Short.parseShort(selCollegeCode));
 						
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Staae05sAppAdmissionEvaluator) - Student ID Number=" + stuRegForm.getStudent().getIdNumber()+", Year="+stuRegForm.getStudent().getAcademicYear()+", Category="+selCategoryCode);
 	
@@ -3130,7 +3176,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						//Debug
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - =================================================================================");
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - Before F915 First List Check");
-						for (int x = 0; x < op.getOutGroupCount(); x++){
+						//for (int x = 0; x < op.getOutGroupCount(); x++){
 							
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - ==================================================================================");
 					
@@ -3146,18 +3192,19 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 							
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - Count="+x+" - After F915 List Check");
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - ==================================================================================");
-						}
+						//}
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - After F915 First List Check");
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - =================================================================================");
 
 						String qualCodeFound = "";
+						String QualNotOK = " - (You may not qualify)";
+						String QualOversubscribed = " - (" + overSubscribed + ")";
 						for (int i = 0; i < op.getOutGroupCount(); i++){ 
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - ==================================================================================");
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - If For Loop getOutGroupCount="+i);
 							
 							String QualCode = "";
-							String QualDesc = "";
-							String QualNotOK = " - (You may not qualify)";
+							String QualDesc = "";							
 							
 							//If in the correct Category
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - Checking Category="+selCategoryCode+" == "+op.getOutGCsfStringsString3(i).toString());
@@ -3171,19 +3218,32 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 									if (codList.get(j).toString().trim().equals(op.getOutGCsfStringsString2(i).toString().trim()) && !qualCodeFound.trim().equalsIgnoreCase(op.getOutGWsQualificationCode(i).toString().trim())){
 										//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - ===================================================================================");
 										//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - In CatCode Check");
-										
-										//Get Qualification and Description
-										qualCodeFound = op.getOutGWsQualificationCode(i).toString().trim();
-										isQualListOK = true;
-										QualCode = op.getOutGWsQualificationCode(i).toString().trim();
-										QualDesc = dao.getQualDesc(QualCode).trim();
-										if (!"OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())){
-											QualDesc += QualNotOK;
+
+										if (selCollegeCode.toString().trim().equalsIgnoreCase(Short.toString(op.getOutGWsQualificationCollegeCode(i)))){
+											//Get Qualification and Description
+											qualCodeFound = op.getOutGWsQualificationCode(i).toString().trim();
+											isQualListOK = true;
+											QualCode = op.getOutGWsQualificationCode(i).toString().trim();
+											QualDesc = dao.getQualDesc(QualCode).trim();
+//											if (!"OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())){
+//												QualDesc += QualNotOK;
+//											}
+											//Johanet 2021 BRS - add oversubscribed indicator
+											if ("OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+												//Do nothing
+											}else {
+												if ("OS".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+													QualDesc += QualOversubscribed;
+												}else {
+													QualDesc += QualNotOK;
+												}
+											}
+											codes.add(QualCode);
+											descs.add(QualDesc);
+											//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - ===================================================================================");
+											//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - Previous No - Qualification Found="+QualCode+", QualDesc="+QualDesc);
 										}
-										codes.add(QualCode);
-										descs.add(QualDesc);
-										//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - ===================================================================================");
-										//log.debug("ApplyForStudentNumberAction - populateQualifications - (ID) - Previous No - Qualification Found="+QualCode+", QualDesc="+QualDesc);
+										
 									}
 								}
 							}
@@ -3212,6 +3272,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					
 					//op.setInGcQualLevelCsfStringsString2(selCategoryCode); 
 					op.setInGencodQualLevelCsfStringsString2(selCategoryCode);
+					//Johanet 2021 BRS changes - send in collegeCode
+					op.setInWsStudentMkLastAcademicYear(Short.parseShort(selCollegeCode));
 						
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Staae05sAppAdmissionEvaluator) - Student ID Number=" + stuRegForm.getStudent().getIdNumber());
 	
@@ -3299,6 +3361,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - After APS Execute");
 					
 					String opResult = op.getOutCsfStringsString500();
+					
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - opResult: " + opResult);
 					
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - Staae05sAppAdmissionEvaluator (Matric)- getOutCsfStringsString500="+op.getOutCsfStringsString500());
@@ -3311,7 +3374,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					//Debug
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - =================================================================================");
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - Before F915 First List Check");
-					for (int x = 0; x < op.getOutGroupCount(); x++){
+					//for (int x = 0; x < op.getOutGroupCount(); x++){
 						
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - ==================================================================================");
 				
@@ -3327,11 +3390,13 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - Count="+x+" - After F915 List Check");
 						//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - ==================================================================================");
-					}
+					//}
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - After F915 First List Check");
 					//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - =================================================================================");
 
 					//Are there Proxy Rows returned?
+					String QualNotOK = " - (You may not qualify)";
+					String QualOversubscribed = " - (" + overSubscribed + ")";
 					if (op.getOutGroupCount() > 0){
 						//Set Qualifications from Proxy
 						//Get GENCOD Categories to filter list
@@ -3341,8 +3406,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 						for (int i = 0; i < op.getOutGroupCount(); i++){
 
 							String QualCode = "";
-							String QualDesc = "";
-							String QualNotOK = " - (You may not qualify)";
+							String QualDesc = "";							
 							
 							//If in the correct Category
 							//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) -selCategoryCode=["+selCategoryCode+"], & getOutGCsfStringsString3=["+op.getOutGCsfStringsString3(i).toString().trim()+"]" );
@@ -3355,19 +3419,32 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 										
 										//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - ===================================================================================");
 										//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - In CatCode Check");
-
-										//Get Qualification and Description
-										qualCodeFound = op.getOutGWsQualificationCode(i).toString().trim();
-										isQualListOK = true;
-										QualCode = op.getOutGWsQualificationCode(i).toString().trim();
-										QualDesc = dao.getQualDesc(QualCode).trim();
-										if (!"OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())){
-											QualDesc += QualNotOK;
+										
+										if (selCollegeCode.toString().trim().equalsIgnoreCase(Short.toString(op.getOutGWsQualificationCollegeCode(i)))){
+											//Get Qualification and Description
+											qualCodeFound = op.getOutGWsQualificationCode(i).toString().trim();
+											isQualListOK = true;
+											QualCode = op.getOutGWsQualificationCode(i).toString().trim();
+											QualDesc = dao.getQualDesc(QualCode).trim();
+											//Johanet 2021 BRS - add oversubscribed indicator
+											if ("OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+												//Do nothing
+											}else {
+												if ("OS".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+													QualDesc += QualOversubscribed;
+												}else {
+													QualDesc += QualNotOK;
+												}
+											}
+//											if (!"OK".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())){
+//												QualDesc += QualNotOK;
+//											}
+											codes.add(QualCode);
+											descs.add(QualDesc);
+											//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - ===================================================================================");
+											//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - Qualification Found="+QualCode+", QualDesc="+QualDesc);
 										}
-										codes.add(QualCode);
-										descs.add(QualDesc);
-										//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - ===================================================================================");
-										//log.debug("ApplyForStudentNumberAction - populateQualifications - (Matric) - Qualification Found="+QualCode+", QualDesc="+QualDesc);
+										
 
 									}
 								}
@@ -3386,8 +3463,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			}
 			if (!isQualListOK || codes.size() == 0 ||  codes.isEmpty()){ //Catch-all: If no qualifications from proxy, then give list anyway as not to turn students away - Claudette
 
-				qualifications = dao.getQualifications(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getStuExist(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), selCategoryCode, stuRegForm.getLoginSelectMain(), stuRegForm.getAdminStaff().isAdmin(), stuRegForm.getStudent().isDateWAPU(),stuRegForm.getStudent().isDateWAPRU(),stuRegForm.getStudent().isDateWAPADMU(),stuRegForm.getStudent().isDateWAPH(),stuRegForm.getStudent().isDateWAPRH(),stuRegForm.getStudent().isDateWAPADMH(),stuRegForm.getStudent().isDateWAPD(),stuRegForm.getStudent().isDateWAPADMD(),stuRegForm.getStudent().isDateWAPM(),stuRegForm.getStudent().isDateWAPADMM(),stuRegForm.getStudent().isDateWAPS(),stuRegForm.getStudent().isDateWAPADMS());
-		
+				qualifications = dao.getQualifications(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getStuExist(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), selCategoryCode, selCollegeCode, stuRegForm.getLoginSelectMain(), stuRegForm.getAdminStaff().isAdmin(), stuRegForm.getStudent().isDateWAPU(),stuRegForm.getStudent().isDateWAPRU(),stuRegForm.getStudent().isDateWAPADMU(),stuRegForm.getStudent().isDateWAPH(),stuRegForm.getStudent().isDateWAPRH(),stuRegForm.getStudent().isDateWAPADMH(),stuRegForm.getStudent().isDateWAPD(),stuRegForm.getStudent().isDateWAPADMD(),stuRegForm.getStudent().isDateWAPM(),stuRegForm.getStudent().isDateWAPADMM(),stuRegForm.getStudent().isDateWAPS(),stuRegForm.getStudent().isDateWAPADMS());
+
 				codes = qualifications.getQualCodes();
 				descs = qualifications.getQualDescs();
 	
@@ -3470,6 +3547,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		List<String> codes = new ArrayList<String>();
 		List<String> descs = new ArrayList<String>();
 		
+		StudentSystemGeneralDAO systemDao = new StudentSystemGeneralDAO();		
+		Gencod gencod = new Gencod();
+		gencod = systemDao.getGenCode("363", "OVERSUB");		
+		String overSubscribed = gencod.getEngDescription();
+		String QualOversubscribed = " - (" + overSubscribed + ")";
+		
 		try {
 			String selCategoryCode = stripXSS(request.getParameter("selCategoryCode"), "selCategoryCode", "popSpec", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true);
 			String selQualCode = stripXSS(request.getParameter("selQualCode"), "selQualCode", "popSpec", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true);
@@ -3499,7 +3582,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					op.setInWsAcademicYearYear((short) Integer.parseInt(stuRegForm.getStudent().getAcademicYear()));
 					
 					op.setInGencodQualLevelCsfStringsString2(selCategoryCode);
-					//op.setInGcQualLevelCsfStringsString2(selCategoryCode); 
+					//op.setInGcQualLevelCsfStringsString2(selCategoryCode); 					
 
 					//log.debug("ApplyForStudentNumberAction - populateSpecializations - (Staae05sAppAdmissionEvaluator) - Student ID Number=" + stuRegForm.getStudent().getIdNumber());
 	
@@ -3541,6 +3624,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 										}else{
 											SpecCode = op.getOutGWsQualificationCode(i).toString();
 											SpecDesc = dao.getSpecDesc(selQualCode, SpecCode);
+										}
+										if ("OS".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+											SpecDesc += QualOversubscribed;
 										}
 										codes.add(SpecCode);
 										descs.add(SpecDesc);
@@ -3669,6 +3755,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 										}else{
 											SpecCode = op.getOutGWsQualificationCode(i).toString();
 											SpecDesc = dao.getSpecDesc(selQualCode, SpecCode);
+										}
+										if ("OS".equalsIgnoreCase(op.getOutGCsfStringsString4(i).toString().trim())) {
+											SpecDesc += QualOversubscribed;
 										}
 										codes.add(SpecCode);
 										descs.add(SpecDesc);
@@ -3865,6 +3954,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An Error occurred while processing Previous Qualifications. Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 				return mapping.findForward("applyQualification");
 		}
 		stuRegForm.getStudentApplication().setNdpRegList(dao.getNDPList(stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getStudent().getNumber()));
@@ -4112,11 +4204,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 		
+		if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+			stuRegForm.setCollegeList(getColleges());
+		}
+		
 		//Reset web messages
 		stuRegForm.setWebUploadMsg("");
 		stuRegForm.setWebLoginMsg("");
 		stuRegForm.setWebLoginMsg2("");
 		
+		String queryResultCOL1 		= "";
+		String queryResultCOL2 		= "";
 		String queryResultCAT1 		= "";
 		String queryResultCAT2 		= "";
 		String queryResultQUAL1 	= "";
@@ -4126,6 +4224,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		boolean isError = false;
 			
 		try{
+			stuRegForm.getStudent().setCollege1(stripXSS(stuRegForm.getSelCollegeCode1(), "SelCollegeCode1", "setQualRet", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+			stuRegForm.getStudent().setCollege2(stripXSS(stuRegForm.getSelCollegeCode2(), "SelCollegeCode2", "setQualRet", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setCategory1(stripXSS(stuRegForm.getSelCategoryCode1(), "SelCategoryCode1", "setQualRet", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setCategory2(stripXSS(stuRegForm.getSelCategoryCode2(), "SelCategoryCode2", "setQualRet", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setQual1(stripXSS(stuRegForm.getSelQualCode1(), "SelQualCode1", "setQualRet", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
@@ -4141,6 +4241,28 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			// Proposed Secondary Specialization
 			if (stuRegForm.getStudent().getSpec2() == null || "0".equals(stuRegForm.getStudent().getSpec2()) || "".equals(stuRegForm.getStudent().getSpec2()) || "NVT".equalsIgnoreCase(stuRegForm.getStudent().getSpec2())  || "undefined".equalsIgnoreCase(stuRegForm.getStudent().getSpec2())){
 				stuRegForm.getStudent().setSpec2("0");
+			}			
+		
+			//Get and save college description
+			stuRegForm.setSelCollegeCode1Desc("stuRegForm.getSelCollegeCode1()");
+			stuRegForm.setSelCollegeCode2Desc("stuRegForm.getSelCollegeCode2()");
+			if (null!=stuRegForm.getSelCollegeCode1() && !"".equalsIgnoreCase(stuRegForm.getSelCollegeCode1())) {			
+				if (null!=stuRegForm.getCollegeList() && stuRegForm.getCollegeList().size()!=0) {
+					for (int i = 0; i < stuRegForm.getCollegeList().size(); i++) { 
+						  College college = (College)stuRegForm.getCollegeList().get(i); 
+						  if (college.getCode().equalsIgnoreCase(stuRegForm.getSelCollegeCode1()))
+							 stuRegForm.setSelCollegeCode1Desc(college.getDescription());
+					  } 	
+				}				  		
+			}
+			if (null!=stuRegForm.getSelCollegeCode2() && !"".equalsIgnoreCase(stuRegForm.getSelCollegeCode2())) {			
+				if (null!=stuRegForm.getCollegeList() && stuRegForm.getCollegeList().size()!=0) {
+					for (int i = 0; i < stuRegForm.getCollegeList().size(); i++) { 
+						  College college = (College)stuRegForm.getCollegeList().get(i); 
+						  if (college.getCode().equalsIgnoreCase(stuRegForm.getSelCollegeCode2()))
+							 stuRegForm.setSelCollegeCode2Desc(college.getDescription());
+					  } 	
+				}				  		
 			}
 			
 			stuRegForm.setSelQualCode1Desc(dao.getQualDesc(stuRegForm.getStudent().getQual1()));
@@ -4160,7 +4282,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 & 2 - Qual1="+stuRegForm.getStudent().getQual1()+" = Qual2="+stuRegForm.getStudent().getQual2());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "You have selected the same primary and alternative/secondary and qualification. Please change one application or remove it by setting its Category to 'Select Category' "));
-				addErrors(request, messages);
+				addErrors(request, messages);				
 				return "applyQualification";
 			}
 
@@ -4174,7 +4296,15 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				}else{
 					return "loginStu";
 				}
-			}else{				
+			}else{	
+				queryResultCOL1 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "colCode1", "1", stuRegForm.getStudent().getCollege1(), "saveStudyRet");
+				if (queryResultCOL1.toUpperCase().contains("ERROR")){
+					isError = true;
+				}
+				queryResultCOL2 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "colCode2", "2", stuRegForm.getStudent().getCollege2(), "saveStudyRet");
+				if (queryResultCOL2.toUpperCase().contains("ERROR")){
+					isError = true;
+				}
 				queryResultCAT1 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "catCode1", "1", stuRegForm.getStudent().getCategory1(), "saveStudyRet");
 				if (queryResultCAT1.toUpperCase().contains("ERROR")){
 					isError = true;
@@ -4230,14 +4360,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 Qual="+qualCode+" = Prev Qual1="+stuRegForm.getStudent().getQual1());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "You have previously registered for your selected primary qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification and specialisation."));
-				addErrors(request, messages);
+				addErrors(request, messages);			
 				return "applyQualification";
 
 			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2()) && specCode.equalsIgnoreCase(stuRegForm.getStudent().getSpec2())){
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 2 Qual="+qualCode+" = Prev Qual2="+stuRegForm.getStudent().getQual2());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "You have previously registered for your selected alternative qualification ("+qualCode+" - "+qualDesc+") and specialisation ("+specCode+" - "+specDesc+"). You, therefore, do not have to re-apply for this qualification and specialisation."));
-				addErrors(request, messages);
+				addErrors(request, messages);			
 				return "applyQualification";
 			}
 			//END Johanet 2018July BRD 5.2
@@ -4266,13 +4396,13 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 Qual="+qualCode+" = Completed Qual1="+stuRegForm.getStudent().getQual1());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "You have already completed your selected primary qualification ("+qualCode+" - "+qualDesc+"). You, therefore, cannot re-apply for this qualification."));
-				addErrors(request, messages);
+				addErrors(request, messages);				
 				return "applyQualification";
 			}else if (qualCode.equalsIgnoreCase(stuRegForm.getStudent().getQual2())){
 				//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 2 Qual="+qualCode+" = Completed Qual2="+stuRegForm.getStudent().getQual2());
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "You have already completed your selected alternative qualification ("+qualCode+" - "+qualDesc+"). You, therefore, cannot re-apply for this qualification"));
-				addErrors(request, messages);
+				addErrors(request, messages);			
 				return "applyQualification";
 			}
 		}	
@@ -4282,7 +4412,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			//log.debug("ApplyForStudentNumberAction - saveStudyRet - Same Choice 1 & 2 - Qual1="+stuRegForm.getStudent().getQual1()+" = Qual2="+stuRegForm.getStudent().getQual2());
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "You have selected the same primary and alternative/secondary and qualification. Please change one application or remove it by setting its Category to 'Select Category' "));
-			addErrors(request, messages);
+			addErrors(request, messages);			
 			return "applyQualification";
 		}
 		
@@ -4310,12 +4440,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//log.debug("ApplyForStudentNumberAction - saveStudyNew - " + stuRegForm.getStudent().getNumber() +" - Start");
 
+		if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+			stuRegForm.setCollegeList(getColleges());
+		}
 		
 		//Reset web messages
 		stuRegForm.setWebUploadMsg("");
 		stuRegForm.setWebLoginMsg("");
 		stuRegForm.setWebLoginMsg2("");
 		
+		String queryResultCOL1 	= "";
+		String queryResultCOL2 	= "";
 		String queryResultCAT1 	= "";
 		String queryResultCAT2 	= "";
 		String queryResultQUAL1	= "";
@@ -4325,6 +4460,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		boolean isError = false;
 
 		try{
+			stuRegForm.getStudent().setCollege1(stripXSS(stuRegForm.getSelCollegeCode1(), "SelCollegeCode1", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+			stuRegForm.getStudent().setCollege2(stripXSS(stuRegForm.getSelCollegeCode2(), "SelCollegeCode2", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setCategory1(stripXSS(stuRegForm.getSelCategoryCode1(), "SelCategoryCode1", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setCategory2(stripXSS(stuRegForm.getSelCategoryCode2(), "SelCategoryCode2", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 			stuRegForm.getStudent().setQual1(stripXSS(stuRegForm.getSelQualCode1(), "SelQualCode1", "setQualNew", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
@@ -4340,6 +4477,28 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			// Proposed Secondary Specialization
 			if (stuRegForm.getStudent().getSpec2() == null || "0".equals(stuRegForm.getStudent().getSpec2()) || "".equals(stuRegForm.getStudent().getSpec2()) || "NVT".equalsIgnoreCase(stuRegForm.getStudent().getSpec2())  || "undefined".equalsIgnoreCase(stuRegForm.getStudent().getSpec2())){
 				stuRegForm.getStudent().setSpec2("0");
+			}
+			
+			//Get and save college description
+			stuRegForm.setSelCollegeCode1Desc("stuRegForm.getSelCollegeCode1()");
+			stuRegForm.setSelCollegeCode2Desc("stuRegForm.getSelCollegeCode2()");
+			if (null!=stuRegForm.getSelCollegeCode1() && !"".equalsIgnoreCase(stuRegForm.getSelCollegeCode1())) {			
+				if (null!=stuRegForm.getCollegeList() && stuRegForm.getCollegeList().size()!=0) {
+					for (int i = 0; i < stuRegForm.getCollegeList().size(); i++) { 
+						  College college = (College)stuRegForm.getCollegeList().get(i); 
+						  if (college.getCode().equalsIgnoreCase(stuRegForm.getSelCollegeCode1()))
+							 stuRegForm.setSelCollegeCode1Desc(college.getDescription());
+					  } 	
+				}				  		
+			}
+			if (null!=stuRegForm.getSelCollegeCode2() && !"".equalsIgnoreCase(stuRegForm.getSelCollegeCode2())) {			
+				if (null!=stuRegForm.getCollegeList() && stuRegForm.getCollegeList().size()!=0) {
+					for (int i = 0; i < stuRegForm.getCollegeList().size(); i++) { 
+						  College college = (College)stuRegForm.getCollegeList().get(i); 
+						  if (college.getCode().equalsIgnoreCase(stuRegForm.getSelCollegeCode2()))
+							 stuRegForm.setSelCollegeCode2Desc(college.getDescription());
+					  } 	
+				}				  		
 			}
 			
 			stuRegForm.setSelQualCode1Desc(dao.getQualDesc(stuRegForm.getStudent().getQual1()));
@@ -4366,6 +4525,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					return "loginStu";
 				}
 			}else{
+				queryResultCOL1 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "colCode1", "1", stuRegForm.getStudent().getCollege1(), "saveStudyRet");
+				if (queryResultCOL1.toUpperCase().contains("ERROR")){
+					isError = true;
+				}
+				queryResultCOL2 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "colCode2", "2", stuRegForm.getStudent().getCollege2(), "saveStudyRet");
+				if (queryResultCOL2.toUpperCase().contains("ERROR")){
+					isError = true;
+				}
 				//log.debug("ApplyForStudentNumberAction - saveStudyNew - " + stuRegForm.getStudent().getNumber() +" - CategoryCode1 =" + stuRegForm.getStudent().getCategory1());
 				//log.debug("ApplyForStudentNumberAction - saveStudyNew - " + stuRegForm.getStudent().getNumber() +" - STUXML - Check Category1");
 				queryResultCAT1 = doSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "catCode1", "1", stuRegForm.getStudent().getCategory1(), "saveStudyNew");
@@ -4433,7 +4600,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			//log.debug("ApplyForStudentNumberAction - saveStudyNew - Same Choice 1 & 2 - Qual1="+stuRegForm.getStudent().getQual1()+" = Qual2="+stuRegForm.getStudent().getQual2());
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "You have selected the same primary and alternative/secondary and qualification. Please change one application or remove it by setting its Category to 'Select Category' "));
-			addErrors(request, messages);
+			addErrors(request, messages);			
 			return "applyQualification";
 		}
 		
@@ -4562,6 +4729,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - submitNewQual acaYear: " + stuRegForm.getStudent().getAcademicYear());
 		//log.debug("ApplyForStudentNumberAction - submitNewQual acaPeriod: " + stuRegForm.getStudent().getAcademicPeriod());
 		//log.debug("ApplyForStudentNumberAction - submitNewQual stuExist: " + stuRegForm.getStudent().getStuExist());
+		if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+			stuRegForm.setCollegeList(getColleges());
+		}
 		return mapping.findForward("applyQualification");
 	}
 
@@ -4587,6 +4757,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - submitCngQual acaYear: " + stuRegForm.getStudent().getAcademicYear());
 		//log.debug("ApplyForStudentNumberAction - submitCngQual acaPeriod: " + stuRegForm.getStudent().getAcademicPeriod());
 		//log.debug("ApplyForStudentNumberAction - submitCngQual stuExist: " + stuRegForm.getStudent().getStuExist());
+		if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+			stuRegForm.setCollegeList(getColleges());
+		}
 		return mapping.findForward("applyQualification");
 	}
 
@@ -4691,7 +4864,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			stuRegForm.setFromPage("page2");
 		}
 
-		stuRegForm.getSelQualCode();
+		//stuRegForm.getSelQualCode();
 
 		//log.debug("ApplyForStudentNumberAction - applyNewPersonal - " + stuRegForm.getStudent().getNumber() +" - CategoryCode1 =" + stuRegForm.getStudent().getCategory1());
 		//log.debug("ApplyForStudentNumberAction - applyNewPersonal - " + stuRegForm.getStudent().getNumber() +" - CategoryCode2 =" + stuRegForm.getStudent().getCategory2());
@@ -4722,6 +4895,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your primary qualification selection. Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return "applyQualification";
 		}
 
@@ -6247,6 +6423,13 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				return mapping.findForward("applyRetRadio");
 			}
 		}
+		//Exemption
+		stuRegForm.getStudentApplication().setApplyExemptions(stripXSS(stuRegForm.getStudentApplication().getApplyExemptions(), "ApplyExemptions", "RetRadio", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+		if (stuRegForm.getStudentApplication().getApplyExemptions() == null || "".equals(stuRegForm.getStudentApplication().getApplyExemptions().trim())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Please confirm if you intend to apply for subject exemptions/credits from previous studies." ));
+			addErrors(request, messages);
+		}
 		//log.debug("ApplyForStudentNumberaction - stepRetRadio - CompleteText Final=" + stuRegForm.getStudentApplication().getCompleteText());
 
 		return mapping.findForward("applyRetDeclare");
@@ -6264,6 +6447,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		ActionMessages messages = new ActionMessages();
 		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+		
 		stuRegForm.setFromPage("applyRetDeclare");
 		
 		if(stuRegForm.getStudent().getNumber() == null || "".equals(stuRegForm.getStudent().getNumber())){
@@ -6340,7 +6524,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			if (!"".equals(errorMessage) || op.getOutCsfClientServerCommunicationsReturnCode()== 9999){
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 						new ActionMessage("message.generalmessage", "An error occurred updating Student Annual Record. /"+errorMessage));
-				addErrors(request, messages);
+				addErrors(request, messages);				
 				return mapping.findForward("applyQualificationConfirm");
 			}
 		}
@@ -6395,6 +6579,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An Error occurred while processing your Primary Qualification selection (2aN). Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else{
 			if (!stuRegForm.getStudent().getCategory1().equalsIgnoreCase(newCat1)){
@@ -6402,6 +6589,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your primary category selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 			if (!stuRegForm.getStudent().getQual1().equalsIgnoreCase(newQual1)){
@@ -6409,6 +6599,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your primary qualification selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 			if (!stuRegForm.getStudent().getSpec1().equalsIgnoreCase(newSpec1)){
@@ -6416,6 +6609,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your primary specialisation selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 		}
@@ -6426,6 +6622,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An Error occurred while processing your Secondary Qualification selection (2aN). Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else{
 			if (!stuRegForm.getStudent().getCategory2().equalsIgnoreCase(newCat2)){
@@ -6433,6 +6632,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your secondary category selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 			if (!stuRegForm.getStudent().getQual2().equalsIgnoreCase(newQual2)){
@@ -6440,6 +6642,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your secondary qualification selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 			if (!stuRegForm.getStudent().getSpec2().equalsIgnoreCase(newSpec2)){
@@ -6447,6 +6652,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An Error occurred while processing your secondary specialisation selection (2a). Please try again."));
 				addErrors(request, messages);
+				if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+					stuRegForm.setCollegeList(getColleges());
+				}
 				return mapping.findForward("applyQualification");
 			}
 		}
@@ -6471,6 +6679,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An Error occurred while processing your primary qualification selection. Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}
 				
@@ -6652,11 +6863,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 					new ActionMessage("message.generalmessage", "An error occurred while saving Primary Qualification. Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else if (isError2){
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An error occurred while saving Secondary Qualification. Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}
 		
@@ -7094,49 +7311,6 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		if (stuRegForm.getStudent()!= null){
 			stuRegForm.getStudent().setCellNr(stuRegForm.getStudent().getCellNr().replaceAll(" ",""));
 		}
-
-		// check contact numbers
-		stuRegForm.getStudent().setHomePhone(stripXSS(stuRegForm.getStudent().getHomePhone(), "HomePhone", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
-		if(stuRegForm.getStudent().getHomePhone()== null || "".equals(stuRegForm.getStudent().getHomePhone())){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-        			new ActionMessage("message.generalmessage", "Your home phone number is required."));
-			addErrors(request, messages);
-			return "applyNewContact";
-		}
-		if (stuRegForm.getStudent().getHomePhone()!= null){
-			stuRegForm.getStudent().setHomePhone(stuRegForm.getStudent().getHomePhone().replaceAll(" ",""));
-		}
-//		if(!isValidNumber(stuRegForm.getStudent().getHomePhone())){
-		if(!isPhoneNumber(stuRegForm.getStudent().getHomePhone())){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-        			new ActionMessage("message.generalmessage", "Your home phone number may consist of a dash or +, the rest must be numeric."));
-			addErrors(request, messages);
-			return "applyNewContact";
-		}
-
-		stuRegForm.getStudent().setWorkPhone(stripXSS(stuRegForm.getStudent().getWorkPhone(), "WorkPhone", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
-		if (stuRegForm.getStudent().getWorkPhone()!= null){
-			stuRegForm.getStudent().setWorkPhone(stuRegForm.getStudent().getWorkPhone().replaceAll(" ",""));
-		}
-//		if(!isValidNumber(stuRegForm.getStudent().getWorkPhone())){
-		if(!isPhoneNumber(stuRegForm.getStudent().getWorkPhone())){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-        			new ActionMessage("message.generalmessage", "Your work phone number may consist of a dash or +, the rest must be numeric."));
-			addErrors(request, messages);
-			return "applyNewContact";
-		}
-		stuRegForm.getStudent().setFaxNr(stripXSS(stuRegForm.getStudent().getFaxNr(), "FaxNr", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
-		if (stuRegForm.getStudent().getFaxNr()!= null){
-			stuRegForm.getStudent().setFaxNr(stuRegForm.getStudent().getFaxNr().replaceAll(" ",""));
-		}
-//		if(!isValidNumber(stuRegForm.getStudent().getFaxNr())){
-		if(!isPhoneNumber(stuRegForm.getStudent().getFaxNr())){
-			messages.add(ActionMessages.GLOBAL_MESSAGE,
-  			new ActionMessage("message.generalmessage", "Your fax number may consist of a dash or +, the rest must be numeric."));
-			addErrors(request, messages);
-			return "applyNewContact";
-		}
-
 //		cell number
 		stuRegForm.getStudent().setCellNr(stripXSS(stuRegForm.getStudent().getCellNr(), "CellNr", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		stuRegForm.getStudent().setCellNr2(stripXSS(stuRegForm.getStudent().getCellNr2(), "CellNr2", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
@@ -7264,10 +7438,152 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				addErrors(request, messages);
 				return "applyNewContact";
 			}
-
 		}
+
+		// check contact numbers
+		stuRegForm.getStudent().setHomePhone(stripXSS(stuRegForm.getStudent().getHomePhone(), "HomePhone", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+		if(stuRegForm.getStudent().getHomePhone()== null || "".equals(stuRegForm.getStudent().getHomePhone())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+        			new ActionMessage("message.generalmessage", "Your home phone number is required."));
+			addErrors(request, messages);
+			return "applyNewContact";
+		}
+		if (stuRegForm.getStudent().getHomePhone()!= null){
+			stuRegForm.getStudent().setHomePhone(stuRegForm.getStudent().getHomePhone().replaceAll(" ",""));
+		}
+//		if(!isValidNumber(stuRegForm.getStudent().getHomePhone())){
+		if(!isPhoneNumber(stuRegForm.getStudent().getHomePhone())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+        			new ActionMessage("message.generalmessage", "Your home phone number may consist of a dash or +, the rest must be numeric."));
+			addErrors(request, messages);
+			return "applyNewContact";
+		}
+
+		stuRegForm.getStudent().setWorkPhone(stripXSS(stuRegForm.getStudent().getWorkPhone(), "WorkPhone", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+		if (stuRegForm.getStudent().getWorkPhone()!= null){
+			stuRegForm.getStudent().setWorkPhone(stuRegForm.getStudent().getWorkPhone().replaceAll(" ",""));
+		}
+//		if(!isValidNumber(stuRegForm.getStudent().getWorkPhone())){
+		if(!isPhoneNumber(stuRegForm.getStudent().getWorkPhone())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+        			new ActionMessage("message.generalmessage", "Your work phone number may consist of a dash or +, the rest must be numeric."));
+			addErrors(request, messages);
+			return "applyNewContact";
+		}
+		stuRegForm.getStudent().setFaxNr(stripXSS(stuRegForm.getStudent().getFaxNr(), "FaxNr", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+		if (stuRegForm.getStudent().getFaxNr()!= null){
+			stuRegForm.getStudent().setFaxNr(stuRegForm.getStudent().getFaxNr().replaceAll(" ",""));
+		}
+//		if(!isValidNumber(stuRegForm.getStudent().getFaxNr())){
+		if(!isPhoneNumber(stuRegForm.getStudent().getFaxNr())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+  			new ActionMessage("message.generalmessage", "Your fax number may consist of a dash or +, the rest must be numeric."));
+			addErrors(request, messages);
+			return "applyNewContact";
+		}
+		
+		//Johanet 2021 changes - Combine screen L and M
+		//Adding Complete Qualification Request here so that it is set before any errors may be thrown as otherwise it might not be set when returning to the page.
+				stuRegForm.getStudentApplication().setCompleteText(stripXSS(request.getParameter("completeText"), "CompleteText", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+				
+				//CareerCounsel
+				stuRegForm.getStudentApplication().setCareerCounsel(stripXSS(stuRegForm.getStudentApplication().getCareerCounsel(), "CareerCounsel", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getCareerCounsel() == null || "".equals(stuRegForm.getStudentApplication().getCareerCounsel().trim())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you require further Career counceling."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}else{
+					stuRegForm.getStudentApplication().setCareerCounsel("N");
+				}
+				
+				//Current Unisa Staff
+				stuRegForm.getStudentApplication().setStaffCurrent(stripXSS(stuRegForm.getStudentApplication().getStaffCurrent(), "StaffCurrent", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getStaffCurrent() == null || "".equalsIgnoreCase(stuRegForm.getStudentApplication().getStaffCurrent())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you are a current or retired Unisa staff member."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}
+				//Dependent on deceased or retired Unisa Staff
+				stuRegForm.getStudentApplication().setStaffDeceased(stripXSS(stuRegForm.getStudentApplication().getStaffDeceased(), "StaffDeceased", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getStaffDeceased() == null || "".equalsIgnoreCase(stuRegForm.getStudentApplication().getStaffDeceased())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you are a dependant of a current, retired or deceased permanent Unisa staff member."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}
+				//Prisoner Information
+				stuRegForm.getStudentApplication().setPrisoner(stripXSS(stuRegForm.getStudentApplication().getPrisoner(), "Prisoner", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getPrisoner() == null || "".equalsIgnoreCase(stuRegForm.getStudentApplication().getPrisoner())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you are a prisoner."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}else{
+					// set examination centre
+					stuRegForm.setSelectedExamCentre(stripXSS(stuRegForm.getSelectedExamCentre(), "SelectedExamCentre", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+					if (stuRegForm.getSelectedExamCentre() == null || "-1".equals(stuRegForm.getSelectedExamCentre()) || "".equals(stuRegForm.getSelectedExamCentre().trim()) || stuRegForm.getSelectedExamCentre().length() < 5){
+						messages.add(ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage", "Select your examination centre."));
+						addErrors(request, messages);
+						return "applyNewContact";
+					}else{
+						stuRegForm.getStudent().getExam().getExamCentre().setCode(stuRegForm.getSelectedExamCentre().substring(0,5));
+						stuRegForm.getStudent().getExam().getExamCentre().setDesc(stuRegForm.getSelectedExamCentre().substring(5));
+					}
+				}
+				
+				//Financial Aid
+				stuRegForm.getStudentApplication().setFinaidEduloan(stripXSS(stuRegForm.getStudentApplication().getFinaidEduloan(), "FinaidEduLoan", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getFinaidEduloan()==null || "".equals(stuRegForm.getStudentApplication().getFinaidEduloan().trim())){
+					stuRegForm.getStudentApplication().setFinaidEduloan("N");
+				}
+				if (stuRegForm.getStudentApplication().getFinaidNsfas()==null || "".equals(stuRegForm.getStudentApplication().getFinaidNsfas().trim())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please indicate whether you will require Financial aid from NSFAS."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}else{
+					stuRegForm.getStudentApplication().setFinaidNsfas("N");
+				}
+				
+				//Can complete Qualification this year?
+				stuRegForm.getStudentApplication().setCompleteQual(stripXSS(stuRegForm.getStudentApplication().getCompleteQual(), "CompleteQual", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getCompleteQual() == null || "".equalsIgnoreCase(stuRegForm.getStudentApplication().getCompleteQual()) || "0".equalsIgnoreCase(stuRegForm.getStudentApplication().getCompleteQual())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you are in the process of completing a qualification."));
+					addErrors(request, messages);
+					return "applyNewContact";
+				}
+				
+				// Qualification to be completed
+				if (stuRegForm.getStudentApplication().getCompleteQual().equalsIgnoreCase("Y")){
+					//log.debug("ApplyForStudentNumberaction - applyNewInfo2- CompleteText Request=" + request.getParameter("completeText"));
+					//log.debug("ApplyForStudentNumberaction - applyNewInfo2 - CompleteText Get=" + stuRegForm.getStudentApplication().getCompleteText());
+					
+					if (stuRegForm.getStudentApplication().getCompleteText() == null || "".equalsIgnoreCase(stuRegForm.getStudentApplication().getCompleteText().trim()) || stuRegForm.getStudentApplication().getCompleteText().trim().length() < 1){
+						messages.add(ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage", "Please enter which qualification you will be completing."));
+						addErrors(request, messages);
+						return "applyNewContact";
+					}
+					if (stuRegForm.getStudentApplication().getCompleteText().trim().length() > 100){
+						messages.add(ActionMessages.GLOBAL_MESSAGE,
+								new ActionMessage("message.generalmessage", "Qualification to be completed is too long. Please enter 100 characters or less. " ));
+						addErrors(request, messages);
+						return "applyNewContact";
+					}
+				}
+				//Exemption
+				stuRegForm.getStudentApplication().setApplyExemptions(stripXSS(stuRegForm.getStudentApplication().getApplyExemptions(), "ApplyExemptions", "NewContact", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));		
+				if (stuRegForm.getStudentApplication().getApplyExemptions() == null || "".equals(stuRegForm.getStudentApplication().getApplyExemptions().trim())){
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+							new ActionMessage("message.generalmessage", "Please confirm if you intend to apply for subject exemptions/credits from previous studies." ));
+					addErrors(request, messages);
+				}
 		//log.debug("ApplyForStudentNumberAction - applyNewContact - End");
-		//log.debug("ApplyForStudentNumberAction - applyNewContact - Goto applyNewAddress");
+		//log.debug("ApplyForStudentNumberAction - applyNewContact - Goto applyNewAddress");		
 		setDropdownListsStep2(request, form);
 		return "applyNewAddress1";
 	}
@@ -7284,6 +7600,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 		
+		//String copyPostalToPhysical = request.getParameter("copyPostalToPhysical");
+				
 		if(stuRegForm.getStudent().getNumber() == null || "".equals(stuRegForm.getStudent().getNumber())){
 			//log.debug("ApplyForStudentNumberAction - applyNewAddress1 - Student Nr is null or empty when saving qualifications");
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -7325,7 +7643,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				setDropdownListsStep2(request, form);
 				return "applyNewAddress1";
 			}
-		}
+		}		
 		
 		// Postal address - mandatory
 		stuRegForm.getStudent().getPostalAddress().setLine1(stripXSS(stuRegForm.getStudent().getPostalAddress().getLine1(), "PostalAddressLine1", "NewAddres1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
@@ -7335,6 +7653,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		stuRegForm.getStudent().getPostalAddress().setLine5(stripXSS(stuRegForm.getStudent().getPostalAddress().getLine5(), "PostalAddressLine2", "NewAddres1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		stuRegForm.getStudent().getPostalAddress().setLine6(stripXSS(stuRegForm.getStudent().getPostalAddress().getLine6(), "PostalAddressLine2", "NewAddres1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
 		stuRegForm.getStudent().getPostalAddress().setAreaCode(stripXSS(stuRegForm.getStudent().getPostalAddress().getAreaCode(), "PostalAddressAreaCode", "NewAddres1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), true));
+		stuRegForm.setCopyPostalAddressRadio(stripXSS(stuRegForm.getCopyPostalAddressRadio(), "CopyPostalAddressRadio", "NewAddres1", stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), stuRegForm.getApplySEQUENCE(), false));
 		
 		if (stuRegForm.getStudent().getPostalAddress().getLine1() == null || "".equals(stuRegForm.getStudent().getPostalAddress().getLine1().trim())){
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -7498,6 +7817,52 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				return "applyNewAddress1";
 	        }else{
 		      	  //log.debug("RegistrationStudentBroker - isAddressValid - Postal Address Suburb result="+postalSuburbPostalCheck);
+			}
+			
+
+			if (stuRegForm.getCopyPostalAddressRadio() == null || stuRegForm.getCopyPostalAddressRadio().trim().equalsIgnoreCase("")) {
+				messages.add(ActionMessages.GLOBAL_MESSAGE,
+						new ActionMessage("message.generalmessage", "Please indicate whether your physical street address is the same as your postal address."));
+				addErrors(request, messages);
+				setDropdownListsStep2(request, form);
+				return "applyNewAddress1";
+			}
+			
+			if (stuRegForm.getCopyPostalAddressRadio().equalsIgnoreCase("Y")) {
+				if (stuRegForm.getStudent().getPostalAddress().getLine1().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine1().toString().trim())) {
+					if (stuRegForm.getStudent().getPostalAddress().getLine1().toString().toUpperCase().contains("P O BOX") ||
+							stuRegForm.getStudent().getPostalAddress().getLine1().toString().toUpperCase().contains("PRIVATE BAG")) {
+							messages.add(ActionMessages.GLOBAL_MESSAGE,
+									new ActionMessage("message.generalmessage", "The physical address may not be a P O Box or Private Bag address."));
+							addErrors(request, messages);
+							setDropdownListsStep2(request, form);
+							return "applyNewAddress1";
+					}
+				}
+			}
+				
+			if (stuRegForm.getCopyPostalAddressRadio().equalsIgnoreCase("Y")) {
+				if (stuRegForm.getStudent().getPostalAddress().getLine1().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine1().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine1(stuRegForm.getStudent().getPostalAddress().getLine1());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getLine2().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine2().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine2(stuRegForm.getStudent().getPostalAddress().getLine2());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getLine3().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine3().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine3(stuRegForm.getStudent().getPostalAddress().getLine3());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getLine4().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine4().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine4(stuRegForm.getStudent().getPostalAddress().getLine4());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getLine5().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine5().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine5(stuRegForm.getStudent().getPostalAddress().getLine5());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getLine6().toString()!= null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine6().toString().trim())) {
+					stuRegForm.getStudent().getPhysicalAddress().setLine6(stuRegForm.getStudent().getPostalAddress().getLine6());
+				}
+				if (stuRegForm.getStudent().getPostalAddress().getAreaCode().toString()!=null && !"".equals(stuRegForm.getStudent().getPostalAddress().getAreaCode().toString())) {
+					stuRegForm.getStudent().getPhysicalAddress().setAreaCode(stuRegForm.getStudent().getPostalAddress().getAreaCode());
+				}				
 			}
 		}
 
@@ -7698,7 +8063,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - applyNewAddress2 - End");
 		//log.debug("ApplyForStudentNumberAction - applyNewAddress2 - Goto applyNewAddress3");
 
-		return "applyNewAddress3";
+		//return "applyNewAddress3";
+		//Johanet 2021 Change - remove courier address page
+		setDropdownListsStep3(request, stuRegForm);
+		return "applyNewInfo1";
 	}
 	
 	public String applyNewAddress3(ActionMapping mapping, ActionForm form,
@@ -8050,10 +8418,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//log.debug("ApplyForStudentNumberAction - applyNewInfo1 - End");
 		//log.debug("ApplyForStudentNumberAction - applyNewInfo1 - Goto applyNewInfo2");
-		return "applyNewInfo2";
+		//Johanet 2021 Change Combine applyNewInfo2 with applyNewContact 
+		//Remove applyNewInfo2
+		//setUpUniversityList(request);
+		setUpProvinceList(request);
+		return "applyNewSchool";
 	}
 	
-	public String applyNewInfo2(ActionMapping mapping, ActionForm form,
+	public String applyNewInfo2xx(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -8181,8 +8553,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//log.debug("ApplyForStudentNumberAction - applyNewInfo2 - End");
 		//log.debug("ApplyForStudentNumberAction - applyNewInfo2 - Goto applyNewInfo3");
-		setUpUniversityList(request);
-		return "applyNewInfo3";
+		//setUpUniversityList(request);
+		setUpProvinceList(request);
+		return "applyNewSchool";
 	}
 	
 	public String applyNewInfo3(ActionMapping mapping, ActionForm form,
@@ -8473,6 +8846,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
 				new ActionMessage("message.generalmessage", "An Error occurred while processing your Qualification selection (4N). Please try again."));
 			addErrors(request, messages);
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return "applyQualification";
 		}
 			
@@ -8882,7 +9258,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			}else if (errorMsg.toUpperCase().contains("CELL") || errorMsg.toUpperCase().contains("EMAIL")){
 				return mapping.findForward("applyNewContact");
 			}else if (errorMsg.toUpperCase().contains("EXAM")){
-					return mapping.findForward("applyNewInfo2");
+				//Johanet 2021 change - remove applyNewInfo2 - combine applyNewInfo2 with applyNewContact
+//					return mapping.findForward("applyNewInfo2");
+					return mapping.findForward("applyNewContact");
 			}
 			//return mapping.findForward("step3forward");
 			//go back to page 1 - July 2010
@@ -9097,7 +9475,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 		
-		// qualification code
+		// qualification code		
+		String newCol1 = dao.getXMLSelected("colCode1", "1",stuRegForm.getStudent().getNumberTmp(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflow");
+		String newCol2 = dao.getXMLSelected("colCode2", "2",stuRegForm.getStudent().getNumberTmp(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflow");
 		String newQual1 = dao.getXMLSelected("qualCode1", "1",stuRegForm.getStudent().getNumberTmp(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflow");
 		String newQual2 = dao.getXMLSelected("qualCode2", "2",stuRegForm.getStudent().getNumberTmp(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflow");
 		
@@ -9113,6 +9493,16 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		//log.debug("ApplyForStudentNumberAction - writeWorkflow - get Action newQual2: " + newQual2);
 		//log.debug("ApplyForStudentNumberAction - writeWorkflow - get Action newSpec2: " + newSpec2);
+		
+		String newCol1Desc = "";
+		if (null!=newCol1 && !newCol1.equalsIgnoreCase("") && !newCol1.equalsIgnoreCase("0")) {
+			newCol1Desc=dao.getCollegeDesc(newCol1);	
+		}
+		
+		String newCol2Desc="";		
+		if (null!=newCol2 && !newCol2.equalsIgnoreCase("") && !newCol2.equalsIgnoreCase("0")) {
+			newCol2Desc=dao.getCollegeDesc(newCol2);
+		}
 		
 		String newQual1Desc = dao.getQualDesc(newQual1);
 		String newQual2Desc = "";
@@ -9130,7 +9520,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		if (newSpec2 == null  || "".equals(newSpec2) || "0".equals(newSpec2) || "undefined".equalsIgnoreCase(newSpec2)){
 			newSpec2 = " ";
 		}
-
+		
 		//log.debug("ApplyForStudentNumberAction - writeWorkflow - get Action newQual1Desc: " + newQual1Desc);
 		//log.debug("ApplyForStudentNumberAction - writeWorkflow - get Action newQual2Desc: " + newQual2Desc);
 				
@@ -9174,8 +9564,11 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Work telephone number       = " + stuRegForm.getStudent().getWorkPhone() + "\r\n");
 		file.add(" Cell number                 = " + stuRegForm.getStudent().getCellNr() + "\r\n");
 		file.add(" Fax number                  = " + stuRegForm.getStudent().getFaxNr() + "\r\n");
-		file.add(" E-mail address              = " + stuRegForm.getStudent().getEmailAddress() + "\r\n");
-		file.add(" Contact number              = " + stuRegForm.getStudent().getContactNr() + "\r\n");
+		file.add(" E-mail address              = " + stuRegForm.getStudent().getEmailAddress() + "\r\n");		
+//		file.add(" Contact number              = " + stuRegForm.getStudent().getContactNr() + "\r\n");
+		//Johanet 20200606 - 2021 change - remove courier page - write physical address to courier address
+		file.add(" Contact number              = " + stuRegForm.getStudent().getCellNr() + "\r\n");
+		
 		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Postal address              = " + stuRegForm.getStudent().getPostalAddress().getLine1()+ "\r\n");
 		if(stuRegForm.getStudent().getPostalAddress().getLine2()!=null && !"".equals(stuRegForm.getStudent().getPostalAddress().getLine2())){
@@ -9211,23 +9604,42 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine6()+ "\r\n");
 		}
 		file.add(" Physical addr postal code   = " + stuRegForm.getStudent().getPhysicalAddress().getAreaCode() + "\r\n");
-		file.add(" Courier address             = " + stuRegForm.getStudent().getCourierAddress().getLine1() + "\r\n");
-		if(stuRegForm.getStudent().getCourierAddress().getLine2()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine2())){
-			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine2()+ "\r\n");
+//		file.add(" Courier address             = " + stuRegForm.getStudent().getCourierAddress().getLine1() + "\r\n");
+//		if(stuRegForm.getStudent().getCourierAddress().getLine2()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine2())){
+//			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine2()+ "\r\n");
+//		}
+//		if(stuRegForm.getStudent().getCourierAddress().getLine3()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine3())){
+//			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine3()+ "\r\n");
+//		}
+//		if(stuRegForm.getStudent().getCourierAddress().getLine4()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine4())){
+//			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine4()+ "\r\n");
+//		}
+//		if(stuRegForm.getStudent().getCourierAddress().getLine5()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine5())){
+//			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine5()+ "\r\n");
+//		}
+//		if(stuRegForm.getStudent().getCourierAddress().getLine6()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine6())){
+//			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine6()+ "\r\n");
+//		}
+//		file.add(" Courier addr postal code    = " + stuRegForm.getStudent().getCourierAddress().getAreaCode() + "\r\n");
+		
+		//Johanet 20200606 - 2021 change - remove courier page - write physical address to courier address
+		file.add(" Courier address             = " + stuRegForm.getStudent().getPhysicalAddress().getLine1() + "\r\n");
+		if(stuRegForm.getStudent().getCourierAddress().getLine2()!=null && !"".equals(stuRegForm.getStudent().getPhysicalAddress().getLine2())){
+			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine2()+ "\r\n");
 		}
-		if(stuRegForm.getStudent().getCourierAddress().getLine3()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine3())){
-			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine3()+ "\r\n");
+		if(stuRegForm.getStudent().getCourierAddress().getLine3()!=null && !"".equals(stuRegForm.getStudent().getPhysicalAddress().getLine3())){
+			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine3()+ "\r\n");
 		}
-		if(stuRegForm.getStudent().getCourierAddress().getLine4()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine4())){
-			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine4()+ "\r\n");
+		if(stuRegForm.getStudent().getCourierAddress().getLine4()!=null && !"".equals(stuRegForm.getStudent().getPhysicalAddress().getLine4())){
+			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine4()+ "\r\n");
 		}
-		if(stuRegForm.getStudent().getCourierAddress().getLine5()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine5())){
-			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine5()+ "\r\n");
+		if(stuRegForm.getStudent().getCourierAddress().getLine5()!=null && !"".equals(stuRegForm.getStudent().getPhysicalAddress().getLine5())){
+			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine5()+ "\r\n");
 		}
-		if(stuRegForm.getStudent().getCourierAddress().getLine6()!=null && !"".equals(stuRegForm.getStudent().getCourierAddress().getLine6())){
-			file.add("                             = " + stuRegForm.getStudent().getCourierAddress().getLine6()+ "\r\n");
+		if(stuRegForm.getStudent().getCourierAddress().getLine6()!=null && !"".equals(stuRegForm.getStudent().getPhysicalAddress().getLine6())){
+			file.add("                             = " + stuRegForm.getStudent().getPhysicalAddress().getLine6()+ "\r\n");
 		}
-		file.add(" Courier addr postal code    = " + stuRegForm.getStudent().getCourierAddress().getAreaCode() + "\r\n");
+		file.add(" Courier addr postal code    = " + stuRegForm.getStudent().getPhysicalAddress().getAreaCode() + "\r\n");
 
 		file.add(" Country                     = " + stuRegForm.getStudent().getCountry().getCode()+ " "+ stuRegForm.getStudent().getCountry().getDesc() + "\r\n");
 		file.add(" --------------------------------------------------------------------------\r\n");
@@ -9239,22 +9651,26 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Occupation                  = " + stuRegForm.getStudent().getOccupation().getCode()+ " "+ stuRegForm.getStudent().getOccupation().getDesc() + "\r\n");
 		file.add(" Economic sector             = " + stuRegForm.getStudent().getEconomicSector().getCode()+ " "+ stuRegForm.getStudent().getEconomicSector().getDesc() + "\r\n");
 		file.add(" Previous economic activity  = " + stuRegForm.getStudent().getPrevActivity().getCode()+ " "+ stuRegForm.getStudent().getPrevActivity().getDesc() + "\r\n");
-		file.add(" --------------------------------------------------------------------------\r\n");
-		file.add(" Concurrent institution      = " + stuRegForm.getStudent().getOtherUniversity().getCode()+ " "+ stuRegForm.getStudent().getOtherUniversity().getDesc() + "\r\n");
-		file.add(" Previous institution        = " + stuRegForm.getStudent().getPrevInstitution().getCode()+ "\r\n");
-		file.add(" Last year of registration   = " + stuRegForm.getStudent().getLastRegYear() + "\r\n");
-		if ("P".equalsIgnoreCase(stuRegForm.getStudent().getLastStatus())){
-			file.add(" Previous postgraduate (Y/N) = Y \r\n");
-		}else if ("U".equalsIgnoreCase(stuRegForm.getStudent().getLastStatus())){
-			file.add(" Previous postgraduate (Y/N) = N \r\n");
-		}else{
-			file.add(" Previous postgraduate (Y/N) =  \r\n");
-		}
-		file.add(" --------------------------------------------------------------------------\r\n");
-		file.add(" Proposed qualification      = " + newQual1+" "+ newQual1Desc+ "\r\n");
+//		file.add(" --------------------------------------------------------------------------\r\n");
+//		file.add(" Concurrent institution      = " + stuRegForm.getStudent().getOtherUniversity().getCode()+ " "+ stuRegForm.getStudent().getOtherUniversity().getDesc() + "\r\n");
+//		file.add(" Previous institution        = " + stuRegForm.getStudent().getPrevInstitution().getCode()+ "\r\n");
+//		file.add(" Last year of registration   = " + stuRegForm.getStudent().getLastRegYear() + "\r\n");
+//		if ("P".equalsIgnoreCase(stuRegForm.getStudent().getLastStatus())){
+//			file.add(" Previous postgraduate (Y/N) = Y \r\n");
+//		}else if ("U".equalsIgnoreCase(stuRegForm.getStudent().getLastStatus())){
+//			file.add(" Previous postgraduate (Y/N) = N \r\n");
+//		}else{
+//			file.add(" Previous postgraduate (Y/N) =  \r\n");
+//		}
+		file.add(" --------------------------------------------------------------------------\r\n");	
+		file.add(" First choice: \r\n");
+		file.add(" College                     = " + newCol1Desc+ "\r\n");
+		file.add(" Qualification               = " + newQual1+" "+ newQual1Desc+ "\r\n");
 		file.add(" Specialisation code         = " + newSpec1 + "\r\n");
-		file.add(" Second choice qualification = " + newQual2+" "+ newQual2Desc+ "\r\n");
-		file.add(" Second specialisation code  = " + newSpec2 + "\r\n");
+		file.add(" Second choice: \r\n");
+		file.add(" College                     = " + newCol2Desc+ "\r\n");
+		file.add(" Qualification               = " + newQual2+" "+ newQual2Desc+ "\r\n");
+		file.add(" Specialisation code         = " + newSpec2 + "\r\n");
 
 		//applyPrevQual Info
 		HistoryUnisa unisa = new HistoryUnisa();
@@ -9374,12 +9790,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Previously apply Postgraduate      = " + stuRegForm.getStudentApplication().getRadioPrev()+ "\r\n");
 		file.add(" RPL Application                    = " + stuRegForm.getStudentApplication().getRadioRPL()+ "\r\n");
 		file.add(" --------------------------------------------------------------------------\r\n");
-
-		
-		
-		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Applied for exemptions      = " + stuRegForm.getStudentApplication().getApplyExemptions()+ "\r\n");
-		file.add(" Previous inst student nr    = " + stuRegForm.getStudentApplication().getPrevinstStudnr()+ "\r\n");
+//		file.add(" Previous inst student nr    = " + stuRegForm.getStudentApplication().getPrevinstStudnr()+ "\r\n");
 		file.add(" Career counselling needed   = " + stuRegForm.getStudentApplication().getCareerCounsel()+ "\r\n");
 		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Staff Member (Y/N)          = " + stuRegForm.getStudentApplication().getStaffCurrent() + "\r\n");
@@ -9615,6 +10027,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 
 		String newQual1Desc = "";
 		String newQual2Desc = "";
+		
+		String newCol1 = dao.getXMLSelected("colCode1", "1",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflowRet");
+		String newCol2 = dao.getXMLSelected("colCode2", "2",stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflowRet");
 
 		String newQual1 = dao.getXMLSelected("qualCode1", "1", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflowRet");
 		String newSpec1 = dao.getXMLSelected("specCode1", "1", stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getAcademicYear(),stuRegForm.getStudent().getAcademicPeriod(), "writeWorkflowRet");
@@ -9636,6 +10051,16 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//log.debug("ApplyForStudentNumberAction - writeWorkflowRet - get Action newSpec1: " + newSpec1);
 		//log.debug("ApplyForStudentNumberAction - writeWorkflowRet - get Action newQual2: " + newQual2);
 		//log.debug("ApplyForStudentNumberAction - writeWorkflowRet - get Action newSpec2: " + newSpec2);
+		
+		String newCol1Desc = "";
+		if (null!=newCol1 && !newCol1.equalsIgnoreCase("") && !newCol1.equalsIgnoreCase("0")) {
+			newCol1Desc=dao.getCollegeDesc(newCol1);	
+		}
+		
+		String newCol2Desc="";		
+		if (null!=newCol2 && !newCol2.equalsIgnoreCase("") && !newCol2.equalsIgnoreCase("0")) {
+			newCol2Desc=dao.getCollegeDesc(newCol2);
+		}
 		
 		if (existSpec == null || "".equals(existSpec) || "0".equals(existSpec) || "undefined".equalsIgnoreCase(existSpec)){
 			existSpec = " ";
@@ -9691,6 +10116,7 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			  newSpec2 = "N/A - Not Applicable";
 		  }
 		}
+		
 
 		//log.debug("ApplyForStudentNumberAction - writeWorkflowRet - get Action newQual1Desc: " + newQual1Desc);
 		//log.debug("ApplyForStudentNumberAction - writeWorkflowRet - get Action newQual2Desc: " + newQual2Desc);
@@ -9727,11 +10153,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Current qualification              = " + existQual + "\r\n");
 		file.add(" Current specialisation             = " + existSpec + "\r\n");
-		file.add(" Proposed primary qualification     = " + newQual1+" - "+ newQual1Desc+ "\r\n");
-		file.add(" Proposed primary specialisation    = " + newSpec1 + "\r\n");
-		file.add(" Proposed secondary qualification   = " + newQual2+" - "+ newQual2Desc+ "\r\n");
-		file.add(" Proposed secondary specialisation  = " + newSpec2 + "\r\n");
-		
+		file.add(" First choice: \r\n");
+		file.add(" College                            = " + newCol1Desc+ "\r\n");
+		file.add(" Qualification                      = " + newQual1+" "+ newQual1Desc+ "\r\n");
+		file.add(" Specialisation code                = " + newSpec1 + "\r\n");
+		file.add(" Second choice: \r\n");
+		file.add(" College                            = " + newCol2Desc+ "\r\n");
+		file.add(" Qualification                      = " + newQual2+" "+ newQual2Desc+ "\r\n");
+		file.add(" Specialisation code                = " + newSpec2 + "\r\n");
 		
 		//applyPrevQual Info
 		HistoryUnisa unisa = new HistoryUnisa();
@@ -9904,11 +10333,11 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Maiden name / \r\n");
 		file.add(" Previous surname                   = " + stuRegForm.getStudent().getMaidenName() + "\r\n");
 		file.add(" Date of birth                      = Year: " + stuRegForm.getStudent().getBirthYear()+ " Month: "+ stuRegForm.getStudent().getBirthMonth() +" Day: "+ stuRegForm.getStudent().getBirthDay()+"\r\n");
-		file.add(" --------------------------------------------------------------------------\r\n");
-		file.add(" Proposed primary qualification     = " + stuRegForm.getSelQualCode1()+" - "+ stuRegForm.getSelQualCode1Desc()+ "\r\n");
-		file.add(" Proposed primary specialisation    = " + wflSpec1 + "\r\n");
-		file.add(" Proposed secondary qualification   = " + stuRegForm.getSelQualCode2()+" - "+ stuRegForm.getSelQualCode1Desc()+ "\r\n");
-		file.add(" Proposed secondary specialisation  = " + wflSpec2 + "\r\n");
+		file.add(" --------------------------------------------------------------------------\r\n");			
+		file.add(" First choice qualification     = " + stuRegForm.getSelQualCode1()+" - "+ stuRegForm.getSelQualCode1Desc()+ "\r\n");
+		file.add(" First choice specialisation    = " + wflSpec1 + "\r\n");	
+		file.add(" Second choice qualification   = " + stuRegForm.getSelQualCode2()+" - "+ stuRegForm.getSelQualCode1Desc()+ "\r\n");
+		file.add(" Second choice specialisation  = " + wflSpec2 + "\r\n");
 		file.add("                       \r\n");		
 		file.add(" ==========================================================================\r\n");
 		file.close(stuRegForm.getStudent().getNumber());
@@ -10092,8 +10521,8 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			nextPage = applyNewAddress3(mapping,form,request, response);
 		}else if ("applyNewInfo1".equalsIgnoreCase(page)){
 			nextPage = applyNewInfo1(mapping,form,request, response);
-		}else if ("applyNewInfo2".equalsIgnoreCase(page)){
-			nextPage = applyNewInfo2(mapping,form,request, response);
+//		}else if ("applyNewInfo2".equalsIgnoreCase(page)){
+//			nextPage = applyNewInfo2(mapping,form,request, response);
 		}else if ("applyNewInfo3".equalsIgnoreCase(page)){
 			nextPage = applyNewInfo3(mapping,form,request, response);
 		}else if ("applyNewSchool".equalsIgnoreCase(page)){
@@ -10131,6 +10560,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			}else{
 				setDropdownListsStep2(request, stuRegForm);
 				nextPage = postalCodeSelected(mapping, form, request, response);
+			}
+		}
+		
+		if (nextPage.equalsIgnoreCase("applyQualification")) {
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
 			}
 		}
 		
@@ -10250,15 +10685,21 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		}else if ("applyNewAddress3".equalsIgnoreCase(page)) {
 			prevPage = "applyNewAddress2";
 		}else if ("applyNewInfo1".equalsIgnoreCase(page)) {
-			prevPage = "applyNewAddress3";
-		}else if ("applyNewInfo2".equalsIgnoreCase(page)) {
+			prevPage = "applyNewAddress2";
+//		}else if ("applyNewInfo2".equalsIgnoreCase(page)) {
+//			setDropdownListsStep3(request, stuRegForm);
+//			prevPage = "applyNewInfo1";
+		}else if ("applyNewInfo3".equalsIgnoreCase(page)) {
+//			Johanet 2021 change Remove applyNewInfo2 - combine with applyNewContact			
+//			prevPage = "applyNewInfo2";
 			setDropdownListsStep3(request, stuRegForm);
 			prevPage = "applyNewInfo1";
-		}else if ("applyNewInfo3".equalsIgnoreCase(page)) {
-			prevPage = "applyNewInfo2";
 		}else if ("applyNewSchool".equalsIgnoreCase(page)) {
-			setUpUniversityList(request);
-			prevPage = "applyNewInfo3";
+//			Johanet 2021 change Remove applyNewInfo3 			
+//			setUpUniversityList(request);
+//			prevPage = "applyNewInfo3";
+			setDropdownListsStep3(request, stuRegForm);
+			prevPage = "applyNewInfo1";
 		}else if ("applyNewDeclare".equalsIgnoreCase(page)) {
 			stuRegForm.setAgree("");
 			setUpProvinceList(request);
@@ -10318,6 +10759,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				}else{
 					prevPage = "applyAPSSelect";
 				}
+			}
+		}
+		
+		if (prevPage.equalsIgnoreCase("applyQualification")) {
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
 			}
 		}
 		//log.debug("ApplyForStudentNumberAction - Back - Prevpage=" + prevPage);
@@ -10603,8 +11050,14 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			
 		    	while(it.hasNext()){
 		    		KeyValue exam = (KeyValue) it.next();
-		    		mapExamCentres.put(Integer.toString(keyCounter), exam.getKey()+"~"+exam.getValue());
-		    		keyCounter++;
+		    		if ((stuRegForm.getLoginSelectMain().equalsIgnoreCase("UD")||
+		    				stuRegForm.getLoginSelectMain().equalsIgnoreCase("HON")) &&
+		    				exam.getKey().substring(0, 5).equalsIgnoreCase("99899")) {		    			
+		    			/* do not display NOT APPLICABLE for Undergraduates and Honours */
+		    		}else {
+		    			mapExamCentres.put(Integer.toString(keyCounter), exam.getKey()+"~"+exam.getValue());
+			    		keyCounter++;
+		    		}
 		    	}
 		    	examObj.put("Exam",mapExamCentres);
 	        }catch(Exception ex){
@@ -10936,18 +11389,31 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		  op2.setInForeignCountryNameWsCountryEngDescription(stuRegForm.getStudent().getCountry().getDesc().toUpperCase());
 		  op2.setInWsAddressV2CellNumber(stuRegForm.getStudent().getCellNr());//from screen
 		  op2.setInWsAddressV2EmailAddress(stuRegForm.getStudent().getEmailAddress());//from screen
-		  op2.setInWsAddressV2CourierContactNo(stuRegForm.getStudent().getContactNr());
+		  //Johanet 2021 changes - default the the cellular number entered by the student as the contact number for the courier
+//		  op2.setInWsAddressV2CourierContactNo(stuRegForm.getStudent().getContactNr());
+		  op2.setInWsAddressV2CourierContactNo(stuRegForm.getStudent().getCellNr());
 	
 		  //courier address
-		  op2.setInCourierWsAddressAddressLine1(stuRegForm.getStudent().getCourierAddress().getLine1().toUpperCase());
-		  op2.setInCourierWsAddressAddressLine2(stuRegForm.getStudent().getCourierAddress().getLine2().toUpperCase());
-		  op2.setInCourierWsAddressAddressLine3(stuRegForm.getStudent().getCourierAddress().getLine3().toUpperCase());
-		  op2.setInCourierWsAddressAddressLine4(stuRegForm.getStudent().getCourierAddress().getLine4().toUpperCase());
-		  op2.setInCourierWsAddressAddressLine5(stuRegForm.getStudent().getCourierAddress().getLine5().toUpperCase());
-		  op2.setInCourierWsAddressAddressLine6(stuRegForm.getStudent().getCourierAddress().getLine6().toUpperCase());
-		  if (stuRegForm.getStudent().getCourierAddress().getAreaCode()!= null && !stuRegForm.getStudent().getCourierAddress().getAreaCode().equalsIgnoreCase("")){
-		     op2.setInCourierWsAddressPostalCode(Short.parseShort(stuRegForm.getStudent().getCourierAddress().getAreaCode()));
-		  }
+		  //Johanet 2021 changes set courier address to physical address		
+//		  op2.setInCourierWsAddressAddressLine1(stuRegForm.getStudent().getCourierAddress().getLine1().toUpperCase());
+//		  op2.setInCourierWsAddressAddressLine2(stuRegForm.getStudent().getCourierAddress().getLine2().toUpperCase());
+//		  op2.setInCourierWsAddressAddressLine3(stuRegForm.getStudent().getCourierAddress().getLine3().toUpperCase());
+//		  op2.setInCourierWsAddressAddressLine4(stuRegForm.getStudent().getCourierAddress().getLine4().toUpperCase());
+//		  op2.setInCourierWsAddressAddressLine5(stuRegForm.getStudent().getCourierAddress().getLine5().toUpperCase());
+//		  op2.setInCourierWsAddressAddressLine6(stuRegForm.getStudent().getCourierAddress().getLine6().toUpperCase());
+//		  if (stuRegForm.getStudent().getCourierAddress().getAreaCode()!= null && !stuRegForm.getStudent().getCourierAddress().getAreaCode().equalsIgnoreCase("")){
+//			     op2.setInCourierWsAddressPostalCode(Short.parseShort(stuRegForm.getStudent().getCourierAddress().getAreaCode()));
+//			  }
+		  op2.setInCourierWsAddressAddressLine1(stuRegForm.getStudent().getPhysicalAddress().getLine1().toUpperCase());
+		  op2.setInCourierWsAddressAddressLine2(stuRegForm.getStudent().getPhysicalAddress().getLine2().toUpperCase());
+		  op2.setInCourierWsAddressAddressLine3(stuRegForm.getStudent().getPhysicalAddress().getLine3().toUpperCase());
+		  op2.setInCourierWsAddressAddressLine4(stuRegForm.getStudent().getPhysicalAddress().getLine4().toUpperCase());
+		  op2.setInCourierWsAddressAddressLine5(stuRegForm.getStudent().getPhysicalAddress().getLine5().toUpperCase());
+		  op2.setInCourierWsAddressAddressLine6(stuRegForm.getStudent().getPhysicalAddress().getLine6().toUpperCase());
+		  if (stuRegForm.getStudent().getPhysicalAddress().getAreaCode()!= null && !stuRegForm.getStudent().getPhysicalAddress().getAreaCode().equalsIgnoreCase("")){
+			     op2.setInCourierWsAddressPostalCode(Short.parseShort(stuRegForm.getStudent().getPhysicalAddress().getAreaCode()));
+			  }
+		
 		  //op2.setInCourierWsAddressReferenceNo(op.getOutCourierWsAddressReferenceNo());
 		  //op2.setInCourierWsAddressType(op.getOutCourierWsAddressType());
 		  //op2.setInCourierWsAddressCategory(op.getOutCourierWsAddressCategory());
@@ -13061,6 +13527,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//If Matric Exists, go To Qualification Screen (SelectNew), Else go to Matric APS Screen 1
 		if (stuRegForm.isQualIDMatch()){
 			//log.debug("ApplyForStudentNumberAction - stepID - Matric Matched - Goto applyQualification");
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else{
 			//log.debug("ApplyForStudentNumberAction - stepID - Matric NOT Matched - Goto APS Screen 1 ()");
@@ -13168,6 +13637,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		//If Matric Exists, go To SelectNew, Else go to APS Screen 1
 		if (matricCheck){
 			//log.debug("ApplyForStudentNumberAction - stepID - Goto applyQualification");
+			if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+				stuRegForm.setCollegeList(getColleges());
+			}
 			return mapping.findForward("applyQualification");
 		}else{
 			//log.debug("ApplyForStudentNumberAction - stepID - Goto APS Screen 1 ()");
@@ -13260,6 +13732,9 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				addErrors(request, messages);
 				return "applyMatricSubject";
 			}
+		}
+		if (stuRegForm.getCollegeList() == null || stuRegForm.getCollegeList().size()==0) {
+			stuRegForm.setCollegeList(getColleges());
 		}
 		return "applyQualification";
 	}
@@ -13609,6 +14084,18 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		  //log.debug("ApplyForStudentNumberAction - getAllRequestParamaters - End");
 		  //log.debug("ApplyForStudentNumberAction -----------------------------------------------------------------");
 	  } 
+	  
+	public List<College> getColleges() throws Exception {
+			List<College> colleges = new ArrayList<College>();
+			ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+			colleges = dao.getColleges();		
+			College selCollege = new College();
+			selCollege.setCode("0");
+			selCollege.setDescription("Select college");
+			colleges.add(0,selCollege);
+			
+		return colleges;
+	}
 	  
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 

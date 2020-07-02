@@ -99,7 +99,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	window.onunload=function() { void(0) }  
 		
 		/**Call when document is ready**/
-		$(document).ready(function() {
+		$(document).ready(function() {			
 			
 			$('form,input,select,textarea').attr("autocomplete", "off");
 			
@@ -117,38 +117,47 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				//alert("selectStudy - SLP - YES STUAPQ - isSTUSLP=" + isSTUSLP+", isSTUAPQ=" + isSTUAPQ);
 
 				//Locked Qualification Dropdown 1 for SLP
+				$("select[name='selCollegeCode1'] option:not(:selected)").prop("disabled", true);
 				$("select[name='selCategoryCode1'] option:not(:selected)").prop("disabled", true);
 				$("select[name='selQualCode1'] option:not(:selected)").prop("disabled", true);
 				$("select[name='selSpecCode1'] option:not(:selected)").prop("disabled", true);
 
 				//Change locked Dropdown Background colour
+				$("select[name='selCollegeCode1']").css("background-color","#FFFEEE");
 				$("select[name='selCategoryCode1']").css("background-color","#FFFEEE");
 				$("select[name='selQualCode1']").css("background-color","#FFFEEE");
 				$("select[name='selSpecCode1']").css("background-color","#FFFEEE");
 
 				$("#second").show();
+				$("#secondCol").hide();
 			    $("#secondCat").show();
 			    $("#secondQual").show();
 			    $("#secondSpec").show();
+			    
+			    /**Retrieve saved colleges**/
+				populateSelectedCollege1();				
+				populateSelectedCollege2();
 				
 			    //alert("isSTUSLP="+isSTUSLP+", isSTUAPQ="+isSTUAPQ+" - Call populateSelectedCategory1");
-				populateSelectedCategory1();
+				//populateSelectedCategory1();
 				//alert("isSTUSLP="+isSTUSLP+", isSTUAPQ="+isSTUAPQ+" - Call populateSelectedCategory2");
-				populateSelectedCategory2();
+				//populateSelectedCategory2();
 			}else if (isSTUSLP == "true" && isSTUAPQ != "true"){
 				//alert("selectStudy - SLP - NO STUAPQ - isSTUSLP=" + isSTUSLP+", isSTUAPQ=" + isSTUAPQ);
 				$("#second").hide();
+				$("#secondCol").hide();
 			    $("#secondCat").hide();
 			    $("#secondQual").hide();
 			    $("#secondSpec").hide();
 				
-				populateSelectedCategory1();
+			    populateSelectedCollege1();	
 			}
 			
 			//Johanet 2018July BRD hide second choice for RPL
 			var aspGRD = $("#selectHEMain").val();
 				if (aspGRD === "RPL"){
 					$("#second").hide();
+					$("#secondCol").hide();
 				    $("#secondCat").hide();
 				    $("#secondQual").hide();
 				    $("#secondSpec").hide();
@@ -159,18 +168,97 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			if(catSelect == "MD"){
 				//alert("selectStudy - catSelect - MD - catSelect=" + catSelect);
 				$("#second").hide();
+				$("#secondCol").hide();
 				$("#secondCat").hide();
 				$("#secondQual").hide();
 				$("#secondSpec").hide();
 				
-				populateSelectedCategory1();
-			}else if (catSelect != "MD" && catSelect != "SLP"){
+				populateSelectedCollege1();	
+			}else if (catSelect != "MD" && catSelect != "SLP"){  //LoginSelectMain
 				//alert("selectStudyNew - catSelect - NOT MD or SLP - catSelect=" + catSelect);
 				
-				/**Retrieve saved categories**/
-				populateSelectedCategory1();
-				populateSelectedCategory2();
-			}
+				/**Retrieve saved colleges**/
+				populateSelectedCollege1();				
+				populateSelectedCollege2();
+				
+				/**Retrieve saved categories**/				
+				//populateSelectedCategory1();
+				//populateSelectedCategory2();
+			}	
+			
+			//Change College1
+			$("select[name='selCollegeCode1']").change(function(){
+				$("select[name='selCategoryCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
+				$("select[name='selCategoryCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+				var stuNr = $("#stuNr").val();
+				var url = 'applyForStudentNumber.do?act=populateCategories&id='+stuNr;				
+				$.ajaxSetup( { "async": false } );
+				$.getJSON(url, function(data) {
+					data.sort(SortByCode);
+					$("select[name='selCategoryCode1']").empty(); //Remove all previous options again (Remove temp option above)
+					var items = [];
+					items.push('<option value="0">Select category</option>');
+					var count = 0;
+					$.each(data, function(i, item) {						
+					    	items.push('<option value="' + data[i].code + '">' + data[i].desc + '</option>');
+					    	count++;
+					});
+					if(count==0){
+					     //Show msg
+						 showError("Note","The application period for the category in this College is closed");
+						 $("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
+						 $("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selQualCode1']").empty();
+						 $("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selSpecCode1']").empty();
+						 $("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
+					}else{
+						$("select[name='selCategoryCode1']").html(items);
+						$("select[name='selQualCode1']").empty();
+						$("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
+						$("select[name='selSpecCode1']").empty();
+						$("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
+					}
+					
+				});	
+			});
+			
+			//Change College2
+			$("select[name='selCollegeCode2']").change(function(){
+				$("select[name='selCategoryCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
+				$("select[name='selCategoryCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+				var stuNr = $("#stuNr").val();
+				var url = 'applyForStudentNumber.do?act=populateCategories&id='+stuNr;				
+				$.ajaxSetup( { "async": false } );
+				$.getJSON(url, function(data) {
+					data.sort(SortByCode);
+					$("select[name='selCategoryCode2']").empty(); //Remove all previous options again (Remove temp option above)
+					var items = [];
+					items.push('<option value="0">Select category</option>');
+					var count = 0;
+					$.each(data, function(i, item) {						
+					    	items.push('<option value="' + data[i].code + '">' + data[i].desc + '</option>');
+					    	count++;
+					});
+					if(count==0){
+					     //Show msg
+						 showError("Note","The application period for this category is closed");
+						 $("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
+						 $("select[name='selQualCode2']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selQualCode2']").empty();
+						 $("select[name='selQualCode2']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selSpecCode2']").empty();
+						 $("select[name='selSpecCode2']").html('<option value="0">Select specialization</option>');
+					}else{
+						$("select[name='selCategoryCode2']").html(items);
+						$("select[name='selQualCode2']").empty();
+						$("select[name='selQualCode2']").html('<option value="0">Select qualification</option>'); 
+						$("select[name='selSpecCode2']").empty();
+						$("select[name='selSpecCode2']").html('<option value="0">Select specialization</option>');
+					}
+					
+				});	
+			});
 			
 		    //Change Category
 			$("select[name='selCategoryCode1']").change(function(){
@@ -179,23 +267,11 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				//Test if Currently in Grade 12
 				var aspGRD = $("#selectHEMain").val();
 				if (aspGRD === "G12"){
-					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10"){
-						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
-						/*$("#savedCategory1").html(""); 
-						$("#savedQual1").html(""); 
-						$("#savedSpec1").html("");
-						populateSelectedCategory1();
-						return false;*/
+					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10" || category === "99"){
+						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");			
 					}					
 				}
-				var categoryText = $("select[name='selCategoryCode1']").find("option:selected").text();
-				if (categoryText == "Select category"){
-					/*$("#savedCategory1").html(""); 
-					$("#savedQual1").html(""); 
-					$("#savedSpec1").html("");
-					populateSelectedCategory1();
-					return false;*/
-				}
+				var categoryText = $("select[name='selCategoryCode1']").find("option:selected").text();			
 				
 				//Hide 2nd set of dropbox if category contains 'Master' or 'Doctor'
 				if($("#catSelect").val() == "MD" || categoryText.toLowerCase().indexOf("master") >= 0 || categoryText.toLowerCase().indexOf("doctor")>=0 || categoryText.toLowerCase().indexOf("magister")>=0){
@@ -203,21 +279,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					$("#secondCat").hide();
 					$("#secondQual").hide();
 					$("#secondSpec").hide();
-				} else {
-					/*if ($("#catSelect").val() != "SLP"){
-						$("#second").show();
-					    $("#secondCat").show();
-					    $("#secondQual").show();
-					    $("#secondSpec").show();
-					}*/
 				}
 				
+				var college = $("select[name='selCollegeCode1']").find("option:selected").val();
 				$("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selQualCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
 				
 				//Johanet - 20180823 add student nr to prevent caching if students do not close browser
 				var stuNr = $("#stuNr").val();
-				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&id='+stuNr;
+				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&selCollegeCode='+college+'&id='+stuNr;
 				var aspGRD = $("#selectHEMain").val();  //Johanet 20190723	
 				$.ajaxSetup( { "async": false } );
 				$.getJSON(url, function(data) {
@@ -228,7 +298,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					var count = 0;
 					$.each(data, function(i, item) {
 						//20190723 Johanet BRS 2020 requirement 5 - do not load 0216X for grade 12 student
-						if (aspGRD === "G12" && data[i].code === "0216X"){
+						if (aspGRD === "G12" && (data[i].code === "0216X" || data[i].code === "90148")){
 							 //do nothing grade 12 student do not qualify for qualification 0216X
 						}else{
 				    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
@@ -238,17 +308,21 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					});
 					if(count==0){
 					     //Show msg
-						 showError("Note","The application period for this category is closed");
+						 showError("Note","The application period for the category in this College is closed");
 						 $("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
-						 $("select[name='selQualCode1']").html('<option value="0"> </option>'); 
-						 $("select[name='selSpecCode1']").html('<option value="0"> </option>');
+						 $("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selSpecCode1']").empty();
+						 $("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
 					}else{
 						$("select[name='selQualCode1']").html(items);
-						$("select[name='selSpecCode1']").html('<option value="0"> </option>');
+						$("select[name='selSpecCode1']").empty();
+						$("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
 					}
 				});
 			});
 			
+		
+		    
 			$("select[name='selCategoryCode2']").change(function(){
 				
 				
@@ -256,30 +330,19 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				//Test if Currently in Grade 12
 				var aspGRD = $("#selectHEMain").val();
 				if (aspGRD === "G12"){
-					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10"){
-						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");
-						/*$("#savedCategory2").html(""); 
-						$("#savedQual2").html(""); 
-						$("#savedSpec2").html(""); 
-						populateSelectedCategory2();
-						return false;*/
+					if (category === "03" || category === "05" || category === "06" || category === "09" || category === "10" || category === "99"){		
+						showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");			
 					}
 				}
-				var categoryText = $("select[name='selCategoryCode2']").find("option:selected").text();
-				if (categoryText == "Select category"){
-					/*$("#savedCategory2").html(""); 
-					$("#savedQual2").html(""); 
-					$("#savedSpec2").html("");
-					populateSelectedCategory2();
-					return false;*/
-				}
+				var categoryText = $("select[name='selCategoryCode2']").find("option:selected").text();			
 				
+				var college = $("select[name='selCollegeCode2']").find("option:selected").val();
 				$("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selQualCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
 				
 				//Johanet - 20180823 add student nr to prevent caching if students do not close browser
 				var stuNr = $("#stuNr").val();
-				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&id='+stuNr;
+				var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+category+'&selCollegeCode='+college+'&id='+stuNr;				
 				var aspGRD = $("#selectHEMain").val();  //Johanet 20190723	
 				$.ajaxSetup( { "async": false } );
 				$.getJSON(url, function(data) {
@@ -290,7 +353,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					var count = 0;
 					$.each(data, function(i, item) {
 						//20190723 Johanet BRS 2020 requirement 5 - do not load 0216X for grade 12 student
-						if (aspGRD === "G12" && data[i].code === "0216X"){
+						if (aspGRD === "G12" && (data[i].code === "0216X" || data[i].code === "90148")){
 							 //do nothing grade 12 student do not qualify for qualification 0216X
 						}else{
 					    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
@@ -300,76 +363,114 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					});
 					if(count==0){
 						//Show msg
-						showError("Note","The application period for this category is closed");
+						showError("Note","The application period for the category in this College is closed");
 						$("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
-						$("select[name='selQualCode2']").html('<option value="0"> </option>'); 
-						$("select[name='selSpecCode2']").html('<option value="0"> </option>');
+						$("select[name='selQualCode2']").html('<option value="0">Select qualification</option>'); 
+						$("select[name='selSpecCode2']").empty();
+						$("select[name='selSpecCode2']").html('<option value="0">Select specialization</option>');
 					}else{
 						$("select[name='selQualCode2']").html(items);
-						$("select[name='selSpecCode2']").html('<option value="0"> </option>');
+						$("select[name='selSpecCode2']").empty();
+						$("select[name='selSpecCode2']").html('<option value="0">Select specialization</option>');
 					}
 				});
 				
 			});
-			
+		
 			//Change Qualification
 			$("select[name='selQualCode1']").change(function(){
 				
+				var pattern = /oversubscribed/;
+				var qualDesc = $("select[name='selQualCode1']").find("option:selected").text();
 				
-				$("select[name='selSpecCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
-				$("select[name='selSpecCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
-				
-				var qual = $(this).val();				
-				var category1 = $("select[name='selCategoryCode1']").find("option:selected").val();
-				var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category1+'&selQualCode='+qual;
-				$.ajaxSetup( { "async": false } );
-				$.getJSON(url, function(data) {
-					data.sort(SortByCode);
-					$("select[name='selSpecCode1']").empty(); //Remove all previous options again (Remove temp option above)
-					var items = [];
-					items.push('<option value="0">Select specialization</option>');
-					var count = 0;
-					$.each(data, function(i, item) {
-				    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
-				    	count++;
-					});
-					if(count==0){
-					    $("select[name='selSpecCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
-						$("select[name='selSpecCode1']").html('<option value="0">(N/A) - Not Applicable</option>'); 
-					}else{
-						$("select[name='selSpecCode1']").html(items);
-					}
-				});		
+				if(pattern.test(qualDesc)){
+						showError("Note", "This qualification has reached the number of applicaitons allowed and no additional applications can be submitted.");	
+						 $("select[name='selSpecCode1']").empty();
+						 $("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
+				}else{
+					$("select[name='selSpecCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
+					$("select[name='selSpecCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+					
+					var qual = $(this).val();				
+					var category1 = $("select[name='selCategoryCode1']").find("option:selected").val();
+					var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category1+'&selQualCode='+qual;
+					$.ajaxSetup( { "async": false } );
+					$.getJSON(url, function(data) {
+						data.sort(SortByCode);
+						$("select[name='selSpecCode1']").empty(); //Remove all previous options again (Remove temp option above)
+						var items = [];
+						items.push('<option value="0">Select specialization</option>');
+						var count = 0;
+						$.each(data, function(i, item) {
+					    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
+					    	count++;
+						});
+						if(count==0){
+						    $("select[name='selSpecCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
+							$("select[name='selSpecCode1']").html('<option value="0">(N/A) - Not Applicable</option>'); 
+						}else{
+							$("select[name='selSpecCode1']").html(items);
+						}
+					});		
+				}	
 				
 			});
 			
 			$("select[name='selQualCode2']").change(function(){
 				
+				var pattern = /oversubscribed/;
+				var qualDesc = $("select[name='selQualCode1']").find("option:selected").text();
 				
-				$("select[name='selSpecCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
-				$("select[name='selSpecCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
-				
-				var qual = $(this).val();					
-				var category2 = $("select[name='selCategoryCode2']").find("option:selected").val();
-				var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category2+'&selQualCode='+qual;
-				$.ajaxSetup( { "async": false } );
-				$.getJSON(url, function(data) {
-					data.sort(SortByCode);
-					$("select[name='selSpecCode2']").empty(); //Remove all previous options again (Remove temp option above)
-					var items = [];
-					items.push('<option value="0">Select specialization</option>');
-					var count = 0;
-					$.each(data, function(i, item) {
-				    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
-				    	count++;
+				if(pattern.test(qualDesc)){
+						showError("Note", "This qualification has reached the number of applicaitons allowed and no additional applications can be submitted.");	
+						 $("select[name='selSpecCode2']").empty();
+						 $("select[name='selSpecCode2']").html('<option value="0">Select specialization</option>');
+				}else{
+					$("select[name='selSpecCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
+					$("select[name='selSpecCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+					
+					var qual = $(this).val();					
+					var category2 = $("select[name='selCategoryCode2']").find("option:selected").val();
+					var url = 'applyForStudentNumber.do?act=populateSpecializations&selCategoryCode='+category2+'&selQualCode='+qual;
+					$.ajaxSetup( { "async": false } );
+					$.getJSON(url, function(data) {
+						data.sort(SortByCode);
+						$("select[name='selSpecCode2']").empty(); //Remove all previous options again (Remove temp option above)
+						var items = [];
+						items.push('<option value="0">Select specialization</option>');
+						var count = 0;
+						$.each(data, function(i, item) {
+					    	items.push('<option value="' + data[i].code + '">' + data[i].code + " - " + data[i].desc + '</option>');
+					    	count++;
+						});
+						if(count==0){
+						    $("select[name='selSpecCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
+							$("select[name='selSpecCode2']").html('<option value="0">(N/A) - Not Applicable</option>'); 
+						}else{
+							$("select[name='selSpecCode2']").html(items);
+						}
 					});
-					if(count==0){
-					    $("select[name='selSpecCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
-						$("select[name='selSpecCode2']").html('<option value="0">(N/A) - Not Applicable</option>'); 
-					}else{
-						$("select[name='selSpecCode2']").html(items);
-					}
-				});
+				}
+			});
+			
+			$("select[name='selSpecCode1']").change(function(){
+				var pattern = /oversubscribed/;
+				var specDesc = $("select[name='selSpecCode1']").find("option:selected").text();
+				
+				if(pattern.test(specDesc)){
+						showError("Note", "This specialisation has reached the number of applicaitons allowed and no additional applications can be submitted.");				  			
+				}
+				
+			});
+			
+			$("select[name='selSpecCode2']").change(function(){
+				var pattern = /oversubscribed/;
+				var specDesc = $("select[name='selSpecCode2']").find("option:selected").text();
+				
+				if(pattern.test(specDesc)){
+						showError("Note", "This specialisation has reached the number of applicaitons allowed and no additional applications can be submitted.");				  			
+				}
+				
 			});
 				
 		});
@@ -380,21 +481,27 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			
 			var checkError = 0;	
 			
+			var college1 = $("select[name='selCollegeCode1']").find("option:selected").val();
 			var category1 = $("select[name='selCategoryCode1']").find("option:selected").val();
 			var qual1 =     $("select[name='selQualCode1']").find("option:selected").val();
 			var qual1OptionDesc = $("select[name='selQualCode1']").find("option:selected").text();  //JohanetTest
 			$('input[id=qual1OptionDesc]').val(qual1OptionDesc);
 			//document.getElementById("qual1Desc").value=qual1Desc;
 			
-		    var spec1 =     $("select[name='selSpecCode1']").find("option:selected").val();
+		    var spec1 =     $("select[name='selSpecCode1']").find("option:selected").val();		   
 		    
-		    
+		    var college2 = $("select[name='selCollegeCode2']").find("option:selected").val();
 		    var category2 = $("select[name='selCategoryCode2']").find("option:selected").val();
 			var qual2 =     $("select[name='selQualCode2']").find("option:selected").val();
 			var qual2OptionDesc = $("select[name='selQualCode2']").find("option:selected").text();  //JohanetTest
 			$('input[id=qual2OptionDesc]').val(qual2OptionDesc);
 		    var spec2 =     $("select[name='selSpecCode2']").find("option:selected").val();
 		    
+		    if(jQuery.trim(college1) == "0"){
+		    	showError("Note","Please select a college from the drop list provided.");
+		    	checkError = 1;
+		    	return false;
+		    }		    
 		    if(jQuery.trim(category1) == "0"){
 		    	showError("Note","Please select a category from the drop list provided.");
 		    	checkError = 1;
@@ -420,6 +527,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		    	return false;
 		    }
 		    
+		    if(jQuery.trim(college2) != "0"){
+		    	if(jQuery.trim(category2) == "0"){
+		    		showError("Note","Please select a category from the drop list provided.");
+			    	checkError = 1;
+			    	return false;
+		    	}		    	
+		    }	
 		    if (jQuery.trim(category2) != "0"  ){
 			    if(jQuery.trim(qual2) == "0"  ){
 			    	showError("Note","Please select a qualification from the drop list provided.");
@@ -442,36 +556,47 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			    }
 		    }
 		    
-		    if((jQuery.trim(qual1) == "02623" && jQuery.trim(spec1) == "NEW") ||
-		    		(jQuery.trim(qual1) == "02631" && jQuery.trim(spec1) == "FDP") ||
-		    		(jQuery.trim(qual1) == "03980" && jQuery.trim(spec1) == "NEW") ||
-		    		(jQuery.trim(qual2) == "02623" && jQuery.trim(spec2) == "NEW") ||
-		    		(jQuery.trim(qual2) == "02631" && jQuery.trim(spec2) == "FDP") ||
-		    		(jQuery.trim(qual2) == "03980" && jQuery.trim(spec2) == "NEW")){
+// 		   if((jQuery.trim(qual1) == "02623" && jQuery.trim(spec1) == "NEW") ||
+// 		    		(jQuery.trim(qual1) == "02631" && jQuery.trim(spec1) == "FDP") ||
+// 		    		(jQuery.trim(qual1) == "03980" && jQuery.trim(spec1) == "NEW") ||
+// 		    		(jQuery.trim(qual2) == "02623" && jQuery.trim(spec2) == "NEW") ||
+// 		    		(jQuery.trim(qual2) == "02631" && jQuery.trim(spec2) == "FDP") ||
+// 		    		(jQuery.trim(qual2) == "03980" && jQuery.trim(spec2) == "NEW")){
+// 		    	var newLine = "\r\n";
+// 		    	var msg = "Please note that you should have completed an undergraduate degree or National diploma to comply with admission requirements of the qualification you have selected.";
+// 		    	msg += newLine;
+// 		    	msg += newLine;
+// 		    	msg += "If you selected either of the PGCEs 02623 NEW or 02631 FDP as qualifications, please note that you must have passed 2 official languages (English 1 and Afrikaans 1 or African languages 1) in the degree or diploma that you completed.";
+// 		    	msg += newLine;
+// 		    	msg += newLine;
+// 		    	msg += "NB: If you do not comply with any of the admission requirements for the qualification you selected, you will not be admitted to the PGCE.";
+// 		        alert(msg);
+// 		    }
+			//Johanet 20200528 display text for all postgraduate quals
+		    if(jQuery.trim(category1) == "03" || jQuery.trim(category1) == "05" || jQuery.trim(category1) == "06" || jQuery.trim(category1) == "09" || jQuery.trim(category1) == "10" ||
+		    		jQuery.trim(category2) == "03" || jQuery.trim(category2) == "05" || jQuery.trim(category2) == "06" || jQuery.trim(category2) == "09" || jQuery.trim(category2) == "10"){
 		    	var newLine = "\r\n";
 		    	var msg = "Please note that you should have completed an undergraduate degree or National diploma to comply with admission requirements of the qualification you have selected.";
 		    	msg += newLine;
-		    	msg += newLine;
-		    	msg += "If you selected either of the PGCEs 02623 NEW or 02631 FDP as qualifications, please note that you must have passed 2 official languages (English 1 and Afrikaans 1 or African languages 1) in the degree or diploma that you completed.";
-		    	msg += newLine;
-		    	msg += newLine;
-		    	msg += "NB: If you do not comply with any of the admission requirements for the qualification you selected, you will not be admitted to the PGCE.";
+		    	msg += newLine;		    	
+		    	msg += "NB: If you do not comply with any of the admission requirements for the qualification you selected, you will not be admitted.";
 		        alert(msg);
-		    }
+			}		   
 		    //Johanet 20190808 - add additional test for grade 12
 		    var aspGRD = $("#selectHEMain").val();
 			if (aspGRD === "G12"){
-				if(jQuery.trim(category1) == "03" || jQuery.trim(category1) == "05" || jQuery.trim(category1) == "06" || jQuery.trim(category1) == "09" || jQuery.trim(category1) == "10"){
+				if(jQuery.trim(category1) == "03" || jQuery.trim(category1) == "05" || jQuery.trim(category1) == "06" || jQuery.trim(category1) == "09" || jQuery.trim(category1) == "10" || jQuery.trim(category1) == "99"){
 		  			showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
 		  			checkError = 1;
 			    	return false;
 				}
-		    	if(jQuery.trim(category2) == "03" || jQuery.trim(category2) == "05" || jQuery.trim(category2) == "06" || jQuery.trim(category2) == "09" || jQuery.trim(category2) == "10"){
+		    	if(jQuery.trim(category2) == "03" || jQuery.trim(category2) == "05" || jQuery.trim(category2) == "06" || jQuery.trim(category2) == "09" || jQuery.trim(category2) == "10" || jQuery.trim(category2) == "99"){
 		  			showError("Note", "You are currently in Grade 12 and you do not comply with the admission requirements for postgraduate studies on this level.");	
 		  			checkError = 1;
 			    	return false;
 				}
 			}
+			
 			
 			if (qual1OptionDesc.indexOf('You may not qualify') !== -1 || qual2OptionDesc.indexOf('You may not qualify') !== -1){
 				var url = 'applyForStudentNumber.do?act=verifyStuQualify&qual1OptionDesc='+qual1OptionDesc+'&qual2OptionDesc='+qual2OptionDesc;
@@ -508,10 +633,21 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var aName = a.desc.toLowerCase();
 			var bName = b.desc.toLowerCase(); 
 			return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+		}		
+		
+		function populateSelectedCollege1(){			
+			var savedCollege1 = $("#savedCollege1").val();			
+			$("select[name='selCollegeCode1']").val(savedCollege1).change();		
+			populateSelectedCategory1();
+		}
+		 
+		function populateSelectedCollege2(){	
+			var savedCollege2 = $("#savedCollege2").val();			
+			$("select[name='selCollegeCode2']").val(savedCollege2).change();		
+			populateSelectedCategory2();
 		}
 		
-		 
-		function populateSelectedCategory1(){
+		function populateSelectedCategory1(){			
 			$("select[name='selCategoryCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 			$("select[name='selCategoryCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
 			var stuNr = $("#stuNr").val();
@@ -565,13 +701,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		function populateSelectedQual1(){
 			$("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 			$("select[name='selQualCode1']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+			var savedCollege1 = $("#savedCollege1").val();
 			var savedCategory1 = $("#savedCategory1").val();
 			var savedQual1 = $("#savedQual1").val();
 			//Johanet - 20180823 add student nr to prevent caching if students do not close browser
 			var stuNr = $("#stuNr").val();
-			var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+savedCategory1+'&id='+stuNr;
+			var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+savedCategory1+'&selCollegeCode='+savedCollege1+'&id='+stuNr;
 			//alert("populateSelectedQual1 - savedCategory1="+savedCategory1+", savedQual1="+savedQual1);
-			if ((savedQual1 == null || savedQual1 == "0" || savedQual1 == "" || savedQual1 == "undefined") && (savedCategory1 == null || savedCategory1 == "0" || savedCategory1 == "" || savedCategory1 == "undefined")){
+			if ((savedQual1 == null || savedQual1 == "0" || savedQual1 == "" || savedQual1 == "undefined") && 
+					(savedCategory1 == null || savedCategory1 == "0" || savedCategory1 == "" || savedCategory1 == "undefined")){
 				$("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
 			}else{
@@ -593,11 +731,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					});
 					if(count==0){
 						 $("select[name='selQualCode1']").empty(); //Remove all previous options (Index cleanup for various browsers)
-						 $("select[name='selQualCode1']").html('<option value="0"> </option>'); 
-						 $("select[name='selSpecCode1']").html('<option value="0"> </option>');
+						 $("select[name='selQualCode1']").html('<option value="0">Select qualification</option>'); 
+						 $("select[name='selSpecCode1']").empty();
+						 $("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
 					}else{
 						$("select[name='selQualCode1']").html(items);
-						$("select[name='selSpecCode1']").html('<option value="0"> </option>');
+						$("select[name='selSpecCode1']").empty();
+						$("select[name='selSpecCode1']").html('<option value="0">Select specialization</option>');
 						populateSelectedSpec1();
 					}
 				});
@@ -607,11 +747,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		function populateSelectedQual2(){
 			$("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
 			$("select[name='selQualCode2']").append('<option value="0">Loading....</option>'); //Temp option to show if database retrieval is slow
+			var savedCollege2 = $("#savedCollege2").val();
 			var savedCategory2 = $("#savedCategory2").val();
-			//Johanet - 20180823 add student nr to prevent caching if students do not close browser
-			var stuNr = $("#stuNr").val();
-			var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+savedCategory2+'&id='+stuNr;
 			var savedQual2 = $("#savedQual2").val();
+			//Johanet - 20180823 add student nr to prevent caching if students do not close browser
+			var stuNr = $("#stuNr").val();			
+			var url = 'applyForStudentNumber.do?act=populateQualifications&selCategoryCode='+savedCategory2+'&selCollegeCode='+savedCollege2+'&id='+stuNr;
+			
 			if ((savedQual2 == null || savedQual2 == "0" || savedQual2 == "" || savedQual2 == "undefined") && (savedCategory2 == null || savedCategory2 == "0" || savedCategory2 == "" || savedCategory2 == "undefined")){
 				$("select[name='selQualCode2']").empty(); //Remove all previous options (Index cleanup for various browsers)
 				$("select[name='selQualCode2']").html('<option value="0">Select qualification</option>'); 
@@ -769,6 +911,8 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	<input type="hidden" name="webADM" id="webADM" value="<bean:write name='studentRegistrationForm' property='adminStaff.admin' />"/>
 	<input type="hidden" id="docMsg" name="docMsg" value="<bean:write name='studentRegistrationForm' property='webUploadMsg' />" />
 	<input type="hidden" id="catSelect" name="catSelect" value="<bean:write name='studentRegistrationForm' property='loginSelectMain' />" />
+	<input type="hidden" id="savedCollege1" name="savedCollege1" value="<bean:write name='studentRegistrationForm' property='savedCollege1' />" />
+	<input type="hidden" id="savedCollege2" name="savedCollege2" value="<bean:write name='studentRegistrationForm' property='savedCollege2' />" />
 	<input type="hidden" id="savedCategory1" name="savedCategory1" value="<bean:write name='studentRegistrationForm' property='savedCategory1' />" />
 	<input type="hidden" id="savedCategory2" name="savedCategory2" value="<bean:write name='studentRegistrationForm' property='savedCategory2' />" />
 	<input type="hidden" id="savedQual1" name="savedQual1" value="<bean:write name='studentRegistrationForm' property='savedQual1' />" />
@@ -835,6 +979,19 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							</tr>
 							<tr style="width:500">
 								<td>
+									<fmt:message key="page.studentnr.apply.college"/>
+								</td>
+								<td>									
+									<div id="firstCol"> 
+										<html:select name="studentRegistrationForm" property="selCollegeCode1"
+											errorStyleClass="error" errorKey="org.apache.struts.action.ERROR" style="width:100%">
+											<html:optionsCollection name="studentRegistrationForm" property="collegeList" value="code" label="description"/>
+										</html:select>
+									</div>
+								</td>
+							</tr>
+							<tr style="width:500">
+								<td>
 									<fmt:message key="page.studentnr.apply.category" />
 								</td>
 								<td>
@@ -877,6 +1034,19 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 						<sakai:group_table>
 							<tr style="width:150">
 								<td colspan="2"><fmt:message key="page.studentnr.apply.optqual" /></td>
+							</tr>
+							<tr style="width:500">
+								<td>
+									<fmt:message key="page.studentnr.apply.college"/>
+								</td>
+								<td>									
+									<div id="secondCol"> 
+										<html:select name="studentRegistrationForm" property="selCollegeCode2"
+											errorStyleClass="error" errorKey="org.apache.struts.action.ERROR" style="width:100%">
+											<html:optionsCollection name="studentRegistrationForm" property="collegeList" value="code" label="description"/>
+										</html:select>
+									</div>
+								</td>
 							</tr>
 							<tr style="width:500">
 								<td>

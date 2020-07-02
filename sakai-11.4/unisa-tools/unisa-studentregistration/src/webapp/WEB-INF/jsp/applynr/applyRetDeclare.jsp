@@ -171,9 +171,74 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 	<div class="container full-width">
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">
+								<div class="panel-heading">
 					<h3 class="panel-title text-center"><fmt:message key="page.studentnr.apply.heading"/></h3>
 				</div>
+				<div class="panel-body">	
+					<sakai:group_table>
+						<tr>
+							<td colspan="3"><strong><fmt:message key="page.studentnr.apply.confirm"/></strong>&nbsp;</td>
+						</tr><tr>
+							<td colspan="3">&nbsp;</td>
+						</tr>					
+						<logic:notEqual name='studentRegistrationForm' property='student.stuSLP' value="true">
+							<logic:notEmpty name="studentRegistrationForm" property="existQual">
+								<tr>
+									<td>Current Qualification&nbsp;</td>
+									<td colspan="2"><bean:write name="studentRegistrationForm" property="student.retQualPrevFinal"/></td>
+								</tr><tr>
+									<td>Current Specialization&nbsp;</td>	
+									<td colspan="2"><bean:write name="studentRegistrationForm" property="student.retSpecPrevFinal"/></td>
+								</tr><tr>
+									<td colspan="3">&nbsp;</td>
+								</tr>
+							</logic:notEmpty>
+						</logic:notEqual>
+						<tr>
+							<td>Primary Qualification&nbsp;</td>
+							<td colspan="2"><bean:write name="studentRegistrationForm" property="selQualCode1"/>&nbsp;-&nbsp;<bean:write name="studentRegistrationForm" property="selQualCode1Desc"/></td>
+						</tr>
+						<tr>
+							<td>Primary Specializations&nbsp;</td>
+							<logic:notEqual name="studentRegistrationForm" property="selSpecCode1" value="0">
+								<td colspan="2"><bean:write name="studentRegistrationForm" property="selSpecCode1"/>&nbsp;-&nbsp;<bean:write name="studentRegistrationForm" property="selSpecCode1Desc"/></td>
+							</logic:notEqual>
+							<logic:equal name="studentRegistrationForm" property="selSpecCode1" value="0">
+								<td colspan="2">N/A - Not Applicable</td>
+							</logic:equal>
+						</tr><tr>
+							<td colspan="3">&nbsp;</td>
+						</tr>	
+						<logic:notEqual name="studentRegistrationForm" property="selQualCode2" value="0">
+							<tr>
+								<td>Secondary Qualification&nbsp;</td>
+								<td colspan="2"><bean:write name="studentRegistrationForm" property="selQualCode2"/>&nbsp;-&nbsp;<bean:write name="studentRegistrationForm" property="selQualCode2Desc"/></td>
+							</tr>
+							<tr>
+								<td>Secondary Specializations&nbsp;</td>
+								<logic:notEqual name="studentRegistrationForm" property="selSpecCode2" value="0">
+									<td colspan="2"><bean:write name="studentRegistrationForm" property="selSpecCode2"/>&nbsp;-&nbsp;<bean:write name="studentRegistrationForm" property="selSpecCode2Desc"/></td>
+								</logic:notEqual>
+								<logic:equal name="studentRegistrationForm" property="selSpecCode2" value="0">
+									<td colspan="2">N/A - Not Applicable</td>
+								</logic:equal>
+							</tr>
+						</logic:notEqual>
+						<tr>
+							<td colspan="3">&nbsp;</td>
+						</tr><tr>
+							<td><fmt:message key="page.studentnr.apply.acadyear"/>&nbsp;</td>
+							<td colspan="2"><bean:write name="studentRegistrationForm" property="student.academicYear"/></td>
+						</tr><tr>
+							<td colspan="3">&nbsp;</td>
+						</tr><tr>
+							<td colspan="3"><i><fmt:message key="page.studentnr.apply.verify"/></i></td>
+						</tr>
+					</sakai:group_table>
+				</div>
+				<!-- <div class="panel-heading">
+					<h3 class="panel-title text-center"><fmt:message key="page.studentnr.apply.heading"/></h3>
+				</div> -->
 				<div class="panel-body">	
 					<sakai:group_table>
 						<tr>

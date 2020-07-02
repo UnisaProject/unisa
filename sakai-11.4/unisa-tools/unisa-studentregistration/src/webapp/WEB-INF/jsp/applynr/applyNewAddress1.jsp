@@ -148,6 +148,16 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			document.studentRegistrationForm.submit();
 		}
 		
+		function validateSelect(){
+		
+			var copyPostalToPhysical = $("input:radio[name='copyPostalAddressRadio']:checked").val();
+				
+			if (copyPostalToPhysical == null || copyPostalToPhysical == "" || copyPostalToPhysical == "undefined"){
+				showError("Note", "Please indicate whether your physical street address is the same as your postal address.");
+				return false;
+			}
+		}	
+		
 		function showError(errorTitle, errorText) {
 			// show the actual error modal
 			$('#dialogContent').html(errorText);
@@ -265,12 +275,27 @@ if(emailAddressGood){
 								<div id="divTop"><i><fmt:message key="page.postadrinfo"/></i></div>
 								<div id="divBot"><i><fmt:message key="page.postcodeinfo"/></i></div>
 							</td>
+						</tr>	
+					</table>
+					<table>
+						<tr>
+							<td colspan="2">&nbsp;</td>
+						</tr>
+						<tr>
+							<td><fmt:message key="page.physical.postal.address"/></td>
+							<td>&nbsp;&nbsp;&nbsp;</td>
+							<td>
+								<!-- <input type="radio" name="copyPostalToPhysical" value="Y"/>&nbsp;<fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="copyPostalToPhysical" value="N"/>&nbsp;<fmt:message key="page.no"/> -->
+								<html:radio property="copyPostalAddressRadio" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;
+								<html:radio property="copyPostalAddressRadio" value="N"/><fmt:message key="page.no"/>
+							</td>							
 						</tr>
 					</table>
 				</div>
 				<div class="panel-footer clearfix">
 					<sakai:actions>
-						<html:submit property="act"><fmt:message key="button.continue"/></html:submit>
+						<html:submit property="act" onclick="return validateSelect();"><fmt:message key="button.continue"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.back"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.cancel"/></html:submit>
 					</sakai:actions>
