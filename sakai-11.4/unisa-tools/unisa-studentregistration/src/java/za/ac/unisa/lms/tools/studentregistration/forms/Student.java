@@ -88,9 +88,11 @@ public class Student {
 	private String computerTraining;
 	private String twinflag;
 	
+	private String college1;
 	private String category1;
 	private String qual1;
 	private String spec1;
+	private String college2;
 	private String category2;
 	private String qual2;
 	private String spec2;
@@ -175,8 +177,25 @@ public class Student {
 
 	// --------------------------------------------------------- Methods
 	
+	
 	public boolean isStuRegistered() {
 		return stuRegistered;
+	}
+
+	public String getCollege1() {
+		return college1;
+	}
+
+	public void setCollege1(String college1) {
+		this.college1 = college1;
+	}
+
+	public String getCollege2() {
+		return college2;
+	}
+
+	public void setCollege2(String college2) {
+		this.college2 = college2;
 	}
 
 	public void setStuRegistered(boolean stuRegistered) {

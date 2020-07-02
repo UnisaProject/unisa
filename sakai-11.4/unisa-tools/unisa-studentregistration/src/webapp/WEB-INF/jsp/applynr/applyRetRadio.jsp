@@ -310,6 +310,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			var radioDeceased = $("input:radio[name='studentApplication.staffDeceased']:checked").val();
 			var radioPrison = $("input:radio[name='studentApplication.prisoner']:checked").val();
 			var radioComplete = $("input:radio[name='studentApplication.completeQual']:checked").val();
+			var radioExemption = $("input:radio[name='studentApplication.applyExemptions']:checked").val(); 
 			
 			var textComplete = $('#completeText').val();
 			
@@ -340,6 +341,10 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			}
 			if (radioComplete == "Y" && (textComplete == null || textComplete == "" || textComplete == "undefined")){
 				showError("Note", "Please enter which qualification you will be completing.");
+				return false;
+			} 
+			if (radioExemption == null || radioExemption == "" || radioExemption == "undefined"){
+				showError("Note", "Please confirm if you intend to apply for subject exemptions/credits from previous studies.");
 				return false;
 			}
 			doSubmit("Continue");
@@ -473,7 +478,15 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 							</tr>
 						</sakai:group_table>
 					</div>
-				</div>
+					<sakai:group_table>
+						<tr>
+							<td><fmt:message key="page.apply.exemptions"/></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.applyExemptions" value="Y"/><fmt:message key="page.yes"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:radio property="studentApplication.applyExemptions" value="N"/><fmt:message key="page.no"/></td>
+						</tr>
+					</sakai:group_table>
+				</div>				
 				<div class="panel-footer clearfix">
 					<button class="btn btn-default" type="button" onclick="validateSelect();">Continue</button>
 					<button class="btn btn-default" type="button" onclick="doSubmit('Back');">Back</button>

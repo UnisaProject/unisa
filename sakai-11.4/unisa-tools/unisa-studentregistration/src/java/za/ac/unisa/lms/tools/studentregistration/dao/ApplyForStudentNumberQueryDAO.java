@@ -28,6 +28,7 @@ import za.ac.unisa.lms.tools.studentregistration.bo.Qualifications;
 import za.ac.unisa.lms.tools.studentregistration.bo.Specializations;
 import za.ac.unisa.lms.tools.studentregistration.bo.Status;
 import za.ac.unisa.lms.tools.studentregistration.bo.StudySelected;
+import za.ac.unisa.lms.tools.studentregistration.bo.College;
 import za.ac.unisa.lms.tools.studentregistration.dao.KeyValue;
 import za.ac.unisa.lms.tools.studentregistration.forms.HistoryOther;
 import za.ac.unisa.lms.tools.studentregistration.forms.HistoryUnisa;
@@ -56,6 +57,27 @@ public class ApplyForStudentNumberQueryDAO extends StudentSystemDAO {
 		} catch (Exception ex) {
 			throw new Exception(
 					"ApplyForStudentNumberQueryDAO : Error retrieving Qual description. / " + ex);
+		}
+		return desc;
+	}
+	
+	public String getCollegeDesc(String collegeCode) throws Exception {
+		String query = "select upper(eng_description) as ENG_DESCRIPTION from colleg where code= ? ";
+		String desc = "";
+
+		try {
+    	  	//log.debug("ApplyForStudentNumberQueryDAO - getQualDesc - query: " + query);
+
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{collegeCode});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+					desc = data.get("ENG_DESCRIPTION").toString().toUpperCase();
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error retrieving College description. / " + ex);
 		}
 		return desc;
 	}
@@ -509,7 +531,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 
 	      try {
 
-	    	  String query = "SELECT STUAPQ.NEW_QUAL, STUAPQ.NEW_SPES, GRD.FK_KATCODE, GRD.TYPE "
+	    	  String query = "SELECT STUAPQ.NEW_QUAL, STUAPQ.NEW_SPES, GRD.FK_KATCODE, GRD.TYPE, GRD.COLLEGE_CODE "
 		        		+ " FROM STUAPQ, GRD "
 		        		+ " WHERE STUAPQ.NEW_QUAL = GRD.CODE "
 		        		+ " AND MK_STUDENT_NR = ? "
@@ -535,7 +557,9 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 						result = data.get("NEW_QUAL").toString();
 					}else if ("SPEC".equalsIgnoreCase(choice)){
 						result = data.get("NEW_SPES").toString();
-					}
+					}else if ("COL".equalsIgnoreCase(choice)){
+						result = data.get("COLLEGE_CODE").toString();
+					}	
 					//log.debug("ApplyForStudentNumberQueryDAO - getSLPQual - Choice=" + choice+",  result=" + result);
 				}
 	      	} catch (Exception ex) {
@@ -1979,6 +2003,38 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 	}
   
 	/**
+	 * Retrieve colleges from database
+	 */
+	public ArrayList<College> getColleges() throws Exception {
+
+		ArrayList<College> colleges = new ArrayList<College>();
+
+		String query = "select code, eng_description from colleg where code not in (6,7,8) order by eng_description";
+		//String query = "select code, replace(eng_description,'COLLEGE OF','') as description from colleg where code in (1,2,3,4,5,9,10,11) order by eng_description";
+
+		//log.debug("ApplyForStudentNumberDAO - getCountries - Query="+query);
+		
+		try {
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query);
+			Iterator i = queryList.iterator();
+
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				College college = new College();
+				college.setCode(data.get("CODE").toString().trim());
+				college.setDescription(data.get("eng_description").toString().toUpperCase().trim());
+				colleges.add(college);
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error reading Country Centre list / " + ex);
+		}
+		return colleges;
+	}
+	
+	
+	/**
 	 * Retrieve categories from database
 	 */
 	public Categories getCategories(String acaYear, String UHMDSelect, boolean isAdmin, boolean isWAPU, boolean isWAPRU, boolean isWAPADMU, boolean isWAPH, boolean isWAPRH, boolean isWAPADMH, boolean isWAPD, boolean isWAPADMD, boolean isWAPM, boolean isWAPADMM, boolean isWAPS, boolean isWAPADMS) throws Exception{
@@ -2107,7 +2163,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 	/**
 	 * Retrieve qualifications from database
 	 */
-	public Qualifications getQualifications(String studentNr, String stuExist, String acaYear, String acaPeriod, String catCode, String UHMDSelect, boolean isAdmin, boolean isWAPU, boolean isWAPRU, boolean isWAPADMU, boolean isWAPH, boolean isWAPRH, boolean isWAPADMH, boolean isWAPD, boolean isWAPADMD, boolean isWAPM, boolean isWAPADMM, boolean isWAPS, boolean isWAPADMS) throws SQLException, Exception{
+	public Qualifications getQualifications(String studentNr, String stuExist, String acaYear, String acaPeriod, String catCode, String collegeCode, String UHMDSelect, boolean isAdmin, boolean isWAPU, boolean isWAPRU, boolean isWAPADMU, boolean isWAPH, boolean isWAPRH, boolean isWAPADMH, boolean isWAPD, boolean isWAPADMD, boolean isWAPM, boolean isWAPADMM, boolean isWAPS, boolean isWAPADMS) throws SQLException, Exception{
 
 		String query = "";
 		
@@ -2224,6 +2280,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 						+ "		and quaspc.repeaters_only <> 'Y' "
 						+ "		and (trunc(sysdate) between regdat.from_date and regdat.to_date) "   
 						+ "		and regdat.type like 'WAPS' "
+						+ "     and grd.college_code = ? "
 						+ "		and (grd.to_year = 0 or grd.to_year >= ?) "
 						+ "		and (grd.from_year = 0 or grd.from_year <= ? ) " 
 						+ "		and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? ) " 
@@ -2250,6 +2307,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 						+ "		and quaspc.repeaters_only <> 'Y' "
 						+ "		and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date) " 
 						+ "		and regdat.type like 'WAPS' "
+						+ "     and grd.college_code = ? "
 						+ "		and (grd.to_year = 0 or grd.to_year >= ? ) "
 						+ "		and (grd.from_year = 0 or grd.from_year <= ? ) " 
 						+ "		and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? ) " 
@@ -2269,7 +2327,287 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - SLP - query=" + query);
 				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - SLP - dbParam="+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod);
 				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-				List queryList = jdt.queryForList(query, new Object []{acaYear, acaYear, acaYear, acaYear, acaPeriod, acaYear, acaYear, acaYear, acaYear, acaPeriod});
+				List queryList = jdt.queryForList(query, new Object []{collegeCode,acaYear, acaYear, acaYear, acaYear, acaPeriod,collegeCode,acaYear, acaYear, acaYear, acaYear, acaPeriod});
+				Iterator i = queryList.iterator();
+				while (i.hasNext()) {
+					ListOrderedMap data = (ListOrderedMap) i.next();
+					qualCodes.add(data.get("CODE").toString());
+					qualDescs.add(data.get("ENG_DESCRIPTION").toString().toUpperCase());
+				}
+			}else{
+				query = "SELECT DISTINCT(T.CODE) as CODE, T.ENG_DESCRIPTION || T.CLOSED as DESCRIPTION FROM ("
+						+ "		select grd.code, upper(grd.long_eng_descripti) as eng_description, "
+						+ "     decode(b.eng_description,null,b.eng_description,'   -   (' || b.eng_description || ')') as closed "
+					 	+ "		from grd, gencod, regdat, quaspc, gencod b "
+					 	+ "		where grd.in_use_flag = 'Y' "
+						+ "		and (grd.type <> 'S' or grd.code='00051') " 
+						+ "		and grd.code not in ('0605X','08052','97837','98549','98550') " 
+						+ "		and grd.fk_katcode = gencod.code " 
+						+ "		and gencod.fk_gencatcode = 172 "
+						+ "		and (trim(gencod.afr_description) = ? or trim(gencod.info) = ?) "
+						+ "		and grd.code = quaspc.mk_qualification_c "
+						+ "     and grd.college_code = ? "
+						+ "     and b.code(+) = quaspc.app_close_gc363 "
+						+ "     and b.fk_gencatcode(+)=363 "
+						+ 		wapString
+						+ 		catString
+						+ "		and quaspc.repeaters_only <> 'Y' "
+						+ "		and (trunc(sysdate) between regdat.from_date and regdat.to_date) "
+						+ "		and (regdat.type like 'WAP%' or regdat.type like 'WEBAPP%') "
+						+ "		and UNDER_POST_CATEGOR in ("+underPostString.toString()+") "
+						+ "		and regdat.academic_year = ? "
+						+ "		and (grd.to_year = 0 or grd.to_year >= ? ) "
+						+ "		and (grd.from_year = 0 or grd.from_year <= ? ) "
+						+ "		and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? ) "
+						+ " 	and grd.code not in ( "
+						+ "			select mk_qualification_c "
+						+ "			from flexdat "
+						+ "			where year = ? "
+						+ "			and period = ? "
+						+ "			and type like 'APP' "
+						+ "			and (trunc(sysdate) < from_date or trunc(sysdate) > to_date) "
+						+ " 	) "
+						+ " 	UNION ALL "
+						+ "		select grd.code, upper(grd.long_eng_descripti) as eng_description, "
+						+ "     decode(b.eng_description,null,b.eng_description,'   -   (' || b.eng_description || ')') as closed "
+					 	+ " 	from grd, gencod, regdat, quaspc, gencod b "
+					 	+ " 	where grd.in_use_flag = 'Y' "
+						+ " 	and (grd.type <> 'S' or grd.code='00051') " 
+						+ " 	and grd.code not in ('0605X','08052','97837','98549','98550') " 
+						+ "     and grd.college_code = ? "
+						+ "     and b.code(+) = quaspc.app_close_gc363 "
+						+ "     and b.fk_gencatcode(+)=363 "
+						+ " 	and grd.fk_katcode = gencod.code " 
+						+ " 	and gencod.fk_gencatcode = 172 "
+						+ " 	and (trim(gencod.afr_description) = ? or trim(gencod.info) = ?) "
+						+ " 	and grd.code = quaspc.mk_qualification_c "
+						+ 		wapString
+						+ 		catString
+						+ " 	and quaspc.repeaters_only <> 'Y' "
+						+ " 	and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date) "
+						+ " 	and (regdat.type like 'WAP%' or regdat.type like 'WEBAPP%') "
+						+ " 	and UNDER_POST_CATEGOR in ("+underPostString.toString()+") "
+						+ " 	and regdat.academic_year = ? "
+						+ " 	and (grd.to_year = 0 or grd.to_year >= ? ) "
+						+ " 	and (grd.from_year = 0 or grd.from_year <= ? ) "
+						+ " 	and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? )"
+						+ "		and grd.code in ( "
+					 	+ "			select mk_qualification_c "
+					 	+ "			from flexdat "
+					 	+ "			where year = ? "
+					 	+ "			and period = ? "
+					 	+ "			and type like 'APP' "
+					 	+ "     	and trunc(sysdate) between from_date and to_date "
+					 	+ " 	) "
+						+ " ) T "
+						+ " order by T.ENG_DESCRIPTION || T.CLOSED ASC ";
+				
+				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMD - query=" + query);
+				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMD - dbParam="+catCode+", "+catCode+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod+", "+catCode+", "+catCode+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod);
+				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+				List queryList = jdt.queryForList(query, new Object []{catCode, catCode, collegeCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod, collegeCode, catCode, catCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod});
+				Iterator i = queryList.iterator();
+				
+				String prevCode = "";
+				String prevDesc = "";
+				String qualCode = "";
+				String qualDesc = "";
+				while (i.hasNext()) {
+					ListOrderedMap data = (ListOrderedMap) i.next();
+					qualCode = data.get("CODE").toString();
+					qualDesc = data.get("DESCRIPTION").toString();
+					//qualDesc = data.get("DESCRIPTION").toString().toUpperCase();
+					if (qualCode.equalsIgnoreCase(prevCode)) {						
+						//ignore open qual/spec would always be first
+					}else {
+						qualCodes.add(qualCode);
+						qualDescs.add(qualDesc);
+					}					
+					prevCode = data.get("CODE").toString();
+					prevDesc = data.get("DESCRIPTION").toString();
+					//qualDesc = data.get("DESCRIPTION").toString().toUpperCase();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO: Error reading qualifications list / " + ex);
+
+		} finally {
+
+		}
+		qualifications.setQualCodes(qualCodes);
+		qualifications.setQualDescs(qualDescs);
+
+		return qualifications;
+
+	}
+	
+	
+	public Qualifications xxgetQualifications(String studentNr, String stuExist, String acaYear, String acaPeriod, String catCode, String collegeCode, String UHMDSelect, boolean isAdmin, boolean isWAPU, boolean isWAPRU, boolean isWAPADMU, boolean isWAPH, boolean isWAPRH, boolean isWAPADMH, boolean isWAPD, boolean isWAPADMD, boolean isWAPM, boolean isWAPADMM, boolean isWAPS, boolean isWAPADMS) throws SQLException, Exception{
+
+		String query = "";
+		
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - acaYear: " + acaYear + ", catCode: " + catCode);
+		
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMDSelect: " + UHMDSelect + ", isAdmin: " + isAdmin);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPU: " + isWAPU + ", isWAPRU: " + isWAPRU);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPADMU: " + isWAPADMU + ", isWAPH: " + isWAPH);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPRH: " + isWAPRH + ", isWAPADMH: " + isWAPADMH);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPS: " + isWAPS + ", isWAPADMS: " + isWAPADMS);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPD: " + isWAPD + ", isWAPADMD: " + isWAPADMD);
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - isWAPM: " + isWAPM + ", isWAPADMM: " + isWAPADMM);
+		
+		ArrayList qualCodes = new ArrayList();
+		ArrayList qualDescs = new ArrayList();
+		
+		Qualifications qualifications = new Qualifications();
+		StringBuilder underPostString = new StringBuilder();
+		
+		boolean isDateWAPU 	= false;
+		boolean isDateWAPH 	= false;
+		boolean isDateWAPS	= false;
+		boolean isDateWAPD 	= false;
+		boolean isDateWAPM 	= false;
+		boolean isM1 = false;
+		boolean isM2 = false;
+		boolean isUD1 = false;
+		boolean isUD2 = false;
+		boolean isAnyOpen = false;
+
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMDSelect: " + UHMDSelect);
+		
+		if (isWAPU || isWAPRU || (isAdmin && isWAPADMU)){
+			isDateWAPU = true;
+			isAnyOpen = true;
+		}
+		if (isWAPH || isWAPRH || (isAdmin && isWAPADMH)){
+			isDateWAPH = true;
+			isAnyOpen = true;
+		}
+		if (isWAPS || (isAdmin && isWAPADMS)){
+			isDateWAPS = true;
+			isAnyOpen = true;
+		}
+		if (isWAPD || (isAdmin && isWAPADMD)){
+			isDateWAPD = true;
+			isAnyOpen = true;
+		}
+		if (isWAPM || (isAdmin && isWAPADMM)){
+			isDateWAPM = true;
+			isAnyOpen = true;
+		}
+		
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - catCode: " + catCode);
+
+		//Check which dates are open
+		if (!isAnyOpen){
+			//Final catch-all if No dates open. Use 'Dummy' to not return anything
+			//log.debug("ApplyForStudentNumberQueryDAO - getQualifications: No dates open, so use Dummy to not return anything");
+			underPostString.append(
+					" 'DOESNOTEXIST'");
+		}else if ("SLP".equalsIgnoreCase(UHMDSelect) || "15".equalsIgnoreCase(catCode)){ //SLP
+			if (isDateWAPS){ //SLP
+				underPostString.append("'U','H','N','O'");
+			}
+		}else if ("MD".equalsIgnoreCase(UHMDSelect)){ //Master's & Doctoral
+			if (isDateWAPM){ //Master's
+				underPostString.append("'M'");
+				isM2 = true;
+			}
+			if (isM2){
+				underPostString.append(", 'D'");
+			}else{
+				underPostString.append("'D'");
+			}
+		}else { //Undergraduates & Honours (DSAR want both to be listed in same dropdown for now. May be split later)
+			if (isDateWAPU){
+				underPostString.append(
+						"'U'" );
+				isUD2 = true;
+			}
+			if (isUD2 && isDateWAPH){
+				underPostString.append(
+					" , 'H'");
+			}else if (!isUD2 && isDateWAPH){
+				underPostString.append(
+					"'H'");
+			}
+		}	
+		
+		String wapString = "            and quaspc.app_open=regdat.type ";
+		if (isAdmin){
+			wapString = "            and quaspc.app_open like 'WAP%' " ;
+		}
+		String catString = "";
+		if (catCode.equalsIgnoreCase("99")){ //Only NDP
+			catString = "            and grd.fk_katcode = 9 " ;
+			catCode = "07";
+		}else if (catCode.equalsIgnoreCase("07")){ //Everything but NDP
+			catString = "            and grd.fk_katcode <> 9 " ;
+		}
+		
+		//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UnderPost: " + underPostString.toString());
+		
+		try {
+			if ("SLP".equalsIgnoreCase(UHMDSelect) || "15".equalsIgnoreCase(catCode)){ //Short Learning Programmes
+				query = "SELECT CODE, ENG_DESCRIPTION from ( "
+						+ "		select distinct(trim(grd.code)) as CODE, upper(grd.long_eng_descripti) as ENG_DESCRIPTION "
+						+ "		from grd, regdat, quaspc, gencod "
+						+ "		where grd.in_use_flag = 'Y' "
+						+ "		and grd.type = 'S' "
+						+ "		and trim(grd.code) = trim(quaspc.mk_qualification_c) "
+						+ "		and quaspc.app_open=regdat.type "
+						+ "		and quaspc.repeaters_only <> 'Y' "
+						+ "		and (trunc(sysdate) between regdat.from_date and regdat.to_date) "   
+						+ "		and regdat.type like 'WAPS' "
+						+ "     and grd.college_code = ? "
+						+ "		and (grd.to_year = 0 or grd.to_year >= ?) "
+						+ "		and (grd.from_year = 0 or grd.from_year <= ? ) " 
+						+ "		and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? ) " 
+						+ "		and trim(grd.code) not in ( "
+  						+ "		select trim(mk_qualification_c) "
+						+ "		  from flexdat "
+						+ "		  where year = ? "
+						+ "		  and period = ? "
+						+ "		  and type like 'APP' " 
+						+ "		  and (trunc(sysdate) < from_date or trunc(sysdate) > to_date)) "
+						+ "		and trim(grd.mk_department_code) = trim(gencod.code) "
+						+ "		and gencod.in_use_flag = 'Y' "
+						+ "		and gencod.fk_gencatcode = '306' "
+						+ "		and gencod.afr_description = 'UCL' "
+						+ "		"
+						+ "		union all "
+						+ "		"
+						+ "		select distinct(trim(grd.code)) as CODE, upper(grd.long_eng_descripti) as ENG_DESCRIPTION " 
+						+ "		from grd, regdat, quaspc, gencod "
+						+ "		where grd.in_use_flag = 'Y' "
+						+ "		and grd.type = 'S' "
+						+ "		and trim(grd.code) = trim(quaspc.mk_qualification_c) "
+						+ "		and quaspc.app_open=regdat.type "
+						+ "		and quaspc.repeaters_only <> 'Y' "
+						+ "		and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date) " 
+						+ "		and regdat.type like 'WAPS' "
+						+ "     and grd.college_code = ? "
+						+ "		and (grd.to_year = 0 or grd.to_year >= ? ) "
+						+ "		and (grd.from_year = 0 or grd.from_year <= ? ) " 
+						+ "		and (grd.repeaters_from_yea = 0 or grd.repeaters_from_yea > ? ) " 
+						+ "		and trim(grd.code) in ( "
+						+ "		  select trim(mk_qualification_c) "
+						+ "		  from flexdat "
+						+ "		  where year = ? "
+						+ "		  and period = ? "
+						+ "		  and type like 'APP' " 
+						+ "		  and (trunc(sysdate) between from_date and to_date)) "
+						+ "		and trim(grd.mk_department_code) = trim(gencod.code) "
+						+ "		and gencod.in_use_flag = 'Y' "
+						+ "		and gencod.fk_gencatcode = '306' "
+						+ "		and gencod.afr_description = 'UCL') "
+						+ "		order by ENG_DESCRIPTION asc ";
+
+				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - SLP - query=" + query);
+				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - SLP - dbParam="+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod);
+				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+				List queryList = jdt.queryForList(query, new Object []{collegeCode,acaYear, acaYear, acaYear, acaYear, acaPeriod,collegeCode,acaYear, acaYear, acaYear, acaYear, acaPeriod});
 				Iterator i = queryList.iterator();
 				while (i.hasNext()) {
 					ListOrderedMap data = (ListOrderedMap) i.next();
@@ -2287,6 +2625,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 						+ "		and gencod.fk_gencatcode = 172 "
 						+ "		and (trim(gencod.afr_description) = ? or trim(gencod.info) = ?) "
 						+ "		and grd.code = quaspc.mk_qualification_c "
+						+ "     and grd.college_code = ? "
 						+ 		wapString
 						+ 		catString
 						+ "		and quaspc.repeaters_only <> 'Y' "
@@ -2311,6 +2650,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 					 	+ " 	where grd.in_use_flag = 'Y' "
 						+ " 	and (grd.type <> 'S' or grd.code='00051') " 
 						+ " 	and grd.code not in ('0605X','08052','97837','98549','98550') " 
+						+ "     and grd.college_code = ? "
 						+ " 	and grd.fk_katcode = gencod.code " 
 						+ " 	and gencod.fk_gencatcode = 172 "
 						+ " 	and (trim(gencod.afr_description) = ? or trim(gencod.info) = ?) "
@@ -2339,7 +2679,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMD - query=" + query);
 				//log.debug("ApplyForStudentNumberQueryDAO - getQualifications - UHMD - dbParam="+catCode+", "+catCode+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod+", "+catCode+", "+catCode+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaYear+", "+acaPeriod);
 				JdbcTemplate jdt = new JdbcTemplate(getDataSource());
-				List queryList = jdt.queryForList(query, new Object []{catCode, catCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod, catCode, catCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod});
+				List queryList = jdt.queryForList(query, new Object []{catCode, catCode, collegeCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod, collegeCode, catCode, catCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod});
 				Iterator i = queryList.iterator();
 				while (i.hasNext()) {
 					ListOrderedMap data = (ListOrderedMap) i.next();
@@ -2360,11 +2700,97 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 		return qualifications;
 
 	}
-	
 	/**
 	 * Retrieve specializations for selected qualification
 	 */
 	public Specializations getSpecializations(String qualCode, String acaYear, String acaPeriod) throws Exception{
+		
+		//log.debug("ApplyForStudentNumberQueryDAO - getSpecializations - acaYear: " + acaYear);
+		
+		Specializations specializations = new Specializations();
+
+		ArrayList<String> specCodes = new ArrayList<String>();
+		ArrayList<String> specDescs = new ArrayList<String>();
+
+		String query  = "SELECT DISTINCT(T.CODE) as CODE, T.ENG_DESCRIPTION || T.CLOSED as DESCRIPTION FROM ( "
+					+ " 	select substr(trim(quaspc.speciality_code)||'NVT',1,3) as CODE , "
+					+ " 	substr(quaspc.english_descriptio,1,60) as ENG_DESCRIPTION ,  "
+					+ "     decode(gencod.eng_description,null,gencod.eng_description,'   -   ' ||gencod.eng_description) as closed "
+   					+ " 	from quaspc, regdat, grd, gencod "
+					+ " 	where quaspc.in_use_flag = 'Y' "
+					+ " 	and quaspc.mk_qualification_c = ? "
+					+ " 	and (quaspc.repeaters_from_yea = 0 or quaspc.repeaters_from_yea > ? ) "
+					+ " 	and (quaspc.from_year = 0 or quaspc.from_year <= ? ) "
+					+ " 	and (quaspc.to_year = 0 or quaspc.to_year >= ? ) "
+					+ " 	and quaspc.repeaters_only <> 'Y' "
+					+ " 	and regdat.academic_year = ? "
+					+ " 	and quaspc.app_open = regdat.type "
+					+ " 	and quaspc.mk_qualification_c = grd.code "
+					+ "     and gencod.code(+) = quaspc.app_close_gc363 "
+					+ "     and gencod.fk_gencatcode(+) = 363 "
+					+ " 	and (trunc(sysdate) between regdat.from_date and regdat.to_date) "
+					+ " 	and quaspc.speciality_code not in ( "
+					+ " 		select flexdat.speciality_code "
+					+ " 		from flexdat "
+					+ " 		where flexdat.mk_qualification_c = quaspc.mk_qualification_c "
+					+ " 		and flexdat.year = ? "
+					+ " 		and flexdat.period = ? "
+					+ " 		and flexdat.type like 'APP' "
+					+ "			and (trunc(sysdate) < from_date or trunc(sysdate) > to_date) "				
+					+ " 	) "
+					+ "		UNION ALL "
+					+ " 	select substr(trim(quaspc.speciality_code)||'NVT',1,3) as CODE , "
+					+ " 	substr(quaspc.english_descriptio,1,60) as ENG_DESCRIPTION , "
+					+ "     decode(gencod.eng_description,null,gencod.eng_description,'   -   ' ||gencod.eng_description) as closed "
+					+ " 	from quaspc, regdat, grd, gencod "
+					+ " 	where quaspc.in_use_flag = 'Y' "
+					+ " 	and quaspc.mk_qualification_c = ? "
+					+ " 	and (quaspc.repeaters_from_yea = 0 or quaspc.repeaters_from_yea > ? ) "
+					+ " 	and (quaspc.from_year = 0 or quaspc.from_year <= ? ) "
+					+ " 	and (quaspc.to_year = 0 or quaspc.to_year >= ? ) "
+					+ " 	and quaspc.repeaters_only <> 'Y' "
+					+ " 	and regdat.academic_year = ? "
+					+ " 	and quaspc.app_open = regdat.type "
+					+ " 	and quaspc.mk_qualification_c = grd.code "
+					+ "     and gencod.code(+) = quaspc.app_close_gc363 "
+					+ "     and gencod.fk_gencatcode(+) = 363 "
+					+ " 	and (trunc(sysdate) < regdat.from_date or trunc(sysdate) > regdat.to_date) "
+					+ " 	and quaspc.speciality_code in ( "
+					+ " 	select flexdat.speciality_code "
+					+ " 		from flexdat "
+					+ " 		where flexdat.mk_qualification_c = quaspc.mk_qualification_c "
+					+ " 		and flexdat.year = ? "
+					+ " 		and flexdat.period = ? "
+					+ " 		and flexdat.type like 'APP' "
+					+ "			and trunc(sysdate) between from_date and to_date "
+					+ " 	) "
+					+ " ) T "
+					+ "	order by T.ENG_DESCRIPTION || T.CLOSED ASC ";
+		try {
+			//log.debug("ApplyForStudentNumberQueryDAO - getSpecializations - query=" + query+", qualCode=" + qualCode+", acaYear=" + acaYear+", acaPeriod=" + acaPeriod);
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{qualCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod, qualCode, acaYear, acaYear, acaYear, acaYear, acaYear, acaPeriod});
+			Iterator i = queryList.iterator();
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+				specCodes.add(data.get("CODE").toString());
+				specDescs.add(data.get("DESCRIPTION").toString());
+			}
+		} catch (Exception ex) {
+			//log.debug("ApplyForStudentNumberQueryDAO - getSpecializations - Error reading specializations list / " + ex);
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO: Error reading specializations list / " + ex);
+
+		} finally {
+
+		}
+		specializations.setSpecCodes(specCodes);
+		specializations.setSpecDescs(specDescs);
+
+		return specializations;
+	}
+	
+public Specializations xxgetSpecializations(String qualCode, String acaYear, String acaPeriod) throws Exception{
 		
 		//log.debug("ApplyForStudentNumberQueryDAO - getSpecializations - acaYear: " + acaYear);
 		
@@ -2661,11 +3087,12 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 			return null;
 		}else{
 			
-			String query = "select new_qual, new_spes, choice_nr "
-						+ " from STUAPQ "
+			String query = "select new_qual, new_spes, choice_nr, grd.college_code as college "
+						+ " from STUAPQ, grd "
 						+ " where mk_student_nr = ? "
 						+ " and academic_year = ? "
 						+ " and application_period = ? "
+						+ " and grd.code = new_qual "
 						+ " order by choice_nr " ;
 
 			try {
@@ -2679,6 +3106,7 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 					if ("1".equals(data.get("choice_nr").toString())){
 						if (data.get("new_qual").toString() != null && !"".equalsIgnoreCase(data.get("new_qual").toString())){
 							selectedNew.setQual1(data.get("new_qual").toString());
+							selectedNew.setCollege1(data.get("college").toString());
 						
 							if ("".equalsIgnoreCase(data.get("new_spes").toString()) || " ".equalsIgnoreCase(data.get("new_spes").toString())){
 								selectedNew.setSpec1("0");
@@ -2686,9 +3114,10 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 								selectedNew.setSpec1(data.get("new_spes").toString());
 							}
 						}
-					}else if ("2".equals(data.get("choice_nr").toString())){
+					}else if ("2".equals(data.get("choice_nr").toString())){					
 						if (data.get("new_qual").toString() != null && !"".equalsIgnoreCase(data.get("new_qual").toString())){
 							selectedNew.setQual2(data.get("new_qual").toString());
+							selectedNew.setCollege2(data.get("college").toString());
 							
 							if ("".equalsIgnoreCase(data.get("new_spes").toString()) || " ".equalsIgnoreCase(data.get("new_spes").toString())){
 								selectedNew.setSpec2("0");
