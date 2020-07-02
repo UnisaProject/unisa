@@ -23,11 +23,16 @@ import za.ac.unisa.lms.tools.studentregistration.bo.Doc;
 import za.ac.unisa.lms.tools.studentregistration.bo.Qualifications;
 import za.ac.unisa.lms.tools.studentregistration.bo.Specializations;
 import za.ac.unisa.lms.tools.studentregistration.bo.Status;
+import za.ac.unisa.lms.tools.studentregistration.bo.College;
 import za.ac.unisa.lms.tools.studentregistration.bo.StudySelected;
 import za.ac.unisa.lms.tools.studentregistration.dao.ApplyForStudentNumberQueryDAO;
 import za.ac.unisa.lms.tools.studentregistration.dao.DocDao;
 import za.ac.unisa.lms.tools.studentregistration.dao.SavedDocDao;
 
+/**
+ * @author Pretoj
+ *
+ */
 public class StudentRegistrationForm extends ValidatorActionForm {
 
 	// --------------------------------------------------------- Instance Variables
@@ -82,6 +87,8 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	
 	private String selectedPrevActivity;
 
+	private String savedCollege1;
+	private String savedCollege2;
 	private String savedCategory;
 	private String savedCategory1;
 	private String savedCategory2;
@@ -140,11 +147,16 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	private String webUploadMsg = "";
 	private String selectReset = "";
 	
-	private String selCategoryCode;
+	private String selCollegeCode1;
+	private String selCollegeCode2;
+	private String selCollegeCode1Desc;
+	private String selCollegeCode2Desc;
+	
+//	private String selCategoryCode;
 	private String selCategoryCode1;
 	private String selCategoryCode2;
 	
-	private String selQualCode;
+//	private String selQualCode;
 	private String selQualCode1;
 	private String selQualCode2;
 	
@@ -152,11 +164,11 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	private String selQualCode1Desc = "";
 	private String selQualCode2Desc = "";
 	
-	private String selSpecCode;
+//	private String selSpecCode;
 	private String selSpecCode1;
 	private String selSpecCode2;
 	
-	private String selSpecCodeDesc = "";
+//	private String selSpecCodeDesc = "";
 	private String selSpecCode1Desc = "";
 	private String selSpecCode2Desc = "";
 	
@@ -167,41 +179,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	
 	private String selQualPrevCode;
 
-	ArrayList<String> categoryCodeList = new ArrayList<String>();
-	ArrayList<String> categoryCodeList1 = new ArrayList<String>();
-	ArrayList<String> categoryCodeList2 = new ArrayList<String>();
-
-	ArrayList<String> categoryDescList = new ArrayList<String>();
-	ArrayList<String> categoryDescList1 = new ArrayList<String>();
-	ArrayList<String> categoryDescList2 = new ArrayList<String>();
-	
-	ArrayList<String> qualCodeList = new ArrayList<String>();
-	ArrayList<String> qualCodeList1 = new ArrayList<String>();
-	ArrayList<String> qualCodeList2 = new ArrayList<String>();
-	
-	ArrayList<String> qualCodeDescList = new ArrayList<String>();
-	ArrayList<String> qualCodeDescList1 = new ArrayList<String>();
-	ArrayList<String> qualCodeDescList2 = new ArrayList<String>();
-	
-	ArrayList<String> qualDescList = new ArrayList<String>();
-	ArrayList<String> qualDescList1 = new ArrayList<String>();
-	ArrayList<String> qualDescList2 = new ArrayList<String>();
-	
-	ArrayList<String> specCodeList = new ArrayList<String>();
-	ArrayList<String> specCodeList1 = new ArrayList<String>();
-	ArrayList<String> specCodeList2 = new ArrayList<String>();
-	
-	ArrayList<String> specCodeDescList = new ArrayList<String>();
-	ArrayList<String> specCodeDescList1 = new ArrayList<String>();
-	ArrayList<String> specCodeDescList2 = new ArrayList<String>();
-	
-	ArrayList<String> specDescList = new ArrayList<String>();
-	ArrayList<String> specDescList1 = new ArrayList<String>();
-	ArrayList<String> specDescList2 = new ArrayList<String>();
-
-	ArrayList<String> qualPrevCodeList = new ArrayList<String>();
-	ArrayList<String> qualPrevDescList = new ArrayList<String>();
-	ArrayList<String> qualPrevCodeDescList = new ArrayList<String>();
+	private List<College> collegeList = new ArrayList<College>();
 	
 	private String qualStatus1 = "";
 	private String qualStatus2 = "";
@@ -216,6 +194,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	private String offerSpec2 = "";
 	
 	private String offerRadio = "";
+	private String copyPostalAddressRadio = "";
 	
 	//FileUpload
 	//for showing optional docs
@@ -313,9 +292,56 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	
 	//M&D Admission Process
 	private List<MdPrev> mdprevList;
-	private String readmd = "";
+	private String readmd = "";	
 
-	
+	public String getCopyPostalAddressRadio() {
+		return copyPostalAddressRadio;
+	}
+
+	public void setCopyPostalAddressRadio(String copyPostalAddressRadio) {
+		this.copyPostalAddressRadio = copyPostalAddressRadio;
+	}
+
+	public String getSelCollegeCode1Desc() {
+		return selCollegeCode1Desc;
+	}
+
+	public void setSelCollegeCode1Desc(String selCollegeCode1Desc) {
+		this.selCollegeCode1Desc = selCollegeCode1Desc;
+	}
+
+	public String getSelCollegeCode2Desc() {
+		return selCollegeCode2Desc;
+	}
+
+	public void setSelCollegeCode2Desc(String selCollegeCode2Desc) {
+		this.selCollegeCode2Desc = selCollegeCode2Desc;
+	}
+
+	public String getSelCollegeCode1() {
+		return selCollegeCode1;
+	}
+
+	public void setSelCollegeCode1(String selCollegeCode1) {
+		this.selCollegeCode1 = selCollegeCode1;
+	}
+
+	public String getSelCollegeCode2() {
+		return selCollegeCode2;
+	}
+
+	public void setSelCollegeCode2(String selCollegeCode2) {
+		this.selCollegeCode2 = selCollegeCode2;
+	}
+
+	public List<College> getCollegeList() {
+		return collegeList;
+	}
+
+	public void setCollegeList(List<College> collegeList) {
+		this.collegeList = collegeList;
+	}
+
 	public String getVersion() {
 		return version;
 	}
@@ -993,219 +1019,14 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		return categories.getCatCodes();
 
 	}
-	public void setCategoryCodeList1(ArrayList<String> categoryCodeList1) {
-		this.categoryCodeList1 = categoryCodeList1;
-	}
-	public ArrayList<String> getCategoryDescList1() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		Categories categories = dao.getCategories(getStudent().getAcademicYear(), getLoginSelectMain(), adminStaff.isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-		return categories.getCatDescs();
-	}
-	public void setCategoryDescList1(ArrayList<String> categoryDescList1) {
-		this.categoryDescList1 = categoryDescList1;
-	}
-	public ArrayList<String> getQualCodeList1() throws Exception {
 
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		
-		//log.debug("StudentRegistrationForm - queryStudySelectedNew: " +getStudent().getNumber()+"~"+getStudent().getAcademicYear()+"~"+getStudent().getAcademicPeriod());
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selected.getCategory1(), getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			return quals.getQualCodes();
-		}
-		 return qualCodeList1;
-	}
-	public void setQualCodeList1(ArrayList<String> qualCodeList1) {
-		this.qualCodeList1 = qualCodeList1;
-	}
-	public ArrayList<String> getQualDescList1() throws Exception {
-
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selected.getCategory1(), getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			return quals.getQualDescs();
-		}
-
-		return qualDescList1;
-	}
-	public void setQualDescList1(ArrayList<String> qualDescList1) {
-		this.qualDescList1 = qualDescList1;
-	}
-	public ArrayList<String> getSpecCodeList1() throws Exception {
-
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode1,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			return quals.getSpecCodes();
-		}
-
-		return specCodeList1;
-	}
-
-	public ArrayList<String> getCategoryCodeList2() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		Categories categories = dao.getCategories(getStudent().getAcademicYear(), getLoginSelectMain(), adminStaff.isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-		return categories.getCatCodes();
-	}
-	public void setCategoryCodeList2(ArrayList<String> categoryCodeList2) {
-		this.categoryCodeList2 = categoryCodeList2;
-	}
-	public ArrayList<String> getCategoryDescList2() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		Categories categories = dao.getCategories(getStudent().getAcademicYear(), getLoginSelectMain(), adminStaff.isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-		return categories.getCatDescs();
-	}
-	public void setCategoryDescList2(ArrayList<String> categoryDescList2) {
-		this.categoryDescList2 = categoryDescList2;
-	}
-	public ArrayList<String> getQualCodeList() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selected.getCategory(), getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			this.qualCodeList = quals.getQualCodes();
-			//return quals.getQualCodes();
-			return this.qualCodeList;
-		}
-		//log.debug("StudentRegistrationForm - getQualCodeList");
-		return qualCodeList;
-	}
-
-	public ArrayList<String> getQualDescList() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selected.getCategory(), getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			this.qualDescList = quals.getQualDescs();
-			//return quals.getQualDescs();
-			return this.qualDescList;
-		}
-
-		//log.debug("StudentRegistrationForm - getQualDescList");
-		return qualDescList;
-	}
-	public ArrayList<String> getQualCodeDescList() throws Exception {
-		  qualCodeDescList = new ArrayList<String>();
-		  //log.debug("size :"+qualCodeDescList.size() );
-		  ArrayList<String> codes = this.qualCodeList==null||this.qualCodeList.size()==0  ? getQualCodeList() : this.qualCodeList;
-		  ArrayList<String> descs = this.qualDescList==null||this.qualDescList.size()==0  ? getQualDescList() : this.qualDescList;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   qualCodeDescList.add(codes.get(i)+"-"+descs.get(i));
-		   //log.debug(getQualCodeList().get(i)+"-"+getQualDescList().get(i));
-		  }
-		  //log.debug("size :"+qualCodeDescList.size() );
-		  //log.debug("StudentRegistrationForm - getQualCodeDescList");
-		  return qualCodeDescList;
-	}
-	public void setQualCodeDescList(ArrayList<String> qualCodeDescList) throws Exception {
-		  this.qualCodeDescList = qualCodeDescList;
-	}
-
-	public ArrayList<String> getQualCodeList2() throws Exception {
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selCategoryCode2, getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			return quals.getQualCodes();
-		}
-
-		return qualCodeList2;
-	}
-	public void setQualCodeList2(ArrayList<String> qualCodeList2) {
-		this.qualCodeList2 = qualCodeList2;
-	}
-	public ArrayList<String> getQualDescList2() throws Exception {
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Qualifications quals = dao.getQualifications(getStudent().getNumber(), getStudent().getStuExist(), getStudent().getAcademicYear(), getStudent().getAcademicPeriod(), selCategoryCode2, getLoginSelectMain(), getAdminStaff().isAdmin(),getStudent().isDateWAPU(),getStudent().isDateWAPRU(),getStudent().isDateWAPADMU(),getStudent().isDateWAPH(),getStudent().isDateWAPRH(),getStudent().isDateWAPADMH(),getStudent().isDateWAPD(),getStudent().isDateWAPADMD(),getStudent().isDateWAPM(),getStudent().isDateWAPADMM(),getStudent().isDateWAPS(),getStudent().isDateWAPADMS());
-			return quals.getQualDescs();
-		}
-		return qualDescList2;
-	}
-	public void setQualDescList2(ArrayList<String> qualDescList2) {
-		this.qualDescList2 = qualDescList2;
-	}
-	public ArrayList<String> getSpecCodeList2() throws Exception {
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode2,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			return quals.getSpecCodes();
-		}
-		return specCodeList2;
-	}
-	public ArrayList<String> getSpecCodeDescList() throws Exception {
-		  specCodeDescList = new ArrayList<String>();
-		  
-		  ArrayList<String> codes = this.specCodeList==null || this.specCodeList.size()==0 ? getSpecCodeList() : this.specCodeList;
-		  ArrayList<String> descs = this.specDescList==null || this.specDescList.size()==0 ? getSpecDescList() : this.specDescList;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   specCodeDescList.add(codes.get(i)+"-"+descs.get(i));
-		  }
-		  //log.debug("StudentRegistrationForm - getSpecCodeDescList");
-		  return specCodeDescList;
-	}
-	public void setSpecCodeDescList(ArrayList<String> specCodeDescList) throws Exception {
-		  this.specCodeDescList = specCodeDescList;
-	}
-	public void setSpecCodeList1(ArrayList<String> specCodeList1) {
-		this.specCodeList1 = specCodeList1;
-	}
-	public ArrayList<String> getSpecDescList1() throws Exception {
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode1,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			return quals.getSpecDescs();
-		}
-		return specDescList1;
-	}
-	public void setSpecDescList1(ArrayList<String> specDescList1) {
-		this.specDescList1 = specDescList1;
-	}
-	public void setSpecCodeList2(ArrayList<String> specCodeList2) {
-		this.specCodeList2 = specCodeList2;
-	}
-	public ArrayList<String> getSpecDescList2() throws Exception {
-		
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode2,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			return quals.getSpecDescs();
-		}
-		return specDescList2;
-	}
-	public void setSpecDescList2(ArrayList<String> specDescList2) {
-		this.specDescList2 = specDescList2;
-	}
-	public String getSelQualCode() {
-		return selQualCode;
-	}
-
-	public void setSelQualCode(String selQualCode) {
-		this.selQualCode = selQualCode;
-	}
+//	public String getSelQualCode() {
+//		return selQualCode;
+//	}
+//
+//	public void setSelQualCode(String selQualCode) {
+//		this.selQualCode = selQualCode;
+//	}
 
 	public String getSelQualPrevCode() {
 		return selQualPrevCode;
@@ -1214,26 +1035,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public void setSelQualPrevCode(String selQualPrevCode) {
 		this.selQualPrevCode = selQualPrevCode;
 	}
-	public void setSpecDescList(ArrayList<String> specDescList) {
-		this.specDescList = specDescList;
-	}
 
-	public void setCategoryCodeList(ArrayList<String> categoryCodeList) {
-		this.categoryCodeList = categoryCodeList;
-	}
-
-	public void setCategoryDescList(ArrayList<String> categoryDescList) {
-		this.categoryDescList = categoryDescList;
-	}
-
-	public void setQualCodeList(ArrayList<String> qualCodeList) {
-		this.qualCodeList = qualCodeList;
-	}
-
-	public void setQualDescList(ArrayList<String> qualDescList) {
-		this.qualDescList = qualDescList;
-	}
-	
 	public String getSelected() {
 		return selected;
 	}
@@ -1242,12 +1044,12 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		this.selected = selected;
 	}
 
-	public String getSelCategoryCode() {
-		return selCategoryCode;
-	}
-	public void setSelCategoryCode(String selCategoryCode) {
-		this.selCategoryCode = selCategoryCode;
-	}
+//	public String getSelCategoryCode() {
+//		return selCategoryCode;
+//	}
+//	public void setSelCategoryCode(String selCategoryCode) {
+//		this.selCategoryCode = selCategoryCode;
+//	}
 	public String getSelCategoryCode1() {
 		return selCategoryCode1;
 	}
@@ -1284,108 +1086,15 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public void setSelSpecCode2(String selSpecCode2) {
 		this.selSpecCode2 = selSpecCode2;
 	}
-	public ArrayList<String> getQualCodeDescList1() throws Exception {
-		  qualCodeDescList1 = new ArrayList<String>();
-		  //log.debug("size :"+qualCodeDescList1.size() );
-		  ArrayList<String> codes = this.qualCodeList1==null||this.qualCodeList1.size()==0  ? getQualCodeList1() : this.qualCodeList1;
-		  ArrayList<String> descs = this.qualDescList1==null||this.qualDescList1.size()==0  ? getQualDescList1() : this.qualDescList1;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   qualCodeDescList1.add(codes.get(i)+"-"+descs.get(i));
-		    
-		  }
-		  //log.debug("size :"+qualCodeDescList1.size() );
-		  return qualCodeDescList1;
-	}
-	public void setQualCodeDescList1(ArrayList<String> qualCodeDescList1) throws Exception {
-		  this.qualCodeDescList1 = qualCodeDescList1;
-	}
-	public ArrayList<String> getQualCodeDescList2() throws Exception {
-		  qualCodeDescList2 = new ArrayList<String>();
-		  //log.debug("size :"+qualCodeDescList2.size() );
-		  ArrayList<String> codes = this.qualCodeList2==null||this.qualCodeList2.size()==0  ? getQualCodeList2() : this.qualCodeList2;
-		  ArrayList<String> descs = this.qualDescList2==null||this.qualDescList2.size()==0  ? getQualDescList2() : this.qualDescList2;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   qualCodeDescList2.add(codes.get(i)+"-"+descs.get(i));
-		    
-		  }
-		  //log.debug("size :"+qualCodeDescList2.size() );
-		  return qualCodeDescList2;
-	}
+	
+//	public String getSelSpecCode() {
+//		return selSpecCode;
+//	}
+//
+//	public void setSelSpecCode(String selSpecCode) {
+//		this.selSpecCode = selSpecCode;
+//	}
 
-	public void setQualCodeDescList2(ArrayList<String> qualCodeDescList2) throws Exception {
-		  this.qualCodeDescList2 = qualCodeDescList2;
-	}
-	public String getSelSpecCode() {
-		return selSpecCode;
-	}
-
-	public void setSelSpecCode(String selSpecCode) {
-		this.selSpecCode = selSpecCode;
-	}
-
-	public ArrayList<String> getSpecCodeList() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			this.specCodeList = quals.getSpecCodes();
-			//return quals.getSpecCodes();
-			return this.specCodeList;
-		}
-		//log.debug("StudentRegistrationForm - getSpecCodeList");
-		return specCodeList;
-	}
-
-	public void setSpecCodeList(ArrayList<String> specCodeList) {
-		this.specCodeList = specCodeList;
-	}
-
-	public ArrayList<String> getSpecDescList() throws Exception {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-		StudySelected selected = dao.queryStudySelected(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-
-		if(selected !=null ){
-			Specializations quals = dao.getSpecializations(selQualCode,getStudent().getAcademicYear(),getStudent().getAcademicPeriod());
-			this.specDescList = quals.getSpecDescs();
-			//return quals.getSpecDescs();
-			return this.specDescList;
-		}
-		//log.debug("StudentRegistrationForm - getSpecDescList");
-		return specDescList;
-	}
-	public ArrayList<String> getSpecCodeDescList1() throws Exception {
-		  specCodeDescList1 = new ArrayList<String>();
-		  
-		  ArrayList<String> codes = this.specCodeList1==null || this.specCodeList1.size()==0 ? getSpecCodeList1() : this.specCodeList1;
-		  ArrayList<String> descs = this.specDescList1==null || this.specDescList1.size()==0 ? getSpecDescList1() : this.specDescList1;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   specCodeDescList1.add(codes.get(i)+"-"+descs.get(i));
-		  }
-		  return specCodeDescList1;
-	}
-
-	public void setSpecCodeDescList1(ArrayList<String> specCodeDescList1) throws Exception {
-		  this.specCodeDescList1 = specCodeDescList1;
-	}
-	public ArrayList<String> getSpecCodeDescList2() throws Exception {
-		  specCodeDescList2 = new ArrayList<String>();
-		  
-		  ArrayList<String> codes = this.specCodeList2==null || this.specCodeList2.size()==0 ? getSpecCodeList2() : this.specCodeList2;
-		  ArrayList<String> descs = this.specDescList2==null || this.specDescList2.size()==0 ? getSpecDescList2() : this.specDescList2;
-		  
-		  for(int i =0;i<codes.size()&&i<descs.size();i++){
-		   specCodeDescList2.add(codes.get(i)+"-"+descs.get(i));
-		  }
-		  return specCodeDescList2;
-	}
-
-	public void setSpecCodeDescList2(ArrayList<String> specCodeDescList2) throws Exception {
-		  this.specCodeDescList2 = specCodeDescList2;
-	}
 	public String getExistQual() throws Exception {
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 		String selected = dao.getExistQual(getStudent().getNumber());
@@ -1613,26 +1322,50 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public void setDocMsg(String docMsg) {
 		this.docMsg = docMsg;
 	}
-	
-/*
-	public String getSavedCategory() {
+		
+	public String getSavedCollege1() {
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 
 		try {
-			savedCategory = dao.getXMLSelected("catCode2", "2",getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "getSavedCategory");
+			if (getStudent().isStuSLP() && getStudent().isStuapq() ){
+				savedCollege1 = dao.getSLPQual(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "1", "COL", "getSavedCollege1");
+			}else{
+				savedCollege1 = dao.getXMLSelected("colCode1", "1",getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "getSavedCollege1");
+				if (savedCollege1 == null || savedCollege1.trim().equalsIgnoreCase("")) {
+					this.savedCollege1 = "0";
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
-		//log.debug("StudentRegistrationForm - getSavedCategory: " + savedCategory);
-		return savedCategory;
+		return savedCollege1;
 	}
 
-	public void setSavedCategory(String savedCategory) {
-		this.savedCategory = savedCategory;
+	public void setSavedCollege1(String savedCollege1) {
+		this.savedCollege1 = savedCollege1;
 	}
-*/
-	
+
+	public String getSavedCollege2() {
+		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+		try {
+			if (getStudent().isStuSLP() && getStudent().isStuapq() ){
+				savedCollege2 = dao.getSLPQual(getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "1", "COL", "getSavedCollege2");
+			}else{
+				savedCollege2 = dao.getXMLSelected("colCode2", "2",getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "getSavedCollege2");
+				if (savedCollege2 == null || savedCollege2.trim().equalsIgnoreCase("")) {
+					this.savedCollege2 = "0";
+				}	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return savedCollege2;
+	}
+
+	public void setSavedCollege2(String savedCollege2) {
+		this.savedCollege2 = savedCollege2;
+	}
+
 	public String getSavedCategory1() {
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 
@@ -1670,25 +1403,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public void setSavedCategory2(String savedCategory2) {
 		this.savedCategory2 = savedCategory2;
 	}
-
-/*
-	public String getSavedQual() {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
-
-		try {
-			savedQual = dao.getXMLSelected("qualCode2", "2",getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "getSavedQual");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	
-		//log.debug("StudentRegistrationForm - getSavedQual: " + savedQual);
-		return savedQual;
-	}
-
-	public void setSavedQual(String savedQual) {
-		this.savedQual = savedQual;
-	}
-*/
 	public String getSavedQual1() {
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 
@@ -1726,24 +1441,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public void setSavedQual2(String savedQual2) {
 		this.savedQual2 = savedQual2;
 	}
-/*
-	public String getSavedSpec() {
-		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 
-		try {
-			savedSpec = dao.getXMLSelected("specCode2", "2",getStudent().getNumber(),getStudent().getAcademicYear(),getStudent().getAcademicPeriod(), "getSavedSpec");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	
-		//log.debug("StudentRegistrationForm - getSavedSpec: " + savedSpec);
-		return savedSpec;
-	}
-
-	public void setSavedSpec(String savedSpec) {
-		this.savedSpec = savedSpec;
-	}
-*/
 	public String getSavedSpec1() {
 		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
 
@@ -1814,13 +1512,13 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		this.selQualCode2Desc = selQualCode2Desc;
 	}
 
-	public String getSelSpecCodeDesc() {
-		return selSpecCodeDesc;
-	}
-
-	public void setSelSpecCodeDesc(String selSpecCodeDesc) {
-		this.selSpecCodeDesc = selSpecCodeDesc;
-	}
+//	public String getSelSpecCodeDesc() {
+//		return selSpecCodeDesc;
+//	}
+//
+//	public void setSelSpecCodeDesc(String selSpecCodeDesc) {
+//		this.selSpecCodeDesc = selSpecCodeDesc;
+//	}
 
 	public String getSelSpecCode1Desc() {
 		return selSpecCode1Desc;
@@ -1856,10 +1554,6 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 
 	public void setExistSpec(String existSpec) {
 		this.existSpec = existSpec;
-	}
-
-	public void setQualPrevCodeDescList(ArrayList<String> qualPrevCodeDescList) {
-		this.qualPrevCodeDescList = qualPrevCodeDescList;
 	}
 
 	public String getQualStatus1() {
@@ -2483,31 +2177,9 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	public static void setLog(Log log) {
 		StudentRegistrationForm.log = log;
 	}
-
-	public ArrayList<String> getQualPrevCodeList() {
-		return qualPrevCodeList;
-	}
-
-	public void setQualPrevCodeList(ArrayList<String> qualPrevCodeList) {
-		this.qualPrevCodeList = qualPrevCodeList;
-	}
-
-	public ArrayList<String> getQualPrevDescList() {
-		return qualPrevDescList;
-	}
-
-	public void setQualPrevDescList(ArrayList<String> qualPrevDescList) {
-		this.qualPrevDescList = qualPrevDescList;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	public ArrayList<String> getQualPrevCodeDescList() {
-		return qualPrevCodeDescList;
-	}
-
 	public Status getStatus() {
 		return status;
 	}
@@ -2540,7 +2212,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		this.savedSpec = savedSpec;
 	}
 
-	public void resetFormFieldsOLD() {
+	public void resetFormFieldsOLDxx() {
 		applyType = "";
 		registrationType = "";
 		allowLogin = true;
@@ -2639,15 +2311,15 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		webUploadMsg = "";
 		selectReset = "";
 		
-		selCategoryCode = null;
+//		selCategoryCode = null;
 		selCategoryCode1 = null;
 		selCategoryCode2 = null;
 		
-		selQualCode = null;
+//		selQualCode = null;
 		selQualCode1 = null;
 		selQualCode2 = null;
 		
-		selSpecCode = null;
+//		selSpecCode = null;
 		selSpecCode1 = null;
 		selSpecCode2 = null;
 		
@@ -2655,42 +2327,6 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		existSpec = "";
 		
 		selQualPrevCode  = null;
-
-		categoryCodeList = new ArrayList<String>();
-		categoryCodeList1 = new ArrayList<String>();
-		categoryCodeList2 = new ArrayList<String>();
-
-		categoryDescList = new ArrayList<String>();
-		categoryDescList1 = new ArrayList<String>();
-		categoryDescList2 = new ArrayList<String>();
-		
-		qualCodeList = new ArrayList<String>();
-		qualCodeList1 = new ArrayList<String>();
-		qualCodeList2 = new ArrayList<String>();
-		
-		qualCodeDescList = new ArrayList<String>();
-		qualCodeDescList1 = new ArrayList<String>();
-		qualCodeDescList2 = new ArrayList<String>();
-		
-		qualDescList = new ArrayList<String>();
-		qualDescList1 = new ArrayList<String>();
-		qualDescList2 = new ArrayList<String>();
-		
-		specCodeList = new ArrayList<String>();
-		specCodeList1 = new ArrayList<String>();
-		specCodeList2 = new ArrayList<String>();
-		
-		specCodeDescList = new ArrayList<String>();
-		specCodeDescList1 = new ArrayList<String>();
-		specCodeDescList2 = new ArrayList<String>();
-		
-		specDescList = new ArrayList<String>();
-		specDescList1 = new ArrayList<String>();
-		specDescList2 = new ArrayList<String>();
-
-		qualPrevCodeList = new ArrayList<String>();
-		qualPrevDescList = new ArrayList<String>();
-		qualPrevCodeDescList = new ArrayList<String>();
 		
 		//FileUpload
 		//for showing optional docs
@@ -2806,6 +2442,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		adminStaff = new Staff();
 		qualOther = new HistoryOther();
 		status = new Status();
+		collegeList = new ArrayList<College>();
 
 		// History (MasterDoctor)
 
@@ -2900,11 +2537,14 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		webUploadMsg = "";
 		selectReset = "";
 		
-		selCategoryCode = null;
+		selCollegeCode1 = null;
+		selCollegeCode2 = null;
+				
+//		selCategoryCode = null;
 		selCategoryCode1 = null;
 		selCategoryCode2 = null;
 		
-		selQualCode = null;
+//		selQualCode = null;
 		selQualCode1 = null;
 		selQualCode2 = null;
 		
@@ -2912,11 +2552,11 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		selQualCode1Desc = "";
 		selQualCode2Desc = "";
 		
-		selSpecCode = null;
+//		selSpecCode = null;
 		selSpecCode1 = null;
 		selSpecCode2 = null;
 		
-		selSpecCodeDesc = "";
+//		selSpecCodeDesc = "";
 		selSpecCode1Desc = "";
 		selSpecCode2Desc = "";
 		
@@ -2927,42 +2567,6 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		existSpecDesc = "";
 		
 		selQualPrevCode  = null;
-
-		categoryCodeList = new ArrayList<String>();
-		categoryCodeList1 = new ArrayList<String>();
-		categoryCodeList2 = new ArrayList<String>();
-
-		categoryDescList = new ArrayList<String>();
-		categoryDescList1 = new ArrayList<String>();
-		categoryDescList2 = new ArrayList<String>();
-		
-		qualCodeList = new ArrayList<String>();
-		qualCodeList1 = new ArrayList<String>();
-		qualCodeList2 = new ArrayList<String>();
-		
-		qualCodeDescList = new ArrayList<String>();
-		qualCodeDescList1 = new ArrayList<String>();
-		qualCodeDescList2 = new ArrayList<String>();
-		
-		qualDescList = new ArrayList<String>();
-		qualDescList1 = new ArrayList<String>();
-		qualDescList2 = new ArrayList<String>();
-		
-		specCodeList = new ArrayList<String>();
-		specCodeList1 = new ArrayList<String>();
-		specCodeList2 = new ArrayList<String>();
-		
-		specCodeDescList = new ArrayList<String>();
-		specCodeDescList1 = new ArrayList<String>();
-		specCodeDescList2 = new ArrayList<String>();
-		
-		specDescList = new ArrayList<String>();
-		specDescList1 = new ArrayList<String>();
-		specDescList2 = new ArrayList<String>();
-
-		qualPrevCodeList = new ArrayList<String>();
-		qualPrevDescList = new ArrayList<String>();
-		qualPrevCodeDescList = new ArrayList<String>();
 		
 		//FileUpload
 		//for showing optional docs
@@ -3077,7 +2681,7 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		selQualCode1Desc = "";
 		selQualCode2Desc = "";
 
-		selSpecCodeDesc = "";
+//		selSpecCodeDesc = "";
 		selSpecCode1Desc = "";
 		selSpecCode2Desc = "";
 

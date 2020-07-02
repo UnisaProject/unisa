@@ -169,12 +169,18 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				<div class="panel-body">
 					<div class="col-md-12 col-sm-12 col-xs-12">
 						<fmt:message key="page.aps.select"/><br/><br/>
-						<input type="radio" name="selectHEMain" value="G12" id="G12"/><label for="G12" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.G12"/></span></label><br/>
+						<!-- <input type="radio" name="selectHEMain" value="G12" id="G12"/><label for="G12" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.G12"/></span></label><br/>
 						<input type="radio" name="selectHEMain" value="NQF" id="NQF"/><label for="NQF" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NQF"/></span></label><br/>
 						<input type="radio" name="selectHEMain" value="NCV" id="NCV"/><label for="NCV" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NCV"/></span></label><br/>
 						<input type="radio" name="selectHEMain" value="FOR" id="FOR"/><label for="FOR" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.FOR"/></span></label><br/>
 						<input type="radio" name="selectHEMain" value="REW" id="REW"/><label for="REW" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.REW"/></span></label><br/>
+						<input type="radio" name="selectHEMain" value="NSC" id="NSC"/><label for="NSC" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NSC"/></span></label><br/> -->
 						<input type="radio" name="selectHEMain" value="NSC" id="NSC"/><label for="NSC" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NSC"/></span></label><br/>
+						<input type="radio" name="selectHEMain" value="NQF" id="NQF"/><label for="NQF" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NQF"/></span></label><br/>
+						<input type="radio" name="selectHEMain" value="FOR" id="FOR"/><label for="FOR" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.FOR"/></span></label><br/>
+						<input type="radio" name="selectHEMain" value="NCV" id="NCV"/><label for="NCV" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.NCV"/></span></label><br/>	
+						<input type="radio" name="selectHEMain" value="REW" id="REW"/><label for="REW" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.REW"/></span></label><br/>
+						<input type="radio" name="selectHEMain" value="G12" id="G12"/><label for="G12" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.G12"/></span></label><br/>
 						<!-- <input type="radio" name="selectHEMain" value="RPL" id="RPL"/><label for="RPL" class="inline"><span>&nbsp;<fmt:message key="page.aps.matric.RPL"/></span></label><br/> -->
 						<br/>
 						<!-- <fmt:message key="page.aps.matric.not"/> -->
