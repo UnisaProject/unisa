@@ -61,7 +61,7 @@ public class BrochureQueries {
 				    sb.append(" OR quaspc.repeaters_only = 'Y'");
 				    sb.append(" THEN 'R'");
 				    sb.append(" ELSE ' '");
-				    sb.append(" END spec_repeat,");
+				    sb.append(" END spec_repeat,"); 
 				    sb.append(" grd.TYPE qualtype, kat.eng_description catname,");
 				    sb.append(" nqf_exit_level nqflvl, grd.nqf_credits creds, qspsun.study_level lvl,");
 				    sb.append(" qspsun.group0 grp, mk_study_unit_code module,");
@@ -287,7 +287,7 @@ public class BrochureQueries {
 			    	queryBuilder.append(" THEN 'R'");				                
 			    	queryBuilder.append(" ELSE ' '");				                
 			    	queryBuilder.append(" END spec_repeat,");				                
-			    	queryBuilder.append(" grd.TYPE qualtype, fk_katcode cat, kat.eng_description catname,"); 
+			    	queryBuilder.append(" grd.TYPE qualtype, grd.research_degree_flag RESEARCH, fk_katcode cat, kat.eng_description catname,"); 
 			    	//New APS Score Element
 					//queryBuilder.append("GRD.APS_SCORE aps_score,");
 			    	//Adding SAQA ID
@@ -420,7 +420,11 @@ public class BrochureQueries {
 			        	//query = query+" AND (grd.PQM_COMPLIANT_FLAG='Y' or grd.PQM_COMPLIANT_FLAG=' ')";
 			        	 
 			         }
-			        
+					 if (researchFlag.equals("Y")) {
+						queryBuilder.append(" AND grd.RESEARCH_DEGREE_FLAG='Y'");
+					} else if (researchFlag.equals("N")) {
+						queryBuilder.append(" AND grd.RESEARCH_DEGREE_FLAG=' '");
+			        }
 					queryBuilder.append(" AND grd.fk_katcode = kat.code"); 		                      
 					queryBuilder.append(" and grd.fk_katcode = gencod.code"); 		                      
 					queryBuilder.append(" and gencod.fk_gencatcode=172"); 	

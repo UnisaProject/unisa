@@ -1687,6 +1687,9 @@ public class MychoiceDAO extends StudentSystemDAO {
 									.createElement("spesrep");
 							specRepeat.appendChild(document.createTextNode(data
 									.get("SPEC_REPEAT").toString()));
+									
+							Element research = document.createElement("research");
+							research.appendChild(document.createTextNode(data.get("RESEARCH").toString()));
 
 							Element toyear = document.createElement("toyear");
 							toyear.appendChild(document.createTextNode(data
@@ -1882,6 +1885,7 @@ public class MychoiceDAO extends StudentSystemDAO {
 							qualification.appendChild(credits);
 							qualification.appendChild(qualrep);
 							qualification.appendChild(specRepeat);
+							qualification.appendChild(research);
 							qualification.appendChild(toyear);
 							qualification.appendChild(rules);
 							qualification.appendChild(deliveryMode);
