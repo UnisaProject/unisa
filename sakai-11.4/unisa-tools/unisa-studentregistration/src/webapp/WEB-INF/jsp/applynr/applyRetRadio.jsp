@@ -488,7 +488,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 					</sakai:group_table>
 				</div>				
 				<div class="panel-footer clearfix">
-					<button class="btn btn-default" type="button" onclick="validateSelect();">Continue</button>
+					<button class="btn btn-default" type="button" onclick="validateSelect();">Save and Continue</button>
 					<button class="btn btn-default" type="button" onclick="doSubmit('Back');">Back</button>
 					<button class="btn btn-default" type="button" onclick="doSubmit('Cancel');">Cancel</button>
 				</div>

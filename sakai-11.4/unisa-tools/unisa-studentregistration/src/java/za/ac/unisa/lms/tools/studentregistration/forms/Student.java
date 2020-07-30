@@ -85,6 +85,8 @@ public class Student {
 	private String mediaAccess3;
 	private String mediaAccess4;
 	private String mediaAccess5;
+	private String mediaAccess6;
+	private String mediaAccess7;
 	private String computerTraining;
 	private String twinflag;
 	
@@ -174,6 +176,7 @@ public class Student {
 	private String appliedqual;
 	private String lecturer;
 
+	private String password;
 
 	// --------------------------------------------------------- Methods
 	
@@ -693,6 +696,22 @@ public class Student {
 
 	public void setMediaAccess5(String mediaAccess5) {
 		this.mediaAccess5 = mediaAccess5;
+	}
+		
+	public String getMediaAccess6() {
+		return mediaAccess6;
+	}
+
+	public void setMediaAccess6(String mediaAccess6) {
+		this.mediaAccess6 = mediaAccess6;
+	}
+
+	public String getMediaAccess7() {
+		return mediaAccess7;
+	}
+
+	public void setMediaAccess7(String mediaAccess7) {
+		this.mediaAccess7 = mediaAccess7;
 	}
 
 	public String getComputerTraining() {
@@ -1276,5 +1295,11 @@ public class Student {
 	}
 	public void setLecturer(String lecturer) {
 		this.lecturer = lecturer;
+	}
+	public void setPassword(String password){
+		this.password = password;
+	}
+	public String getPassword(){
+		return this.password;
 	}
 }

@@ -99,4 +99,70 @@ public class StudentRegistrationQueryDAO extends StudentSystemDAO {
 
 		return result;
 	}
+	
+	/*Tyrone*
+	 * This method reads and returns the student's personal details 
+	 *
+	 * @param studentNumber       Student Number
+	 */
+	public Student getByStudentNumber(String studentNumber) throws Exception{
+		Student stu = null;
+
+		String sql = "select nr, first_names, surname, to_char(birth_date,'YYYYMMDD') as birthdate" +
+					   " from stu " +
+					   " where nr = "+ studentNumber;
+
+		log.debug(sql);
+
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+
+			Iterator i = queryList.iterator();
+			while (i.hasNext()) {
+				ListOrderedMap data = (ListOrderedMap) i.next();
+
+				stu = new Student();
+				stu.setNumber(data.get("NR").toString());
+				stu.setFirstnames(data.get("FIRST_NAMES").toString());
+				stu.setSurname(data.get("SURNAME").toString());
+				stu.setBirthYear(data.get("BIRTHDATE").toString().substring(0,4));
+				stu.setBirthMonth(data.get("BIRTHDATE").toString().substring(4,6));
+				stu.setBirthDay(data.get("BIRTHDATE").toString().substring(6,8));
+
+			}
+		} catch (Exception ex) {
+			throw new Exception("StudentRegistrationQueryDao : Error reading student / "+ ex,ex);
+		}
+
+		return stu;
+	}
+	
+	/*Tyrone*
+	 * This method authorizes student login credentials
+	 *
+	 * @param studentNumber       Student Number
+	 * @param password			  Student myUnisa password
+	 */
+	public boolean authorizeStudent(String studentNumber, String password) throws Exception{
+
+		String sql = "select * from idvalt where mk_student_nr = "+ studentNumber+" and password = '"+ password+"'";
+
+		log.debug(sql);
+
+		try{
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(sql);
+
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception ex) {
+			throw new Exception("StudentRegistrationQueryDao : Error authenticating student / "+ ex,ex);
+		}
+
+	}
 }

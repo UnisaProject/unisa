@@ -62,6 +62,18 @@
       	  		name="applyLoginNumber"
        	 		path="/WEB-INF/jsp/applynr/applyLoginNumber.jsp"
         		contextRelative="true" />
+			<forward
+      	  		name="applyReturnStudent"
+       	 		path="/WEB-INF/jsp/applynr/applyReturnStudent.jsp"
+        		contextRelative="true" />
+			<forward
+				name="continueReturnStudent"
+				path="/applyForStudentNumber.do?act=applyLoginReturn"
+       	 		contextRelative="true" />
+			<forward
+      	  		name="applyMediaAccess"
+       	 		path="/WEB-INF/jsp/applynr/applyMediaAccess.jsp"
+        		contextRelative="true" />
         	<forward
       	  		name="applyLogin"
        	 		path="/WEB-INF/jsp/applynr/applyLogin.jsp"

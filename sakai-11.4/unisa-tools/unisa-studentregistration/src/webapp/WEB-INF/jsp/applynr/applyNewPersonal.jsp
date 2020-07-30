@@ -166,7 +166,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
     
 	//Click button
 	function doSubmit(button){
-		if (button === "Continue"){
+		if (button === "Save and Continue"){
 			document.studentRegistrationForm.action='applyForStudentNumber.do?act=stepRetRadio';
 		}else if (button === "Back"){
 			document.studentRegistrationForm.action='applyForStudentNumber.do?act=Back';
@@ -279,7 +279,7 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 				</div>
 				<div class="panel-footer clearfix">
 					<sakai:actions>
-						<html:submit property="act"><fmt:message key="button.continue"/></html:submit>
+						<html:submit property="act"><fmt:message key="button.saveAndContinue"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.back"/></html:submit>
 						<html:submit property="act"><fmt:message key="button.cancel"/></html:submit>
 					</sakai:actions>

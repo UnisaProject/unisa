@@ -112,47 +112,25 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 		
 	});
 
-	//Click button
+	//Onlick()
 	function validate(){
 		
-		var nextStep = "applyLoginNew";
-		var isReturn = $("#numYesNo").val();
-		if (isReturn === "YES"){
-			var nextStep = "applyLoginReturn";
+		var nextStep = "applyReturnStudent";
+		var recentlyRegistered = $("#recentlyRegistered").val();
+		if (recentlyRegistered === "false"){
 			var number = $('input[name="student.number"]').val();
 			if(number == null || number.trim() == "" || number == "undefinded"){
 				showError("Note", "Please enter your Student number");
 				return false;
 			}
+		}else if(recentlyRegistered === "true"){
+			var password = $('input[name="student.password"]').val();
+			if(password == null || password.trim() == "" || password == "undefinded"){
+				showError("Note", "Please enter your password");
+				return false;
+			}
 		}
 
-		var surname = $('input[name="student.surname"]').val();
-		var firstname = $('input[name="student.firstnames"]').val();
-
-		var bYear = $("select[name='student.birthYear']").find("option:selected").val();
-		var bMonth = $("select[name='student.birthMonth']").find("option:selected").val();
-		var bDay = $("select[name='student.birthDay']").find("option:selected").val();
-
-		if(surname == null || surname.trim() == "" || surname == "undefinded"){
-			showError("Note", "Please enter your Surname");
-			return false;
-		}
-		if(firstname == null || firstname.trim() == "" || firstname == "undefinded"){
-			showError("Note", "Please enter your First name(s)");
-			return false;
-		}
-		if(bYear == null || bYear.trim() == "" || bYear == "undefinded" || bYear == "00"){
-			showError("Note", "Please enter the Year you were born");
-			return false;
-		}
-		if(bMonth == null || bMonth.trim() == "" || bMonth == "undefinded" || bMonth == "00"){
-			showError("Note", "Please enter the Month you were born");
-			return false;
-		}
-		if(bDay == null || bDay.trim() == "" || bDay == "undefinded" || bDay == "00"){
-			showError("Note", "Please enter the Day you were born");
-			return false;
-		}
 		doSubmit("Continue", nextStep);
 	}
 		
@@ -190,12 +168,13 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 <body onload="disableBackButton();" onpageshow="if (event.persisted) disableBackButton" onunload="">
 <!-- Form -->
 <html:form action="/applyForStudentNumber">
-	<html:hidden property="page" value="applyLogin"/>
+	<html:hidden property="page" value="applyReturnStudent"/>
 	
 	<input type="hidden" name="webOpenDate" id="webOpenDate" value="<bean:write name='studentRegistrationForm' property='student.webOpenDate' />"/>
 	<input type="hidden" name="webLogCheck" id="webLogCheck" value="<bean:write name='studentRegistrationForm' property='loginSelectMain'/>"/>
 	<input type="hidden" name="numYesNo" id="numYesNo" value="<bean:write name='studentRegistrationForm' property='loginSelectYesNo'/>"/>
 	<input type="hidden" name="allowLogin" id="allowLogin" value="<bean:write name='studentRegistrationForm' property='allowLogin'/>"/>
+	<input type="hidden" name="recentlyRegistered" id="recentlyRegistered" value="<bean:write name='studentRegistrationForm' property='recentlyRegistered'/>"/>
 
 	<sakai:messages/>
 	<sakai:messages message="true"/>
@@ -222,46 +201,20 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			               	</tr>
 			               	<logic:equal name="studentRegistrationForm" property="allowLogin" value="true">
 				               	<logic:equal name="studentRegistrationForm" property="loginSelectYesNo" value="YES">
-					               	<tr>
-						              	<td style="width:180px;height:30px" valign="top"><fmt:message key="page.login.studnumber"/></td>
-						              	<td style="height:30px"><html:text name="studentRegistrationForm" property="student.number" maxlength="8" size="24" onfocus="this.select();" />&nbsp;</td>
-						            </tr>
+									<logic:notEqual name="studentRegistrationForm" property="recentlyRegistered" value="true">
+										<tr>
+											<td style="width:180px;height:30px" valign="top"><fmt:message key="page.login.studnumber"/></td>
+											<td style="height:30px"><html:text name="studentRegistrationForm" property="student.number" maxlength="8" size="24" onfocus="this.select();" />&nbsp;</td>
+										</tr>
+									</logic:notEqual>
+									<logic:equal name="studentRegistrationForm" property="recentlyRegistered" value="true">
+										<tr>
+											<td style="width:180px;height:30px" valign="top"><fmt:message key="page.apply.login.password"/></td>
+											<td style="height:30px"><html:password name="studentRegistrationForm" property="student.password" size="24" onfocus="this.select();" />&nbsp;</td>
+										</tr>
+									</logic:equal>
 								</logic:equal>
-									<tr>
-										<td style="width:180px;height:30px" valign="top"><fmt:message key="page.login.studsurname"/></td>
-										<td valign="bottom"><html:text name="studentRegistrationForm" property="student.surname" maxlength="28" size="24"/>&nbsp;</td>
-									</tr><tr>
-										<td style="width:180px;height:30px" valign="top"><fmt:message key="page.login.studfullname"/></td>
-										<td valign="bottom"><html:text name="studentRegistrationForm" property="student.firstnames" maxlength="60" size="24" onfocus="this.select();" />&nbsp;</td>
-									</tr><tr>
-										<td style="width:180px;height:30px" valign="bottom"><fmt:message key="page.login.studbirthdate"/></td>
-										<td valign="bottom">
-											<table style="width:100%">
-												<tr>
-													<td>Year</td>
-													<td>Month</td>
-													<td>Day</td>
-												</tr>
-												<tr>
-													<td>
-														<html:select name="studentRegistrationForm" property="student.birthYear">
-															<html:options collection="yearlist" property="value" labelProperty="label"/>
-														</html:select>
-													</td>
-													<td>
-														<html:select name="studentRegistrationForm" property="student.birthMonth">
-															<html:options collection="monthlist" property="value" labelProperty="label"/>
-														</html:select>
-													</td>
-													<td>
-														<html:select name="studentRegistrationForm" property="student.birthDay">
-															<html:options collection="daylist" property="value" labelProperty="label"/>
-														</html:select>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
+
 							</logic:equal>
 							<logic:equal name="studentRegistrationForm" property="allowLogin" value="false">
 								<tr>
