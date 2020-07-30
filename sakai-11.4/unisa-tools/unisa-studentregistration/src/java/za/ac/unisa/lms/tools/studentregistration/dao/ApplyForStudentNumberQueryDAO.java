@@ -1773,6 +1773,35 @@ public String validateStudentID(String IdNumber, String mainSelect) throws Excep
 		}
 		
 	}
+	
+	/*Tyrone*
+	 * Validate student Academic Record for current or previous academic year 
+	 */
+	public boolean isCurrentOrPreviousAcademicYearRegistered(String studentNr, String acaYear) throws Exception {
+		
+		int previousAcadYear = Integer. parseInt(acaYear) - 1;
+		
+		String query = " select mk_student_nr from stuann "
+				+ " where mk_student_nr= ? "
+				+ " and mk_academic_year in (?, ?)";
+
+		try {
+			//log.debug("ApplyForStudentNumberQueryDAO - validateStudentRec - Query="+query+", StudentNr="+studentNr+", AcademicYear="+acaYear);
+			
+			JdbcTemplate jdt = new JdbcTemplate(getDataSource());
+			List queryList = jdt.queryForList(query, new Object []{studentNr, previousAcadYear, acaYear});
+			Iterator i = queryList.iterator();
+			if (i.hasNext()) {
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception ex) {
+			throw new Exception(
+					"ApplyForStudentNumberQueryDAO : Error validating student academic record / " + ex);
+		}
+		
+	}
 
 	/**
 	 * Validate student Annual Record

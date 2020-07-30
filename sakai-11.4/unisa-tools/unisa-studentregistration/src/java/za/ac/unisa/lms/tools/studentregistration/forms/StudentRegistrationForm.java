@@ -293,6 +293,9 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 	//M&D Admission Process
 	private List<MdPrev> mdprevList;
 	private String readmd = "";	
+	
+	//if return student, was registered in current or previous year?
+	private boolean recentlyRegistered;
 
 	public String getCopyPostalAddressRadio() {
 		return copyPostalAddressRadio;
@@ -965,7 +968,14 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		this.selectReset = selectReset;
 	}
 	
+	public boolean isRecentlyRegistered() {
+		return recentlyRegistered;
+	}
 
+	public void setRecentlyRegistered(boolean recentlyRegistered) {
+		this.recentlyRegistered = recentlyRegistered;
+	}
+	
 	public boolean isHiddenButton() {
 		  try {
 			  if("newStu".equalsIgnoreCase(getStudent().getStuExist()) && ("".equals(getStudent().getNumber()) || getStudent().getNumber() == null)){
@@ -2722,6 +2732,8 @@ public class StudentRegistrationForm extends ValidatorActionForm {
 		adminStaff.setFirstnames("");
 		adminStaff.setSurname("");
 		adminStaff.setStudentType("");
+		
+		recentlyRegistered = false;
 		
 	}
 }
