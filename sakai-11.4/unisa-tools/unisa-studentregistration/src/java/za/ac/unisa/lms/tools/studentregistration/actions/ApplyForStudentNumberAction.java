@@ -41,6 +41,7 @@ import org.apache.struts.util.LabelValueBean;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 
 import za.ac.unisa.lms.tools.studentregistration.dao.ApplyForStudentNumberQueryDAO;
+import za.ac.unisa.lms.tools.studentregistration.dao.StudentRegistrationQueryDAO;
 import za.ac.unisa.lms.tools.studentregistration.dao.KeyValue;
 import za.ac.unisa.lms.tools.studentregistration.dao.SavedDocDao;
 import za.ac.unisa.lms.tools.studentregistration.forms.GeneralItem;
@@ -201,6 +202,10 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 	    //SLP select
 	    map.put("applySLPSelect","applySLPSelect");
 	    map.put("stepSLPConfirm","stepSLPConfirm");
+		
+		//BRS2020
+		map.put("applyReturnStudent", "applyReturnStudent");
+		map.put("stepMediaAccess", "stepMediaAccess");
     
 	    return map;
 	 }
@@ -937,12 +942,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Returning student applying for OR changing to a new qualification");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Returning student applying for OR changing to a new qualification");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//Student selected Undergrad/Honours
@@ -951,12 +956,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Returning SLP Student applying for OR changing to a new qualification.");
 					stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Returning SLP Student applying for OR changing to a new qualification");
 					stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//Student selected Masters & Doctorial
@@ -969,12 +974,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Returning student - Document Upload");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Returning student - Document Upload");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("STATUS".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: STATUS");
@@ -982,12 +987,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Returning student - Application Status");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Application Status");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("APPEAL".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: APPEAL");
@@ -995,12 +1000,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Appeal Process");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Appeal Process");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("OFFER".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: OFFER");
@@ -1008,12 +1013,12 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					stuRegForm.setWebLoginMsg("Administrator - Offer Process");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}else{
 					stuRegForm.setWebLoginMsg("Offer Process");
 					stuRegForm.setWebLoginMsg2("");
 					setDropdownListsLogin(request,stuRegForm);
-					return mapping.findForward("applyLogin");
+					return mapping.findForward("applyReturnStudent");
 				}
 			}else if ("PAY".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
 				//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: PAY");
@@ -1166,6 +1171,188 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				}
 			}
 		}
+		return mapping.findForward("loginSelect");
+	}
+	
+		
+	/**
+	* Tyrone (motlhtm)
+	* Action to login returning students BRS2020
+	* Login with myUnisa password :- registered in current or previous academic year
+	* Existing login functionality :- not registered in current or previous academic year
+	**/
+	public ActionForward applyReturnStudent(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		
+		//log.debug("IN submitLoginSelect");
+	    
+		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
+		ActionMessages messages = new ActionMessages();
+
+		stuRegForm.setFromPage("applyReturnStudent");
+		
+		if (stuRegForm.getStudent().getNumber() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getNumber())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Enter student number."));
+			addErrors(request, messages);
+			return mapping.findForward("applyReturnStudent");
+		}
+		if (!isValidNumber(stuRegForm.getStudent().getNumber())){
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Enter a valid student number."));
+			addErrors(request, messages);
+			return mapping.findForward("applyReturnStudent");
+		}
+
+		if ("YES".equalsIgnoreCase(stuRegForm.getLoginSelectYesNo())){
+		//Student Confirms that He/She does have a Student Number already	
+		
+			stuRegForm.getStudent().setStuExist("curStu");
+
+			StudentRegistrationQueryDAO studentRegDao = new StudentRegistrationQueryDAO();
+			ApplyForStudentNumberQueryDAO applyStudentNumberDao = new ApplyForStudentNumberQueryDAO();
+			
+			stuRegForm.setRecentlyRegistered(applyStudentNumberDao.isCurrentOrPreviousAcademicYearRegistered(stuRegForm.getStudent().getNumber(), getCurrentAcademicYear()));
+		
+			if(stuRegForm.isRecentlyRegistered()){
+				
+				System.out.println("YES: student was recently registered... password login please");
+				if(stuRegForm.getStudent().getPassword() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getPassword())){
+					stuRegForm.setWebLoginMsg("Please enter your myUnisa password to continue.");
+					stuRegForm.setWebLoginMsg2("");
+					return mapping.findForward("applyReturnStudent");
+				}else if(studentRegDao.authorizeStudent(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getPassword())){
+					
+					Student student = studentRegDao.getByStudentNumber(stuRegForm.getStudent().getNumber());
+					stuRegForm.getStudent().setSurname(student.getSurname());
+					stuRegForm.getStudent().setFirstnames(student.getFirstnames());
+					stuRegForm.getStudent().setBirthYear(student.getBirthYear());
+					stuRegForm.getStudent().setBirthMonth(student.getBirthMonth());
+					stuRegForm.getStudent().setBirthDay(student.getBirthDay());
+					
+					stuRegForm.setRecentlyRegistered(false);
+				
+					return mapping.findForward("continueReturnStudent");
+				}else{
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Error occurred while logging in. Please try again."));
+					addErrors(request, messages);
+					return mapping.findForward("applyReturnStudent");
+				}
+				
+				
+			}else{
+				System.out.println("NO: student not registered in current or previous year... student details form please");
+			
+				Student student = studentRegDao.getByStudentNumber(stuRegForm.getStudent().getNumber());
+				if(student != null){
+					stuRegForm.getStudent().setSurname(student.getSurname());
+					stuRegForm.getStudent().setFirstnames(student.getFirstnames());
+					stuRegForm.getStudent().setBirthYear(student.getBirthYear());
+					stuRegForm.getStudent().setBirthMonth(student.getBirthMonth());
+					stuRegForm.getStudent().setBirthDay(student.getBirthDay());
+				}else{
+					messages.add(ActionMessages.GLOBAL_MESSAGE,
+					new ActionMessage("message.generalmessage", "Enter a valid student number."));
+					addErrors(request, messages);
+					return mapping.findForward("applyReturnStudent");
+				}
+
+				if ("UD".equalsIgnoreCase(stuRegForm.getLoginSelectMain()) || "HON".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//Student selected Undergrad/Honours
+
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Returning student applying for OR changing to a new qualification");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Returning student applying for OR changing to a new qualification");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("SLP".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//Student selected Undergrad/Honours
+					//log.debug("IN submitLoginSelect (Returning Student - SLP) - getLoginSelectMain = "+stuRegForm.getLoginSelectMain());
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Returning SLP Student applying for OR changing to a new qualification.");
+						stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Returning SLP Student applying for OR changing to a new qualification");
+						stuRegForm.setWebLoginMsg2("Enter your student number for short learning programmes with 8 digits");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("MD".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//Student selected Masters & Doctorial
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain - MD: "+stuRegForm.getLoginSelectMain());
+					String serverpath = ServerConfigurationService.getServerUrl();
+					return new ActionForward(serverpath+"/unisa-findtool/default.do?sharedTool=unisa.mdapplications",true);
+				}else if ("DOC".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: DOC");
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Returning student - Document Upload");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Returning student - Document Upload");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("STATUS".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: STATUS");
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Returning student - Application Status");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Application Status");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("APPEAL".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: APPEAL");
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Appeal Process");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Appeal Process");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("OFFER".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: OFFER");
+					if (stuRegForm.getAdminStaff().isAdmin()){
+						stuRegForm.setWebLoginMsg("Administrator - Offer Process");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}else{
+						stuRegForm.setWebLoginMsg("Offer Process");
+						stuRegForm.setWebLoginMsg2("");
+						setDropdownListsLogin(request,stuRegForm);
+						return mapping.findForward("applyLogin");
+					}
+				}else if ("PAY".equalsIgnoreCase(stuRegForm.getLoginSelectMain())){
+					//log.debug("IN submitLoginSelect (Returning Student) - getLoginSelectMain: PAY");
+					String serverpath = ServerConfigurationService.getServerUrl();
+					return new ActionForward(serverpath+"/unisa-findtool/default.do?sharedTool=unisa.creditcardpayment",true);
+				}
+			}
+		}
+		
+		
 		return mapping.findForward("loginSelect");
 	}
 	
@@ -3949,6 +4136,53 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 				return mapping.findForward("applyPrevQual");
 			}
 			
+			/**
+			* Tyrone (motlhtm) 2020/07/10 
+			* Save Previous Qualifications
+			**************************************Start*****************************************************/
+			int resultUpdate = 0;
+			int resultSave = 0;
+
+			if (stuRegForm.getQualArray() != null && !stuRegForm.getQualArray().isEmpty()){
+
+				if (stuRegForm.getQualArray().size() > 0){
+					HistoryArray other = new HistoryArray();
+					
+					for (int i=0; i < stuRegForm.getQualArray().size(); i++){
+						other = (HistoryArray) stuRegForm.getQualArray().get(i);
+
+						//qualification already exists?
+						boolean exists = dao.checkPREV(stuRegForm.getStudent().getNumber(), other.getOtherSEQ());
+						if (exists){
+							//Write STUXML Entry to save Sequence number
+							String saveSTUXML =  dao.saveSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "stuPrev", "1", other.getOtherSEQ(),  "YES",  "stepPrevQual", "UPDATE");
+	
+							if ("N".equalsIgnoreCase(other.getOtherLock())){
+								resultUpdate = dao.updatePREVADM(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearStart(), other.getOtherYearEnd(), other.getOtherComplete(), other.getOtherUnivText(), other.getOtherStudnr(), other.getOtherQual(), other.getOtherForeign(), other.getOtherUniv(), other.getOtherCountry());								
+							}else {							
+								resultUpdate = dao.updatePREVADMLock(stuRegForm.getStudent().getNumber(), other.getOtherSEQ(), other.getOtherYearEnd(), other.getOtherComplete());
+							}
+						}else{
+
+							int maxPrev = 0;
+							maxPrev = dao.getSTUPREVMax(stuRegForm.getStudent().getNumber());
+							maxPrev++;
+
+							//Write STUXML Entry to save Sequence number
+							String saveSTUXML =  dao.saveSTUXML(stuRegForm.getStudent().getNumber(), stuRegForm.getStudent().getAcademicYear(), stuRegForm.getStudent().getAcademicPeriod(), "stuPrev", "1", other.getOtherSEQ(),  "YES",  "stepPrevQual", "INSERT");
+								resultSave = dao.savePREVADM(stuRegForm.getStudent().getNumber(), maxPrev, other.getOtherYearStart(),
+									other.getOtherYearEnd(), other.getOtherUnivText(), 
+									other.getOtherStudnr(), other.getOtherQual(), other.getOtherForeign(), 
+									other.getOtherComplete(), other.getOtherUniv(), other.getOtherCountry());
+							
+						}
+						
+					}
+
+				}
+			}
+			/*******************************************End*************************************************/
+			
 		}catch(Exception ex){
 			log.warn("ApplyForStudentNumberAction - stepPrevQual - Error="+ex);
 			messages.add(ActionMessages.GLOBAL_MESSAGE,
@@ -6431,8 +6665,98 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 			addErrors(request, messages);
 		}
 		//log.debug("ApplyForStudentNumberaction - stepRetRadio - CompleteText Final=" + stuRegForm.getStudentApplication().getCompleteText());
-
+		
+		/**
+		* Tyrone (motlhtm) 2020/07/10 
+		* Update student details 
+		* current or staff member?
+		* dependant of a current, retired or deceased staff member?
+		* prisoner?
+		**************************************Start*****************************************************/
+		ApplyForStudentNumberQueryDAO dao = new ApplyForStudentNumberQueryDAO();
+		
+		dao.updateStudent(stuRegForm.getStudent().getNumber(),stuRegForm.getStudentApplication().getStaffCurrent(), stuRegForm.getStudentApplication().getStaffDeceased(),stuRegForm.getStudentApplication().getCompleteQual(), stuRegForm.getStudentApplication().getCompleteText(), stuRegForm.getStudentApplication().getPrisoner(), stuRegForm.getStudent().getAcademicYear());
+		
+		/**
+		* Tyrone (motlhtm) 2020/07/10 
+		* Update Student Exam Centre detail
+		**************************************Start*****************************************************/
+		if (null != stuRegForm.getStudent().getExam().getExamCentre().getCode() 
+				&& !"".equalsIgnoreCase(stuRegForm.getStudent().getExam().getExamCentre().getCode())){
+	
+			List<Integer> examPeriodList = new ArrayList<Integer>();
+			
+			examPeriodList = dao.getExamPeriods();
+			
+			dao.updateStudentExamCentreDetail(stuRegForm.getStudent().getNumber(),stuRegForm.getStudent().getExam().getExamCentre().getCode(),examPeriodList);
+		}
+		
 		return mapping.findForward("applyRetDeclare");
+		
+	}
+	
+	/**
+	* Tyrone (motlhtm)
+	* Action to capture student's Media Access details and forward to Declarations
+	* BRS2020
+	**/
+	public ActionForward stepMediaAccess(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		
+		ActionMessages messages = new ActionMessages();
+		StudentRegistrationForm stuRegForm = (StudentRegistrationForm) form;
+		stuRegForm.setFromPage("applyMediaAccess");
+		
+		if(stuRegForm.getStudent().getNumber() == null || "".equals(stuRegForm.getStudent().getNumber())){
+
+			messages.add(ActionMessages.GLOBAL_MESSAGE,
+			new ActionMessage("message.generalmessage", "You performed and invalid action or an Error occurred. Please log on again to retry."));
+			addErrors(request, messages);
+			if (stuRegForm.getAdminStaff().isAdmin()){
+				return mapping.findForward("loginStaff");
+			}else{
+				return mapping.findForward("loginStu");
+			}
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess1() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess1())){
+			stuRegForm.getStudent().setMediaAccess1("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess2() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess2())){
+			stuRegForm.getStudent().setMediaAccess2("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess3() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess3())){
+			stuRegForm.getStudent().setMediaAccess3("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess4() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess4())){
+			stuRegForm.getStudent().setMediaAccess4("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess5() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess5())){
+			stuRegForm.getStudent().setMediaAccess5("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess6() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess6())){
+			stuRegForm.getStudent().setMediaAccess6("N");
+		}
+		
+		if(stuRegForm.getStudent().getMediaAccess7() == null || "".equalsIgnoreCase(stuRegForm.getStudent().getMediaAccess7())){
+			stuRegForm.getStudent().setMediaAccess7("N");
+		}
+	
+		stuRegForm.getStudent().setMediaAccess(stuRegForm.getStudent().getMediaAccess1()+
+												stuRegForm.getStudent().getMediaAccess2()+
+												stuRegForm.getStudent().getMediaAccess3()+
+												stuRegForm.getStudent().getMediaAccess4()+
+												stuRegForm.getStudent().getMediaAccess5()+
+												stuRegForm.getStudent().getMediaAccess6()+
+												stuRegForm.getStudent().getMediaAccess7());
+		
+		return mapping.findForward("applyNewDeclare");
 		
 	}
 	
@@ -8916,15 +9240,15 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 					return "m30step1";
 				}else{
 					//log.debug("ApplyForStudentNumberAction - applyNewSchool - N " + stuRegForm.getStudent().getNumber() + " NOT MSOF - return applyNewSchool 1");
-					return "applyNewDeclare";
+					return "applyMediaAccess";
 				}
 			}else{
 				//log.debug("ApplyForStudentNumberAction - applyNewSchool - N " + stuRegForm.getStudent().getNumber() + " NOT CG: " + stuRegForm.getStudentApplication().getMatricCertificate() + " return applyNewSchool 2");
-				return "applyNewDeclare";
+				return "applyMediaAccess";
 			}
 		}else{
 			//log.debug("ApplyForStudentNumberAction - applyNewSchool - N " + stuRegForm.getStudent().getNumber() + " NOT CAT1 & CAT2 not GU26  return applyNewDeclare 3");
-			return "applyNewDeclare";
+			return "applyMediaAccess";
 	}
 		//return "applyNewDeclare" is next screen if not M30 case;
 	}
@@ -9174,11 +9498,11 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		
 		// rest of the Y/N fields
 
-		stuRegForm.getStudent().setMediaAccess1("N");
+		/*stuRegForm.getStudent().setMediaAccess1("N");
 		stuRegForm.getStudent().setMediaAccess2("N");
 		stuRegForm.getStudent().setMediaAccess3("N");
 		stuRegForm.getStudent().setMediaAccess4("N");
-		stuRegForm.getStudent().setMediaAccess5("N");
+		stuRegForm.getStudent().setMediaAccess5("N");*/
 		
 		if (stuRegForm.getStudent().getMediaAccess() == null || "".equals(stuRegForm.getStudent().getMediaAccess().trim())){
 			stuRegForm.getStudent().setMediaAccess(stuRegForm.getStudent().getMediaAccess1()+stuRegForm.getStudent().getMediaAccess2()+stuRegForm.getStudent().getMediaAccess3()+stuRegForm.getStudent().getMediaAccess4()+stuRegForm.getStudent().getMediaAccess5());
@@ -9813,14 +10137,17 @@ public class ApplyForStudentNumberAction extends LookupDispatchAction {
 		file.add(" Matric school               = " + stuRegForm.getStudentApplication().getMatricSchool().getCode()+" "+stuRegForm.getStudentApplication().getMatricSchool().getDesc() +"\r\n");
 		file.add(" --------------------------------------------------------------------------\r\n");
 		file.add(" Computer training needed    = " + stuRegForm.getStudent().getComputerTraining()+ "\r\n");
-		/*
-		file.add(" Access to following         = " +  "\r\n");
-		file.add("                 internet    = " + stuRegForm.getStudent().getMediaAccess1()+ "\r\n");
-		file.add("                 cellphone   = " + stuRegForm.getStudent().getMediaAccess2()+ "\r\n");
-		file.add("                 cd-rom      = " + stuRegForm.getStudent().getMediaAccess3()+ "\r\n");
-		file.add("                 dvd-rom     = " + stuRegForm.getStudent().getMediaAccess4()+ "\r\n");
-		file.add("                 mp3 player  = " + stuRegForm.getStudent().getMediaAccess5()+ "\r\n");
-		*/
+		file.add(" --------------------------------------------------------------------------\r\n");
+		file.add(" Access to the following     : " +  "\r\n");
+		file.add(" 	Your own laptop/computer   = " + stuRegForm.getStudent().getMediaAccess1()+ "\r\n");
+		file.add("  A work laptop/computer     = " + stuRegForm.getStudent().getMediaAccess2()+ "\r\n");
+		file.add("  A family member or         = " + stuRegForm.getStudent().getMediaAccess3()+ "\r\n");
+		file.add("  friends\'s laptop/computer \r\n");
+		file.add("  A smart phone              = " + stuRegForm.getStudent().getMediaAccess4()+ "\r\n");
+		file.add("  Home/Personal Wi-Fi data   = " + stuRegForm.getStudent().getMediaAccess5()+ "\r\n");
+		file.add("  Work Wi-Fi data            = " + stuRegForm.getStudent().getMediaAccess6()+ "\r\n");
+		file.add("  Pay as you go data         = " + stuRegForm.getStudent().getMediaAccess7()+ "\r\n");
+		
 		//file.add("Message                      = " + stuRegForm.getString500back()+"\r\n");
 		file.add(" ==========================================================================\r\n");
 		

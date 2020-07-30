@@ -149,46 +149,36 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			
 			$('form,input,select,textarea').attr("autocomplete", "off");
 			
-		});
-		
-		function validateSelect(){
-			//alert("In Validate");
-			var cellNr1 = $("input[name='student.cellNr']").val();
-			if (cellNr1 == null || cellNr1 == "" || cellNr1 == "undefined"){
-				showError("Note", "Please enter your mobile number");
-				return false;
-			}
-			var cellNr2 = $("input[name='student.cellNr2']").val();
-			if (cellNr2 == null || cellNr2 == "" || cellNr2 == "undefined"){
-				showError("Note", "Please confirm your mobile number");
-				return false;
-			}
-			if (cellNr1 != cellNr2){
-				showError("Note", "Entered Mobile numbers do not match. Please try again.");
-				return false;
+			//Hide doFinAid for SLP Students
+			var isStuSLP = $("#isStuSLP").val();
+			if (isStuSLP == "true"){
+				$("#doFinAid").hide();	
+				$("input:radio[name='studentApplication.finaidNsfas'][value='N']").prop('checked', true);
+				$("input:radio[name='studentApplication.completeQual'][value='N']").prop('checked', true);
+				$('#completeText').val(' ');
 			}
 			
-			var email1 = $("input[name='student.emailAddress']").val();
-			if (email1 == null || email1 == "" || email1 == "undefined"){
-				showError("Note", "Please enter your email address");
-				return false;
-			}
-			var email2 = $("input[name='student.emailAddress2']").val();
-			if (email2 == null || email2 == "" || email2 == "undefined"){
-				showError("Note", "Please confirm your email address");
-				return false;
-			}
-			if (email1 != email2){
-				showError("Note", "Entered Email addresses do not match. Please try again.");
-				return false;
-			}
-			doSubmit("Continue");
+			var isStuRegistered= $("#isStuRegistered").val();
+			if (isStuRegistered == "true"){
+					$("#doExamCenter").hide();	
+					$("select[name='selectedExamCentre']").empty(); 
+					$('#completeText').val(' ');
+			}					
+			
+			//Hide completeText
+			$(".doCompleteText").css('visibility', 'hidden');
+			
+		});
+				
+		function cleanError(){
+			/**Clean error**/
+			$("#forExam").text('');
 		}
 		
-		//Click button
+		//On button click
 		function doSubmit(button){
 			if (button === "Continue"){
-				document.studentRegistrationForm.action='applyForStudentNumber.do?act=stepRetContact';
+				document.studentRegistrationForm.action='applyForStudentNumber.do?act=stepMediaAccess';
 			}else if (button === "Back"){
 				document.studentRegistrationForm.action='applyForStudentNumber.do?act=Back';
 			}else if (button === "Cancel"){
@@ -196,7 +186,6 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 			}
 			document.studentRegistrationForm.submit();
 		}
-		
 		
 		function showError(errorTitle, errorText) {
 			// show the actual error modal
@@ -215,25 +204,16 @@ response.setHeader("Pragma","no-cache"); //HTTP 1.0 backward compatibility
 
 	</script>
 </head>
-<%
-/**Changes**/
-StudentRegistrationForm studentRegistrationForm = (StudentRegistrationForm)session.getAttribute("studentRegistrationForm");
-String email = studentRegistrationForm.getStudent().getEmailAddress();
-boolean emailAddressGood = studentRegistrationForm.getStudent().getEmailAddressGood();
-boolean readOnly = false;
-boolean hidden = false;
-if(emailAddressGood){
-	if(email!=null&&email.indexOf("mylife")!=-1){
-		readOnly = true;
-		hidden = true;
-	}
-}
-
-%>
 <body onload="disableBackButton();" onpageshow="if (event.persisted) disableBackButton" onunload="">
 <!-- Form -->
 <html:form action="/applyForStudentNumber">
-	<html:hidden property="page" value="applyRetContact"/>
+	<html:hidden property="page" value="applyMediaAccess"/>
+	
+	<input type="hidden" name="textLine" id="textLine" value="<bean:write name='studentRegistrationForm' property='studentApplication.completeText'/>"/>
+	<input type="hidden" name="prevExam" id="prevExam" value="<bean:write name='studentRegistrationForm' property='selectedExamCentre'/>"/>
+	<input type="hidden" name="prevPrison" id="prevPrison" value="<bean:write name='studentRegistrationForm' property='studentApplication.prisoner'/>"/>	
+	<input type="hidden" id="isStuSLP" name="isStuSLP" value="<bean:write name='studentRegistrationForm' property='student.stuSLP' />" />
+	<input type="hidden" id="isStuRegistered" name="isStuRegistered" value="<bean:write name='studentRegistrationForm' property='student.stuRegistered' />" />
 
 	<sakai:messages/>
 	<sakai:messages message="true"/>
@@ -250,78 +230,71 @@ if(emailAddressGood){
 				<div class="panel-body">	
 					<sakai:group_table>
 						<tr>
-							<td colspan="3"><fmt:message key="page.required.instruction"/>&nbsp;</td>
-						</tr><tr>
+							<td colspan="3"><strong><fmt:message key="page.apply.media.access1"/></strong></td>						
+						</tr><tr height="5px">
 							<td colspan="3">&nbsp;</td>
-						</tr><tr>
-							<td valign="middle"><fmt:message key="page.studentnr.apply.surname"/>&nbsp;</td>
-							<td colspan="2"><bean:write name="studentRegistrationForm" property="student.surname" /></td>
-						</tr><tr>
-							<td valign="middle"><fmt:message key="page.studentnr.apply.firstnames"/>&nbsp;</td>
-							<td colspan="2"><bean:write name="studentRegistrationForm" property="student.firstnames" /></td>
-						</tr>
-						<logic:notEmpty name="studentRegistrationForm" property="student.maidenName">
-							<tr>
-								<td valign="middle"><fmt:message key="page.studentnr.apply.maiden.return"/></td>
-								<td colspan="2"><bean:write name="studentRegistrationForm" property="student.maidenName" /></td>
-							</tr>
-						</logic:notEmpty>
-						<tr>
-							<td><fmt:message key="page.studentnr.apply.birthshort"/>&nbsp;</td>
-							<td colspan="2"><bean:write name="studentRegistrationForm" property="student.birthYear" />&nbsp;/
-							<bean:write name="studentRegistrationForm" property="student.birthMonth" />&nbsp;/
-							<bean:write name="studentRegistrationForm" property="student.birthDay" /></td>
-						</tr>
-						<logic:notEmpty name="studentRegistrationForm" property="student.idNumber">
-							<logic:notEqual name="studentRegistrationForm" property="student.idNumber" value=" ">
-								<tr>
-									<td><fmt:message key="page.studentnr.apply.id"/></td>
-									<td colspan="2"><bean:write name="studentRegistrationForm" property="student.idNumber"/></td>
-								</tr>
-							</logic:notEqual>
-						</logic:notEmpty>
-						<logic:notEmpty name="studentRegistrationForm" property="student.passportNumber">
-							<logic:notEqual name="studentRegistrationForm" property="student.passportNumber" value=" ">
-								<tr>
-									<td><fmt:message key="page.display.studentNumber.passport"/></td>
-									<td colspan="2"><bean:write name="studentRegistrationForm" property="student.passportNumber"/></td>
-								</tr>
-							</logic:notEqual>
-						</logic:notEmpty>
-						<tr>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.personal.computer"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess1" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess1" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
 							<td colspan="3">&nbsp;</td>
-						</tr><tr>
-							<td><fmt:message key="page.cell"/>&nbsp;</td>
-							<td><html:text name="studentRegistrationForm" property="student.cellNr" maxlength="20" size="30"/></td>
-							<td align="left" class="small"><fmt:message key="page.studentnr.apply.eg2"/></td>
-						</tr><tr>
-							<td><fmt:message key="page.cell2"/>&nbsp;</td>
-							<td><html:text name="studentRegistrationForm" property="student.cellNr2" maxlength="20" size="30"/></td>
-							<td align="left" class="small"><fmt:message key="page.studentnr.apply.eg3"/></td>
-						</tr><tr>
-							<td><fmt:message key="page.emailaddress"/>&nbsp;</td>
-							<td colspan="2"> 
-								<html:text name="studentRegistrationForm" property="student.emailAddress" maxlength="60" size="30" readonly="<%=readOnly %>"/>
-							</td>
-						</tr><tr>
-							<td>
-								<% if(!hidden){ %>
-									<fmt:message key="page.emailaddress2"/>&nbsp;</td>
-								<% } %>
-							<td colspan="2">
-								<!-- changes -->
-								<% if(hidden){%>
-									<html:hidden name="studentRegistrationForm" property="student.emailAddress2" value="<%=email%>"/>
-								<% } else {%>
-									<html:text name="studentRegistrationForm" property="student.emailAddress2" maxlength="60" size="30"/>
-								<% } %>
-								
-							</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.work.computer"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess2" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess2" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.other.computer"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess3" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess3" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.cell"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess4" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess4" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
 						</tr>
 					</sakai:group_table>
-				</div>
+
+					<sakai:group_table>
+						<tr>
+							<td colspan="3"><strong><fmt:message key="page.apply.media.access3"/></strong></td>						
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.home"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess5" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess5" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.work"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess6" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess6" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr><tr height="20px">
+							<td><fmt:message key="page.apply.media.data"/>&nbsp;</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><html:checkbox property="student.mediaAccess7" value="Y"/></td>
+							<!--<td><html:radio property="student.mediaAccess7" value="N"/><fmt:message key="page.no"/></td>-->
+						</tr><tr height="5px">
+							<td colspan="3">&nbsp;</td>
+						</tr>
+					</sakai:group_table>
+				</div>				
 				<div class="panel-footer clearfix">
-					<button class="btn btn-default" type="button" onclick="validateSelect();">Save and Continue</button>
+					<button class="btn btn-default" type="button" onclick="doSubmit('Continue');">Save and Continue</button>
 					<button class="btn btn-default" type="button" onclick="doSubmit('Back');">Back</button>
 					<button class="btn btn-default" type="button" onclick="doSubmit('Cancel');">Cancel</button>
 				</div>
@@ -334,4 +307,4 @@ if(emailAddressGood){
 	
 </html:form>
 </body>
-</sakai:html>
+</sakai:html>		
